@@ -109,7 +109,7 @@ La solución propuesta es realizar una página web que permita tanto promocionar
 
 ### Análisis del entorno<a name="Anal"></a>
 
-### Visión del producto<a name="Vision"></a>(ISAAC)
+### Visión del producto<a name="Vision"></a>
 
 Para los emprendedores nacionales, quienes necesitan un medio para promocionar y vender sus productos y/o servicios, EMPRENDE@UCR es una plataforma web que permite la venta y compra en línea de productos y servicios. A diferencia de otras plataformas no enfocadas en los pequeños emprendedores, nuestro producto, además de ser gratuito, busca el crecimiento de los pequeños emprendedores y fomenta la cooperación entre estos.
 
@@ -164,7 +164,24 @@ Crear una plataforma virtual en linea donde emprendedores puedan juntarse con co
 - Permitir a compradores elegir el metodo de pago que desean usar para finalizar su compra.
 ### Product Road Map<a name="ProductRoadMap"></a> (Alejandro)
 
-### Requerimientos no funcionales<a name="NonFuncRequirements"></a> (Isaac)
+### Requerimientos no funcionales<a name="NonFuncRequirements"></a>
+
+#### Eficiencia
+- Toda funcionalidad del sistema debe responder al usuario en menos de 5 segundos
+- Los datos modificados en la base de datos se deben ver reflejados en tiempo real para todos los usuarios.
+- El sistema debe soportar una concurrencia de al menos X usuarios. (Validar con P.O)
+#### Seguridad
+- Los permisos del sistema solo pueden ser cambiados por un administrador.
+- Se debe asegurar la privacidad de los datos sensibles del usuario.
+#### Usabilidad
+- El tiempo de aprendizaje del sistema por un usuario deberá ser menor a X tiempo. (Validar con el asesor)
+- El sistema debe contar con un manual de usuario.
+- El sistema debe proporcionar mensajes de error útiles para el usuario.
+- La aplicación web debe garantizar la adecuada visualización en múltiples dispositivos (computadoras, teléfonos, tabletas, ...).
+- El sistema debe poseer interfaces gráficas limpias e intuitivas.
+#### Disponibilidad
+- El sistema debe estar disponible el 99.981% del tiempo.
+
 
 ## Artefactos de bases de datos<a name="ArtefactosBases"></a>
 
