@@ -156,12 +156,19 @@ Relación con los demás módulos:
 
 ### Requerimientos Funcionales<a name="Requirements"></a> (EDDY)
 Crear una plataforma virtual en linea donde emprendedores puedan juntarse con compradores y asi negociar entre ellos:
-- Permitir el registro de distintos tipos de usuarios.(Administradores de sitio, compradores y emprendedores)  
+
+- Permitir el registro de distintos tipos de usuarios.(Administradores de sitio, compradores y emprendedores)
+
 - Permitir a emprendedores publicar fotos y descripciones de los productos que vende, asi como sus datos de contacto y forma de operar junto con metodos de pago aceptados.
+
 - Permitir a emprendedores dar seguimiento a ordenes que hayan sido hechas por sus clientes.
+
 - Permitir a compradores llenar un carrito de compras con productos o servicios (pero no ambos) de un mismo emprendedor.
+
 - Permitir a compradores finalizar su compra por medio del paso de "checkout", donde puedan ver en una pantalla los contenidos del carrito de compra y el valor individual de cada uno, al igual del valor total de todo lo incluido en el carrito. En el checkout, debe haber un boton para confirmar la compra.
+
 - Permitir a compradores elegir el metodo de pago que desean usar para finalizar su compra.
+
 ### Product Road Map<a name="ProductRoadMap"></a> (Alejandro)
 
 ### Requerimientos no funcionales<a name="NonFuncRequirements"></a>
