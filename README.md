@@ -154,7 +154,7 @@ Relación con los demás módulos:
     - se relacionan ya que los productos o servicios que los emprendedores suban a la página, el proceso de venta y pedidos de estos productos va a ser manejado por el módulo de pedidos y compras 
 
 
-### Requerimientos Funcionales<a name="Requirements"></a> (EDDY)
+### Requerimientos Funcionales<a name="Requirements"></a>
 Crear una plataforma virtual en linea donde emprendedores puedan juntarse con compradores y asi negociar entre ellos:
 
 - Permitir el registro de distintos tipos de usuarios.(Administradores de sitio, compradores y emprendedores)
