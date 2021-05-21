@@ -121,6 +121,39 @@ ejemplo: la parte de los pagos, preguntar a la po si visualiza otros sistemas qu
 
 ### Descripción de los módulos y epics<a name="Epic"></a> (Manfred)
 
+Los módulos que fueron asignados a cada equipo son los siguientes: 
+
+- **3DKR:** módulo de emprendedores
+- **Pandemic:** módulo de usuarios y perfiles
+- **F&½L:** mmódulo de gestión de pedidos y compras
+- **Phoenix:** módulo de administración
+
+Descripción de los módulos:
+
+- **Emprendedores:** consiste en todas las funcionalidades que puede realizar un emprendedor, principalmente registrar productos y servicios y formar alianzas con otros emprendedores 
+- **Usuarios y perfiles:** consiste en todo el proceso de creación y registro de un perfil ya sea de emprendedor o comprador, la autenticación de la cuenta y la autorización de las funcionalidades que tiene permitido realizar
+- **Gestión de pedidos y compras:** consiste en todo el proceso de compra de un producto o servicio, entre estos está el proceso de pago, seguimiento del producto, proceso de checkout y finalización de órdenes  
+- **Administración:** consiste en todo lo relacionado a administración, esto incluye la categorización y etiqueta de los diferentes productos y servicios disponibles además del chat entre los usuarios de la página 
+
+Descripción de los epics:
+
+- **Gestión de productos:** poder agregar un producto o servicio para poder venderlo
+- **Registro de usuarios:** poder crear y registrar una cuenta con perfil de emprendedor o comprador
+- **Pedidos en carrito de compras:** poder incluir en un carrito de compras una serie de productos o servicios (pero no ambos) de un mismo emprendedor y poder concluir esa compra con su respectivo pago
+- **Categorización de productos:** poder categorizar y etiquetar productos o servicios
+
+Relación con los demás módulos: 
+
+- relación módulo usuario y perfiles con módulo emprendedores
+    - se relacionan directamente ya que es necesario que exista un usuario con perfil de emprendedor para poder realizar las funciones exclusivas de un emprendedor
+
+- relación módulo usuario y perfiles con módulo gestión de pedidos y compras
+    - se relacionan directamente ya que es necesario que exista un usuario con perfil de comprador para poder realizar las compras de los productos o servicios de emprendedores
+
+- relación módulo emprendedores y gestión de pedidos y compras
+    - se relacionan ya que los productos o servicios que los emprendedores suban a la página, el proceso de venta y pedidos de estos productos va a ser manejado por el módulo de pedidos y compras 
+
+
 ### Requerimientos Funcionales<a name="Requirements"></a> (EDDY)
 Crear una plataforma virtual en linea donde emprendedores puedan juntarse con compradores y asi negociar entre ellos:
 - Permitir el registro de distintos tipos de usuarios.(Administradores de sitio, compradores y emprendedores)  
@@ -158,6 +191,7 @@ Referencia al archivo fuente: [Esquema lógico de la base de datos](https://luci
 Durante el sprint 0, se asignaron módulos a cada equipo de desarrolladores y a partir de los requerimientos de la P.O, se asignaron EPICS<a name="Epic"></a> e historias de usuario para cada equipo.
 
 **Sprint Backlog:**
+
 Según las tareas prioritarias del backlog, se realizó un product roadmap<a name="ProductRoadMap"></a> en el cuál seleccionaron historias de usuario.
 
 
