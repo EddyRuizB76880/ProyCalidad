@@ -1,0 +1,45 @@
+﻿<h1>ListProducts</h1>
+@page "/ListProducts"
+@using EmprendeUCR_WebApplication.Data.Services
+@using EmprendeUCR_WebApplication.Data.Entities
+@inject ProductService ProductService
+
+@if (_isLoading)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Precio</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in _products)
+            {
+            <tr>
+                <td>@item.Code_ID</td>
+                <td>@item.Name</td>
+                <td>@item.Price</td>
+            </tr>
+
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private bool _isLoading = true;
+    private IList<Product> _products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _products = await ProductService.GetAsync();
+        _isLoading = false;
+    }
+}
+

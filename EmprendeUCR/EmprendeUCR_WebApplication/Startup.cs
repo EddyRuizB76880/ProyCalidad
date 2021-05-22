@@ -1,4 +1,3 @@
-using EmprendeUCR_WebApplication.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +9,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EmprendeUCR_WebApplication.Data;
+using EmprendeUCR_WebApplication.Data.Context;
+using Microsoft.EntityFrameworkCore;
+using EmprendeUCR_WebApplication.Data.Services;
 
 namespace EmprendeUCR_WebApplication
 {
@@ -29,6 +32,11 @@ namespace EmprendeUCR_WebApplication
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
+            services.AddScoped<ProductService>();
+
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SqlConnection")));
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
