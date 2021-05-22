@@ -9,8 +9,7 @@
     <ProjectGuid>{d168b2a6-a0fc-478c-980b-9bbc6d472b7c}</ProjectGuid>
     <DSP>Microsoft.Data.Tools.Schema.Sql.Sql130DatabaseSchemaProvider</DSP>
     <OutputType>Database</OutputType>
-    <RootPath>
-    </RootPath>
+    <RootPath />
     <RootNamespace>EmprendeUCR_DB</RootNamespace>
     <AssemblyName>EmprendeUCR_DB</AssemblyName>
     <ModelCollation>1033, CI</ModelCollation>
@@ -48,7 +47,6 @@
   </PropertyGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
-    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
     <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
     <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
   </PropertyGroup>
@@ -61,5 +59,7 @@
     <Build Include="Province.sql" />
     <Build Include="Canton.sql" />
     <Build Include="District.sql" />
+    <Build Include="Members.sql" />
+    <Build Include="Entrepeneaur.sql" />
   </ItemGroup>
 </Project>
