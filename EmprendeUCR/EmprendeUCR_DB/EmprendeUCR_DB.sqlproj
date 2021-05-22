@@ -62,5 +62,6 @@
     <Build Include="Canton.sql" />
     <Build Include="District.sql" />
     <Build Include="Admin.sql" />
+    <Build Include="Likes.sql" />
   </ItemGroup>
 </Project>
