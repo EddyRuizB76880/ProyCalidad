@@ -125,7 +125,7 @@ Los módulos que fueron asignados a cada equipo son los siguientes:
 
 - **3DKR:** módulo de emprendedores
 - **Pandemic:** módulo de usuarios y perfiles
-- **F&½L:** mmódulo de gestión de pedidos y compras
+- **F&½L:** módulo de gestión de pedidos y compras
 - **Phoenix:** módulo de administración
 
 Descripción de los módulos:
@@ -144,15 +144,23 @@ Descripción de los epics:
 
 Relación con los demás módulos: 
 
-- relación módulo usuario y perfiles con módulo emprendedores
+- **Relación módulo usuario y perfiles con módulo emprendedores**
     - se relacionan directamente ya que es necesario que exista un usuario con perfil de emprendedor para poder realizar las funciones exclusivas de un emprendedor
 
-- relación módulo usuario y perfiles con módulo gestión de pedidos y compras
+- **Relación módulo usuario y perfiles con módulo gestión de pedidos y compras**
     - se relacionan directamente ya que es necesario que exista un usuario con perfil de comprador para poder realizar las compras de los productos o servicios de emprendedores
 
-- relación módulo emprendedores y gestión de pedidos y compras
+- **Relación módulo usuario y perfiles con módulo administración**
+    - se relacionan directamente ya que el módulo de administración cumple con la funcionalidad de realizar reportes a los usuarios además de los métodos de pago de los usuarios y el chat entre usuario emprendedor y usuario comprador
+
+- **Relación módulo emprendedores con módulo gestión de pedidos y compras**
     - se relacionan ya que los productos o servicios que los emprendedores suban a la página, el proceso de venta y pedidos de estos productos va a ser manejado por el módulo de pedidos y compras 
 
+- **Relación módulo gestión de pedidos y compras con módulo administración**
+    - el módulo de administración tiene la funcionalidad de los métodos de pago, por esto tiene relación directa con el modulo de gestion de pedidos y compras ya que es necesario conocer y poder realizar el pago del servicio o producto 
+
+- **Relación módulo emprendedores con módulo administración**
+    - similar al punto anterior existe una relación directa entre estos módulos ya que se debe de tener conocimiento de cuáles son los métodos de pago que si son aceptados para un emprendedor en particular
 
 ### Requerimientos Funcionales<a name="Requirements"></a>
 Crear una plataforma virtual en linea donde emprendedores puedan juntarse con compradores y asi negociar entre ellos:
