@@ -61,5 +61,6 @@
     <Build Include="Province.sql" />
     <Build Include="Canton.sql" />
     <Build Include="District.sql" />
+    <Build Include="Admin.sql" />
   </ItemGroup>
 </Project>
