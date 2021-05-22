@@ -4,6 +4,12 @@
 @using EmprendeUCR_WebApplication.Data.Entities
 @inject ProductService ProductService
 
+<NavLink class="nav-link" href="AddProduct">
+    <span class="oi oi-plus" aria-hidden="true">Add New Product</span>
+
+</NavLink>
+
+
 @if (_isLoading)
 {
     <p>Cargando...</p>

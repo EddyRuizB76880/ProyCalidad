@@ -19,3 +19,4 @@ USING (VALUES
 AS Source ([Code_ID], [Name], [Price]) ON Target.[Code_ID] = Source.[Code_ID] 
 WHEN NOT MATCHED BY TARGET THEN 
 INSERT ([Code_ID], [Name], [Price]) VALUES ([Code_ID], [Name], [Price]);
+
