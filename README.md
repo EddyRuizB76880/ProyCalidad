@@ -229,13 +229,13 @@ Para poder acceder al [proyecto](http://10.1.4.22:8080/secure/RapidBoard.jspa?pr
 
 ### Esquema conceptual<a name="ERR"></a>
 
-![Esquema conceptual de la base de datos](AQUI_VA_EL_NOMBRE_DEL_ARCHIVO_PNG)
+![Esquema conceptual de la base de datos](imgs/Conceptual_scheme.png)
 
 Referencia al archivo fuente: [Esquema conceptual de la base de datos](https://lucid.app/lucidchart/521c91fc-fdbb-42cb-8564-09c0ab52c460/edit?page=0_0#)
 
 ### Esquema lógico<a name="Mapeo"></a>
 
-![Esquema lógico de la base de datos](AQUI_VA_EL_NOMBRE_DEL_ARCHIVO_PNG)
+![Esquema lógico de la base de datos](imgs/Logical_scheme.png)
 
 Referencia al archivo fuente: [Esquema lógico de la base de datos](https://lucid.app/lucidchart/521c91fc-fdbb-42cb-8564-09c0ab52c460/edit?page=eAhCgoWCmbE2#)
 
