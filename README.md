@@ -128,46 +128,69 @@ Los módulos que fueron asignados a cada equipo son los siguientes:
 - **F&½L:** módulo de gestión de pedidos y compras
 - **Phoenix:** módulo de administración
 
-Descripción de los módulos:
+#### Descripción de los módulos:
 
-- **Emprendedores:** consiste en todas las funcionalidades que puede realizar un emprendedor, principalmente registrar productos y servicios y formar alianzas con otros emprendedores 
-- **Usuarios y perfiles:** consiste en todo el proceso de creación y registro de un perfil ya sea de emprendedor o comprador, la autenticación de la cuenta y la autorización de las funcionalidades que tiene permitido realizar
-- **Gestión de pedidos y compras:** consiste en todo el proceso de compra de un producto o servicio, entre estos está el proceso de pago, seguimiento del producto, proceso de checkout y finalización de órdenes  
-- **Administración:** consiste en todo lo relacionado a administración, esto incluye la categorización y etiqueta de los diferentes productos y servicios disponibles además del chat entre los usuarios de la página 
+- **Emprendedores:** 
 
-Descripción de los epics:
+Consiste en todas las funcionalidades que puede realizar un emprendedor, principalmente registrar productos y servicios y formar alianzas con otros emprendedores 
 
-- **Gestión de productos:** poder agregar un producto o servicio para poder venderlo
-- **Registro de usuarios:** poder crear y registrar una cuenta con perfil de emprendedor o comprador
-- **Pedidos en carrito de compras:** poder incluir en un carrito de compras una serie de productos o servicios (pero no ambos) de un mismo emprendedor y poder concluir esa compra con su respectivo pago
-- **Categorización de productos:** poder categorizar y etiquetar productos o servicios
+- **Usuarios y perfiles:** 
 
-Relación con los demás módulos: 
+Consiste en todo el proceso de creación y registro de un perfil ya sea de emprendedor o comprador, la autenticación de la cuenta y la autorización de las funcionalidades que tiene permitido realizar
+
+- **Gestión de pedidos y compras:** 
+
+Consiste en todo el proceso de compra de un producto o servicio, entre estos está el proceso de pago, seguimiento del producto, proceso de checkout y finalización de órdenes  
+- **Administración:** 
+
+Consiste en todo lo relacionado a administración, esto incluye la categorización y etiqueta de los diferentes productos y servicios disponibles además del chat entre los usuarios de la página 
+
+#### Descripción de los epics:
+
+- **Gestión de productos:** 
+
+Poder agregar un producto o servicio para poder venderlo.
+
+- **Registro de usuarios:** 
+
+Poder crear y registrar una cuenta con perfil de emprendedor o comprador.
+
+- **Pedidos en carrito de compras:**
+
+Poder incluir en un carrito de compras una serie de productos o servicios (pero no ambos) de un mismo emprendedor y poder concluir esa compra con su respectivo pago.
+
+- **Categorización de productos:** 
+
+Poder categorizar y etiquetar productos o servicios.
+
+#### Relación con los demás módulos: 
 
 - **Relación módulo usuario y perfiles con módulo emprendedores**
-    - se relacionan directamente ya que es necesario que exista un usuario con perfil de emprendedor para poder realizar las funciones exclusivas de un emprendedor
+    - Se relacionan directamente ya que es necesario que exista un usuario con perfil de emprendedor para poder realizar las funciones exclusivas de un emprendedor.
 
 - **Relación módulo usuario y perfiles con módulo gestión de pedidos y compras**
-    - se relacionan directamente ya que es necesario que exista un usuario con perfil de comprador para poder realizar las compras de los productos o servicios de emprendedores
+    - Se relacionan directamente ya que es necesario que exista un usuario con perfil de comprador para poder realizar las compras de los productos o servicios de emprendedores.
 
 - **Relación módulo usuario y perfiles con módulo administración**
-    - se relacionan directamente ya que el módulo de administración cumple con la funcionalidad de realizar reportes a los usuarios además de los métodos de pago de los usuarios y el chat entre usuario emprendedor y usuario comprador
+    - Se relacionan directamente ya que el módulo de administración cumple con la funcionalidad de realizar reportes a los usuarios además de los métodos de pago de los usuarios y el chat entre usuario emprendedor y usuario comprador.
 
 - **Relación módulo emprendedores con módulo gestión de pedidos y compras**
-    - se relacionan ya que los productos o servicios que los emprendedores suban a la página, el proceso de venta y pedidos de estos productos va a ser manejado por el módulo de pedidos y compras 
+    - Se relacionan ya que los productos o servicios que los emprendedores suban a la página, el proceso de venta y pedidos de estos productos va a ser manejado por el módulo de pedidos y compras.
 
 - **Relación módulo gestión de pedidos y compras con módulo administración**
-    - el módulo de administración tiene la funcionalidad de los métodos de pago, por esto tiene relación directa con el modulo de gestion de pedidos y compras ya que es necesario conocer y poder realizar el pago del servicio o producto 
+    - El módulo de administración tiene la funcionalidad de los métodos de pago, por esto tiene relación directa con el modulo de gestion de pedidos y compras ya que es necesario conocer y poder realizar el pago del servicio o producto.
 
 - **Relación módulo emprendedores con módulo administración**
-    - similar al punto anterior existe una relación directa entre estos módulos ya que se debe de tener conocimiento de cuáles son los métodos de pago que si son aceptados para un emprendedor en particular
+    - Similar al punto anterior existe una relación directa entre estos módulos ya que se debe de tener conocimiento de cuáles son los métodos de pago que si son aceptados para un emprendedor en particular.
 
 ### Requerimientos Funcionales<a name="Requirements"></a>
 Crear una plataforma virtual en linea donde emprendedores puedan juntarse con compradores y asi negociar entre ellos:
 
 - Permitir el registro de distintos tipos de usuarios.(Administradores de sitio, compradores y emprendedores)
 
-- Permitir a emprendedores publicar fotos y descripciones de los productos que vende, asi como sus datos de contacto y forma de operar junto con metodos de pago aceptados.
+- Permitir a emprendedores registrar productos y servicios para publicarlos en la plataforma y generar mayor visibilidad.
+
+- Permitir a los emprendedores generar alianzas con otros emprendedores.
 
 - Permitir a emprendedores dar seguimiento a ordenes que hayan sido hechas por sus clientes.
 
@@ -176,6 +199,10 @@ Crear una plataforma virtual en linea donde emprendedores puedan juntarse con co
 - Permitir a compradores finalizar su compra por medio del paso de "checkout", donde puedan ver en una pantalla los contenidos del carrito de compra y el valor individual de cada uno, al igual del valor total de todo lo incluido en el carrito. En el checkout, debe haber un boton para confirmar la compra.
 
 - Permitir a compradores elegir el metodo de pago que desean usar para finalizar su compra.
+
+#### Referencia al proyecto de JIRA
+
+Para poder acceder al [proyecto](http://10.1.4.22:8080/secure/RapidBoard.jspa?projectKey=PIIB12021&useStoredSettings=true&rapidView=43) el usuario necesita de acceso a un VPN para conectarse, así como acceso a un usuario y una contraseña.
 
 ### Product Road Map<a name="ProductRoadMap"></a> (Alejandro)
 
@@ -243,8 +270,7 @@ La definición de listo (DOD) abarca los siguientes aspectos:
         - YAGNI
         - KISS
         - DRY
-      
-    - El código debe ser probado con unit testing.
+
     - El código debe aprobar el linter de [Google.](https://google.github.io/styleguide/csharp-style.html)
 
 - **Repositorio:**
