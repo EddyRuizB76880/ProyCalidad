@@ -9,7 +9,5 @@
 	[ProvinceName] VARCHAR(15) NULL,
 	[CantonName] VARCHAR(15) NULL,
 	[DistrictName] VARCHAR(15) NULL,
-	CONSTRAINT [FK_User_Province] FOREIGN KEY ([ProvinceName]) REFERENCES [Province]([Name]) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT [FK_User_Canton] FOREIGN KEY ([CantonName]) REFERENCES [Canton]([Name]) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT [FK_User_District] FOREIGN KEY ([DistrictName]) REFERENCES [District]([Name]) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT [FK_User_District] FOREIGN KEY ([DistrictName],[ProvinceName],[CantonName]) REFERENCES [District]([Name],[ProvinceName],[CantonName]) ON DELETE CASCADE ON UPDATE CASCADE,
 )

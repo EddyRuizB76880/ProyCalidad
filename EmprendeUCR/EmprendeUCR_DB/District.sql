@@ -1,8 +1,8 @@
 ﻿CREATE TABLE [dbo].[District]
 (
-	[Name] VARCHAR(15) NOT NULL PRIMARY KEY,
+	[Name] VARCHAR(15) NOT NULL,
 	[ProvinceName] VARCHAR (15) NOT NULL, 
 	[CantonName] VARCHAR (15) NOT NULL, 
-	CONSTRAINT [FK_District_Province] FOREIGN KEY ([ProvinceName]) REFERENCES [Province]([Name]) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT [FK_District_Canton] FOREIGN KEY ([CantonName]) REFERENCES [Canton]([Name]) ON DELETE CASCADE ON UPDATE CASCADE
+	PRIMARY KEY ([Name],[ProvinceName],[CantonName]),
+	CONSTRAINT [FK_District_Canton] FOREIGN KEY ([ProvinceName],[CantonName]) REFERENCES [Canton]([ProvinceName],[Name]) ON DELETE CASCADE ON UPDATE CASCADE
 )

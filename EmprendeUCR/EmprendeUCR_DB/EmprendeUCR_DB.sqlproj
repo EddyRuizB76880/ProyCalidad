@@ -67,5 +67,4 @@
     <Build Include="Phones.sql" />
     <Build Include="Credentials.sql" />
   </ItemGroup>
-
 </Project>
