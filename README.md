@@ -256,7 +256,49 @@ Según las tareas prioritarias del backlog, se realizó un product roadmap<a nam
 
 ### Tecnologías utilizadas<a name="Tecnology"></a> (Isaac)
 
-### Repositorio de código & estrategia git<a name="Git"></a> (La gente de git)
+### Repositorio de código & estrategia git<a name="Git"></a>
+
+#### Branches
+
+- *Main*
+
+- *Develop*
+
+- *Team*
+
+- *Feature*
+
+De Feature a Team. PR, code review por una persona del team.
+
+De Team a Develop. PR, review por 2 miembros de otros teams.
+
+De Develop a Main. PR, review por los scrum ambassadors.
+
+**DEVELOP -> MAIN**
+
+- Asegurarse que main esta actualizado. Pull main.
+
+- Asegurarse que develop esta actualizado. Merge main into develop.
+
+- Corregir conflictos si los hay.
+
+- Crear PR de DEVELOP into MAIN. Esperar aprobacion de los otros equipos (scrum ambassadors).
+
+**TEAM -> DEVELOP**
+
+- Hacer CHECKOUT a branch DEVELOP.
+
+- Hacer PULL de cambios a branch DEVELOP y conciliar conflictos.
+
+- Hacer CHECKOUT a branch TEAM.
+
+- Mergear DEVELOP into TEAM y conciliar conflictos.
+
+- Crear PR de TEAM into DEVELOP.
+
+- Esperar aprobacion de 2 miembros de otros equipos.
+
+![Estrategia Git](imgs/Estrategia_git.jpeg)
 
 ### Definición de listo<a name="DOD"></a>
 
@@ -278,10 +320,10 @@ La definición de listo (DOD) abarca los siguientes aspectos:
 
 - **Validación de historias con PO:**
     - Las historias deben de ser aceptadas por el equipo y el PO, antes de llevarse a un sprint.
-    - Las hisotrias de usuarios deben ser INVEST.
+    - Las historias de usuarios deben ser INVEST.
 
 - **Intragrupal:**
-    - Cualquier funcionaldiad que se agregue no debe afectar a los demás equipos.
-    - Comprobar las funcionaldiades complementarias entre los grupos.
+    - Cualquier funcionalidad que se agregue no debe afectar a los demás equipos.
+    - Comprobar las funcionalidades complementarias entre los grupos.
 
 ## Referencias bibliográficas<a name="Ref"></a> (Manfred)
