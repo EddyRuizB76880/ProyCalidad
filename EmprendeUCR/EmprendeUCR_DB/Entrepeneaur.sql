@@ -1,0 +1,6 @@
+﻿CREATE TABLE [dbo].[Entrepeneaur]
+(
+	[UserEmail] VARCHAR(20) NOT NULL PRIMARY KEY,
+	[Presentation] VARCHAR(220) NULL,
+	CONSTRAINT [FK_User_Email] FOREIGN KEY ([UserEmail]) REFERENCES [USER]([Email]) ON DELETE CASCADE ON UPDATE CASCADE
+)
