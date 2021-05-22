@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[Members]
 (
-	[UserEmail] VARCHAR(20) NOT NULL PRIMARY KEY,
+	[UserEmail] VARCHAR(100) NOT NULL PRIMARY KEY,
 	[Score] INT NULL,
 	[Lat] FLOAT NULL,
 	[Long] FLOAT NULL,
