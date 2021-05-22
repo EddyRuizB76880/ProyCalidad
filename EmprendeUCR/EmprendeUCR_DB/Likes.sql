@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[Likes]
 (
 	[ClientEmail]   VARCHAR(20) NOT NULL PRIMARY KEY,
-	[CategoryTitle]  VARCHAR(50) NOT NULL
+	[CategoryTitle]  VARCHAR(30) NOT NULL
 	CONSTRAINT FK_Category FOREIGN KEY (CategoryTitle) REFERENCES Category(Title) ON DELETE CASCADE ON UPDATE CASCADE
 )
