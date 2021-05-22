@@ -1,0 +1,8 @@
+﻿CREATE TABLE [dbo].[Members]
+(
+	[UserEmail] VARCHAR(100) NOT NULL PRIMARY KEY,
+	[Score] INT NULL,
+	[Lat] FLOAT NULL,
+	[Long] FLOAT NULL,
+	CONSTRAINT [FK_User_Email] FOREIGN KEY ([UserEmail]) REFERENCES [User]([Email]) ON DELETE CASCADE ON UPDATE CASCADE
+)
