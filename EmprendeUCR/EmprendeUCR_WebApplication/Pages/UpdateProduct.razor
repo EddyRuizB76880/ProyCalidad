@@ -1,0 +1,57 @@
+﻿@page "/UpdateProduct/{Id}"
+@using EmprendeUCR_WebApplication.Data.Services
+@using EmprendeUCR_WebApplication.Data.Entities
+@inject ProductService  productService 
+@inject NavigationManager NavigationManager
+<h2>Edit Employee</h2>
+<hr />
+<form>
+    <div class="row">
+        <div class="col-md-8">
+            
+            <div class="form-group">
+                <label for="Name" class="control-label">Name</label>
+                <input form="Name" class="form-control" @bind="@obj.Name" />
+            </div>
+           
+            <div class="form-group">
+                <label for="City" class="control-label">City</label>
+                <input form="City" type="number"class="form-control" @bind="@obj.Price" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <input type="button" class="btn btn-primary" @onclick="@Update" value="Update" />
+                <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Cancel" />
+            </div>
+        </div>
+    </div>
+</form>
+
+@code {
+
+    [Parameter]
+
+    public string Id { get; set; }
+
+    Product obj = new Product ();
+    
+
+    protected override async Task OnInitializedAsync()
+    {
+        obj = await Task.Run(() => productService.GetProductAsync(Convert.ToInt32(Id)));   //product va en minuscula
+    }             
+
+    protected async void Update()
+    {
+        await productService.UpdateProductAsync(obj);
+        NavigationManager.NavigateTo("ListProducts");
+    }
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("ListProducts");
+    }
+}

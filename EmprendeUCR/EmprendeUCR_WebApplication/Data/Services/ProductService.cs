@@ -29,11 +29,40 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return true;
         }
 
-        public async Task<List<Product>> GetAllProductsAsync()
+
+
+        public async Task<bool> UpdateProductAsync(Product product) // Update productos
         {
-            return await _context.Product.ToListAsync();
+             _context.Product.Update(product);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
+
+
+        public async Task<bool> DeleteProductAsync(Product product) // Eliminar productos
+        {
+             _context.Product.Remove(product);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+
+       
+        public async Task<Product> GetProductAsync(int Id)
+        {
+            Product product = await _context.Product.FirstOrDefaultAsync(c => c.Code_ID.Equals(Id));
+            return product;
+        }
+
+
+        public async Task<List<Product>> GetAllProductsAsync()
+        {
+            return await _context.Product.ToListAsync();        // Listado 2
+        }
+
+
     }
+
 }
 
