@@ -1,12 +1,11 @@
-﻿@page "/register"
-@using System.Net.Mail
+﻿
 <h3>Register</h3>
 @page "/Register"
 @using EmprendeUCR_WebApplication.Data.Services
 @using EmprendeUCR_WebApplication.Data.Entities
+@using System.Net.Mail
 @inject UserService UserService
 
-<h1>Send Email</h1>
 <form>
     <EditForm Model="@newUsuario" OnValidSubmit="@insertUser">
         <div class="mb-3">
@@ -15,8 +14,6 @@
             <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
         </div>
 
-<button class="btn btn-primary" @onclick="SendMail"> Send Mail</button>
-<br />
         <div class="mb-3">
             <label for="inputPassword5" class="form-label">Password</label>
             <InputText type="text" class="form-control" aria-describedby="passwordHelpBlock" id="inputPassword5" @bind-Value="newUsuario.Name" />
@@ -37,7 +34,6 @@
             </label>
         </div>
 
-<span style="font-weight:bold; font-size=28px; color: aquamarine">@Message</span>
         <div class="form-check">
             <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" @onchange="@(() =>userType(2))">
             <label class="form-check-label" for="flexRadioDefault2">
@@ -47,40 +43,61 @@
         <button type="submit" class="btn btn-primary">Submit</button>
     </EditForm>
 </form>
+<button class="btn btn-primary" @onclick="SendMail"> Send Mail</button>
+<br />
+<span style="font-weight:bold; font-size=28px; color: aquamarine">@Message</span>
 
-@code{
-
-    private string Message { get; set; } = "";
-    private void SendMail()
 
 
 
 
 @code {
     private User newUsuario = new User();
+    private string Message { get; set; } = "";
     private int user = 0;
 
 
     public void userType(int userInput)
     {
-        try
         user = userInput;
     }
 
 
+    private void SendMail()
+    {
+        try
+        {
+            using (MailMessage mail = new MailMessage())
+            {
+                mail.From = new MailAddress("tititorojas2012@gmail.com");
+                mail.To.Add(newUsuario.Email);
+                mail.Subject = "Confirmation email acount";
+                mail.Body = "<h1>Hola xd</h1>";
+                mail.IsBodyHtml = true;
+
+                using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                {
+
+                    smtp.Credentials = new System.Net.NetworkCredential("tititorojas2012@gmail.com", "tititorojas.2005");
+                    smtp.EnableSsl = true;
+                    smtp.Send(mail);
+                    Message = "Mail Send";
+                }
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Message = ex.Message;
+        }
+    }
 
     private void insertUser()
     {
-            using (MailMessage mail = new MailMessage())
 
         Console.WriteLine(user);
         User u = new User
         {
-                mail.From = new MailAddress("tititorojas2012@gmail.com");
-                mail.To.Add("tititorojas2012@gmail.com");
-                mail.Subject = "Confirmation email acount";
-                mail.Body = "<h1>Me cago en QL</h1>";
-                mail.IsBodyHtml= true;
             Email = newUsuario.Email,
             //Name = "diego",
             //FLastName = null,
@@ -89,22 +106,9 @@
         };
 
 
-                using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587)) {
         UserService.AddUser(u);
 
-                    smtp.Credentials = new System.Net.NetworkCredential("tititorojas2012@gmail.com", "tititorojas.2005");
-                    smtp.EnableSsl = true;
-                    smtp.Send(mail);
-                    Message = "Mail Send";
-                }
         newUsuario = new User();
     }
 
 }
-        catch (Exception ex)
-        {
-            Message = ex.Message;
-        }
-    }
-}
-
