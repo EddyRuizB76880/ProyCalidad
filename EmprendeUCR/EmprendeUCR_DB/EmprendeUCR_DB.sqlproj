@@ -70,4 +70,7 @@
   <ItemGroup>
     <RefactorLog Include="EmprendeUCR_DB.refactorlog" />
   </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Script.AddressData.sql" />
+  </ItemGroup>
 </Project>
