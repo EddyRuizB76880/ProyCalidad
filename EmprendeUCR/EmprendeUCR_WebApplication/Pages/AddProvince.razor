@@ -1,0 +1,36 @@
+﻿<h1>AddProvinces</h1>
+@page "/addProvinces"
+@using EmprendeUCR_WebApplication.Data.Services
+@using EmprendeUCR_WebApplication.Data.Entities
+@inject ProvinceService ProvinceService
+
+<form>
+    <EditForm Model="@newProvince" OnValidSubmit="@insertProvince">
+        <div class="mb-3">
+            <h3>New Province</h3>
+            <InputText type="text" @bind-Value="newProvince.Name" />
+
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </EditForm>
+</form>
+
+@code {
+    private Province newProvince = new Province();
+
+    private void insertProvince()
+    {
+
+        Province p = new Province
+        {
+            Name = newProvince.Name,
+        };
+
+
+        ProvinceService.addClient(p);
+
+        newProvince = new Province();
+    }
+
+}
