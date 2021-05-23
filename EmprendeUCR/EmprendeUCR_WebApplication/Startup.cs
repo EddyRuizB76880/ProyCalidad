@@ -1,10 +1,12 @@
 using EmprendeUCR_WebApplication.Data;
 using EmprendeUCR_WebApplication.Data.Contexts;
+using EmprendeUCR_WebApplication.Data.Entities;
 using EmprendeUCR_WebApplication.Data.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,6 +32,9 @@ namespace EmprendeUCR_WebApplication
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<SqlServerDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            //services.AddIdentity<UserService, IdentityRole>().AddEntityFrameworkStores<BookStoreContext>().AddDefaultTokenProviders();
+
+
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddScoped<ProvinceService>();

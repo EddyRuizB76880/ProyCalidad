@@ -1,0 +1,41 @@
+﻿@page "/register"
+@using System.Net.Mail
+
+<h1>Send Email</h1>
+
+<button class="btn btn-primary" @onclick="SendMail"> Send Mail</button>
+<br />
+
+<span style="font-weight:bold; font-size=28px; color: aquamarine">@Message</span>
+
+@code{
+
+    private string Message { get; set; } = "";
+    private void SendMail()
+    {
+        try
+        {
+            using (MailMessage mail = new MailMessage())
+            {
+                mail.From = new MailAddress("tititorojas2012@gmail.com");
+                mail.To.Add("tititorojas2012@gmail.com");
+                mail.Subject = "Confirmation email acount";
+                mail.Body = "<h1>Me cago en QL</h1>";
+                mail.IsBodyHtml= true;
+
+                using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587)) {
+
+                    smtp.Credentials = new System.Net.NetworkCredential("tititorojas2012@gmail.com", "tititorojas.2005");
+                    smtp.EnableSsl = true;
+                    smtp.Send(mail);
+                    Message = "Mail Send";
+                }
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Message = ex.Message;
+        }
+    }
+}
