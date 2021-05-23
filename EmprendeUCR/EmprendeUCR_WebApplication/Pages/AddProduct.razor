@@ -3,6 +3,7 @@
 @using EmprendeUCR_WebApplication.Data.Entities
 @inject ProductService  productService
 @inject NavigationManager NavigationManager
+@inject EntrepreneurService EntrepreneurService
 <h2>Agregar producto</h2>
 <hr />
 <form>
@@ -23,10 +24,26 @@
             </div>
             <div class="form-group">
                 <label for="Entrepreneur_Email" class="control-label">Emprendedor</label>
-                <select form="Entrepreneur_Email" class="form-control" @bind="@obj.Entrepreneur_Email" />
+                <!--
+        <select form="Entrepreneur_Email" class="form-control" @bind="@obj.Entrepreneur_Email" />
+    -->
+
+            <select @bind="obj.Entrepreneur_Email">
+                <option value="" selected disabled>Seleccione un emprendedor</option>
+                @if (entrepreneurs?.Count > 0)
+                {
+                    @foreach (var cnt in entrepreneurs)
+                    {
+                        <option value="@cnt.Email">@cnt.Nombre @cnt.Apellido1</option>
+                    }
+                }
+            </select>
             </div>
 
         </div>
+    </div>
+    <div >
+        <h4 id="error" hidden="@hideError">Informacion incompleta.</h4>
     </div>
     <div class="row">
         <div class="col-md-4">
@@ -39,16 +56,34 @@
 </form>
 
 @code {
+
     Product obj = new Product();
+    IList<Entrepreneur> entrepreneurs;
+    private bool _isLoading = true;
+    bool hideError = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        entrepreneurs = await EntrepreneurService.GetAsync();
+        _isLoading = false;
+    }
     protected async void CreateProduct()
     {
-        await productService.InsertProductAsync(obj);
-        NavigationManager.NavigateTo("ListProducts");
+
+        Console.WriteLine(obj);
+        if (String.IsNullOrEmpty(obj.Entrepreneur_Email))
+        {
+            // product details are incomplete, show error
+            hideError = false;
+        } else {
+            await productService.InsertProductAsync(obj);
+            NavigationManager.NavigateTo("ListProducts");
+        }
+
     }
     void Cancel()
     {
         NavigationManager.NavigateTo("ListProducts");
     }
-
 
 }
