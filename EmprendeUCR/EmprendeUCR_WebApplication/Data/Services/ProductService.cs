@@ -61,7 +61,12 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return await _context.Product.ToListAsync();        // Listado 2
         }
 
+        public async Task<IList<Product>> GetProductsEntrepreneurAsync(string email)
+        {
+            //return await _context.Product.Where(c => c.Entrepreneur_Email.Equals(email)).ToArray();
+            return await _context.Product.Where(c => String.Equals(c.Entrepreneur_Email, email)).ToListAsync();
 
+        }
     }
 
 }

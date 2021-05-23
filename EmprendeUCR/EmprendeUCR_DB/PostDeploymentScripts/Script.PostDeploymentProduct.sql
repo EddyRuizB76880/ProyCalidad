@@ -9,6 +9,16 @@ Post-Deployment Script Template
                SELECT * FROM [$(TableName)]					
 --------------------------------------------------------------------------------------
 */
+MERGE INTO Entrepreneur AS Target 
+USING (VALUES 
+    ('email1@dominio.com', 'Paco', 'Rogriguez', 'apellido2'), 
+    ('aaaaaa@dominio.com', 'Juan', 'Salas', 'apellido2'),
+    ('pikachu@dominio.com', 'Carlas', 'Segura', 'apellido2') 
+    ) 
+AS Source ([Email], [Nombre], [Apellido1], [Apellido2]) ON Target.[Email] = Source.[Email] 
+WHEN NOT MATCHED BY TARGET THEN 
+INSERT ([Email], [Nombre], [Apellido1], [Apellido2]) VALUES ([Email], [Nombre], [Apellido1], [Apellido2]);
+
 
 MERGE INTO Product AS Target 
 USING (VALUES 
@@ -19,13 +29,3 @@ USING (VALUES
 AS Source ([Code_ID], [Name], [Price], [Product_Description], [Entrepreneur_Email]) ON Target.[Code_ID] = Source.[Code_ID] 
 WHEN NOT MATCHED BY TARGET THEN 
 INSERT ([Name], [Price], [Product_Description], [Entrepreneur_Email]) VALUES ([Name], [Price], [Product_Description], [Entrepreneur_Email]);
-
-MERGE INTO Entrepreneur AS Target 
-USING (VALUES 
-    ('email1@dominio.com', 'Paco', 'Rogriguez', 'apellido2'), 
-    ('aaaaaa@dominio.com', 'Juan', 'Salas', 'apellido2'),
-    ('pikachu@dominio.com', 'Carlas', 'Segura', 'apellido2') 
-    ) 
-AS Source ([Email], [Nombre], [Apellido1], [Apellido2]) ON Target.[Email] = Source.[Email] 
-WHEN NOT MATCHED BY TARGET THEN 
-INSERT ([Email], [Nombre], [Apellido1], [Apellido2]) VALUES ([Email], [Nombre], [Apellido1], [Apellido2]);
