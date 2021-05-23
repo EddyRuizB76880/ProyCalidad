@@ -17,12 +17,12 @@ namespace EmprendeUCR_WebApplication.Data.Services
             _context = context;
         }
 
-        public async Task<IList<Entrepreneur>> GetAsync()    // Enlista productos
+        public async Task<IList<Entrepreneur>> GetAsync()    // Enlista Emprendededores
         {
             return await _context.Entrepreneur.ToListAsync();
         }
 
-        public async Task<bool> InsertEntrepreneurAsync(Entrepreneur entrepreneur) // Agrega productos
+        public async Task<bool> InsertEntrepreneurAsync(Entrepreneur entrepreneur) // Agrega emprendedores
         {
             await _context.Entrepreneur.AddAsync(entrepreneur);
             await _context.SaveChangesAsync();
@@ -31,7 +31,7 @@ namespace EmprendeUCR_WebApplication.Data.Services
 
 
 
-        public async Task<bool> UpdateEntrepreneurAsync(Entrepreneur entrepreneur) // Update productos
+        public async Task<bool> UpdateEntrepreneurAsync(Entrepreneur entrepreneur) // Modifica emprendedores
         {
             _context.Entrepreneur.Update(entrepreneur);
             await _context.SaveChangesAsync();
@@ -40,7 +40,7 @@ namespace EmprendeUCR_WebApplication.Data.Services
 
 
 
-        public async Task<bool> DeleteEntrepreneurAsync(Entrepreneur entrepreneur)// Eliminar productos
+        public async Task<bool> DeleteEntrepreneurAsync(Entrepreneur entrepreneur)// Elimina Emprendedores
         {
             _context.Entrepreneur.Remove(entrepreneur);
             await _context.SaveChangesAsync();
@@ -51,14 +51,14 @@ namespace EmprendeUCR_WebApplication.Data.Services
 
         public async Task<Entrepreneur> GetEntrepreneurAsync(string email)
         {
-            Entrepreneur entrepreneur = await _context.Entrepreneur.FirstOrDefaultAsync(c => c.Email.Equals(email));
+            Entrepreneur entrepreneur = await _context.Entrepreneur.FirstOrDefaultAsync(c => c.User_Email.Equals(email));
             return entrepreneur;
         }
 
 
-        public async Task<List<Entrepreneur>> GetAllEntrepreneursAsync()
+        public async Task<List<Entrepreneur>> GetAllEntrepreneursAsync() // Listado 2
         {
-            return await _context.Entrepreneur.ToListAsync();        // Listado 2
+            return await _context.Entrepreneur.ToListAsync();        
         }
     }
 }

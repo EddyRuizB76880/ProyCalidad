@@ -58,11 +58,4 @@
     <Folder Include="Properties" />
     <Folder Include="PostDeploymentScripts" />
   </ItemGroup>
-  <ItemGroup>
-    <Build Include="Product.sql" />
-    <Build Include="Entrepreneur.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <PostDeploy Include="PostDeploymentScripts\Script.PostDeploymentProduct.sql" />
-  </ItemGroup>
 </Project>

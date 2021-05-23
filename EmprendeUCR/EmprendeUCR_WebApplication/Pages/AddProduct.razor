@@ -12,7 +12,7 @@
 
             <div class="form-group">
                 <label for="Name" class="control-label">Nombre</label>
-                <input form="Name" class="form-control" @bind="@obj.Name" />
+                <input form="Name" class="form-control" @bind="@obj.Code_ID" />
             </div>
             <div class="form-group">
                 <label for="Price" class="control-label">Precio (CRC)</label>
@@ -28,16 +28,16 @@
         <select form="Entrepreneur_Email" class="form-control" @bind="@obj.Entrepreneur_Email" />
     -->
 
-            <select @bind="obj.Entrepreneur_Email">
+            <!--<select @bind="obj.User_Email">
                 <option value="" selected disabled>Seleccione un emprendedor</option>
                 @if (entrepreneurs?.Count > 0)
                 {
                     @foreach (var cnt in entrepreneurs)
                     {
-                        <option value="@cnt.Email">@cnt.Nombre @cnt.Apellido1</option>
+                        <option value="@cnt.User_Email">@cnt.User_Email @cnt.Presentation</option>
                     }
                 }
-            </select>
+            </select> -->
             </div>
 
         </div>
@@ -67,9 +67,9 @@
         entrepreneurs = await EntrepreneurService.GetAsync();
         _isLoading = false;
     }
-    protected async void CreateProduct()
+    protected void CreateProduct()
     {
-
+    /*
         Console.WriteLine(obj);
         if (String.IsNullOrEmpty(obj.Entrepreneur_Email))
         {
@@ -79,7 +79,7 @@
             await productService.InsertProductAsync(obj);
             NavigationManager.NavigateTo("ListProducts");
         }
-
+    */
     }
     void Cancel()
     {

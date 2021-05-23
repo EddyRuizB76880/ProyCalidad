@@ -5,6 +5,7 @@
 @inject EntrepreneurService EntrepreneurService
 @inject ProductService ProductService
 
+
 <NavLink class="nav-link" href="AddProduct">
     <span class="oi oi-plus" aria-hidden="true">Add New Product</span>
 
@@ -28,7 +29,7 @@ else
         {
             @foreach (var cnt in entrepreneurs)
             {
-                <option value="@cnt.Email">@cnt.Nombre @cnt.Apellido1</option>
+                <option value="@cnt.User_Email">@cnt.User_Email @cnt.Presentation</option>
             }
         }
     </select>
@@ -48,7 +49,6 @@ else
                 {
                     <tr>
                         <td>@item.Code_ID</td>
-                        <td>@item.Name</td>
                         <td>@item.Price</td>
                         <td>
                             <a class="nav-link" href="UpdateProduct/@item.Code_ID">
@@ -63,7 +63,7 @@ else
 
                 }
             }
-            </tbody>
+        </tbody>
     </table>
 }
 
@@ -81,7 +81,7 @@ else
     public async Task loadProducts(ChangeEventArgs email)
     {
         Console.WriteLine(email);
-        _products = await ProductService.GetProductsEntrepreneurAsync(email.Value.ToString());
+        _products = await ProductService.GetProductsEntrepreneurAsync(1);
         Console.WriteLine(_products);
     }
 
