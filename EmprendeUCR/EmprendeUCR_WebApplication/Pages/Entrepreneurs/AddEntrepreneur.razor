@@ -1,0 +1,53 @@
+﻿@page "/AddEntrepreneur"
+@using EmprendeUCR_WebApplication.Data.Services
+@using EmprendeUCR_WebApplication.Data.Entities
+@inject EntrepreneurService  EntrepreneurService
+@inject NavigationManager NavigationManager
+<h2>Agregar Emprendedor</h2>
+<hr />
+<form>
+    <div class="row">
+        <div class="col-md-8">
+
+            <div class="form-group">
+                <label for="Email" class="control-label">Correo Electronico</label>
+                <input form="Email" class="form-control" @bind="@obj.Email" />
+            </div>
+            <div class="form-group">
+                <label for="Nombre" class="control-label">Nombre</label>
+                <input form="Nombre" class="form-control" @bind="@obj.Nombre" />
+            </div>
+            <div class="form-group">
+                <label for="Apellido1" class="control-label">Primer Apellido</label>
+                <input form="Apellido1" class="form-control" @bind="@obj.Apellido1" />
+            </div>
+            <div class="form-group">
+                <label for="Apellido2" class="control-label">Segundo Apellido</label>
+                <input form="Apellido2" class="form-control" @bind="@obj.Apellido2" />
+            </div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <input type="button" class="btn btn-primary" @onclick="@CreateEntrepreneur" value="Guardar" />
+                <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Cancelar" />
+            </div>
+        </div>
+    </div>
+</form>
+
+@code {
+    Entrepreneur obj = new Entrepreneur();
+    protected async void CreateEntrepreneur()
+    {
+        await EntrepreneurService.InsertEntrepreneurAsync(obj);
+        NavigationManager.NavigateTo("ListEntrepreneurs");
+    }
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("ListEntrepreneurs");
+    }
+
+}

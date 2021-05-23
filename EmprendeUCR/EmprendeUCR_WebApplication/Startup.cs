@@ -33,6 +33,7 @@ namespace EmprendeUCR_WebApplication
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
             services.AddScoped<ProductService>();
+            services.AddScoped<EntrepreneurService>();
 
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SqlConnection")));
 

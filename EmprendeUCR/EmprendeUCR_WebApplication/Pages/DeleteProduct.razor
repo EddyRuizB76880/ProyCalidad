@@ -3,32 +3,39 @@
 @using EmprendeUCR_WebApplication.Data.Entities
 @inject ProductService  productService
 @inject NavigationManager NavigationManager
-<h2>Delete Employee</h2>
+<h2>Borrar producto</h2>
 <hr />
-<h3>Are you sure want to delete this?</h3>
+<h3>¿Está seguro que quiere eliminar este producto de su lista?</h3>
 <form>
     <div class="row">
         <div class=" col-md-8">
             <div class="form-group">
-                <label>Product Id:</label>
+                <label>Id del producto:</label>
                 <label>@obj.Code_ID</label>
             </div>
             <div class="form-group">
-                <label>Product Name:</label>
+                <label>Nombre del producto:</label>
                 <label>@obj.Name</label>
             </div>
             <div class="form-group">
-                <label>Product Price:</label>
+                <label>Precio (CRC):</label>
                 <label>@obj.Price</label>
             </div>
-
+            <div class="form-group">
+                <label>Descripción del producto:</label>
+                <label>@obj.Product_Description</label>
+            </div>
+            <div class="form-group">
+                <label>Email asociado:</label>
+                <label>@obj.Entrepreneur_Email</label>
+            </div>
         </div>
     </div>
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">
-                <input type="button" class="btn btn-danger" @onclick="@Delete" value="Delete" />
-                <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Cancel" />
+                <input type="button" class="btn btn-danger" @onclick="@Delete" value="Borrar" />
+                <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Cancelar" />
             </div>
         </div>
     </div>

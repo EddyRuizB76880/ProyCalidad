@@ -12,11 +12,20 @@ Post-Deployment Script Template
 
 MERGE INTO Product AS Target 
 USING (VALUES 
-    (1, 'Empanada', 500), 
-    (2, 'Coca', 1000),
-    (3, 'Confite', 50) 
+    (1, 'Empanada', 500, 'Descripcion 1', 'email1@dominio.com'), 
+    (2, 'Coca', 1000, 'Descripcion 2', 'aaaaaa@dominio.com'),
+    (3, 'Confite', 50, 'Descripcion 3', 'pikachu@dominio.com') 
     ) 
-AS Source ([Code_ID], [Name], [Price]) ON Target.[Code_ID] = Source.[Code_ID] 
+AS Source ([Code_ID], [Name], [Price], [Product_Description], [Entrepreneur_Email]) ON Target.[Code_ID] = Source.[Code_ID] 
 WHEN NOT MATCHED BY TARGET THEN 
-INSERT ([Name], [Price]) VALUES ([Name], [Price]);
+INSERT ([Name], [Price], [Product_Description], [Entrepreneur_Email]) VALUES ([Name], [Price], [Product_Description], [Entrepreneur_Email]);
 
+MERGE INTO Entrepreneur AS Target 
+USING (VALUES 
+    ('email1@dominio.com', 'Paco', 'Rogriguez', 'apellido2'), 
+    ('aaaaaa@dominio.com', 'Juan', 'Salas', 'apellido2'),
+    ('pikachu@dominio.com', 'Carlas', 'Segura', 'apellido2') 
+    ) 
+AS Source ([Email], [Nombre], [Apellido1], [Apellido2]) ON Target.[Email] = Source.[Email] 
+WHEN NOT MATCHED BY TARGET THEN 
+INSERT ([Email], [Nombre], [Apellido1], [Apellido2]) VALUES ([Email], [Nombre], [Apellido1], [Apellido2]);

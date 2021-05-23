@@ -3,28 +3,27 @@
 @using EmprendeUCR_WebApplication.Data.Entities
 @inject ProductService  productService 
 @inject NavigationManager NavigationManager
-<h2>Edit Employee</h2>
+<h2>Editar producto</h2>
 <hr />
 <form>
     <div class="row">
         <div class="col-md-8">
-            
             <div class="form-group">
-                <label for="Name" class="control-label">Name</label>
-                <input form="Name" class="form-control" @bind="@obj.Name" />
+                <label for="Precio (CRC)" class="control-label">Precio (CRC)</label>
+                <input form="Precio (CRC)" type="number" class="form-control" @bind="@obj.Price" />
             </div>
-           
             <div class="form-group">
-                <label for="City" class="control-label">City</label>
-                <input form="City" type="number"class="form-control" @bind="@obj.Price" />
+                <label for="Descripción" class="control-label">Descripción</label>
+                <input form="Descripción" class="form-control" @bind="@obj.Product_Description" />
             </div>
+
         </div>
     </div>
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">
-                <input type="button" class="btn btn-primary" @onclick="@Update" value="Update" />
-                <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Cancel" />
+                <input type="button" class="btn btn-primary" @onclick="@Update" value="Modificar" />
+                <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Cancelar" />
             </div>
         </div>
     </div>

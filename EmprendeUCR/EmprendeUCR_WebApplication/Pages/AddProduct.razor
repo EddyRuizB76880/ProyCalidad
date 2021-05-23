@@ -3,26 +3,36 @@
 @using EmprendeUCR_WebApplication.Data.Entities
 @inject ProductService  productService
 @inject NavigationManager NavigationManager
-<h2>Add Product</h2>
+<h2>Agregar producto</h2>
 <hr />
 <form>
     <div class="row">
         <div class="col-md-8">
+
             <div class="form-group">
-                <label for="Name" class="control-label">Name</label>
+                <label for="Name" class="control-label">Nombre</label>
                 <input form="Name" class="form-control" @bind="@obj.Name" />
             </div>
             <div class="form-group">
-                <label for="Price" class="control-label">Price</label>
+                <label for="Price" class="control-label">Precio (CRC)</label>
                 <input form="Price" type="number" class="form-control" @bind="@obj.Price" />
             </div>
+            <div class="form-group">
+                <label for="Product_Description" class="control-label">Descripción</label>
+                <input form="Product_Description" class="form-control" @bind="@obj.Product_Description" />
+            </div>
+            <div class="form-group">
+                <label for="Entrepreneur_Email" class="control-label">Emprendedor</label>
+                <select form="Entrepreneur_Email" class="form-control" @bind="@obj.Entrepreneur_Email" />
+            </div>
+
         </div>
     </div>
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">
-                <input type="button" class="btn btn-primary" @onclick="@CreateProduct" value="Save" />
-                <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Cancel" />
+                <input type="button" class="btn btn-primary" @onclick="@CreateProduct" value="Guardar" />
+                <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Cancelar" />
             </div>
         </div>
     </div>
@@ -39,4 +49,6 @@
     {
         NavigationManager.NavigateTo("ListProducts");
     }
+
+
 }
