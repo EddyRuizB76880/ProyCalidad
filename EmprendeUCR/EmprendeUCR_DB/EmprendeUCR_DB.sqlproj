@@ -66,6 +66,7 @@
     <Build Include="Likes.sql" />
     <Build Include="Phones.sql" />
     <Build Include="Credentials.sql" />
+    <Build Include="Client.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="EmprendeUCR_DB.refactorlog" />
