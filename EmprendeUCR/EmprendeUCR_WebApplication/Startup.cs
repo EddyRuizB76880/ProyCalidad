@@ -32,7 +32,8 @@ namespace EmprendeUCR_WebApplication
             services.AddDbContext<SqlServerDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddScoped<ProvinceService>(); 
+            services.AddScoped<ProvinceService>();
+            services.AddScoped<UserService>();
 
         }
 
