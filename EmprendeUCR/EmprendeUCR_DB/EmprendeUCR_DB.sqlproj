@@ -61,7 +61,7 @@
     <Build Include="District.sql" />
     <Build Include="Admin.sql" />
     <Build Include="Members.sql" />
-    <Build Include="Entrepeneaur.sql" />
+    <Build Include="Entrepreneur.sql" />
     <Build Include="User.sql" />
     <Build Include="Likes.sql" />
     <Build Include="Phones.sql" />
