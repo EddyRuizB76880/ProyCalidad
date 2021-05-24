@@ -254,7 +254,28 @@ Durante el sprint 0, se asignaron módulos a cada equipo de desarrolladores y a 
 Según las tareas prioritarias del backlog, se realizó un product roadmap<a name="ProductRoadMap"></a> en el cuál seleccionaron historias de usuario.
 
 
-### Tecnologías utilizadas<a name="Tecnology"></a> (Isaac)
+### Tecnologías utilizadas<a name="Tecnology"></a>
+
+#### Tecnologías de desarrollo
+
+- **Blazor (Versión 5.0):** Framework enfocado en el desarrollo de aplicaciones web incorporado en .NET. Utiliza los lenguajes C# y HTML. 
+- **ASP.NET (Versión 5.0):** Framework para el desarrollo de aplicaciones web.
+
+#### Bases de datos
+
+- **SQL Server 2016:** Lenguaje de bases de datos relacionales.
+- **Microsoft SQL Server Management Studio 18:** Administrador de componentes dentro de SQL Server.
+
+#### Administración
+
+- **Bitbucket:** Sistema de alojamiento de proyectos que utiliza el sistema de control de versiones git.
+- **Git:** Software de control de versiones (v2.31.1).
+- **Jira:** Herramienta de administración de proyectos (v7.13.0).
+
+#### Ambiente de desarrollo
+
+- **Visual Studio:** Entorno de desarrollo integrado (IDE) (v16.9).
+
 
 ### Repositorio de código & estrategia git<a name="Git"></a>
 
