@@ -27,7 +27,7 @@ namespace EmprendeUCR_WebApplication.Pages.Provinces
         }
 
         public Province province { get; set; }
-        public void addClient(Province province)
+        public void addProvince(Province province)
         {
             _context.Province.Add(province);
             _context.SaveChanges();
