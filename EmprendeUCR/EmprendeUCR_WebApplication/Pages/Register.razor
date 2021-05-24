@@ -1,5 +1,4 @@
-﻿
-<h3>Register</h3>
+﻿<h3>Register</h3>
 @page "/Register"
 @using EmprendeUCR_WebApplication.Data.Services
 @using EmprendeUCR_WebApplication.Data.Entities
@@ -7,40 +6,40 @@
 @inject UserService UserService
 
 <form>
-    <EditForm Model="@newUsuario" OnValidSubmit="@insertUser">
-        <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Email address</label>
-            <InputText type="email" class="form-control" aria-describedby="emailHelp" id="exampleInputEmail1" @bind-Value="newUsuario.Email" />
-            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-        </div>
+    <EditForm Model="@newUsuario">
+    <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Email address</label>
+        <InputText type="email" class="form-control" aria-describedby="emailHelp" id="exampleInputEmail1" @bind-Value="newUsuario.Email" />
+        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+    </div>
 
-        <div class="mb-3">
-            <label for="inputPassword5" class="form-label">Password</label>
-            <InputText type="text" class="form-control" aria-describedby="passwordHelpBlock" id="inputPassword5" @bind-Value="newUsuario.Name" />
-            <div id="passwordHelpBlock" class="form-text">
-                Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.
-            </div>
+    <div class="mb-3">
+        <label for="inputPassword5" class="form-label">Password</label>
+        <InputText type="text" class="form-control" aria-describedby="passwordHelpBlock" id="inputPassword5" @bind-Value="newUsuario.Name" />
+        <div id="passwordHelpBlock" class="form-text">
+            Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.
         </div>
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" @onchange="@(() =>userType(3))">
-            <label class="form-check-label" for="flexRadioDefault2">
-                Cliente
-            </label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" @onchange="@(() =>userType(1))">
-            <label class="form-check-label" for="flexRadioDefault2">
-                Emprendedor
-            </label>
-        </div>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" @onchange="@(() =>userType(1))">
+        <label class="form-check-label" for="flexRadioDefault2">
+            Cliente
+        </label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" @onchange="@(() =>userType(2))">
+        <label class="form-check-label" for="flexRadioDefault2">
+            Emprendedor
+        </label>
+    </div>
 
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" @onchange="@(() =>userType(2))">
-            <label class="form-check-label" for="flexRadioDefault2">
-                Administrador
-            </label>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" @onchange="@(() =>userType(3))">
+        <label class="form-check-label" for="flexRadioDefault2">
+            Administrador
+        </label>
+    </div>
+    <!--<button type="submit" class="btn btn-primary">Submit</button>-->
     </EditForm>
 </form>
 <button class="btn btn-primary" @onclick="SendMail"> Send Mail</button>
@@ -69,16 +68,26 @@
         {
             using (MailMessage mail = new MailMessage())
             {
-                mail.From = new MailAddress("tititorojas2012@gmail.com");
+                mail.From = new MailAddress("barquero954@gmail.com");
                 mail.To.Add(newUsuario.Email);
-                mail.Subject = "Confirmation email acount";
-                mail.Body = "<h1>Hola xd</h1>";
-                mail.IsBodyHtml = true;
+                if (user == 1){
+                    mail.Subject = "New client";
+                    mail.Body = "Welcome new client";
+                }else if(user == 2) {
+                    mail.Subject = "New Entreprenaur";
+                    mail.Body = "Welcome new entreprenaur";
 
+                }
+                else if (user == 3){
+                    mail.Subject = "New admin";
+                    mail.Body = "Welcome new admin";
+
+                }
+                mail.IsBodyHtml = true;
                 using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
                 {
 
-                    smtp.Credentials = new System.Net.NetworkCredential("tititorojas2012@gmail.com", "tititorojas.2005");
+                    smtp.Credentials = new System.Net.NetworkCredential("barquero954@gmail.com", "nanum901911");
                     smtp.EnableSsl = true;
                     smtp.Send(mail);
                     Message = "Mail Send";
@@ -92,23 +101,33 @@
         }
     }
 
-    private void insertUser()
-    {
-
-        Console.WriteLine(user);
-        User u = new User
-        {
-            Email = newUsuario.Email,
-            //Name = "diego",
-            //FLastName = null,
-            //SLastName = null,
-
-        };
-
-
-        UserService.AddUser(u);
-
-        newUsuario = new User();
-    }
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
