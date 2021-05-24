@@ -41,53 +41,34 @@
             </div>
         </div>
 
-        @*<div class="input-group mb-3">
-            <InputFile type="image" @bind-Value="newUser.Photo" class="form-control" id="inputPhoto" style="width: 20%" />
-            <label for="inputPhoto" class="input-group-text">Upload</label>
-        </div>
-
-        <div class="mb-3">
-            <label for="inputProvince" class="form-label">Province</label>
-            <InputText type="text" @bind-value="newUser.Province_Name" class="form-control" id="inputProvince"/>
-        </div>
-        <div class="mb-3">
-            <label for="inputCanton" class="form-label">Canton</label>
-            <InputText type="text" @bind-value="newUser.Canton_Name" class="form-control" id="inputCanton"/>
-        </div>
-        <div class="mb-3">
-            <label for="inputDistrict" class="form-label">District</label>
-            <InputText type="text" @bind-value="newUser.District_Name" class="form-control" id="inputDistrict"/>
-        </div>*@
-
         <button type="submit" class="btn btn-primary">Submit</button>
     </EditForm>
 </form>
 
 @code {
-    private User newUser = new User();
-    private string password;
+        private User newUser = new User();
+        private string password;
 
-    private string txtType = "password";
-    private string text = "Mostrar";
+        private string txtType = "password";
+        private string text = "Mostrar";
 
-    private void insertUser()
-    {
-        User u = new User
+        private void insertUser()
         {
-            Email = newUser.Email,
-            Name = newUser.Name,
-            F_Last_Name = newUser.F_Last_Name,
-            S_Last_Name = newUser.S_Last_Name,
-            Photo = null,
-            Birth_Date = newUser.Birth_Date,
-            Province_Name = null,
-            Canton_Name = null,
-            District_Name = null,
+            User u = new User
+            {
+                Email = newUser.Email,
+                Name = newUser.Name,
+                F_Last_Name = newUser.F_Last_Name,
+                S_Last_Name = newUser.S_Last_Name,
+                Birth_Date = newUser.Birth_Date,
+                Province_Name = null,
+                Canton_Name = null,
+                District_Name = null,
+                Email_Confirmation = false,
         };
 
-        UserService.addUser(u);
+        UserService.AddUser(u);
 
-        //Console.WriteLine("/n/n/n/n/n/n/n/n/n/n" + DateTime.Now.ToString() + "/n/n/n/n/n/n/n/n/n/n/n/n/n/n/n");
         //newUser = new User();
     }
 
