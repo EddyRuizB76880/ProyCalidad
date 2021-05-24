@@ -10,6 +10,8 @@ namespace EmprendeUCR_WebApplication.Data.Contexts
         {
         }
             public DbSet<Province> Province { get; set; }
+            public DbSet<District> District { get; set; }
+            public DbSet<Canton> Canton { get; set; } 
             public DbSet<User> User { get; set; }
     }
 }

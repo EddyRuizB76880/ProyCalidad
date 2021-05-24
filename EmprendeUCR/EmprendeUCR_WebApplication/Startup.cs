@@ -33,6 +33,8 @@ namespace EmprendeUCR_WebApplication
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddScoped<ProvinceService>();
+            services.AddScoped<CantonService>();
+            services.AddScoped<DistrictService>();
             services.AddScoped<UserService>();
 
         }
