@@ -119,7 +119,7 @@ Los módulos del sistema web tiene relación con otros sistemas que ya existan.
 ejemplo: la parte de los pagos, preguntar a la po si visualiza otros sistemas que quiera integrarle (facturas)
 
 
-### Descripción de los módulos y epics<a name="Epic"></a> (Manfred)
+### Descripción de los módulos y epics<a name="Epic"></a>
 
 Los módulos que fueron asignados a cada equipo son los siguientes: 
 
@@ -256,7 +256,28 @@ Durante el sprint 0, se asignaron módulos a cada equipo de desarrolladores y a 
 Según las tareas prioritarias del backlog, se realizó un product roadmap<a name="ProductRoadMap"></a> en el cuál seleccionaron historias de usuario.
 
 
-### Tecnologías utilizadas<a name="Tecnology"></a> (Isaac)
+### Tecnologías utilizadas<a name="Tecnology"></a>
+
+#### Tecnologías de desarrollo
+
+- **Blazor (Versión 5.0):** Framework enfocado en el desarrollo de aplicaciones web incorporado en .NET. Utiliza los lenguajes C# y HTML. 
+- **ASP.NET (Versión 5.0):** Framework para el desarrollo de aplicaciones web.
+
+#### Bases de datos
+
+- **SQL Server 2016:** Lenguaje de bases de datos relacionales.
+- **Microsoft SQL Server Management Studio 18:** Administrador de componentes dentro de SQL Server.
+
+#### Administración
+
+- **Bitbucket:** Sistema de alojamiento de proyectos que utiliza el sistema de control de versiones git.
+- **Git:** Software de control de versiones (v2.31.1).
+- **Jira:** Herramienta de administración de proyectos (v7.13.0).
+
+#### Ambiente de desarrollo
+
+- **Visual Studio:** Entorno de desarrollo integrado (IDE) (v16.9).
+
 
 ### Repositorio de código & estrategia git<a name="Git"></a>
 
@@ -328,4 +349,31 @@ La definición de listo (DOD) abarca los siguientes aspectos:
     - Cualquier funcionalidad que se agregue no debe afectar a los demás equipos.
     - Comprobar las funcionalidades complementarias entre los grupos.
 
-## Referencias bibliográficas<a name="Ref"></a> (Manfred)
+## Referencias bibliográficas<a name="Ref"></a> 
+
+Atlassian. (n.d.-a). *Agile roadmaps: build, share, use, evolve*. <https://www.atlassian.com/agile/product-management/roadmaps>
+
+Atlassian. (n.d.-b). *Epics*. <https://www.atlassian.com/agile/project-management/epics>
+
+Atlassian. (n.d.-c). *Git Feature Branch Workflow | Atlassian Git Tutorial*. <https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow>
+
+Atlassian. (n.d.-d). *Gitflow Workflow | Atlassian Git Tutorial*. <https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow>
+
+Atlassian. (n.d.-e). *Product Backlog Grooming*. <https://www.atlassian.com/agile/scrum/backlogs>
+
+Atlassian. (n.d.-f). *Pull Requests | Atlassian Git Tutorial*. <https://www.atlassian.com/git/tutorials/making-a-pull-request>
+
+Atlassian. (n.d.-g). *User Stories | Examples and Template*. <https://www.atlassian.com/agile/project-management/user-stories>
+
+Atlassian. (n.d.-h). *What is Scrum?* <https://www.atlassian.com/agile/scrum>
+
+Atlassian. (n.d.-i). *What is version control | Atlassian Git Tutorial*. <https://www.atlassian.com/git/tutorials/what-is-version-control>
+
+Cohn, M. (2005). *Agile Estimating and Planning* (1st ed.). Pearson.
+
+Microsoft. (n.d.-a). *Microsoft SQL documentation* - SQL Server. Microsoft Docs. <https://docs.microsoft.com/en-us/sql/?view=sql-server-ver15>
+
+Microsoft. (n.d.-b). *Visual Studio documentation*. Microsoft Docs. <https://docs.microsoft.com/en-us/visualstudio/windows/?view=vs-2019&preserve-view=true>
+
+*Scrum Training Series: Free Scrum Master Training from Seattle*. (n.d.). Scrum Training Series. <https://scrumtrainingseries.com/>
+
