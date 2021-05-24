@@ -22,7 +22,7 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return await _context.User.ToListAsync();
         }
 
-        public void addUser(User user)
+        public void AddUser(User user)
         {
             _context.User.Add(user);
             _context.SaveChanges();
