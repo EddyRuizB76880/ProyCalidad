@@ -6,6 +6,7 @@
 @inject ProvinceService ProvinceService
 @inject CantonService CantonService
 @inject DistrictService DistrictService
+@inject CredentialsService CredentialsService
 
 <form>
     <EditForm Model="@newUser" OnValidSubmit="@insertUser">
@@ -19,7 +20,7 @@
         </div>
         <div class="mb-3">
             <label for="inputName" class="form-label" style="font-size: 25px">Name</label>
-            <InputText type="text" @bind-Value="newUser.Name" class="form-control" id="inputName" style="width: 20%" maxlength="15" />
+            <InputText type="text" @bind-Value="newUser.Name" class="form-control" id="inputName" style="width: 20%" maxlength="15" @onreset="saveValue"/>
         </div>
         <div class="mb-3">
             <label for="inputFLastName" class="form-label" style="font-size: 25px">First Last Name</label>
@@ -70,28 +71,57 @@ else
 }
 
 @code {
-        private User newUser = new User();
-        private string password;
+    private User newUser = new User();
+    private Credentials newCredentials = new Credentials();
+    private string password;
 
-        private string txtType = "password";
-        private string text = "Mostrar";
+    private string txtType = "password";
+    private string text = "Mostrar";
 
-        private void insertUser()
+    private string lastName = "";
+
+    private void insertUser()
+    {
+        User u = new User
         {
-            User u = new User
-            {
-                Email = newUser.Email,
-                Name = newUser.Name,
-                F_Last_Name = newUser.F_Last_Name,
-                S_Last_Name = newUser.S_Last_Name,
-                Birth_Date = newUser.Birth_Date,
-                Province_Name = null,
-                Canton_Name = null,
-                District_Name = null,
-                Email_Confirmation = false,
+            Email = newUser.Email,
+            Name = newUser.Name,
+            F_Last_Name = newUser.F_Last_Name,
+            S_Last_Name = newUser.S_Last_Name,
+            Birth_Date = newUser.Birth_Date,
+            Province_Name = null,
+            Canton_Name = null,
+            District_Name = null,
+            Email_Confirmation = false,
         };
 
+        Credentials c = new Credentials
+        {
+            User_Email = newUser.Email,
+            Password = password,
+        };
+
+        Console.WriteLine(" ");
+        Console.WriteLine(" ");
+        Console.WriteLine(" ");
+        Console.WriteLine(" ");
+        Console.WriteLine(" ");
+        Console.WriteLine(" ");
+        Console.WriteLine(" ");
+        Console.WriteLine(" ");
+        Console.WriteLine("kk");
+        Console.WriteLine(" ");
+        Console.WriteLine(" ");
+        Console.WriteLine(" ");
+        Console.WriteLine(" ");
+        Console.WriteLine(" ");
+        Console.WriteLine(" ");
+        Console.WriteLine(" ");
+        Console.WriteLine(" ");
+
+
         UserService.AddUser(u);
+        CredentialsService.AddCredentials(c);
 
         //newUser = new User();
     }
@@ -110,11 +140,16 @@ else
         }
     }
 
+    public void saveValue()
+    {
+        lastName = newUser.Name;
+        Console.WriteLine(Environment.NewLine + Environment.NewLine + Environment.NewLine + Environment.NewLine + Environment.NewLine + lastName + Environment.NewLine + Environment.NewLine + Environment.NewLine + Environment.NewLine + Environment.NewLine + Environment.NewLine);
+    }
 
     //Address Information
     private bool _isLoading = true;
     private string userProvince = "";
-    private string userCanton = ""; 
+    private string userCanton = "";
     private IList<Province> _province;
     private IList<Canton> _canton;
     private IList<District> _district;
@@ -125,6 +160,9 @@ else
         _canton = await CantonService.GetAsync();
         //_province = await ProvinceService.GetAsync();
         _isLoading = false;
+
+
+        newUser.Name = lastName;
     }
 
     public void getCanton()

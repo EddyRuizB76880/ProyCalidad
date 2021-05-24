@@ -13,5 +13,6 @@ namespace EmprendeUCR_WebApplication.Data.Contexts
             public DbSet<District> District { get; set; }
             public DbSet<Canton> Canton { get; set; } 
             public DbSet<User> User { get; set; }
+            public DbSet<Credentials> Credentials { get; set; }
     }
 }
