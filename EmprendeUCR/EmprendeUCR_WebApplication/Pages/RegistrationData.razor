@@ -3,6 +3,9 @@
 @using EmprendeUCR_WebApplication.Data.Services
 @using EmprendeUCR_WebApplication.Data.Entities
 @inject UserService UserService
+@inject ProvinceService ProvinceService
+@inject CantonService CantonService
+@inject DistrictService DistrictService
 
 <form>
     <EditForm Model="@newUser" OnValidSubmit="@insertUser">
@@ -45,6 +48,27 @@
     </EditForm>
 </form>
 
+@if (_isLoading)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <select name="Province" onchange="getCanton()" required>
+        @foreach (var province in _province)
+        {
+            <option value="userProvince">@province.Name</option>
+        }
+    </select>
+
+    <select name="Canton" required>
+        @foreach (var canton in _canton)
+        {
+            <option value="userCanton">@canton.Name</option>
+        }
+    </select>
+}
+
 @code {
         private User newUser = new User();
         private string password;
@@ -84,5 +108,27 @@
             txtType = "password";
             text = "Mostrar";
         }
+    }
+
+
+    //Address Information
+    private bool _isLoading = true;
+    private string userProvince = "";
+    private string userCanton = ""; 
+    private IList<Province> _province;
+    private IList<Canton> _canton;
+    private IList<District> _district;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _province = await ProvinceService.GetAsync();
+        _canton = await CantonService.GetAsync();
+        //_province = await ProvinceService.GetAsync();
+        _isLoading = false;
+    }
+
+    public void getCanton()
+    {
+        _canton = CantonService.GetList(userProvince);
     }
 }
