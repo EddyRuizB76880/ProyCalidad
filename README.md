@@ -119,7 +119,7 @@ Los módulos del sistema web tiene relación con otros sistemas que ya existan.
 ejemplo: la parte de los pagos, preguntar a la po si visualiza otros sistemas que quiera integrarle (facturas)
 
 
-### Descripción de los módulos y epics<a name="Epic"></a> (Manfred)
+### Descripción de los módulos y epics<a name="Epic"></a>
 
 Los módulos que fueron asignados a cada equipo son los siguientes: 
 
@@ -347,4 +347,41 @@ La definición de listo (DOD) abarca los siguientes aspectos:
     - Cualquier funcionalidad que se agregue no debe afectar a los demás equipos.
     - Comprobar las funcionalidades complementarias entre los grupos.
 
-## Referencias bibliográficas<a name="Ref"></a> (Manfred)
+## Referencias bibliográficas<a name="Ref"></a> 
+
+Atlassian. (n.d.-a). *Agile roadmaps: build, share, use, evolve*. 
+&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;<https://www.atlassian.com/agile/product-management/roadmaps>
+
+Atlassian. (n.d.-b). *Epics*. <https://www.atlassian.com/agile/project-management/epics>
+
+Atlassian. (n.d.-c). *Git Feature Branch Workflow | Atlassian Git Tutorial*. 
+&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;<https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow>
+
+Atlassian. (n.d.-d). *Gitflow Workflow | Atlassian Git Tutorial*. 
+&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;<https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow>
+
+Atlassian. (n.d.-e). *Product Backlog Grooming*. 
+&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;<https://www.atlassian.com/agile/scrum/backlogs>
+
+Atlassian. (n.d.-f). *Pull Requests | Atlassian Git Tutorial*. 
+&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;<https://www.atlassian.com/git/tutorials/making-a-pull-request>
+
+Atlassian. (n.d.-g). *User Stories | Examples and Template*. 
+&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;<https://www.atlassian.com/agile/project-management/user-stories>
+
+Atlassian. (n.d.-h). *What is Scrum?* <https://www.atlassian.com/agile/scrum>
+
+Atlassian. (n.d.-i). *What is version control | Atlassian Git Tutorial*. 
+&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;<https://www.atlassian.com/git/tutorials/what-is-version-control>
+
+Cohn, M. (2005). *Agile Estimating and Planning* (1st ed.). Pearson.
+
+Microsoft. (n.d.-a). *Microsoft SQL documentation* - SQL Server. Microsoft Docs. 
+&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;<https://docs.microsoft.com/en-us/sql/?view=sql-server-ver15>
+
+Microsoft. (n.d.-b). *Visual Studio documentation*. Microsoft Docs. 
+&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;<https://docs.microsoft.com/en-us/visualstudio/windows/?view=vs-2019&preserve-view=true>
+
+*Scrum Training Series: Free Scrum Master Training from Seattle*. (n.d.). Scrum Training 
+&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;Series. <https://scrumtrainingseries.com/>
+
