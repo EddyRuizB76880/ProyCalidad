@@ -28,6 +28,7 @@
     - [Product Road Map](#ProductRoadMap)
     - [Requerimientos no funcionales](#NonFuncRequirements)
 5. [Artefactos de bases de datos](#ArtefactosBases)
+    - [Requerimiento de datos](#REQDATOS)
     - [Esquema conceptual](#ERR)
     - [Esquema lógico](#Mapeo)
 6. [Decisiones técnicas](#Decitions)
@@ -184,21 +185,23 @@ Poder categorizar y etiquetar productos o servicios.
     - Similar al punto anterior existe una relación directa entre estos módulos ya que se debe de tener conocimiento de cuáles son los métodos de pago que si son aceptados para un emprendedor en particular.
 
 ### Requerimientos Funcionales<a name="Requirements"></a>
-Crear una plataforma virtual en linea donde emprendedores puedan juntarse con compradores y asi negociar entre ellos:
 
-- Permitir el registro de distintos tipos de usuarios.(Administradores de sitio, compradores y emprendedores)
+El proyecto es organizado usando una herramienta en línea llamada JIRA Software. En JIRA, seguimos la siguiente estructura:
 
-- Permitir a emprendedores registrar productos y servicios para publicarlos en la plataforma y generar mayor visibilidad.
+- Cada característica que el dueño del producto requiera en nuestra solución es llamada **historia de usuario**, la cual es generada por los desarrolladores a partir de las indicaciones del dueño del producto. Si cumplir una historia implica varias actividades para los desarrolladores, entonces la historia es conocida como **epic**. Los epics están compuestos en sí mismos por historias de usuario. En JIRA, otorgamos a cada epic su propio código identificador, y a cada historia la vinculamos con el epic del que se origina.
 
-- Permitir a los emprendedores generar alianzas con otros emprendedores.
+- Los desarrolladores estimamos cuánto esfuerzo y tiempo puede tomarnos cumplir con una historia por medio de la asignación de puntos de historia, la cual definimos por medio de sesiones de votación en las que debemos llegar a un consenso.
 
-- Permitir a emprendedores dar seguimiento a ordenes que hayan sido hechas por sus clientes.
+- Para saber cuándo una historia de usuario está cumplida, declaramos definiciones de listo (**Definitions of Done**) y **Criterios de aceptación**:
+    
+    1. Los *Criterios de aceptación* son las características que el cliente requiere que se incluyan en la solución cuando la historia a la que pertenece se considere terminada. Estos criterios son definidos por el dueño del producto y suele ser definido un sólo grupo de criterios para cada historia por aparte.
 
-- Permitir a compradores llenar un carrito de compras con productos o servicios (pero no ambos) de un mismo emprendedor.
+    2. Las *Definitions of done* son las características técnicas definidas por los desarrolladores de lo que debe cumplirse en la implementación de la historia para darla por hecha. Las definitions of done son definidas para ser cumplidas en todas las historias.
 
-- Permitir a compradores finalizar su compra por medio del paso de "checkout", donde puedan ver en una pantalla los contenidos del carrito de compra y el valor individual de cada uno, al igual del valor total de todo lo incluido en el carrito. En el checkout, debe haber un boton para confirmar la compra.
+- Para priorizar las historias, contamos con la pila del producto, también conocida como **Backlog**. El Backlog consiste en una estructura en la cual hay historias que se apilan sobre otras en orden de prioridad. Cuanto más cerca esté una historia del tope, más prioridad habrá que darle. Por ejemplo, la historia que se encuentre en el tope de la pila es la más apremiante, es decir, aquella que los desarrolladores deberían implementar primero. Cuando tal historia es dada por hecha, es retirada del backlog y la posición del tope es ocupada por la historia que es encontraba justo debajo de la misma en el backlog. Es importante destacar que el dueño del producto es el único con autoridad para ajustar las prioridades de cada historia que esté incluida en el backlog.
 
-- Permitir a compradores elegir el metodo de pago que desean usar para finalizar su compra.
+- Para mejorar la organización entre equipos, JIRA nos permite crear **Boards**. Hay un total de 4 boards para el proyecto, uno para cada equipo. Cada board muestra las historias aportadas por los miembros de un equipo en específico.  
+
 
 #### Referencia al proyecto de JIRA
 
@@ -263,6 +266,11 @@ Para poder acceder al [proyecto](http://10.1.4.22:8080/secure/RapidBoard.jspa?pr
 
 
 ## Artefactos de bases de datos<a name="ArtefactosBases"></a>
+
+### Requerimiento de Datos<a name="REQDATOS"></a>
+<p>Un Producto_Servicio tiene una descripción, ID que lo identifica como único, también debe tener una disponibilidad. Un Producto_Servicio puede ser un Producto ó un Servicio.
+En donde se tiene que un Producto tiene una o más fotos, posee un precio y un nombre.
+Existe un Carrito que es poseído por cada cliente, en donde un carrito es único para cada cliente, este carrito puede tener productos y servicios. Un carrito tiene como atributos derivados un precio total y una cantidad de productos.</p>
 
 ### Esquema conceptual<a name="ERR"></a>
 
