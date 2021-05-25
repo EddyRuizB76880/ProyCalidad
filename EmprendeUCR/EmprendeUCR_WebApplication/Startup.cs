@@ -11,12 +11,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using EmprendeUCR_WebApplication.Data;
 using EmprendeUCR_WebApplication.Data.Context;
-using Microsoft.EntityFrameworkCore;
-using EmprendeUCR_WebApplication.Data.Services;
-
 using EmprendeUCR_WebApplication.Data.Contexts;
-using EmprendeUCR_WebApplication.Data.Services;
 using Microsoft.EntityFrameworkCore;
+using EmprendeUCR_WebApplication.Data.Services;
+using EmprendeUCR_WebApplication.Data.Services.Categories;
+using Syncfusion.Blazor;
 
 namespace EmprendeUCR_WebApplication
 {
@@ -34,10 +33,14 @@ namespace EmprendeUCR_WebApplication
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<SqlServerDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
+            services.AddSyncfusionBlazor();
+            services.AddScoped<CategoryService>();
+            services.AddScoped<AddCategoryService>();
+            services.AddScoped<DeleteCategoryService>();
+            services.AddScoped<EditCategoryService>();
             services.AddScoped<ProductService>();
             services.AddScoped<EntrepreneurService>();
             services.AddScoped<UserService>();
@@ -50,6 +53,7 @@ namespace EmprendeUCR_WebApplication
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NDQ4ODMyQDMxMzkyZTMxMmUzMGo0R1FZZUUxWjE5WEFUd01hWXVlbllPTFllcG50R0UvTEhNbS9ocGVJWlU9"); // TODO: move to another file
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

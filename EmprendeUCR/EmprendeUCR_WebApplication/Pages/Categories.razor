@@ -1,0 +1,155 @@
+@page "/categories"
+@using Syncfusion.Blazor.TreeGrid;
+@using EmprendeUCR_WebApplication.Data.Services.Categories
+@using EmprendeUCR_WebApplication.Data.Services
+@using EmprendeUCR_WebApplication.Data.Entities
+@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.Inputs
+@inject CategoryService CategoryService
+@inject AddCategoryService AddCategories
+@inject DeleteCategoryService DeleteCategories
+@inject EditCategoryService EditCategories
+
+<h2>Categorías</h2>
+
+<SfToolbar ID="ToolBar">
+    <ToolbarItems>
+        <ToolbarItem OnClick="@TreeGrid.ExpandAll" Text="Expandir" TooltipText="Muestra todas categorías"></ToolbarItem>
+        <ToolbarItem OnClick="@TreeGrid.CollapseAll" Text="Colapsar" TooltipText="Oculta todas las subcategorías"></ToolbarItem>
+        <ToolbarItem OnClick="@OpenAddCategoryDialog" Text="Agregar" TooltipText="Agrega una nueva categoría"></ToolbarItem>
+        <ToolbarItem OnClick="@OpenEditCategoryDialog" Text="Editar" Disabled="EditCategories.EditToolbarItemDisabled" TooltipText="Edita una categoría"></ToolbarItem>
+        <ToolbarItem OnClick="@OpenRemoveCategoryDialog" Text="Eliminar" Disabled="DeleteCategories.RemoveToolbarItemDisabled" TooltipText="Elimina una categoría"></ToolbarItem>
+    </ToolbarItems>
+</SfToolbar>
+<SfTreeGrid ID="TreeGrid" @ref="TreeGrid" AllowSorting="true" AllowRowDragAndDrop="true" DataSource="@_categories" IdMapping="Id" ParentIdMapping="ParentId" AllowSelection="true" TreeColumnIndex="0">
+    <TreeGridEvents TValue="Category" RowDropped="Rowdrop" RowSelected="SelectionHandler"></TreeGridEvents>
+    <TreeGridSortSettings>
+        <TreeGridSortColumns>
+            <TreeGridSortColumn Field="Title" Direction="Syncfusion.Blazor.Grids.SortDirection.Ascending"></TreeGridSortColumn>
+        </TreeGridSortColumns>
+    </TreeGridSortSettings>
+    <TreeGridColumns>
+        <TreeGridColumn Field="Title" HeaderText="Nombre" Width="100"></TreeGridColumn>
+        <TreeGridColumn Field="Description" HeaderText="Descripción" Width="160"></TreeGridColumn>
+    </TreeGridColumns>
+</SfTreeGrid>
+<SfDialog Width="300px" IsModal="true" @bind-Visible="@AddCategories.AddDialogVisible">
+    <DialogTemplates>
+        <Header> Nueva categoría </Header>
+        <Content>
+            <SfTextBox ID="inVal" @bind-Value="@AddCategories.Title" Type="InputType.Text" Placeholder="Nombre" FloatLabelType='@FloatLabelType.Auto' @oninput="@AddCategories.ValidateTitle" />
+            <SfTextBox ID="inVal" @bind-Value="@AddCategories.Description" Type="InputType.Text" Placeholder="Descripción" FloatLabelType='@FloatLabelType.Auto' />
+            <SfTextBox ID="inVal" @bind-Value="@AddCategories.TitleDad" Type="InputType.Text" Placeholder="Categoría padre" @oninput="@AddCategories.ValidateTitleDad" FloatLabelType='@FloatLabelType.Auto' />
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="Agregar categoría" IsPrimary="true" Disabled="@AddCategories.AddCategoryDisabled" OnClick="@AddCategory" />
+        <DialogButton Content="Cancelar" OnClick="@AddCategories.CloseAddCategoryDialog" />
+    </DialogButtons>
+</SfDialog>
+<SfDialog Width="300px" IsModal="true" @bind-Visible="@EditCategories.EditDialogVisible">
+    <DialogTemplates>
+        <Header> Editar categoría </Header>
+        <Content>
+            <SfTextBox ID="inVal" @bind-Value="@EditCategories.EditTitle" Type="InputType.Text" Placeholder="Nombre" @oninput="@EditCategories.ValidateEditTitle" FloatLabelType='@FloatLabelType.Auto' />
+            <!----
+                <SfTextBox ID="inVal" @bind-Value="@EditDescription" Type="InputType.Text" Placeholder="Descripción" />
+
+                <SfTextBox ID="inVal" @bind-Value="@EditTitleDad" Type="InputType.Text" Placeholder="Nombre padre" @oninput="@ValidateEditTitleDad" />
+            -->
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="Guardar cambios" IsPrimary="true" Disabled="@EditCategories.EditCategoryDisabled" OnClick="@EditCategory" />
+        <DialogButton Content="Cancelar" OnClick="@EditCategories.CloseEditCategoryDialog" />
+    </DialogButtons>
+</SfDialog>
+
+<SfDialog ID="RemoveDialog" Width="300px" IsModal="true" @bind-Visible="@DeleteCategories.RemoveDialogVisible">
+    <DialogTemplates>
+        <Header> Eliminar categoría </Header>
+        <Content>
+            <p>Esta seguro que desea eliminar la categoría: @DeleteCategories.Title?</p>
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="Eliminar categoría" IsPrimary="true" OnClick="@RemoveCategory" />
+        <DialogButton Content="Cancelar" OnClick="@DeleteCategories.CloseRemoveCategoryDialog" />
+    </DialogButtons>
+</SfDialog>
+
+@code{
+    //Private Variables
+    private SfTreeGrid<Category> TreeGrid { get; set; }
+    private IList<Category> _categories;
+    private Category SelectedCategory;
+
+    //On Initialized
+    protected override async Task OnInitializedAsync()
+    {
+        _categories = await CategoryService.GetAsync();
+    }
+
+    //Add
+    private void AddCategory()
+    {
+        AddCategories.AddCategory(this.TreeGrid);
+    }
+    private void OpenAddCategoryDialog()
+    {
+        AddCategories.OpenAddCategoryDialog(SelectedCategory);
+    }
+
+    //Remove
+    private void RemoveCategory()
+    {
+        DeleteCategories.RemoveCategory(this.TreeGrid);
+    }
+    private void OpenRemoveCategoryDialog()
+    {
+        DeleteCategories.OpenRemoveCategoryDialog(SelectedCategory);
+    }
+
+    //Edit
+    private void EditCategory()
+    {
+        EditCategories.EditCategory(this.TreeGrid);
+    }
+    private void OpenEditCategoryDialog()
+    {
+        EditCategories.OpenEditCategoryDialog(SelectedCategory);
+    }
+
+    //RowDrop
+    private void Rowdrop(Syncfusion.Blazor.Grids.RowDragEventArgs<Category> args)
+    {
+        CategoryService.Rowdrop(args, this.TreeGrid);
+    }
+
+    //SelectionHandler
+    public async Task SelectionHandler(Syncfusion.Blazor.Grids.RowSelectEventArgs<Category> args)
+    {
+        var SelectedCategories = await this.TreeGrid.GetSelectedRecords();
+        if (SelectedCategories.Count() == 0)
+        {
+            AddCategories.TitleDad = null;
+            EditCategories.EditToolbarItemDisabled = true;
+            DeleteCategories.RemoveToolbarItemDisabled = true;
+            SelectedCategory = null;
+        }
+        else
+        {
+            SelectedCategory = SelectedCategories.First();
+            EditCategories.EditToolbarItemDisabled = false;
+            if (CategoryService.isChildNode(SelectedCategory.Id))
+            {
+                DeleteCategories.RemoveToolbarItemDisabled = false;
+            }
+            else
+            {
+                DeleteCategories.RemoveToolbarItemDisabled = true;
+            }
+        }
+    }
+}
