@@ -21,5 +21,10 @@ namespace EmprendeUCR_WebApplication.Data.Services
     	{
     		return await _context.District.ToListAsync();
     	}
+
+        public IList<District> GetList(string canton)
+        {
+            return _context.District.FromSqlRaw("exec GetDistricts @canton =" + canton).ToArray();
+        }
     }
 }

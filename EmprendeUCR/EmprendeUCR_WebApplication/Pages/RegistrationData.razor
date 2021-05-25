@@ -7,6 +7,7 @@
 @inject CantonService CantonService
 @inject DistrictService DistrictService
 @inject CredentialsService CredentialsService
+@inject IJSRuntime JsRuntime
 @inject NavigationManager NavigationManager
 
 <form>
@@ -46,30 +47,37 @@
             </div>
         </div>
 
+        @if (_isLoading)
+        {
+            <p>Cargando...</p>
+        }
+        else
+        {
+            <select id="Province" @onchange="getCantons" required>
+                @foreach (var province in _province)
+                {
+                    <option>@province.Name</option>
+                }
+            </select>
+
+            <select id="Canton" @onchange="getDistricts"required>
+                @foreach (var canton in _canton)
+                {
+                    <option>@canton.Name</option>
+                }
+            </select>
+
+            <select id="District" required>
+                @foreach (var district in _district)
+                {
+                    <option>@district.Name</option>
+                }
+            </select>
+        }
+        <br><br>
         <button type="submit" class="btn btn-primary">Submit</button>
     </EditForm>
 </form>
-
-@if (_isLoading)
-{
-    <p>Cargando...</p>
-}
-else
-{
-    <select name="Province" onchange="getCanton()" required>
-        @foreach (var province in _province)
-        {
-            <option value="userProvince">@province.Name</option>
-        }
-    </select>
-
-    <select name="Canton" required>
-        @foreach (var canton in _canton)
-        {
-            <option value="userCanton">@canton.Name</option>
-        }
-    </select>
-}
 
 @code {
     private User newUser = new User();
@@ -133,9 +141,8 @@ else
     }
 
     //Address Information
+
     private bool _isLoading = true;
-    private string userProvince = "";
-    private string userCanton = "";
     private IList<Province> _province;
     private IList<Canton> _canton;
     private IList<District> _district;
@@ -144,15 +151,19 @@ else
     {
         _province = await ProvinceService.GetAsync();
         _canton = await CantonService.GetAsync();
-        //_province = await ProvinceService.GetAsync();
+        _district = await DistrictService.GetAsync();
         _isLoading = false;
+    }  
 
-
-        newUser.Name = lastName;
+    async Task getCantons()
+    {
+        string province = await JsRuntime.InvokeAsync<string>("getValue", "Province");
+        _canton = CantonService.GetList(province);
     }
 
-    public void getCanton()
+    async Task getDistricts()
     {
-        _canton = CantonService.GetList(userProvince);
+        string canton = await JsRuntime.InvokeAsync<string>("getValue", "Canton");
+        _district = DistrictService.GetList(canton);
     }
 }
