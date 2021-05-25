@@ -22,7 +22,7 @@
         </div>
         <div class="mb-3">
             <label for="inputName" class="form-label" style="font-size: 25px">Name</label>
-            <InputText type="text" @bind-Value="newUser.Name" class="form-control" id="inputName" style="width: 20%" maxlength="15" @onreset="saveValue"/>
+            <InputText type="text" @bind-Value="newUser.Name" class="form-control" id="inputName" style="width: 20%" maxlength="15"/>
         </div>
         <div class="mb-3">
             <label for="inputFLastName" class="form-label" style="font-size: 25px">First Last Name</label>
@@ -38,6 +38,39 @@
         </div>
 
         <div class="mb-3">
+            <label for="Select Address" class="control-label" style="font-size: 25px">Address</label>
+            <br>
+            @if (_isLoading)
+            {
+                <p>Loading...</p>
+            }
+            else
+            {
+                <select id="Province" style="width: 13%; font-size: 20px" @onchange="getCantons">
+                    @foreach (var province in _province)
+                    {
+                        <option>@province.Name</option>
+                    }
+                </select>
+
+
+                <select id="Canton" style="width: 13%; font-size: 20px" @onchange="getDistricts">
+                    @foreach (var canton in _canton)
+                        {
+                            <option>@canton.Name</option>
+                        }
+                </select>
+
+                <select id="District" style="width: 13%; font-size: 20px">
+                    @foreach (var district in _district)
+                    {
+                        <option>@district.Name</option>
+                    }
+                </select> 
+            }
+        </div>
+
+        <div class="mb-3">
             <label for="inputPassword" class="form-label" style="font-size: 25px">Password</label>
             <InputText type="@txtType" @bind-Value="password" class="form-control pwd" id="inputPassword" aria-describedby="passwordHelp" style="width: 30%" maxlength="30" required />
             <div id="passwordHelp" class="form-text">Tamaño máximo: 30 carácteres</div>
@@ -46,34 +79,6 @@
                 Debe ingresar una contraseña
             </div>
         </div>
-
-        @if (_isLoading)
-        {
-            <p>Cargando...</p>
-        }
-        else
-        {
-            <select id="Province" @onchange="getCantons" required>
-                @foreach (var province in _province)
-                {
-                    <option>@province.Name</option>
-                }
-            </select>
-
-            <select id="Canton" @onchange="getDistricts"required>
-                @foreach (var canton in _canton)
-                {
-                    <option>@canton.Name</option>
-                }
-            </select>
-
-            <select id="District" required>
-                @foreach (var district in _district)
-                {
-                    <option>@district.Name</option>
-                }
-            </select>
-        }
         <br><br>
         <button type="submit" class="btn btn-primary">Submit</button>
     </EditForm>
@@ -83,13 +88,17 @@
     private User newUser = new User();
     private Credentials newCredentials = new Credentials();
     private string password;
-
     private string txtType = "password";
     private string text = "Mostrar";
+    private bool _isLoading = true;
+    private IList<Province> _province;
+    private IList<Canton> _canton;
+    private IList<District> _district;
+    private string province;
+    private string canton;
+    private string district;
 
-    private string lastName = "";
-
-    private void insertUser()
+    private async void insertUser()
     {
         User u = new User
         {
@@ -98,9 +107,9 @@
             F_Last_Name = newUser.F_Last_Name,
             S_Last_Name = newUser.S_Last_Name,
             Birth_Date = newUser.Birth_Date,
-            Province_Name = null,
-            Canton_Name = null,
-            District_Name = null,
+            Province_Name = province,
+            Canton_Name = canton,
+            District_Name = await JsRuntime.InvokeAsync<string>("getValue", "District"),
             Email_Confirmation = false,
         };
 
@@ -134,19 +143,7 @@
         }
     }
 
-    public void saveValue()
-    {
-        lastName = newUser.Name;
-        Console.WriteLine(Environment.NewLine + Environment.NewLine + Environment.NewLine + Environment.NewLine + Environment.NewLine + lastName + Environment.NewLine + Environment.NewLine + Environment.NewLine + Environment.NewLine + Environment.NewLine + Environment.NewLine);
-    }
-
     //Address Information
-
-    private bool _isLoading = true;
-    private IList<Province> _province;
-    private IList<Canton> _canton;
-    private IList<District> _district;
-
     protected override async Task OnInitializedAsync()
     {
         _province = await ProvinceService.GetAsync();
@@ -157,13 +154,13 @@
 
     async Task getCantons()
     {
-        string province = await JsRuntime.InvokeAsync<string>("getValue", "Province");
+        province = await JsRuntime.InvokeAsync<string>("getValue", "Province");
         _canton = CantonService.GetList(province);
     }
 
     async Task getDistricts()
     {
-        string canton = await JsRuntime.InvokeAsync<string>("getValue", "Canton");
+        canton = await JsRuntime.InvokeAsync<string>("getValue", "Canton");
         _district = DistrictService.GetList(canton);
     }
 }

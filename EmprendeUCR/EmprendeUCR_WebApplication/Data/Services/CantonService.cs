@@ -25,7 +25,7 @@ namespace EmprendeUCR_WebApplication.Data.Services
     	public IList<Canton> GetList(string province)
     	{
             //Console.WriteLine(province);
-            return _context.Canton.FromSqlRaw("exec GetCantons @province =" + province).ToArray();
+            return _context.Canton.FromSqlRaw("exec GetCantons @province =\"" + province+"\"").ToArray();
     	}
     }
 }
