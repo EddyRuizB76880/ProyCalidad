@@ -10,9 +10,9 @@ namespace EmprendeUCR_WebApplication.Data.Entities
     {
     	[Key]
     	public string Name { get; set; }
-    	//[Key, Colum(Order = 2)]
-    	public string Province_Name { get; set; }
-    	//[Key, Colum(Order = 3)]
-    	public string Canton_Name { get; set; }
+    	//[Key]
+    	//public string Province_Name { get; set; }
+    	//[Key]
+    	//public string Canton_Name { get; set; }
     }
 }
