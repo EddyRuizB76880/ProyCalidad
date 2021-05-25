@@ -7,6 +7,7 @@
 @inject CantonService CantonService
 @inject DistrictService DistrictService
 @inject CredentialsService CredentialsService
+@inject NavigationManager NavigationManager
 
 <form>
     <EditForm Model="@newUser" OnValidSubmit="@insertUser">
@@ -32,7 +33,7 @@
         </div>
         <div class="mb-3">
             <label for="inputBDate" class="control-label" style="font-size: 25px">Birth Date</label>
-            <InputDate type="date" @bind-Value="newUser.Birth_Date" class="form-control" id="inputBDate" style="width: 11%" />
+            <InputDate type="date" @bind-Value="newUser.Birth_Date" class="form-control" id="inputBDate" style="width: 15%" />
         </div>
 
         <div class="mb-3">
@@ -101,27 +102,12 @@ else
             Password = password,
         };
 
-        Console.WriteLine(" ");
-        Console.WriteLine(" ");
-        Console.WriteLine(" ");
-        Console.WriteLine(" ");
-        Console.WriteLine(" ");
-        Console.WriteLine(" ");
-        Console.WriteLine(" ");
-        Console.WriteLine(" ");
-        Console.WriteLine("kk");
-        Console.WriteLine(" ");
-        Console.WriteLine(" ");
-        Console.WriteLine(" ");
-        Console.WriteLine(" ");
-        Console.WriteLine(" ");
-        Console.WriteLine(" ");
-        Console.WriteLine(" ");
-        Console.WriteLine(" ");
+        
 
 
         UserService.AddUser(u);
         CredentialsService.AddCredentials(c);
+        NavigationManager.NavigateTo("listUsers");
 
         //newUser = new User();
     }
