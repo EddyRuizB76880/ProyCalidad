@@ -1,62 +1,102 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">Emprende UCR</a>
-    <button class="navbar-toggler" @onclick="ToggleNavMenu">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+﻿@using EmprendeUCR_WebApplication.Data.Services
+@using EmprendeUCR_WebApplication.Data.Entities
+@inject ProductService ProductService
+
+<div class="w-100 navBar">
+
+    <div class="head w-100 d-flex flex-row justify-content-between align-items-center px-5">
+        <div class="logo">
+
+            @*
+                Line of code to display the site's name. Clicking on it will take
+                the user back to the main menu.
+            *@
+            <a href="/" class="color-white h2">EMPRENDEUCR</a>
+        </div>
+        <div class="acount-links">
+            @* If the user had previously clicked on the login button, then... *@
+            @if (logeado)
+            {
+                @if (@amountProductsNotifications == 0)
+                {
+                    @*
+                        If the user's shopping cart is empty, then this block of
+                        code will disable the shopping cart icon and let the user know.
+                    *@
+                    <a Do Nothing class="color-silver mx-5 a-white isDisabled btn" data-toggle="tooltip" data-placement="bottom" title="El carrito se encuentra vacío.">
+                        <span class="material-icons-outlined icon-l">
+                            shopping_cart
+                        </span>@amountProductsNotifications
+
+                    </a>
+                }
+                else
+                { @* If instead, the shopping cart has items inside, then... *@
+                <a href="ShoppingCart" class="color-silver mx-5 a-white btn">
+                    <span class="material-icons-outlined icon-l">
+                        shopping_cart
+                    </span>@amountProductsNotifications
+                </a>
+            }
+                @* Update notifications when the user logs in. *@
+                <a href="/" class="color-silver mx-5 a-white btn">
+                    <span class="material-icons icon-l">
+                        notifications
+                    </span>
+                </a>
+
+                @* Display account circle when the user logs in. *@
+                <a href="" @onclick="logear" class="color-silver mx-5 a-white btn">
+                    <span class="material-icons icon-l">
+                        account_circle
+                    </span>
+                </a>
+            }
+            @if (!logeado)
+            {
+                @* If the user has not logged in, then display the log in button *@
+                <a href="" class="color-silver mx-5 a-white">
+                    Registrarse
+                </a>
+                <button @onclick="logear" class="bg-white border-none p-2">Iniciar Sesion</button>
+            }
+        </div>
+    </div>
+
+    @* Block of code to adjust the navigation menu's position onscreen. *@
+    <nav id="SecondaryNav" class="SecondaryNav bg-white  w-100 d-flex flex-row justify-content-between align-items-center px-5">
+        <ul class="d-flex flex-row align-bottom">
+            <li class=" "> <a href="/" class="color-grey mx-5 p-2"> HOME </a></li>
+            <li class=" "> <a href="/listProducts" class="color-grey mx-5 p-2"> PRODUCTOS </a></li>
+            <li class=" "> <a href="" class="color-grey mx-5"> CATEGORIAS </a></li>
+        </ul>
+
+    </nav>
 </div>
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="listProvinces">
-                <span class="oi oi-list" aria-hidden="true"></span> List Provinces
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="addProvinces">
-                <span class="oi oi-plus" aria-hidden="true"></span> Add Provinces
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="listUsers">
-                <span class="oi oi-people" aria-hidden="true"></span> List Users
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="register">
-                <span class="oi oi-plus" aria-hidden="true"></span> Register
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="registrationData">
-                <span class="oi oi-pencil" aria-hidden="true"></span> Registration
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="About">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> About
-            </NavLink>
-        </li>
-    </ul>
-</div>
+        @code {
+            // Boolean value to determine if the user is logged in.
+            // To be used in HTML section of this file.
+            private bool logeado = false;
 
-@code {
-    private bool collapseNavMenu = true;
+            // Int value used to store the total amount of products stored in
+            // the shopping cart. To be used in the HTML section of this file.
+            private int amountProductsNotifications;
 
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+            // Virtual method from Blazor overridden to adapt it to our program.
+            // It invokes a method to get the total number of elements in a table
+            // when the blazor program starts. In this case, it retrieves the
+            // number of articles from the SC table.
+            protected override async Task OnInitializedAsync()
+            {
+                amountProductsNotifications = ProductService.GetProductsQuantity();
+            }
 
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
-}
+            // This method changes the logeado value. It lets the system know
+            // when the user has logged into their account. To be used with the
+            // HTML section of this file.
+            private void logear()
+            {
+                logeado = !logeado;
+            }
+        }

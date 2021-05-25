@@ -13,6 +13,7 @@ namespace EmprendeUCR_WebApplication.Data.Entities
 		public string Name { get; set; }
 		public string F_Last_Name { get; set; }
 		public string S_Last_Name { get; set; }
+		//public string Photo { get; set; }
 		public DateTime Birth_Date { get; set; } = DateTime.Now;
 		public string Province_Name { get; set; }
 		public string Canton_Name { get; set; }

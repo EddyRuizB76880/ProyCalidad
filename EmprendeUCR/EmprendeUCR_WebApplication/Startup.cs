@@ -15,6 +15,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EmprendeUCR_WebApplication.Data;
+using EmprendeUCR_WebApplication.Data.Context;
+using Microsoft.EntityFrameworkCore;
+using EmprendeUCR_WebApplication.Data.Services;
+
+using EmprendeUCR_WebApplication.Data.Contexts;
+using EmprendeUCR_WebApplication.Data.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace EmprendeUCR_WebApplication
 {
@@ -37,10 +45,15 @@ namespace EmprendeUCR_WebApplication
 
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddSingleton<WeatherForecastService>();
+            services.AddScoped<ProductService>();
+            services.AddScoped<EntrepreneurService>();
+            services.AddScoped<UserService>();
+            services.AddScoped<Product_ServiceService>();
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SqlConnection")));
             services.AddScoped<ProvinceService>();
             services.AddScoped<CantonService>();
             services.AddScoped<DistrictService>();
-            services.AddScoped<UserService>();
             services.AddScoped <CredentialsService>();
         }
 
