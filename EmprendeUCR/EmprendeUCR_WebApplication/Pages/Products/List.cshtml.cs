@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using EmprendeUCR_WebApplication.Data.Contexts;
+using EmprendeUCR_WebApplication.Data.Context;
 using EmprendeUCR_WebApplication.Data.Entities;
 
 namespace EmprendeUCR_WebApplication.Pages.Products
 {
     public class ListModel : PageModel
     {
-        private readonly EmprendeUCR_WebApplication.Data.Contexts.SqlServerDbContext _context;
+        private readonly EmprendeUCR_WebApplication.Data.Context.AppDbContext _context;
 
-        public ListModel(EmprendeUCR_WebApplication.Data.Contexts.SqlServerDbContext context)
+        public ListModel(EmprendeUCR_WebApplication.Data.Context.AppDbContext context)
         {
             _context = context;
         }

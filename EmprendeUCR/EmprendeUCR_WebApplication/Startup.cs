@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EmprendeUCR_WebApplication.Data;
+using EmprendeUCR_WebApplication.Data.Context;
 using EmprendeUCR_WebApplication.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using EmprendeUCR_WebApplication.Data.Services;
@@ -39,6 +40,8 @@ namespace EmprendeUCR_WebApplication
         {
             services.AddDbContext<SqlServerDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             //services.AddIdentity<UserService, IdentityRole>().AddEntityFrameworkStores<BookStoreContext>().AddDefaultTokenProviders();
+
+
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSyncfusionBlazor();
@@ -50,10 +53,11 @@ namespace EmprendeUCR_WebApplication
             services.AddScoped<EntrepreneurService>();
             services.AddScoped<UserService>();
             services.AddScoped<Product_ServiceService>();
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SqlConnection")));
             services.AddScoped<ProvinceService>();
             services.AddScoped<CantonService>();
             services.AddScoped<DistrictService>();
-            services.AddScoped<CredentialsService>();
+            services.AddScoped <CredentialsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
