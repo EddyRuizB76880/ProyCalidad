@@ -1,4 +1,4 @@
-﻿<h1>Registration Data</h1>
+﻿<h1>Registro</h1>
 @page "/registrationData"
 @using EmprendeUCR_WebApplication.Data.Services
 @using EmprendeUCR_WebApplication.Data.Entities
@@ -13,7 +13,7 @@
 <form>
     <EditForm Model="@newUser" OnValidSubmit="@insertUser">
         <div class="mb-3">
-            <label for="inputEmail" class="form-label" style="font-size: 25px">Email address</label>
+            <label for="inputEmail" class="form-label" style="font-size: 25px">Correo electrónico</label>
             <InputText type="email" @bind-Value="newUser.Email" class="form-control" id="inputEmail" aria-describedby="emailHelp" style="width: 70%" required maxlength="100" />
             <div id="emailHelp" class="form-text">Ejemplo: nombre.apellido@correo.com</div>
             <div class="invalid-feedback">
@@ -21,24 +21,24 @@
             </div>
         </div>
         <div class="mb-3">
-            <label for="inputName" class="form-label" style="font-size: 25px">Name</label>
+            <label for="inputName" class="form-label" style="font-size: 25px">Nombre</label>
             <InputText type="text" @bind-Value="newUser.Name" class="form-control" id="inputName" style="width: 20%" maxlength="15"/>
         </div>
         <div class="mb-3">
-            <label for="inputFLastName" class="form-label" style="font-size: 25px">First Last Name</label>
+            <label for="inputFLastName" class="form-label" style="font-size: 25px">Primer apellido</label>
             <InputText type="text" @bind-Value="newUser.F_Last_Name" class="form-control" id="inputFLastName" style="width: 20%" maxlength="15" />
         </div>
         <div class="mb-3">
-            <label for="inputSLastName" class="form-label" style="font-size: 25px">Second Last Name</label>
+            <label for="inputSLastName" class="form-label" style="font-size: 25px">Segundo apellido</label>
             <InputText type="text" @bind-Value="newUser.S_Last_Name" class="form-control" id="inputSLastName" style="width: 20%" maxlength="15" />
         </div>
         <div class="mb-3">
-            <label for="inputBDate" class="control-label" style="font-size: 25px">Birth Date</label>
+            <label for="inputBDate" class="control-label" style="font-size: 25px">Fecha de nacimiento</label>
             <InputDate type="date" @bind-Value="newUser.Birth_Date" class="form-control" id="inputBDate" style="width: 15%" />
         </div>
 
         <div class="mb-3">
-            <label for="Select Address" class="control-label" style="font-size: 25px">Address</label>
+            <label for="Select Address" class="control-label" style="font-size: 25px">Dirección</label>
             <br>
             @if (_isLoading)
             {
@@ -71,7 +71,7 @@
         </div>
 
         <div class="mb-3">
-            <label for="inputPassword" class="form-label" style="font-size: 25px">Password</label>
+            <label for="inputPassword" class="form-label" style="font-size: 25px">Contraseña</label>
             <InputText type="@txtType" @bind-Value="password" class="form-control pwd" id="inputPassword" aria-describedby="passwordHelp" style="width: 30%" maxlength="30" required />
             <div id="passwordHelp" class="form-text">Tamaño máximo: 30 carácteres</div>
             <button type="button" class="btn btn-info" @onclick="@showPassword" style="border: double">@text</button>
@@ -80,7 +80,7 @@
             </div>
         </div>
         <br><br>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">Registrarse</button>
     </EditForm>
 </form>
 
