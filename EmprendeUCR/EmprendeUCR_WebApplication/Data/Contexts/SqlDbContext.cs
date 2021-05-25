@@ -21,5 +21,7 @@ namespace EmprendeUCR_WebApplication.Data.Contexts
         public DbSet<User> User { get; set; }
         public DbSet<Credentials> Credentials { get; set; }
         public DbSet<Category> Category { get; set; }
+        public DbSet<Entrepreneur> Entrepreneur { get; set; }
+        public DbSet<Product_Service> Product_Service { get; set; }
     }
 }
