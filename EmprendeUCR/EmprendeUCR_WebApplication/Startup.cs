@@ -44,6 +44,7 @@ namespace EmprendeUCR_WebApplication
 
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddSingleton<WeatherForecastService>();
             services.AddSyncfusionBlazor();
             services.AddScoped<CategoryService>();
             services.AddScoped<AddCategoryService>();
