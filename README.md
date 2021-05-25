@@ -205,6 +205,43 @@ Crear una plataforma virtual en linea donde emprendedores puedan juntarse con co
 Para poder acceder al [proyecto](http://10.1.4.22:8080/secure/RapidBoard.jspa?projectKey=PIIB12021&useStoredSettings=true&rapidView=43) el usuario necesita de acceso a un VPN para conectarse, así como acceso a un usuario y una contraseña.
 
 ### Product Road Map<a name="ProductRoadMap"></a> (Alejandro)
+#### 3DKR:
+    **Sprint #0:**    ->   Product Management:                  -Rellenar/Agregar informacion al producto
+                                                                -Agregar una categoría al producto
+    **Sprint #1:**    ->   Product Management 
+                      ->   Service Management
+    **Sprint #2:**    ->   Profile Management
+                      ->   Gallery Management
+                      ->   Entreoreneurs Alliances
+    **Sprint #3:**    ->   Profile Management
+                      ->   Entreoreneurs Alliances
+
+#### Phoenix:
+    **Sprint #0:**    ->   Categorization System:               -Crear/Eliminar/Editar Categorías
+    **Sprint #1:**    ->   Recommendation System
+                      ->   Order Status
+                      ->   Payment Types
+    **Sprint #2:**    ->   Reports, Chat Reports
+    **Sprint #3:**    ->   Reports, Chat Reports
+
+#### Pandemic:
+    **Sprint #0:**    ->   User Register:                       - Pagina de cliente
+                                                                - Pagina de emprendedor
+                                                                - Pagina de administrador
+                                                                - Seguridad de los datos
+                                                                - Manejo de datos principales
+    **Sprint #1:**    ->   User Register
+    **Sprint #2:**    ->   Client-Category Management
+                      ->   Score System
+    **Sprint #3:**    ->   Score System
+
+#### F & ½L:
+    **Sprint #0:**    ->   Clients Products Requests            -Ver el shoping cart
+                                                                -Requerimientos y opciones en ordenes
+    **Sprint #1:**    ->   Com. between Customer-Entrepreneur
+    **Sprint #2:**    ->   Products Request Management
+                      ->   Update of Order Status
+    **Sprint #3:**    ->   Notif. of req. and their statuses
 
 ### Requerimientos no funcionales<a name="NonFuncRequirements"></a>
 
@@ -241,7 +278,28 @@ Referencia al archivo fuente: [Esquema lógico de la base de datos](https://luci
 
 ## Decisiones técnicas<a name="Decitions"></a>
 
-### Metodologías utilizadas<a name="Metodology"></a> (Alejandro)
+### Metodologías utilizadas<a name="Metodology"></a>
+
+#### Scrum:
+- **Sprints de tres semanas:** 4 (excepto el primer sprint que es de seis semanas).
+- **Daily Meetings por semana:**  2.
+- **reunión de Revisión:** Realizado al final de cada sprint y junto a los steakholders.
+- **reunión de Sprint Retrospective:** Realizado al final de cada sprint y entre el equipo de trabajo.
+- **reunión de Planning:** Realizado  antes de empezar cada sprint.
+
+#### Principio SOLID:
+- **S-Single Responsibility Principle**
+- **O-Open/Closed Principle**
+- **L-Liskov Substitution Principle**
+- **I-Interface Segregation Principle**
+- **D-Dependency Inversion Principle**
+
+#### Otras:
+- **pair programming**
+- **clean architecture**
+- **Refactoring**
+- **Integración continua**
+- **definition of done**
 
 ### Artefactos utilizadas en el desarrollo<a name="Artefactos"></a>
 
