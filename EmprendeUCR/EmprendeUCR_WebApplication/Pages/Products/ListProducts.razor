@@ -1,0 +1,105 @@
+﻿<h1>Lista de Productos</h1>
+@page "/ListProducts"
+@using EmprendeUCR_WebApplication.Data.Services
+@using EmprendeUCR_WebApplication.Data.Entities
+@inject EntrepreneurService EntrepreneurService
+@inject ProductService ProductService
+@inject Product_ServiceService Product_ServiceService
+
+
+<NavLink class="nav-link" href="AddProduct">
+    <span class="oi oi-plus" aria-hidden="true">Add New Product</span>
+
+</NavLink>
+
+@if (_isLoading)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <select @onchange="loadAllProducts">
+        <option value="" selected disabled>Seleccione un emprendedor</option>
+        @if (entrepreneurs?.Count > 0)
+        {
+            @foreach (var cnt in entrepreneurs)
+            {
+                <option value="@cnt.User_Email">@cnt.User_Email @cnt.Presentation</option>
+            }
+        }
+    </select>
+    <table>
+        <thead>
+            <tr>
+                <th>Codigo</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Categoría</th>
+                <th>Disponibilidad</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (_products?.Count > 0)
+            {
+                @foreach (var prod in _products)
+                {
+                    var prodServ = _productsServices.First(p => p.Code_ID == prod.Code_ID);
+            <tr>
+                <td>@prod.Code_ID</td>
+                <td>@prod.Product_Name</td>
+                <td>@prod.Product_Description</td>
+                <td>@prod.Price</td>
+                <td>@prod.Category_ID</td>
+                <td>@prodServ.Availability</td>
+                <td>
+                    <a class="nav-link" href="UpdateProduct/@prod.Code_ID">
+                        <span class="oi oi-pencil" aria-hidden="true">Edit</span>
+                    </a>
+                    <a class="nav-link" href="DeleteProduct/@prod.Code_ID">
+                        <span class="oi oi-trash" aria-hidden="true">Delete</span>
+                    </a>
+                </td>
+            </tr>
+
+
+                }
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private bool _isLoading = true;
+    private IList<EmprendeUCR_WebApplication.Data.Entities.Product> _products;
+    private IList<EmprendeUCR_WebApplication.Data.Entities.Product_Service> _productsServices;
+    IList<Entrepreneur> entrepreneurs;
+
+    public async Task loadAllProducts(ChangeEventArgs email)
+    {
+        await loadProducts(email);
+        await loadProductsServices(email);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        entrepreneurs = await EntrepreneurService.GetAsync();
+        _isLoading = false;
+    }
+    bool hideError = true;
+    public async Task loadProducts(ChangeEventArgs email)
+    {
+        _products = await ProductService.GetProductsEntrepreneurAsync(email.Value.ToString());
+    }
+
+    public async Task loadProductsServices(ChangeEventArgs email)
+    {
+        _productsServices = await Product_ServiceService.GetProductsServicesEntrepreneurAsync(email.Value.ToString());
+    }
+
+}
+
+
+
