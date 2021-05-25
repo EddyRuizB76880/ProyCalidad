@@ -31,7 +31,7 @@
 @code {
     [Parameter]
     public string Id { get; set; } // se pasó a int
-    Product obj = new Product();
+    EmprendeUCR_WebApplication.Data.Entities.Product obj = new EmprendeUCR_WebApplication.Data.Entities.Product();
     protected override async Task OnInitializedAsync()
     {
         obj = await Task.Run(() => productService.GetProductAsync(Convert.ToInt32(Id)));

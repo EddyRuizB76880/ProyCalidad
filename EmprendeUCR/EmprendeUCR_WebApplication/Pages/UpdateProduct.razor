@@ -35,13 +35,13 @@
 
     public string Id { get; set; }
 
-    Product obj = new Product ();
-    
+    EmprendeUCR_WebApplication.Data.Entities.Product obj = new EmprendeUCR_WebApplication.Data.Entities.Product();
+
 
     protected override async Task OnInitializedAsync()
     {
         obj = await Task.Run(() => productService.GetProductAsync(Convert.ToInt32(Id)));   //product va en minuscula
-    }             
+    }
 
     protected async void Update()
     {

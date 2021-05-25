@@ -11,7 +11,7 @@
         <div class="col-md-8">
 
             <div class="form-group">
-                <label for="Name" class="control-label">Nombre</label>
+                <label for="Name" class="control-label">Codigo</label>
                 <input form="Name" class="form-control" @bind="@obj.Code_ID" />
             </div>
             <div class="form-group">
@@ -24,11 +24,9 @@
             </div>
             <div class="form-group">
                 <label for="Entrepreneur_Email" class="control-label">Emprendedor</label>
-                <!--
-        <select form="Entrepreneur_Email" class="form-control" @bind="@obj.Entrepreneur_Email" />
-    -->
+                
 
-            <!--<select @bind="obj.User_Email">
+            <select @bind="obj.Entrepreneur_Email">
                 <option value="" selected disabled>Seleccione un emprendedor</option>
                 @if (entrepreneurs?.Count > 0)
                 {
@@ -37,7 +35,7 @@
                         <option value="@cnt.User_Email">@cnt.User_Email @cnt.Presentation</option>
                     }
                 }
-            </select> -->
+            </select> 
             </div>
 
         </div>
@@ -57,7 +55,7 @@
 
 @code {
 
-    Product obj = new Product();
+    EmprendeUCR_WebApplication.Data.Entities.Product obj = new EmprendeUCR_WebApplication.Data.Entities.Product();
     IList<Entrepreneur> entrepreneurs;
     private bool _isLoading = true;
     bool hideError = true;
@@ -67,19 +65,19 @@
         entrepreneurs = await EntrepreneurService.GetAsync();
         _isLoading = false;
     }
-    protected void CreateProduct()
+    protected async void CreateProduct()
     {
-    /*
-        Console.WriteLine(obj);
-        if (String.IsNullOrEmpty(obj.Entrepreneur_Email))
-        {
-            // product details are incomplete, show error
-            hideError = false;
-        } else {
-            await productService.InsertProductAsync(obj);
-            NavigationManager.NavigateTo("ListProducts");
-        }
-    */
+        
+            Console.WriteLine(obj);
+            if (String.IsNullOrEmpty(obj.Entrepreneur_Email))
+            {
+                // product details are incomplete, show error
+                hideError = false;
+            } else {
+                await productService.InsertProductAsync(obj);
+                NavigationManager.NavigateTo("ListProducts");
+            }
+        
     }
     void Cancel()
     {

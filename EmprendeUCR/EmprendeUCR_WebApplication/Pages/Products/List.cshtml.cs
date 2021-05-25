@@ -19,12 +19,12 @@ namespace EmprendeUCR_WebApplication.Pages.Products
             _context = context;
         }
 
-        public IList<Product> Product { get; set; }
+        public IList<EmprendeUCR_WebApplication.Data.Entities.Product> Product { get; set; }
 
         public async Task OnGetAsync()
         {
 
-            Product = (IList<Product>)await _context.Product.ToListAsync();
+            Product = (IList<EmprendeUCR_WebApplication.Data.Entities.Product>)await _context.Product.ToListAsync();
         }
     }
 }
