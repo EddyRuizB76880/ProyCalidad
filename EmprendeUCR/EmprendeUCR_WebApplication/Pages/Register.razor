@@ -71,7 +71,7 @@
         {
             using (MailMessage mail = new MailMessage())
             {
-                mail.From = new MailAddress("barquero954@gmail.com");
+                mail.From = new MailAddress("emprende.ucr@gmail.com");
                 mail.To.Add(newUsuario.Email);
                 if (user == 1){
                     mail.Subject = "New client";
@@ -90,7 +90,7 @@
                 using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
                 {
 
-                    smtp.Credentials = new System.Net.NetworkCredential("barquero954@gmail.com", "nanum901911");
+                    smtp.Credentials = new System.Net.NetworkCredential("emprende.ucr@gmail.com", "ingebases21");
                     smtp.EnableSsl = true;
                     smtp.Send(mail);
                     Message = "Mail Send";
