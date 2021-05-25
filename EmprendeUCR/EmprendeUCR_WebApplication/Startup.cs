@@ -14,6 +14,10 @@ using EmprendeUCR_WebApplication.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using EmprendeUCR_WebApplication.Data.Services;
 
+using EmprendeUCR_WebApplication.Data.Contexts;
+using EmprendeUCR_WebApplication.Data.Services;
+using Microsoft.EntityFrameworkCore;
+
 namespace EmprendeUCR_WebApplication
 {
     public class Startup
@@ -29,6 +33,8 @@ namespace EmprendeUCR_WebApplication
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<SqlServerDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();

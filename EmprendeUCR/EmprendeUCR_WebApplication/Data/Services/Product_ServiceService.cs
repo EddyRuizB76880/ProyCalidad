@@ -22,11 +22,14 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return await _context.Product_Service.ToListAsync();
         }
 
-        public async Task<bool> InsertProductServiceAsync(Product_Service product_service) // Agrega productos
+        public async Task<int> InsertProductServiceAsync(Product_Service product_service) // Agrega productos
         {
-            await _context.Product_Service.AddAsync(product_service);
+            Console.WriteLine(product_service);
+            Product_Service obj = product_service;
+            await _context.Product_Service.AddAsync(obj);
             await _context.SaveChangesAsync();
-            return true;
+            Console.WriteLine(obj);
+            return obj.Code_ID;
         }
 
 

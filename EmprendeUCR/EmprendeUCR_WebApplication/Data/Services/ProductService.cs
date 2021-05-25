@@ -33,7 +33,7 @@ namespace EmprendeUCR_WebApplication.Data.Services
 
         public async Task<bool> UpdateProductAsync(Product product) // Update productos
         {
-             _context.Product.Update(product);
+            _context.Product.Update(product);
             await _context.SaveChangesAsync();
             return true;
         }
@@ -42,13 +42,13 @@ namespace EmprendeUCR_WebApplication.Data.Services
 
         public async Task<bool> DeleteProductAsync(Product product) // Eliminar productos
         {
-             _context.Product.Remove(product);
+            _context.Product.Remove(product);
             await _context.SaveChangesAsync();
             return true;
         }
 
 
-       
+
         public async Task<Product> GetProductAsync(int Id)
         {
             Product product = await _context.Product.FirstOrDefaultAsync(c => c.Code_ID.Equals(Id));
@@ -64,6 +64,27 @@ namespace EmprendeUCR_WebApplication.Data.Services
         public async Task<IList<Product>> GetProductsEntrepreneurAsync(string email)
         {
             return await _context.Product.Where(c => String.Equals(c.Entrepreneur_Email, email)).ToListAsync();
+
+        }
+
+        public async Task<IEnumerable<Product>> GetProducts()
+        {
+
+            return await _context.Product.Select(product => new Product { Code_ID = product.Code_ID, Product_Name = product.Product_Name, Price = product.Price }).ToListAsync();
+
+        }
+
+        public int GetProductsQuantity()
+        {
+            /*var parameterQuantity = new Microsoft.Data.SqlClient.SqlParameter
+            {
+                ParameterName = "quantity",
+                SqlDbType = System.Data.SqlDbType.Int,
+                Direction = System.Data.ParameterDirection.Output,
+            };
+            _context.Product.FromSqlRaw("EXECUTE GetQuantityProducts @quantity OUTPUT", parameterQuantity);
+            return (int)parameterQuantity.Value;*/
+            return _context.Product.Count();
 
         }
     }
