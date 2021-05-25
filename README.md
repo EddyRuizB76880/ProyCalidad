@@ -28,6 +28,7 @@
     - [Product Road Map](#ProductRoadMap)
     - [Requerimientos no funcionales](#NonFuncRequirements)
 5. [Artefactos de bases de datos](#ArtefactosBases)
+    - [Requerimiento de datos](#REQDATOS)
     - [Esquema conceptual](#ERR)
     - [Esquema lógico](#Mapeo)
 6. [Decisiones técnicas](#Decitions)
@@ -228,6 +229,11 @@ Para poder acceder al [proyecto](http://10.1.4.22:8080/secure/RapidBoard.jspa?pr
 
 
 ## Artefactos de bases de datos<a name="ArtefactosBases"></a>
+
+### Requerimiento de Datos<a name="REQDATOS"></a>
+<p>Un Producto_Servicio tiene una descripción, ID que lo identifica como único, también debe tener una disponibilidad. Un Producto_Servicio puede ser un Producto ó un Servicio.
+En donde se tiene que un Producto tiene una o más fotos, posee un precio y un nombre.
+Existe un Carrito que es poseído por cada cliente, en donde un carrito es único para cada cliente, este carrito puede tener productos y servicios. Un carrito tiene como atributos derivados un precio total y una cantidad de productos.</p>
 
 ### Esquema conceptual<a name="ERR"></a>
 
