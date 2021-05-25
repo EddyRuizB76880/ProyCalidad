@@ -55,7 +55,7 @@
             @if (!logeado)
             {
                 @* If the user has not logged in, then display the log in button *@
-                <a href="" class="color-silver mx-5 a-white">
+                <a href="/registrationdata" class="color-silver mx-5 a-white">
                     Registrarse
                 </a>
                 <button @onclick="logear" class="bg-white border-none p-2">Iniciar Sesion</button>
@@ -69,6 +69,8 @@
             <li class=" "> <a href="/" class="color-grey mx-5 p-2"> HOME </a></li>
             <li class=" "> <a href="/listProducts" class="color-grey mx-5 p-2"> PRODUCTOS </a></li>
             <li class=" "> <a href="" class="color-grey mx-5"> CATEGORIAS </a></li>
+            <li class=" "> <a href="/register" class="color-grey mx-5"> REGISTRO </a></li>
+            <li class=" "> <a href="/listusers" class="color-grey mx-5"> LISTA DE USUARIOS </a></li>
         </ul>
 
     </nav>
