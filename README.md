@@ -204,7 +204,7 @@ Crear una plataforma virtual en linea donde emprendedores puedan juntarse con co
 
 Para poder acceder al [proyecto](http://10.1.4.22:8080/secure/RapidBoard.jspa?projectKey=PIIB12021&useStoredSettings=true&rapidView=43) el usuario necesita de acceso a un VPN para conectarse, así como acceso a un usuario y una contraseña.
 
-### Product Road Map<a name="ProductRoadMap"></a> (Alejandro)
+### Product Road Map<a name="ProductRoadMap"></a>
 #### 3DKR:
     **Sprint #0:**    ->   Product Management:                  -Rellenar/Agregar informacion al producto
                                                                 -Agregar una categoría al producto
