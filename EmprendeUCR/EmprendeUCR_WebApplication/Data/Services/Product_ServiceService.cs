@@ -10,9 +10,9 @@ namespace EmprendeUCR_WebApplication.Data.Services
 {
     public class Product_ServiceService : PageModel
     {
-        private readonly EmprendeUCR_WebApplication.Data.Context.AppDbContext _context;
+        private readonly EmprendeUCR_WebApplication.Data.Contexts.SqlServerDbContext _context;
 
-        public Product_ServiceService(EmprendeUCR_WebApplication.Data.Context.AppDbContext context)
+        public Product_ServiceService(EmprendeUCR_WebApplication.Data.Contexts.SqlServerDbContext context)
         {
             _context = context;
         }
