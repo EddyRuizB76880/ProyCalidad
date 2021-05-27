@@ -37,7 +37,8 @@
     - [Tecnologías utilizadas](#Tecnology)
     - [Repositorio de código & estrategia git](#Git)
     - [Definición de listo](#DOD)
-7. [Referencias bibliográficas](#Ref)
+7. [Bitácoras](#Logs)
+8. [Referencias bibliográficas](#Ref)
 
 
 ## Definiciones, acrónimos y abreviaciones<a name="Def"></a>
@@ -290,7 +291,7 @@ Referencia al archivo fuente: [Esquema lógico de la base de datos](https://luci
 
 #### Scrum:
 - **Sprints de tres semanas:** 4 (excepto el primer sprint que es de seis semanas).
-- **Daily Meetings por semana:**  2.
+- **Daily Meetings por semana:**  2. 
 - **reunión de Revisión:** Realizado al final de cada sprint y junto a los steakholders.
 - **reunión de Sprint Retrospective:** Realizado al final de cada sprint y entre el equipo de trabajo.
 - **reunión de Planning:** Realizado  antes de empezar cada sprint.
@@ -413,6 +414,10 @@ La definición de listo (DOD) abarca los siguientes aspectos:
     - Cualquier funcionalidad que se agregue no debe afectar a los demás equipos.
     - Comprobar las funcionalidades complementarias entre los grupos.
 
+## Bitácoras <a name="Logs"></a>
+- [Daily Meeting Report.](https://docs.google.com/spreadsheets/d/1vboRJwl7TfQBPofRB58tHBFxUC7Q7FTaEbG2q-Etz1M/edit#gid=1481241924)
+- [Retrospective Report.](https://docs.google.com/spreadsheets/d/1vboRJwl7TfQBPofRB58tHBFxUC7Q7FTaEbG2q-Etz1M/edit#gid=203688471)
+- [Sprint Review Report.](https://docs.google.com/spreadsheets/d/1vboRJwl7TfQBPofRB58tHBFxUC7Q7FTaEbG2q-Etz1M/edit#gid=849688878)
 ## Referencias bibliográficas<a name="Ref"></a> 
 
 Atlassian. (n.d.-a). *Agile roadmaps: build, share, use, evolve*. <https://www.atlassian.com/agile/product-management/roadmaps>
