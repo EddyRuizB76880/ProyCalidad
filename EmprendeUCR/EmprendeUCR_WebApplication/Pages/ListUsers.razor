@@ -1,0 +1,44 @@
+﻿<h1>List Users</h1>
+@page "/listUsers"
+@using EmprendeUCR_WebApplication.Data.Services
+@using EmprendeUCR_WebApplication.Data.Entities
+@inject UserService UserService
+
+@if (_isLoading)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Email</th>
+               
+               
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in _user)
+            {
+            <tr>
+                <td>@item.Email</td>
+                
+            </tr>
+
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private bool _isLoading = true;
+    private IList<User> _user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _user = await UserService.GetAsync();
+        _isLoading = false;
+    }
+}

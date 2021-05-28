@@ -1,4 +1,3 @@
-
 # Universidad de Costa Rica
 
 # Documento de conceptualización
@@ -143,6 +142,7 @@ Consiste en todo el proceso de creación y registro de un perfil ya sea de empre
 - **Gestión de pedidos y compras:** 
 
 Consiste en todo el proceso de compra de un producto o servicio, entre estos está el proceso de pago, seguimiento del producto, proceso de checkout y finalización de órdenes  
+
 - **Administración:** 
 
 Consiste en todo lo relacionado a administración, esto incluye la categorización y etiqueta de los diferentes productos y servicios disponibles además del chat entre los usuarios de la página 
@@ -445,4 +445,3 @@ Microsoft. (n.d.-a). *Microsoft SQL documentation* - SQL Server. Microsoft Docs.
 Microsoft. (n.d.-b). *Visual Studio documentation*. Microsoft Docs. <https://docs.microsoft.com/en-us/visualstudio/windows/?view=vs-2019&preserve-view=true>
 
 *Scrum Training Series: Free Scrum Master Training from Seattle*. (n.d.). Scrum Training Series. <https://scrumtrainingseries.com/>
-
