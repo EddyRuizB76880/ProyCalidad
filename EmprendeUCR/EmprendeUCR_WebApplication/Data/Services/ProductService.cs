@@ -11,9 +11,9 @@ namespace EmprendeUCR_WebApplication.Data.Services
 {
     public class ProductService : PageModel
     {
-        private readonly EmprendeUCR_WebApplication.Data.Context.AppDbContext _context;
+        private readonly EmprendeUCR_WebApplication.Data.Contexts.SqlServerDbContext _context;
 
-        public ProductService(EmprendeUCR_WebApplication.Data.Context.AppDbContext context)
+        public ProductService(EmprendeUCR_WebApplication.Data.Contexts.SqlServerDbContext context)
         {
             _context = context;
         }
