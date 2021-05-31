@@ -79,28 +79,11 @@
     <Build Include="dbo\Tables\Canton.sql" />
     <Build Include="dbo\Tables\AspNetUsers.sql" />
     <Build Include="dbo\Tables\Admin.sql" />
+    <Build Include="dbo\Tables\Client.sql" />
+    <Build Include="dbo\Tables\GetCantons.sql" />
+    <PostDeploy Include="dbo\Tables\Script.AddressData.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="EmprendeUCR_DB.refactorlog" />
-  </ItemGroup>
-  <ItemGroup>
-    <Build Include="Province.sql" />
-    <Build Include="Canton.sql" />
-    <Build Include="District.sql" />
-    <Build Include="Admin.sql" />
-    <Build Include="Members.sql" />
-    <Build Include="Entrepreneur.sql" />
-    <Build Include="User.sql" />
-    <Build Include="Likes.sql" />
-    <Build Include="Phones.sql" />
-    <Build Include="Credentials.sql" />
-    <Build Include="GetCantons.sql" />
-    <Build Include="Client.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <RefactorLog Include="EmprendeUCR_DB.refactorlog" />
-  </ItemGroup>
-  <ItemGroup>
-    <PostDeploy Include="Script.AddressData.sql" />
   </ItemGroup>
 </Project>

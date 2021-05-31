@@ -1,4 +1,3 @@
-
 # Universidad de Costa Rica
 
 # Documento de conceptualización
@@ -28,6 +27,7 @@
     - [Product Road Map](#ProductRoadMap)
     - [Requerimientos no funcionales](#NonFuncRequirements)
 5. [Artefactos de bases de datos](#ArtefactosBases)
+    - [Requerimiento de datos](#REQDATOS)
     - [Esquema conceptual](#ERR)
     - [Esquema lógico](#Mapeo)
 6. [Decisiones técnicas](#Decitions)
@@ -36,7 +36,8 @@
     - [Tecnologías utilizadas](#Tecnology)
     - [Repositorio de código & estrategia git](#Git)
     - [Definición de listo](#DOD)
-7. [Referencias bibliográficas](#Ref)
+7. [Bitácoras](#Logs)
+8. [Referencias bibliográficas](#Ref)
 
 
 ## Definiciones, acrónimos y abreviaciones<a name="Def"></a>
@@ -119,7 +120,7 @@ Los módulos del sistema web tiene relación con otros sistemas que ya existan.
 ejemplo: la parte de los pagos, preguntar a la po si visualiza otros sistemas que quiera integrarle (facturas)
 
 
-### Descripción de los módulos y epics<a name="Epic"></a> (Manfred)
+### Descripción de los módulos y epics<a name="Epic"></a>
 
 Los módulos que fueron asignados a cada equipo son los siguientes: 
 
@@ -141,6 +142,7 @@ Consiste en todo el proceso de creación y registro de un perfil ya sea de empre
 - **Gestión de pedidos y compras:** 
 
 Consiste en todo el proceso de compra de un producto o servicio, entre estos está el proceso de pago, seguimiento del producto, proceso de checkout y finalización de órdenes  
+
 - **Administración:** 
 
 Consiste en todo lo relacionado a administración, esto incluye la categorización y etiqueta de los diferentes productos y servicios disponibles además del chat entre los usuarios de la página 
@@ -184,27 +186,66 @@ Poder categorizar y etiquetar productos o servicios.
     - Similar al punto anterior existe una relación directa entre estos módulos ya que se debe de tener conocimiento de cuáles son los métodos de pago que si son aceptados para un emprendedor en particular.
 
 ### Requerimientos Funcionales<a name="Requirements"></a>
-Crear una plataforma virtual en linea donde emprendedores puedan juntarse con compradores y asi negociar entre ellos:
 
-- Permitir el registro de distintos tipos de usuarios.(Administradores de sitio, compradores y emprendedores)
+El proyecto es organizado usando una herramienta en línea llamada JIRA Software. En JIRA, seguimos la siguiente estructura:
 
-- Permitir a emprendedores registrar productos y servicios para publicarlos en la plataforma y generar mayor visibilidad.
+- Cada característica que el dueño del producto requiera en nuestra solución es llamada **historia de usuario**, la cual es generada por los desarrolladores a partir de las indicaciones del dueño del producto. Si cumplir una historia implica varias actividades para los desarrolladores, entonces la historia es conocida como **epic**. Los epics están compuestos en sí mismos por historias de usuario. En JIRA, otorgamos a cada epic su propio código identificador, y a cada historia la vinculamos con el epic del que se origina.
 
-- Permitir a los emprendedores generar alianzas con otros emprendedores.
+- Los desarrolladores estimamos cuánto esfuerzo y tiempo puede tomarnos cumplir con una historia por medio de la asignación de puntos de historia, la cual definimos por medio de sesiones de votación en las que debemos llegar a un consenso.
 
-- Permitir a emprendedores dar seguimiento a ordenes que hayan sido hechas por sus clientes.
+- Para saber cuándo una historia de usuario está cumplida, declaramos definiciones de listo (**Definitions of Done**) y **Criterios de aceptación**:
+    
+    1. Los *Criterios de aceptación* son las características que el cliente requiere que se incluyan en la solución cuando la historia a la que pertenece se considere terminada. Estos criterios son definidos por el dueño del producto y suele ser definido un sólo grupo de criterios para cada historia por aparte.
 
-- Permitir a compradores llenar un carrito de compras con productos o servicios (pero no ambos) de un mismo emprendedor.
+    2. Las *Definitions of done* son las características técnicas definidas por los desarrolladores de lo que debe cumplirse en la implementación de la historia para darla por hecha. Las definitions of done son definidas para ser cumplidas en todas las historias.
 
-- Permitir a compradores finalizar su compra por medio del paso de "checkout", donde puedan ver en una pantalla los contenidos del carrito de compra y el valor individual de cada uno, al igual del valor total de todo lo incluido en el carrito. En el checkout, debe haber un boton para confirmar la compra.
+- Para priorizar las historias, contamos con la pila del producto, también conocida como **Backlog**. El Backlog consiste en una estructura en la cual hay historias que se apilan sobre otras en orden de prioridad. Cuanto más cerca esté una historia del tope, más prioridad habrá que darle. Por ejemplo, la historia que se encuentre en el tope de la pila es la más apremiante, es decir, aquella que los desarrolladores deberían implementar primero. Cuando tal historia es dada por hecha, es retirada del backlog y la posición del tope es ocupada por la historia que es encontraba justo debajo de la misma en el backlog. Es importante destacar que el dueño del producto es el único con autoridad para ajustar las prioridades de cada historia que esté incluida en el backlog.
 
-- Permitir a compradores elegir el metodo de pago que desean usar para finalizar su compra.
+- Para mejorar la organización entre equipos, JIRA nos permite crear **Boards**. Hay un total de 4 boards para el proyecto, uno para cada equipo. Cada board muestra las historias aportadas por los miembros de un equipo en específico.  
+
 
 #### Referencia al proyecto de JIRA
 
 Para poder acceder al [proyecto](http://10.1.4.22:8080/secure/RapidBoard.jspa?projectKey=PIIB12021&useStoredSettings=true&rapidView=43) el usuario necesita de acceso a un VPN para conectarse, así como acceso a un usuario y una contraseña.
 
-### Product Road Map<a name="ProductRoadMap"></a> (Alejandro)
+### Product Road Map<a name="ProductRoadMap"></a>
+#### 3DKR:
+    **Sprint #0:**    ->   Product Management:                  -Rellenar/Agregar informacion al producto
+                                                                -Agregar una categoría al producto
+    **Sprint #1:**    ->   Product Management 
+                      ->   Service Management
+    **Sprint #2:**    ->   Profile Management
+                      ->   Gallery Management
+                      ->   Entreoreneurs Alliances
+    **Sprint #3:**    ->   Profile Management
+                      ->   Entreoreneurs Alliances
+
+#### Phoenix:
+    **Sprint #0:**    ->   Categorization System:               -Crear/Eliminar/Editar Categorías
+    **Sprint #1:**    ->   Recommendation System
+                      ->   Order Status
+                      ->   Payment Types
+    **Sprint #2:**    ->   Reports, Chat Reports
+    **Sprint #3:**    ->   Reports, Chat Reports
+
+#### Pandemic:
+    **Sprint #0:**    ->   User Register:                       - Pagina de cliente
+                                                                - Pagina de emprendedor
+                                                                - Pagina de administrador
+                                                                - Seguridad de los datos
+                                                                - Manejo de datos principales
+    **Sprint #1:**    ->   User Register
+    **Sprint #2:**    ->   Client-Category Management
+                      ->   Score System
+    **Sprint #3:**    ->   Score System
+
+#### F & ½L:
+    **Sprint #0:**    ->   Clients Products Requests            -Ver el shoping cart
+                                                                -Requerimientos y opciones en ordenes
+    **Sprint #1:**    ->   Com. between Customer-Entrepreneur
+    **Sprint #2:**    ->   Products Request Management
+                      ->   Update of Order Status
+    **Sprint #3:**    ->   Notif. of req. and their statuses
 
 ### Requerimientos no funcionales<a name="NonFuncRequirements"></a>
 
@@ -227,6 +268,11 @@ Para poder acceder al [proyecto](http://10.1.4.22:8080/secure/RapidBoard.jspa?pr
 
 ## Artefactos de bases de datos<a name="ArtefactosBases"></a>
 
+### Requerimiento de Datos<a name="REQDATOS"></a>
+<p>Un Producto_Servicio tiene una descripción, ID que lo identifica como único, también debe tener una disponibilidad. Un Producto_Servicio puede ser un Producto ó un Servicio.
+En donde se tiene que un Producto tiene una o más fotos, posee un precio y un nombre.
+Existe un Carrito que es poseído por cada cliente, en donde un carrito es único para cada cliente, este carrito puede tener productos y servicios. Un carrito tiene como atributos derivados un precio total y una cantidad de productos.</p>
+
 ### Esquema conceptual<a name="ERR"></a>
 
 ![Esquema conceptual de la base de datos](imgs/Conceptual_scheme.png)
@@ -241,7 +287,28 @@ Referencia al archivo fuente: [Esquema lógico de la base de datos](https://luci
 
 ## Decisiones técnicas<a name="Decitions"></a>
 
-### Metodologías utilizadas<a name="Metodology"></a> (Alejandro)
+### Metodologías utilizadas<a name="Metodology"></a>
+
+#### Scrum:
+- **Sprints de tres semanas:** 4 (excepto el primer sprint que es de seis semanas).
+- **Daily Meetings por semana:**  2. 
+- **reunión de Revisión:** Realizado al final de cada sprint y junto a los steakholders.
+- **reunión de Sprint Retrospective:** Realizado al final de cada sprint y entre el equipo de trabajo.
+- **reunión de Planning:** Realizado  antes de empezar cada sprint.
+
+#### Principio SOLID:
+- **S-Single Responsibility Principle**
+- **O-Open/Closed Principle**
+- **L-Liskov Substitution Principle**
+- **I-Interface Segregation Principle**
+- **D-Dependency Inversion Principle**
+
+#### Otras:
+- **pair programming**
+- **clean architecture**
+- **Refactoring**
+- **Integración continua**
+- **definition of done**
 
 ### Artefactos utilizadas en el desarrollo<a name="Artefactos"></a>
 
@@ -254,7 +321,28 @@ Durante el sprint 0, se asignaron módulos a cada equipo de desarrolladores y a 
 Según las tareas prioritarias del backlog, se realizó un product roadmap<a name="ProductRoadMap"></a> en el cuál seleccionaron historias de usuario.
 
 
-### Tecnologías utilizadas<a name="Tecnology"></a> (Isaac)
+### Tecnologías utilizadas<a name="Tecnology"></a>
+
+#### Tecnologías de desarrollo
+
+- **Blazor (Versión 5.0):** Framework enfocado en el desarrollo de aplicaciones web incorporado en .NET. Utiliza los lenguajes C# y HTML. 
+- **ASP.NET (Versión 5.0):** Framework para el desarrollo de aplicaciones web.
+
+#### Bases de datos
+
+- **SQL Server 2016:** Lenguaje de bases de datos relacionales.
+- **Microsoft SQL Server Management Studio 18:** Administrador de componentes dentro de SQL Server.
+
+#### Administración
+
+- **Bitbucket:** Sistema de alojamiento de proyectos que utiliza el sistema de control de versiones git.
+- **Git:** Software de control de versiones (v2.31.1).
+- **Jira:** Herramienta de administración de proyectos (v7.13.0).
+
+#### Ambiente de desarrollo
+
+- **Visual Studio:** Entorno de desarrollo integrado (IDE) (v16.9).
+
 
 ### Repositorio de código & estrategia git<a name="Git"></a>
 
@@ -326,4 +414,34 @@ La definición de listo (DOD) abarca los siguientes aspectos:
     - Cualquier funcionalidad que se agregue no debe afectar a los demás equipos.
     - Comprobar las funcionalidades complementarias entre los grupos.
 
-## Referencias bibliográficas<a name="Ref"></a> (Manfred)
+## Bitácoras <a name="Logs"></a>
+- [Daily Meeting Report.](https://docs.google.com/spreadsheets/d/1vboRJwl7TfQBPofRB58tHBFxUC7Q7FTaEbG2q-Etz1M/edit#gid=1481241924)
+- [Retrospective Report.](https://docs.google.com/spreadsheets/d/1vboRJwl7TfQBPofRB58tHBFxUC7Q7FTaEbG2q-Etz1M/edit#gid=203688471)
+- [Sprint Review Report.](https://docs.google.com/spreadsheets/d/1vboRJwl7TfQBPofRB58tHBFxUC7Q7FTaEbG2q-Etz1M/edit#gid=849688878)
+## Referencias bibliográficas<a name="Ref"></a> 
+
+Atlassian. (n.d.-a). *Agile roadmaps: build, share, use, evolve*. <https://www.atlassian.com/agile/product-management/roadmaps>
+
+Atlassian. (n.d.-b). *Epics*. <https://www.atlassian.com/agile/project-management/epics>
+
+Atlassian. (n.d.-c). *Git Feature Branch Workflow | Atlassian Git Tutorial*. <https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow>
+
+Atlassian. (n.d.-d). *Gitflow Workflow | Atlassian Git Tutorial*. <https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow>
+
+Atlassian. (n.d.-e). *Product Backlog Grooming*. <https://www.atlassian.com/agile/scrum/backlogs>
+
+Atlassian. (n.d.-f). *Pull Requests | Atlassian Git Tutorial*. <https://www.atlassian.com/git/tutorials/making-a-pull-request>
+
+Atlassian. (n.d.-g). *User Stories | Examples and Template*. <https://www.atlassian.com/agile/project-management/user-stories>
+
+Atlassian. (n.d.-h). *What is Scrum?* <https://www.atlassian.com/agile/scrum>
+
+Atlassian. (n.d.-i). *What is version control | Atlassian Git Tutorial*. <https://www.atlassian.com/git/tutorials/what-is-version-control>
+
+Cohn, M. (2005). *Agile Estimating and Planning* (1st ed.). Pearson.
+
+Microsoft. (n.d.-a). *Microsoft SQL documentation* - SQL Server. Microsoft Docs. <https://docs.microsoft.com/en-us/sql/?view=sql-server-ver15>
+
+Microsoft. (n.d.-b). *Visual Studio documentation*. Microsoft Docs. <https://docs.microsoft.com/en-us/visualstudio/windows/?view=vs-2019&preserve-view=true>
+
+*Scrum Training Series: Free Scrum Master Training from Seattle*. (n.d.). Scrum Training Series. <https://scrumtrainingseries.com/>

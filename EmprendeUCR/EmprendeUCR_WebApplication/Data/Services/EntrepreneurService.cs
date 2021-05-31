@@ -10,7 +10,7 @@ namespace EmprendeUCR_WebApplication.Data.Services
 {
     public class EntrepreneurService : PageModel
     {
-        private readonly Contexts.SqlServerDbContext _context;
+        private readonly EmprendeUCR_WebApplication.Data.Contexts.SqlServerDbContext _context;
 
         public EntrepreneurService(EmprendeUCR_WebApplication.Data.Contexts.SqlServerDbContext context)
         {

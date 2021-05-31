@@ -15,10 +15,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using EmprendeUCR_WebApplication.Data;
-using EmprendeUCR_WebApplication.Data.Contexts;
-using Microsoft.EntityFrameworkCore;
-using EmprendeUCR_WebApplication.Data.Services;
 using EmprendeUCR_WebApplication.Data.Services.Categories;
 using Syncfusion.Blazor;
 
@@ -53,7 +49,7 @@ namespace EmprendeUCR_WebApplication
             services.AddScoped<ProvinceService>();
             services.AddScoped<CantonService>();
             services.AddScoped<DistrictService>();
-            services.AddScoped<CredentialsService>();
+            services.AddScoped <CredentialsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
