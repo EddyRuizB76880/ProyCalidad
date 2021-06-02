@@ -50,6 +50,8 @@ namespace EmprendeUCR_WebApplication
             services.AddScoped<CantonService>();
             services.AddScoped<DistrictService>();
             services.AddScoped <CredentialsService>();
+            services.AddScoped<OfferService>();
+            services.AddScoped<Is_OfferService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

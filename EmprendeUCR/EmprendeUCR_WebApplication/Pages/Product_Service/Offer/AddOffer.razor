@@ -1,0 +1,247 @@
+﻿@page "/AddOffer"
+@using EmprendeUCR_WebApplication.Data.Services
+@using EmprendeUCR_WebApplication.Data.Entities
+@using System;
+@inject ProductService  ProductService
+@inject NavigationManager NavigationManager
+@inject EntrepreneurService EntrepreneurService
+@inject Product_ServiceService Product_ServiceService
+@inject OfferService OfferService
+@inject Is_OfferService Is_OfferService
+
+<h3>Crear Oferta</h3>
+
+<form>
+    <div class="row">
+        <div class="col-md-6">
+
+            <div class="form-group">
+                <label for="Entrepreneur_Email" class="control-label">Emprendedor</label>
+
+
+                <select @onchange="loadAllProducts">
+                    <option value="" selected disabled>Seleccione un emprendedor</option>
+                    @if (entrepreneurs?.Count > 0)
+                    {
+                        @foreach (var cnt in entrepreneurs)
+                        {
+                            <option value="@cnt.User_Email">@cnt.User_Email @cnt.Presentation</option>
+                        }
+                    }
+                </select>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm">
+            <h4> Mis productos </h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:20%">Nombre</th>
+                        <th style="width:20%">Precio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (_products?.Count > 0)
+                    {
+                        @foreach (var prod in _products)
+                        {
+                            var prodServ = _productsServices.First(p => p.Code_ID == prod.Code_ID);
+                            <tr>
+                                <td>@prod.Product_Name</td>
+                                <td>@prod.Price</td>
+                                <td>
+                                    <button class="btn" type="button" @onclick="() => addProductToOffer(prod.Code_ID)"><i class="oi oi-plus"></i>Agregar a oferta</button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Volver" />
+                </div>
+            </div>
+        </div>
+        <div class="col-sm">
+            <h4>Productos en la oferta</h4>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:20%">Nombre</th>
+                        <th style="width:20%">Precio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (_addedProducts?.Count > 0)
+                    {
+                        @foreach (var prod in _addedProducts)
+                        {
+                            var prodServ = _productsServices.First(p => p.Code_ID == prod.Code_ID);
+                            <tr>
+                                <td style="width:20%">@prod.Product_Name</td>
+                                <td style="width:20%">@prod.Price</td>
+                                <td>
+                                    <button class="btn" type="button" @onclick="() => removeProductFromOffer(prod.Code_ID)"><i class="oi oi-trash"></i>Eliminar de oferta</button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+
+
+            @if (_addedProducts?.Count > 0 && !showConfirmation)
+            {
+                <input type="button" class="btn btn-primary" @onclick="@confirmOffer" value="Confirmar productos" />
+            }
+
+            @if (showConfirmation && _addedProducts?.Count > 0)
+            {
+                <div id="FormOfferDetails">
+
+                    <div class="form-group">
+                        <label for="Initial_Date" class="control-label">Fecha de inicio de oferta</label>
+                        <input type="date" min="@DateTime.Now" class="form-control" @bind="@initialDateInput" required />
+                    </div>
+
+                    <div class="col px-mb-3">
+                        <label for="Expire_Date" class="control-label">Fecha de fin de oferta</label>
+                        <input type="date" min="@DateTime.Now" class="form-control" @bind="@expireDateInput" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Offer_Description" class="control-label">Descripción</label>
+                        <input form="Offer_Description" class="form-control" @bind="@offer.Offer_Description" />
+                    </div>
+
+                    <div>
+                        <h5>Suma total del precio original de productos = @totalPriceFromListedProductsInOffer</h5>
+                    </div>
+
+                    <div class="col px-mb-3">
+                        <label for="Price" class="control-label">Nuevo precio de oferta (CRC)</label>
+                        <input form="Price" type="number" class="form-control" @bind="@offer.Discount" required />
+                    </div>
+
+                    @if ((offer.Discount > 0 && offer.Discount < totalPriceFromListedProductsInOffer) && !String.IsNullOrEmpty(initialDateInput.ToString()) && !String.IsNullOrEmpty(expireDateInput.ToString())) // If all requeried data was filled
+                    {
+                        <input type="button" class="btn btn-primary" @onclick="@onCreateOffer" value="Guardar oferta" />
+                    }
+                </div>
+            }
+        </div>
+    </div>
+    <div>
+        <h4 id="error" hidden="@hideError">Informacion incompleta.</h4>
+    </div>
+</form>
+
+@code {
+    Offer offer = new Offer();
+    IList<Product_Service> _productsServices;
+    IList<Entrepreneur> entrepreneurs;
+    IList<Product> _products;
+    IList<Product> _addedProducts = new List<Product>();
+
+    private bool _isLoading = true;
+    bool hideError = true;
+    bool showConfirmation = false;
+    int totalPriceFromListedProductsInOffer = 0;
+    System.DateTime initialDateInput = DateTime.Now;
+    System.DateTime expireDateInput = DateTime.Now;
+
+    protected override async Task OnInitializedAsync()
+    {
+        entrepreneurs = await EntrepreneurService.GetAsync();
+        _isLoading = false;
+    }
+
+    public void addProductToOffer(int id)
+    {
+        Product temp = _products.First(p => p.Code_ID == id);
+        if (temp is not null)
+        {
+            _addedProducts.Add(temp);
+        }
+
+        showConfirmation = false;
+    }
+
+    public void removeProductFromOffer(int id)
+    {
+        getTotalPriceFromListedProductsInOffer();
+        showConfirmation = false;
+        Product temp = _products.First(p => p.Code_ID == id);
+        if (temp is not null)
+        {
+            _addedProducts.Remove(temp);
+        }
+
+
+    }
+
+    protected void getTotalPriceFromListedProductsInOffer()
+    {
+        totalPriceFromListedProductsInOffer = 0;
+
+        foreach (var p in _addedProducts)
+        {
+            totalPriceFromListedProductsInOffer += p.Price;
+        }
+    }
+
+
+    protected async void onCreateOffer()
+    {
+
+        int idToInsert = await OfferService.InsertOfferAsync(offer);
+        offer.Initial_Date = initialDateInput.ToString();
+        offer.Expire_Date = expireDateInput.ToString();
+        foreach (var p in _addedProducts)
+        {
+            Is_Offer is_offer_toInsert = new Is_Offer();
+            is_offer_toInsert.Offer_ID = idToInsert;
+            is_offer_toInsert.Code_ID = p.Code_ID;
+            is_offer_toInsert.Category_ID = p.Category_ID;
+            is_offer_toInsert.User_Email = p.Entrepreneur_Email;
+            await Is_OfferService.InsertIs_OfferAsync(is_offer_toInsert);
+        }
+
+        NavigationManager.NavigateTo("ListProducts");
+    }
+
+    protected void confirmOffer()
+    {
+        getTotalPriceFromListedProductsInOffer();
+        showConfirmation = true;
+    }
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("ListProducts");
+    }
+
+    public async Task loadAllProducts(ChangeEventArgs email)
+    {
+        await loadProducts(email);
+        await loadProductsServices(email);
+    }
+
+    public async Task loadProducts(ChangeEventArgs email)
+    {
+        _products = await ProductService.GetProductsEntrepreneurAsync(email.Value.ToString());
+    }
+
+    public async Task loadProductsServices(ChangeEventArgs email)
+    {
+        _productsServices = await Product_ServiceService.GetProductsServicesEntrepreneurAsync(email.Value.ToString());
+    }
+
+}
+
+
