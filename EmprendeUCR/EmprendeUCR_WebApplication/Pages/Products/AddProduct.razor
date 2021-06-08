@@ -1,10 +1,15 @@
 ﻿@page "/AddProduct"
 @using EmprendeUCR_WebApplication.Data.Services
 @using EmprendeUCR_WebApplication.Data.Entities
+@using System.IO
+@using BlazorInputFile
 @inject ProductService  productService
 @inject NavigationManager NavigationManager
 @inject EntrepreneurService EntrepreneurService
 @inject Product_ServiceService Product_ServiceService
+@inject CategoryService CategoryService
+@inject Product_PhotosService Product_PhotosService
+@inherits OwningComponentBase<Product_PhotosService>
 <h2>Agregar producto</h2>
 <hr />
 <form>
@@ -12,9 +17,9 @@
         <div class="col-md-8">
 
             @*<div class="form-group">
-                <label for="Codigo" class="control-label">Codigo</label>
-                <input form="Codigo" class="form-control" @bind="@prodServ.Code_ID" />
-            </div>*@
+            <label for="Codigo" class="control-label">Codigo</label>
+            <input form="Codigo" class="form-control" @bind="@prodServ.Code_ID" />
+        </div>*@
             <div class="form-group">
                 <label for="Name" class="control-label">Nombre</label>
                 <input form="Name" class="form-control" @bind="@prod.Product_Name" />
@@ -27,14 +32,16 @@
                 <label for="Price" class="control-label">Precio (CRC)</label>
                 <input form="Price" type="number" class="form-control" @bind="@prod.Price" />
             </div>
+
+
             @*<div>
-            <label>Disponibilidad</label>
-            <br />
-            <input type="radio" id="available" name="availability" value="1" selected @onselect="onAvailabilityChange">
-            <label for="available">Disponible</label><br>
-            <input type="radio" id="unavailable" name="availability" value="0" @onselect="onAvailabilityChange">
-            <label for="unavailable">No disponible</label><br>
-        </div>*@
+                    <label>Disponibilidad</label>
+                    <br />
+                    <input type="radio" id="available" name="availability" value="1" selected @onselect="onAvailabilityChange">
+                    <label for="available">Disponible</label><br>
+                    <input type="radio" id="unavailable" name="availability" value="0" @onselect="onAvailabilityChange">
+                    <label for="unavailable">No disponible</label><br>
+                </div>*@
 
 
 
@@ -55,41 +62,106 @@
                 </select>
             </div>
 
+
+
+            <div class="form-group">
+                <label for="Category_Product" class="control-label">Categorias</label>
+
+
+                <select @bind="categ.Id">
+                    <option value="" selected disabled>Categorias</option>
+                    @if (categories?.Count > 0)
+                    {
+                        @foreach (var cat in categories)
+                        {
+                            <option value="@cat.Id"> @cat.Title</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                <label class="form-check-label" for="flexSwitchCheckDefault">Disponibilidad</label>
+            </div>
+
+
         </div>
     </div>
-    <div >
+    <div>
         <h4 id="error" hidden="@hideError">Informacion incompleta.</h4>
     </div>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="form-group">
-                <input type="button" class="btn btn-primary" @onclick="@onCreateProduct" value="Guardar" />
-                <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Cancelar" />
+    <div>
+        <EditForm Model="@photos" OnInvalidSubmit="@Validsubmit">
+            <BlazorInputFile.InputFile OnChange="HandleFileSelected"></BlazorInputFile.InputFile>
+            <th><img src="@convertImageDisplay(PhotoUploaded)" width="350" /></th>
+        </EditForm>
+        <table border="1">
+        </table>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <input type="button" class="btn btn-primary" @onclick="@onCreateProduct" value="Guardar" />
+                    <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Cancelar" />
+                </div>
             </div>
         </div>
     </div>
 </form>
 
+
+
 @code {
 
     EmprendeUCR_WebApplication.Data.Entities.Product prod = new EmprendeUCR_WebApplication.Data.Entities.Product();
     EmprendeUCR_WebApplication.Data.Entities.Product_Service prodServ = new EmprendeUCR_WebApplication.Data.Entities.Product_Service();
+    Category categ = new Category();
+
+    EmprendeUCR_WebApplication.Data.Entities.Product_Photos prodPhotos = new EmprendeUCR_WebApplication.Data.Entities.Product_Photos();
+
 
     IList<Entrepreneur> entrepreneurs;
+    IList<Category> categories;
+
     private bool _isLoading = true;
     bool hideError = true;
 
+    List<Product_Photos> imgdisplayobj;
+    Product_Photos photos = new Product_Photos();
+
+    public byte[] PhotoUploaded { get; set; }
+
+    protected override void OnInitialized()
+    {
+        imgdisplayobj = Service.loadAllPhotos();
+    }
     protected override async Task OnInitializedAsync()
     {
         entrepreneurs = await EntrepreneurService.GetAsync();
+        categories = await CategoryService.GetAsync();
         _isLoading = false;
+
     }
 
     //public void onAvailabilityChange(ChangeEventArgs available)
     //{
     //    prodServ.Availability = Convert.ToByte(available.Value.ToString());
     //}
-
+    void Validsubmit()
+    {
+        photos.Photos = PhotoUploaded;
+        Service.Uploading(photos);
+    }
+    async Task HandleFileSelected(IFileListEntry[] files)
+    {
+        var file = files.FirstOrDefault();
+        if (file != null)
+        {
+            var ms = new MemoryStream();
+            await file.Data.CopyToAsync(ms);
+            PhotoUploaded = ms.ToArray();
+        }
+    }
     protected Task createProduct()
     {
 
@@ -98,7 +170,9 @@
             // product details are incomplete, show error
             hideError = false;
             return Task.CompletedTask;
-        } else {
+        }
+        else
+        {
             return productService.InsertProductAsync(prod);
         }
 
@@ -125,19 +199,33 @@
 
     protected async void onCreateProduct()
     {
-        prodServ.Availability = 1;
-        prodServ.Category_ID = 1;
+        prodServ.Availability = prodServ.Availability;
+        prodServ.Category_ID =categ.Id;
 
-        prod.Category_ID = 1;
+        prod.Category_ID = categ.Id;
+
         prod.Entrepreneur_Email = prodServ.Entrepreneur_Email;
 
 
-
         int idToInsert = await createProduct_Service();
+        photos.Code_ID = idToInsert;
         prod.Code_ID = idToInsert;
         await createProduct();
-
+        photos.Photos = PhotoUploaded;
+        photos.Entrepreneur_Email = prodServ.Entrepreneur_Email;
+        photos.Category_ID = categ.Id; ;
+        Product_PhotosService.Uploading(photos);
         NavigationManager.NavigateTo("ListProducts");
+    }
+    string convertImageDisplay(byte[] image)
+    {
+        if (image != null)
+        {
+            var base64 = Convert.ToBase64String(image);
+            var fs = string.Format("data:image/jpg;base64,{0}",base64);
+            return fs;
+        }
+        return "";
     }
 
     void Cancel()

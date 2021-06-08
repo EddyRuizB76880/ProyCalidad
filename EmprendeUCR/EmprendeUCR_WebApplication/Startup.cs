@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using EmprendeUCR_WebApplication.Data.Services.Categories;
 using Syncfusion.Blazor;
 
+
 namespace EmprendeUCR_WebApplication
 {
     public class Startup
@@ -53,6 +54,7 @@ namespace EmprendeUCR_WebApplication
             services.AddScoped<OfferService>();
             services.AddScoped<Is_OfferService>();
             services.AddScoped<ServiceService>();
+            services.AddScoped<Product_PhotosService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

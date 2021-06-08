@@ -74,7 +74,6 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return await _context.Product.Select(product => new Product { Code_ID = product.Code_ID, Product_Name = product.Product_Name, Price = product.Price }).ToListAsync();
 
         }
-
         public int GetProductsQuantity()
         {
             /*var parameterQuantity = new Microsoft.Data.SqlClient.SqlParameter

@@ -26,5 +26,6 @@ namespace EmprendeUCR_WebApplication.Data.Contexts
         public DbSet<Offer> Offer { get; set; }
         public DbSet<Is_Offer> Is_Offer { get; set; }
         public DbSet<Service> Service { get; set; }
+        public DbSet<Product_Photos> Product_Photos { get; set; }
     }
 }

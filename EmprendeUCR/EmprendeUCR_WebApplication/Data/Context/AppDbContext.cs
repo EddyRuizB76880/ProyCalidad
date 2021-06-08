@@ -20,7 +20,6 @@ namespace EmprendeUCR_WebApplication.Data.Context
         public DbSet<User> User { get; set; }
         public DbSet<Product_Service> Product_Service { get; set; }
 
-
         //protected override void OnModelCreating(Microsoft.EntityFrameworkCore.ModelBuilder modelBuilder)
         //{
         //    modelBuilder.HasDefaultSchema()
