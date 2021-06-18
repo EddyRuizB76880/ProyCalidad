@@ -26,6 +26,13 @@ namespace EmprendeUCR_WebApplication.Data.Contexts
         public DbSet<Offer> Offer { get; set; }
         public DbSet<Is_Offer> Is_Offer { get; set; }
         public DbSet<Service> Service { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Tells entity framework this entity has a composite key.
+            modelBuilder.Entity<Is_Offer>()
+                .HasKey(o => new { o.Offer_ID, o.Code_ID, o.User_Email, o.Category_ID });
+        }
         public DbSet<Product_Photos> Product_Photos { get; set; }
     }
 }

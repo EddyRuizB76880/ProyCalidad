@@ -4,8 +4,9 @@
 @inject EntrepreneurService EntrepreneurService
 @inject CategoryService CategoryService
 @inject ProductService ProductService
+@using Syncfusion.Blazor.TreeGrid;
 @inject Product_ServiceService Product_ServiceService
-@inherits OwningComponentBase<Product_PhotosService>
+@inject Product_PhotosService Product_PhotosService
 
 @if (_isLoading)
 {
@@ -33,21 +34,10 @@ else
 
 
         <header>
-            <div class="icon-m"> Mis Productos</div>
+            <div class="icon-m display-2"> Mis Productos</div>
         </header>
 
-
-        <div>
-            <NavLink class="nav-link" href="AddProduct">
-                <button class="btn btn-primary" aria-hidden="true">Agregar nuevo Producto</button>
-
-            </NavLink>
-
-
-
-        </div>
-
-        <section class="w-90  float_right ">
+        <section class="w-70  float_right ">
 
             <div class="layout wrap">
                 @if (_products?.Count > 0)
@@ -56,17 +46,17 @@ else
                     {
                         var prodServ = _productsServices.First(p => p.Code_ID == prod.Code_ID);
                         var prodPhoto = photosDisplay.FirstOrDefault(p => p.Code_ID == prod.Code_ID);
-                <div class="item data border-1 border-blue">
-                    @if (prodPhoto != null)
-                    {
-                        <img src="@convertImageDisplay(prodPhoto.Photos)" width="200" />
-                    }
-                        <div class="item ">
-                            <div class="item_name">@prod.Product_Name</div>
-                            <div class="item_description">@prod.Product_Description</div>
-                            <div class="item_price">₡@prod.Price</div>
+                        <div class="item data border-1 border-blue content-center">
+                            @if (prodPhoto != null)
+                            {
+                                <img src="@Product_PhotosService.convertImageDisplay(prodPhoto.Photos)" width="200" />
+                            }
+                            <div class="item ">
+                                <div class="item_name">@prod.Product_Name</div>
+                                <div class="item_description">@prod.Product_Description</div>
+                                <div class="item_price">₡@prod.Price</div>
+                            </div>
                         </div>
-                    </div>
                     }
                 }
             </div>
@@ -74,24 +64,35 @@ else
 
 
 
-        <aside class="w-10 float_left border-blue">
-            <h2 class="text-center fs-2  bg-blue">Categoria</h2>
 
-            <samp value="" selected disabled>Categoria</samp><br />
-            @if (_my_categories?.Count > 0)
-            {
-
-                @foreach (var cat in _my_categories)
-                {
-
-                    <samp value="@cat.Id">@cat.Title</samp><br />
+        <aside class="w-25 float_left mb-0">
+            <div class=" border-blue " @onchange="loadCategories">
+                <h2 class="text-center fs-2  bg-blue">Categorias</h2>
+                @if (_my_categories?.Count > 0)
+                {   //jala la llave del papa no se trae los hijos
+                    <SfTreeGrid ID="TreeGrid" @ref="TreeGrid" AllowSorting="true" AllowRowDragAndDrop="true" DataSource="@_my_categories" IdMapping="Id" ParentIdMapping="ParentId" AllowSelection="true" TreeColumnIndex="0">
+                        <TreeGridEvents TValue="Category" RowDropped="Rowdrop" RowSelected="SelectionHandler"></TreeGridEvents>
+                        <TreeGridSortSettings>
+                            <TreeGridSortColumns>
+                                <TreeGridSortColumn Field="Title" Direction="Syncfusion.Blazor.Grids.SortDirection.Ascending"></TreeGridSortColumn>
+                            </TreeGridSortColumns>
+                        </TreeGridSortSettings>
+                        <TreeGridColumns>
+                            <TreeGridColumn Field="Title" HeaderText="Nombre" Width="100"></TreeGridColumn>
+                            <TreeGridColumn Field="Description" HeaderText="Descripción" Width="160"></TreeGridColumn>
+                        </TreeGridColumns>
+                    </SfTreeGrid>
 
                 }
-            }
+            </div>
+
+
+            <NavLink class="nav-link" href="AddProduct">
+                <button class="btn btn-primary" aria-hidden="true">Agregar nuevo Producto</button>
+            </NavLink>
 
         </aside>
-
-
+     
 
     </body>
 }
@@ -105,33 +106,39 @@ else
     private IList<EmprendeUCR_WebApplication.Data.Entities.Category> _my_categories = new List<Category>();
     IList<Entrepreneur> entrepreneurs;
     IList<Product_Photos> photosDisplay;
+    SfTreeGrid<Category> TreeGrid { get; set; }
+
+
     public async Task loadAllProducts(ChangeEventArgs email)
     {
+        _my_categories.Clear();
         await loadProducts(email);
         await loadProductsServices(email);
 
-        loadCategories();
+        await loadCategories();
     }
-    string convertImageDisplay(byte[] image)
+
+    public async Task loadCategories()
     {
-        if (image != null)
-        {
-            var base64 = Convert.ToBase64String(image);
-            var fs = string.Format("data:image/jpg;base64,{0}", base64);
-            return fs;
-        }
-        return "";
-    }
-    protected override void OnInitialized()
-    {
-        photosDisplay = Service.loadAllPhotos();
-    }
-    public async void loadCategories()
-    {
+        _my_categories.Clear();
         foreach (var prod in _products)
         {
             Category cat = CategoryService.getCategory(prod.Category_ID);
-            //Category temp = _my_categories.First(c => c.Id == cat.Id);
+
+            Category iterator = CategoryService.getCategory(prod.Category_ID);
+
+            while (iterator.ParentId != null) {
+
+                Category parentcat = CategoryService.getCategory((int)iterator.ParentId);
+
+                if (!_my_categories.Contains(parentcat))
+                {
+                    _my_categories.Add(parentcat);
+                }
+
+                iterator = parentcat;
+            }
+
             if (!_my_categories.Contains(cat))
             {
                 _my_categories.Add(cat);
@@ -143,6 +150,7 @@ else
     {
         entrepreneurs = await EntrepreneurService.GetAsync();
         _categories = await CategoryService.GetAsync();
+        photosDisplay = Product_PhotosService.loadAllPhotos();
         _isLoading = false;
     }
     bool hideError = true;
@@ -155,6 +163,30 @@ else
     {
         _productsServices = await Product_ServiceService.GetProductsServicesEntrepreneurAsync(email.Value.ToString());
     }
+
+
+
+
+    // metodos para prueba de categories
+
+    //RowDrop
+    private void Rowdrop(Syncfusion.Blazor.Grids.RowDragEventArgs<Category> args)
+    {
+        CategoryService.Rowdrop(args, this.TreeGrid);
+    }
+
+    //SelectionHandler
+
+
+
+    public async Task SelectionHandler(Syncfusion.Blazor.Grids.RowSelectEventArgs<Category> args)
+    {
+        var SelectedCategories = await this.TreeGrid.GetSelectedRecords();
+
+    }
+
+
+
 }
 
 

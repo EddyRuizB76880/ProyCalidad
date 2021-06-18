@@ -3,6 +3,7 @@
 @using EmprendeUCR_WebApplication.Data.Entities
 @using System;
 @inject ProductService  ProductService
+@inject ServiceService  ServiceService
 @inject NavigationManager NavigationManager
 @inject EntrepreneurService EntrepreneurService
 @inject Product_ServiceService Product_ServiceService
@@ -12,8 +13,9 @@
 <h3>Crear Oferta</h3>
 
 <form>
+    <!-- Display de emprendedores -->
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
 
             <div class="form-group">
                 <label for="Entrepreneur_Email" class="control-label">Emprendedor</label>
@@ -23,18 +25,18 @@
                     <option value="" selected disabled>Seleccione un emprendedor</option>
                     @if (entrepreneurs?.Count > 0)
                     {
-                        @foreach (var cnt in entrepreneurs)
-                        {
-                            <option value="@cnt.User_Email">@cnt.User_Email @cnt.Presentation</option>
-                        }
-                    }
+        @foreach (var cnt in entrepreneurs)
+        {
+<option value="@cnt.User_Email">@cnt.User_Email @cnt.Presentation</option>}}
                 </select>
 
             </div>
         </div>
     </div>
+
     <div class="row">
-        <div class="col-sm">
+        <!-- Mis productos -->
+        <div class="col-md-4">
             <h4> Mis productos </h4>
             <table>
                 <thead>
@@ -46,18 +48,17 @@
                 <tbody>
                     @if (_products?.Count > 0)
                     {
-                        @foreach (var prod in _products)
-                        {
-                            var prodServ = _productsServices.First(p => p.Code_ID == prod.Code_ID);
-                            <tr>
-                                <td>@prod.Product_Name</td>
-                                <td>@prod.Price</td>
-                                <td>
-                                    <button class="btn" type="button" @onclick="() => addProductToOffer(prod.Code_ID)"><i class="oi oi-plus"></i>Agregar a oferta</button>
-                                </td>
-                            </tr>
-                        }
-                    }
+        @foreach (var prod in _products)
+        {
+            var prodServ = _productsServices.First(p => p.Code_ID == prod.Code_ID);
+<tr>
+    <td>@prod.Product_Name</td>
+    <td>@prod.Price</td>
+    <td>
+        <button class="btn" type="button" @onclick="() => addProductToOffer(prod.Code_ID)"><i class="oi oi-plus"></i>Agregar a oferta</button>
+    </td>
+</tr>
+}}
                 </tbody>
             </table>
             <div class="col-md-4">
@@ -66,9 +67,40 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm">
-            <h4>Productos en la oferta</h4>
 
+
+        <!-- Mis servicios-->
+        <div class="col-md-3">
+            <h4> Mis servicios </h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:20%">Nombre</th>
+                        <th style="width:20%">Precio por hora</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (_service?.Count > 0)
+                    {
+        @foreach (var serv in _service)
+        {
+            var prodServ = _productsServices.First(p => p.Code_ID == serv.Code_ID);
+<tr>
+    <td>@serv.Service_Name</td>
+    <td>@serv.Price_per_hour</td>
+    <td>
+        <button class="btn" type="button" @onclick="() => addServiceToOffer(serv.Code_ID)"><i class="oi oi-plus"></i>Agregar a oferta</button>
+    </td>
+</tr>
+}}
+                </tbody>
+            </table>
+        </div>
+
+
+        <!-- Productos en la oferta -->
+        <div class="col-md-4">
+            <h4>Productos en la oferta</h4>
             <table>
                 <thead>
                     <tr>
@@ -79,79 +111,92 @@
                 <tbody>
                     @if (_addedProducts?.Count > 0)
                     {
-                        @foreach (var prod in _addedProducts)
-                        {
-                            var prodServ = _productsServices.First(p => p.Code_ID == prod.Code_ID);
-                            <tr>
-                                <td style="width:20%">@prod.Product_Name</td>
-                                <td style="width:20%">@prod.Price</td>
-                                <td>
-                                    <button class="btn" type="button" @onclick="() => removeProductFromOffer(prod.Code_ID)"><i class="oi oi-trash"></i>Eliminar de oferta</button>
-                                </td>
-                            </tr>
-                        }
-                    }
+        @foreach (var prod in _addedProducts)
+        {
+            var prodServ = _productsServices.First(p => p.Code_ID == prod.Code_ID);
+<tr>
+    <td style="width:20%">@prod.Product_Name</td>
+    <td style="width:20%">@prod.Price</td>
+    <td>
+        <button class="btn" type="button" @onclick="() => removeProductFromOffer(prod.Code_ID)"><i class="oi oi-trash"></i>Eliminar de oferta</button>
+    </td>
+</tr>
+}}
+                    @if (_addedServices?.Count > 0)
+                    {
+        @foreach (var serv in _addedServices)
+        {
+            var prodServ = _productsServices.First(p => p.Code_ID == serv.Code_ID);
+<tr>
+    <td style="width:20%">@serv.Service_Name</td>
+    <td style="width:20%">@serv.Price_per_hour</td>
+    <td>
+        <button class="btn" type="button" @onclick="() => removeServiceFromOffer(serv.Code_ID)"><i class="oi oi-trash"></i>Eliminar de oferta</button>
+    </td>
+</tr>
+}}
                 </tbody>
             </table>
 
 
-            @if (_addedProducts?.Count > 0 && !showConfirmation)
+            @if ((_addedProducts?.Count > 0 || _addedServices?.Count > 0) && !showConfirmation)
             {
-                <input type="button" class="btn btn-primary" @onclick="@confirmOffer" value="Confirmar productos" />
-            }
+<input type="button" class="btn btn-primary" @onclick="@confirmOffer" value="Confirmar productos" />}
 
-            @if (showConfirmation && _addedProducts?.Count > 0)
+            @if (showConfirmation && (_addedProducts?.Count > 0 || _addedServices?.Count > 0))
             {
-                <div id="FormOfferDetails">
+<div id="FormOfferDetails">
 
-                    <div class="form-group">
-                        <label for="Initial_Date" class="control-label">Fecha de inicio de oferta</label>
-                        <input type="date" min="@DateTime.Now" class="form-control" @bind="@initialDateInput" required />
-                    </div>
-
-                    <div class="col px-mb-3">
-                        <label for="Expire_Date" class="control-label">Fecha de fin de oferta</label>
-                        <input type="date" min="@DateTime.Now" class="form-control" @bind="@expireDateInput" required />
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="Offer_Description" class="control-label">Descripción</label>
-                        <input form="Offer_Description" class="form-control" @bind="@offer.Offer_Description" />
-                    </div>
-
-                    <div>
-                        <h5>Suma total del precio original de productos = @totalPriceFromListedProductsInOffer</h5>
-                    </div>
-
-                    <div class="col px-mb-3">
-                        <label for="Price" class="control-label">Nuevo precio de oferta (CRC)</label>
-                        <input form="Price" type="number" class="form-control" @bind="@offer.Discount" required />
-                    </div>
-
-                    @if ((offer.Discount > 0 && offer.Discount < totalPriceFromListedProductsInOffer) && !String.IsNullOrEmpty(initialDateInput.ToString()) && !String.IsNullOrEmpty(expireDateInput.ToString())) // If all requeried data was filled
-                    {
-                        <input type="button" class="btn btn-primary" @onclick="@onCreateOffer" value="Guardar oferta" />
-                    }
-                </div>
-            }
-        </div>
+    <div class="form-group">
+        <label for="Initial_Date" class="control-label">Fecha de inicio de oferta</label>
+        <input type="date" min="@DateTime.Now" class="form-control" @bind="@initialDateInput" required />
     </div>
+
+    <div class="col px-mb-3">
+        <label for="Expire_Date" class="control-label">Fecha de fin de oferta</label>
+        <input type="date" min="@DateTime.Now" class="form-control" @bind="@expireDateInput" required />
+    </div>
+
+    <div class="mb-3">
+        <label for="Offer_Description" class="control-label">Descripción</label>
+        <input form="Offer_Description" class="form-control" @bind="@offer.Offer_Description" />
+    </div>
+
+    <div>
+        <h5>Suma total del precio original de productos = @totalPriceFromListedProductsAndServicesInOffer</h5>
+    </div>
+
+    <div class="col mb-3">
+        <label for="Price" class="control-label">Nuevo precio de oferta (CRC)</label>
+        <input form="Price" type="number" class="form-control" @bind="@offer.Discount" required />
+    </div>
+
+    @if ((offer.Discount > 0 && offer.Discount < totalPriceFromListedProductsAndServicesInOffer) && !String.IsNullOrEmpty(initialDateInput.ToString()) && !String.IsNullOrEmpty(expireDateInput.ToString())) // If all requeried data was filled
+    {
+<input type="button" class="btn btn-primary" @onclick="@onCreateOffer" value="Guardar oferta" />}
+</div>}
+
+        </div>
+
+    </div>
+
     <div>
         <h4 id="error" hidden="@hideError">Informacion incompleta.</h4>
     </div>
 </form>
 
-@code {
-    Offer offer = new Offer();
+@code { Offer offer = new Offer();
     IList<Product_Service> _productsServices;
     IList<Entrepreneur> entrepreneurs;
     IList<Product> _products;
+    IList<Service> _service;
     IList<Product> _addedProducts = new List<Product>();
+    IList<Service> _addedServices = new List<Service>();
 
     private bool _isLoading = true;
     bool hideError = true;
     bool showConfirmation = false;
-    int totalPriceFromListedProductsInOffer = 0;
+    int totalPriceFromListedProductsAndServicesInOffer = 0;
     System.DateTime initialDateInput = DateTime.Now;
     System.DateTime expireDateInput = DateTime.Now;
 
@@ -185,23 +230,53 @@
 
     }
 
+    public void addServiceToOffer(int id)
+    {
+        Service temp = _service.First(p => p.Code_ID == id);
+        if (temp is not null)
+        {
+            _addedServices.Add(temp);
+        }
+
+        showConfirmation = false;
+    }
+
+    public void removeServiceFromOffer(int id)
+    {
+        getTotalPriceFromListedProductsInOffer();
+        showConfirmation = false;
+        Service temp = _service.First(p => p.Code_ID == id);
+        if (temp is not null)
+        {
+            _addedServices.Remove(temp);
+        }
+    }
+
+
     protected void getTotalPriceFromListedProductsInOffer()
     {
-        totalPriceFromListedProductsInOffer = 0;
+        totalPriceFromListedProductsAndServicesInOffer = 0;
 
         foreach (var p in _addedProducts)
         {
-            totalPriceFromListedProductsInOffer += p.Price;
+            totalPriceFromListedProductsAndServicesInOffer += p.Price;
+        }
+        foreach (var p in _addedServices)
+        {
+            totalPriceFromListedProductsAndServicesInOffer += p.Price_per_hour;
         }
     }
 
 
     protected async void onCreateOffer()
     {
+        offer.Initial_Date = initialDateInput;
+        offer.Expire_Date = expireDateInput;
 
         int idToInsert = await OfferService.InsertOfferAsync(offer);
-        offer.Initial_Date = initialDateInput.ToString();
-        offer.Expire_Date = expireDateInput.ToString();
+        IList<Is_Offer> Is_offerList = new List<Is_Offer>();
+        int aux_cont = 0;
+        // Make is_offer products
         foreach (var p in _addedProducts)
         {
             Is_Offer is_offer_toInsert = new Is_Offer();
@@ -209,8 +284,28 @@
             is_offer_toInsert.Code_ID = p.Code_ID;
             is_offer_toInsert.Category_ID = p.Category_ID;
             is_offer_toInsert.User_Email = p.Entrepreneur_Email;
-            await Is_OfferService.InsertIs_OfferAsync(is_offer_toInsert);
+            Is_offerList.Insert(aux_cont, is_offer_toInsert);
+            aux_cont++;
         }
+        // Make is_offer service
+        foreach (var p in _addedServices)
+        {
+            Is_Offer is_offer_toInsert = new Is_Offer();
+            is_offer_toInsert.Offer_ID = idToInsert;
+            is_offer_toInsert.Code_ID = p.Code_ID;
+            is_offer_toInsert.Category_ID = p.Category_ID;
+            is_offer_toInsert.User_Email = p.Entrepreneur_Email;
+            Is_offerList.Insert(aux_cont, is_offer_toInsert);
+            aux_cont++;
+        }
+        // Add Is_offer's to the DataBase
+        foreach (var is_offerToAdd in Is_offerList)
+        {
+            bool success = await Is_OfferService.InsertIs_OfferAsync(is_offerToAdd);
+        }
+
+        // await Is_OfferService.InsertListOfIs_OfferAsync(Is_offerList);
+
 
         NavigationManager.NavigateTo("ListProducts");
     }
@@ -229,6 +324,7 @@
     public async Task loadAllProducts(ChangeEventArgs email)
     {
         await loadProducts(email);
+        await loadService(email);
         await loadProductsServices(email);
     }
 
@@ -237,11 +333,14 @@
         _products = await ProductService.GetProductsEntrepreneurAsync(email.Value.ToString());
     }
 
+    public async Task loadService(ChangeEventArgs email)
+    {
+        _service = await ServiceService.GetServiceEntrepreneurAsync(email.Value.ToString());
+    }
+
     public async Task loadProductsServices(ChangeEventArgs email)
     {
         _productsServices = await Product_ServiceService.GetProductsServicesEntrepreneurAsync(email.Value.ToString());
-    }
-
-}
+    } }
 
 

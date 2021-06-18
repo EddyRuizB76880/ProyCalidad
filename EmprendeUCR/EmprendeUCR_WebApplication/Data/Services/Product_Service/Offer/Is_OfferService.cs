@@ -29,6 +29,23 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return true;
         }
 
+        public async Task<bool> InsertListOfIs_Offer(IList<Is_Offer> Is_offerList) // Agrega Ofertas
+        {
+            try
+            {
+                foreach (var offer in Is_offerList)
+                {
+                   await InsertIs_OfferAsync(offer);
+                } 
+                await _context.SaveChangesAsync();
+            }
+            catch(InvalidOperationException)
+            {
+                
+            }
+
+            return true;
+        }
 
 
         public async Task<bool> UpdateIs_OfferAsync(Is_Offer offer) // Update Ofertas

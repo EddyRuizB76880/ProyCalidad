@@ -324,3 +324,8 @@ ul, p, span {
 .float_left {
     float: left;
 }
+
+.wrapper {
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+}

@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using EmprendeUCR_WebApplication.Data.Entities;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
+using BlazorInputFile;
 
 namespace EmprendeUCR_WebApplication.Data.Services
 {
@@ -27,6 +29,17 @@ namespace EmprendeUCR_WebApplication.Data.Services
         {
             return _context.Product_Photos.ToList();
         }
+        public string convertImageDisplay(byte[] image)
+        {
+            if (image != null)
+            {
+                var base64 = Convert.ToBase64String(image);
+                var fs = string.Format("data:image/jpg;base64,{0}", base64);
+                return fs;
+            }
+            return "";
+        }
         
+
     }
 }

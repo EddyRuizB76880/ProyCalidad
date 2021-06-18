@@ -65,7 +65,6 @@
         <DialogButton Content="Cancelar" OnClick="@EditCategories.CloseEditCategoryDialog" />
     </DialogButtons>
 </SfDialog>
-
 <SfDialog ID="RemoveDialog" Width="300px" IsModal="true" @bind-Visible="@DeleteCategories.RemoveDialogVisible">
     <DialogTemplates>
         <Header> Eliminar categoría </Header>
@@ -126,7 +125,6 @@
     {
         CategoryService.Rowdrop(args, this.TreeGrid);
     }
-
     //SelectionHandler
     public async Task SelectionHandler(Syncfusion.Blazor.Grids.RowSelectEventArgs<Category> args)
     {

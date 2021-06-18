@@ -3,81 +3,89 @@
 @using EmprendeUCR_WebApplication.Data.Entities
 @using System.IO
 @using BlazorInputFile
+@using Syncfusion.Blazor.TreeGrid;
 @inject ProductService  productService
 @inject NavigationManager NavigationManager
 @inject EntrepreneurService EntrepreneurService
 @inject Product_ServiceService Product_ServiceService
 @inject CategoryService CategoryService
 @inject Product_PhotosService Product_PhotosService
-@inherits OwningComponentBase<Product_PhotosService>
+
 <h2>Agregar producto</h2>
 <hr />
-<form>
-    <div class="row">
-        <div class="col-md-8">
-
-            @*<div class="form-group">
-            <label for="Codigo" class="control-label">Codigo</label>
-            <input form="Codigo" class="form-control" @bind="@prodServ.Code_ID" />
-        </div>*@
-            <div class="form-group">
-                <label for="Name" class="control-label">Nombre</label>
-                <input form="Name" class="form-control" @bind="@prod.Product_Name" />
-            </div>
-            <div class="form-group">
-                <label for="Product_Description" class="control-label">Descripción</label>
-                <input form="Product_Description" class="form-control" @bind="@prod.Product_Description" />
-            </div>
-            <div class="form-group">
-                <label for="Price" class="control-label">Precio (CRC)</label>
-                <input form="Price" type="number" class="form-control" @bind="@prod.Price" />
-            </div>
+<body>
 
 
-            @*<div>
-                    <label>Disponibilidad</label>
-                    <br />
-                    <input type="radio" id="available" name="availability" value="1" selected @onselect="onAvailabilityChange">
-                    <label for="available">Disponible</label><br>
-                    <input type="radio" id="unavailable" name="availability" value="0" @onselect="onAvailabilityChange">
-                    <label for="unavailable">No disponible</label><br>
-                </div>*@
+    <select @bind="prodServ.Entrepreneur_Email">
+        <option value="" selected disabled>Seleccione un emprendedor</option>
+        @if (entrepreneurs?.Count > 0)
+        {
+            @foreach (var cnt in entrepreneurs)
+            {
+                <option value="@cnt.User_Email">@cnt.User_Email @cnt.Presentation</option>
+            }
+        }
+    </select>
 
+    <div class=" border-blue">
 
+        <section class=" w-70 float_right  ">
+            <div class="   pt-3  ">
+                <div class="form-group">
+                    <label for="Name" class="control-label">Nombre</label>
+                    <input form="Name" class="form-control" @bind="@prod.Product_Name" />
+                </div>
+                <div class="form-group">
+                    <label for="Product_Description" class="control-label">Descripción</label>
+                    <input form="Product_Description" class="form-control" @bind="@prod.Product_Description"/>
+                </div>
+                <div class="form-group">
+                    <label for="Price" class="control-label">Precio (CRC)</label>
+                    <input form="Price" type="number" class="form-control" @bind="@prod.Price"/>
+                </div>
+            </div><br />
 
+            <div class="border-orange ">
+                <div class="wrapper w-90">
+                    <div class="one">
+                        <p class="color-blue">*Esta foto será la portada de su producto</p>
+                        <EditForm Model="@photosOne">
+                            <BlazorInputFile.InputFile OnChange="args => HandleFileSelected(args, photosOne)" class="custom-file-input" accept=".jpg,.png"></BlazorInputFile.InputFile>
+                            <th><img src="@Product_PhotosService.convertImageDisplay(photosOne.Photos)" width="350" /></th>
+                        </EditForm>
+                    </div>
+                    <div class="two">
+                        <EditForm Model="@photosTwo">
+                            <BlazorInputFile.InputFile OnChange="args => HandleFileSelected(args, photosTwo)" class="custom-file-input" accept=".jpg,.png"></BlazorInputFile.InputFile>
+                            <th><img src="@Product_PhotosService.convertImageDisplay(photosTwo.Photos)" width="350" /></th>
+                        </EditForm>
+                    </div>
+                    <div class="three">
+                        <EditForm Model="@photosThree">
+                            <BlazorInputFile.InputFile OnChange="args => HandleFileSelected(args, photosThree)" class="custom-file-input" accept=".jpg,.png"></BlazorInputFile.InputFile>
+                            <th><img src="@Product_PhotosService.convertImageDisplay(photosThree.Photos)" width="350" /></th>
+                        </EditForm>
+                    </div>
+                    <div class="four">
+                        <EditForm Model="@photosFour">
+                            <BlazorInputFile.InputFile OnChange="args => HandleFileSelected(args, photosFour)" class="custom-file-input" accept=".jpg,.png"></BlazorInputFile.InputFile>
+                            <th><img src="@Product_PhotosService.convertImageDisplay(photosFour.Photos)" width="350" /></th>
+                        </EditForm>
+                    </div>
+                    <div class="five">
+                        <EditForm Model="@photosFive">
+                            <BlazorInputFile.InputFile OnChange="args => HandleFileSelected(args, photosFive)" class="custom-file-input" accept=".jpg,.png"></BlazorInputFile.InputFile>
+                            <th><img src="@Product_PhotosService.convertImageDisplay(photosFive.Photos)" width="350" /></th>
+                        </EditForm>
+                    </div>
+                    <div class="six">
+                        <EditForm Model="@photosSix">
+                            <BlazorInputFile.InputFile OnChange="args => HandleFileSelected(args, photosSix)" class="custom-file-input" accept=".jpg,.png"></BlazorInputFile.InputFile>
+                            <th><img src="@Product_PhotosService.convertImageDisplay(photosSix.Photos)" width="350" /></th>
+                        </EditForm>
+                    </div>
 
-            <div class="form-group">
-                <label for="Entrepreneur_Email" class="control-label">Emprendedor</label>
-
-
-                <select @bind="prodServ.Entrepreneur_Email">
-                    <option value="" selected disabled>Seleccione un emprendedor</option>
-                    @if (entrepreneurs?.Count > 0)
-                    {
-                        @foreach (var cnt in entrepreneurs)
-                        {
-                            <option value="@cnt.User_Email">@cnt.User_Email @cnt.Presentation</option>
-                        }
-                    }
-                </select>
-            </div>
-
-
-
-            <div class="form-group">
-                <label for="Category_Product" class="control-label">Categorias</label>
-
-
-                <select @bind="categ.Id">
-                    <option value="" selected disabled>Categorias</option>
-                    @if (categories?.Count > 0)
-                    {
-                        @foreach (var cat in categories)
-                        {
-                            <option value="@cat.Id"> @cat.Title</option>
-                        }
-                    }
-                </select>
+                </div>
             </div>
 
             <div class="form-check form-switch">
@@ -85,29 +93,45 @@
                 <label class="form-check-label" for="flexSwitchCheckDefault">Disponibilidad</label>
             </div>
 
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <input type="button" class="btn btn-primary" @onclick="@onCreateProduct" value="Guardar" />
+                        <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Cancelar" />
+                    </div>
+                </div>
+            </div>
 
-        </div>
+        </section>
+
+         <aside class="w-30 float_left">
+            <div class="form-group">
+
+                <h2 class="text-center fs-2  bg-blue">Categoria</h2>
+                <SfTreeGrid ID="TreeGrid" @ref="TreeGrid" AllowSorting="true" AllowRowDragAndDrop="true" DataSource="@categories" IdMapping="Id" ParentIdMapping="ParentId" AllowSelection="true" TreeColumnIndex="0">
+                    <TreeGridEvents TValue="Category" RowDropped="Rowdrop" RowSelected="SelectionHandler"></TreeGridEvents>
+                    <TreeGridSortSettings>
+                        <TreeGridSortColumns>
+                            <TreeGridSortColumn Field="Title" Direction="Syncfusion.Blazor.Grids.SortDirection.Ascending"></TreeGridSortColumn>
+                        </TreeGridSortColumns>
+                    </TreeGridSortSettings>
+                    <TreeGridColumns>
+                        <TreeGridColumn Field="Title" HeaderText="Nombre" Width="100"></TreeGridColumn>
+                        <TreeGridColumn Field="Description" HeaderText="Descripción" Width="160"></TreeGridColumn>
+                    </TreeGridColumns>
+                </SfTreeGrid>
+
+            </div>
+         </aside>
+
     </div>
+
     <div>
         <h4 id="error" hidden="@hideError">Informacion incompleta.</h4>
     </div>
-    <div>
-        <EditForm Model="@photos" OnInvalidSubmit="@Validsubmit">
-            <BlazorInputFile.InputFile OnChange="HandleFileSelected"></BlazorInputFile.InputFile>
-            <th><img src="@convertImageDisplay(PhotoUploaded)" width="350" /></th>
-        </EditForm>
-        <table border="1">
-        </table>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    <input type="button" class="btn btn-primary" @onclick="@onCreateProduct" value="Guardar" />
-                    <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Cancelar" />
-                </div>
-            </div>
-        </div>
-    </div>
-</form>
+
+   
+</body>
 
 
 
@@ -115,53 +139,46 @@
 
     EmprendeUCR_WebApplication.Data.Entities.Product prod = new EmprendeUCR_WebApplication.Data.Entities.Product();
     EmprendeUCR_WebApplication.Data.Entities.Product_Service prodServ = new EmprendeUCR_WebApplication.Data.Entities.Product_Service();
-    Category categ = new Category();
-
-    EmprendeUCR_WebApplication.Data.Entities.Product_Photos prodPhotos = new EmprendeUCR_WebApplication.Data.Entities.Product_Photos();
-
 
     IList<Entrepreneur> entrepreneurs;
     IList<Category> categories;
-
+    IList<Product_Photos> photosDisplay;
+    List<byte[]> photosArray = new List<byte[]>();
+    public byte[] photoUploaded { get; set; }
     private bool _isLoading = true;
     bool hideError = true;
 
-    List<Product_Photos> imgdisplayobj;
+    Product_Photos photosOne = new Product_Photos();
+    Product_Photos photosTwo = new Product_Photos();
+    Product_Photos photosThree = new Product_Photos();
+    Product_Photos photosFour = new Product_Photos();
+    Product_Photos photosFive = new Product_Photos();
+    Product_Photos photosSix = new Product_Photos();
     Product_Photos photos = new Product_Photos();
+    SfTreeGrid<Category> TreeGrid { get; set; }
+    private Category SelectedCategory;
 
-    public byte[] PhotoUploaded { get; set; }
 
-    protected override void OnInitialized()
-    {
-        imgdisplayobj = Service.loadAllPhotos();
-    }
-    protected override async Task OnInitializedAsync()
-    {
-        entrepreneurs = await EntrepreneurService.GetAsync();
-        categories = await CategoryService.GetAsync();
-        _isLoading = false;
-
-    }
-
-    //public void onAvailabilityChange(ChangeEventArgs available)
-    //{
-    //    prodServ.Availability = Convert.ToByte(available.Value.ToString());
-    //}
-    void Validsubmit()
-    {
-        photos.Photos = PhotoUploaded;
-        Service.Uploading(photos);
-    }
-    async Task HandleFileSelected(IFileListEntry[] files)
+    public async Task HandleFileSelected(IFileListEntry[] files, Product_Photos photos)
     {
         var file = files.FirstOrDefault();
         if (file != null)
         {
             var ms = new MemoryStream();
             await file.Data.CopyToAsync(ms);
-            PhotoUploaded = ms.ToArray();
+            photos.Photos = ms.ToArray();
         }
     }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        entrepreneurs = await EntrepreneurService.GetAsync();
+        categories = await CategoryService.GetAsync();
+        photosDisplay = Product_PhotosService.loadAllPhotos();
+        _isLoading = false;
+    }
+
     protected Task createProduct()
     {
 
@@ -185,13 +202,11 @@
             // productService details are incomplete, show error
             hideError = false;
             await Task.CompletedTask;
-            Console.WriteLine("Fallo");
             return 0;
         }
         else
         {
             int id = await Product_ServiceService.InsertProductServiceAsync(prodServ);
-            Console.WriteLine("parece que si pero...");
             return id;
 
         }
@@ -200,37 +215,100 @@
     protected async void onCreateProduct()
     {
         prodServ.Availability = prodServ.Availability;
-        prodServ.Category_ID =categ.Id;
+        prodServ.Category_ID = SelectedCategory.Id;
 
-        prod.Category_ID = categ.Id;
+        prod.Category_ID = SelectedCategory.Id;
 
         prod.Entrepreneur_Email = prodServ.Entrepreneur_Email;
 
-
         int idToInsert = await createProduct_Service();
-        photos.Code_ID = idToInsert;
         prod.Code_ID = idToInsert;
         await createProduct();
-        photos.Photos = PhotoUploaded;
-        photos.Entrepreneur_Email = prodServ.Entrepreneur_Email;
-        photos.Category_ID = categ.Id; ;
-        Product_PhotosService.Uploading(photos);
-        NavigationManager.NavigateTo("ListProducts");
-    }
-    string convertImageDisplay(byte[] image)
-    {
-        if (image != null)
+
+        /// Save photos on data base
+        if (photosOne.Photos != null)
         {
-            var base64 = Convert.ToBase64String(image);
-            var fs = string.Format("data:image/jpg;base64,{0}",base64);
-            return fs;
+            photosOne.Code_ID = idToInsert;
+            photosOne.Entrepreneur_Email = prodServ.Entrepreneur_Email;
+            photosOne.Category_ID = SelectedCategory.Id;
+            Product_PhotosService.Uploading(photosOne);
         }
-        return "";
+
+        if (photosTwo.Photos != null)
+        {
+            photosTwo.Code_ID = idToInsert;
+            photosTwo.Entrepreneur_Email = prodServ.Entrepreneur_Email;
+            photosTwo.Category_ID = SelectedCategory.Id;
+            Product_PhotosService.Uploading(photosTwo);
+        }
+
+        if (photosThree.Photos != null)
+        {
+            photosThree.Code_ID = idToInsert;
+            photosThree.Entrepreneur_Email = prodServ.Entrepreneur_Email;
+            photosThree.Category_ID = SelectedCategory.Id;
+            Product_PhotosService.Uploading(photosThree);
+        }
+
+        if (photosFour.Photos != null)
+        {
+            photosFour.Code_ID = idToInsert;
+            photosFour.Entrepreneur_Email = prodServ.Entrepreneur_Email;
+            photosFour.Category_ID = SelectedCategory.Id;
+            Product_PhotosService.Uploading(photosFour);
+        }
+
+        if (photosFive.Photos != null)
+        {
+            photosFive.Code_ID = idToInsert;
+            photosFive.Entrepreneur_Email = prodServ.Entrepreneur_Email;
+            photosFive.Category_ID = SelectedCategory.Id;
+            Product_PhotosService.Uploading(photosFive);
+        }
+
+        if (photosSix.Photos != null)
+        {
+            photosSix.Code_ID = idToInsert;
+            photosSix.Entrepreneur_Email = prodServ.Entrepreneur_Email;
+            photosSix.Category_ID = SelectedCategory.Id;
+            Product_PhotosService.Uploading(photosSix);
+        }
+        /// End of save photos on database
+
+        NavigationManager.NavigateTo("ListProducts");
     }
 
     void Cancel()
     {
         NavigationManager.NavigateTo("ListProducts");
+    }
+
+
+    // metodos para prueba de categories
+
+    //RowDrop
+    private void Rowdrop(Syncfusion.Blazor.Grids.RowDragEventArgs<Category> args)
+    {
+        CategoryService.Rowdrop(args, this.TreeGrid);
+    }
+
+    //SelectionHandler
+
+
+
+
+    public async Task SelectionHandler(Syncfusion.Blazor.Grids.RowSelectEventArgs<Category> args)
+    {
+        var SelectedCategories = await this.TreeGrid.GetSelectedRecords();
+        if (SelectedCategories.Count() == 0)
+        {
+
+        }
+        else
+        {
+            SelectedCategory = SelectedCategories.First();
+
+        }
     }
 
 }
