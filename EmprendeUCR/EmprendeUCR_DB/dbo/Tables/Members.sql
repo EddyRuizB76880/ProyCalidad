@@ -3,7 +3,7 @@
     [Score]      INT           NULL,
     [Lat]        FLOAT (53)    NULL,
     [Long]       FLOAT (53)    NULL,
+    [Direction]  VARCHAR (250) NULL,
     PRIMARY KEY CLUSTERED ([User_Email] ASC),
     CONSTRAINT [FK_Members_User] FOREIGN KEY ([User_Email]) REFERENCES [dbo].[User] ([Email]) ON DELETE CASCADE ON UPDATE CASCADE
 );
-

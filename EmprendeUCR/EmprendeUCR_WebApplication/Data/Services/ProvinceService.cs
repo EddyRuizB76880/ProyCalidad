@@ -22,6 +22,11 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return await _context.Province.ToListAsync();
         }
 
+        public IList<Province> GetProvinces()
+        {
+            return _context.Province.ToList();
+        }
+
         public void addProvince(Province province)
         {
             _context.Province.Add(province);

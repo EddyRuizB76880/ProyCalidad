@@ -23,5 +23,16 @@ namespace EmprendeUCR_WebApplication.Data.Contexts
         public DbSet<Category> Category { get; set; }
         public DbSet<Entrepreneur> Entrepreneur { get; set; }
         public DbSet<Product_Service> Product_Service { get; set; }
+        public DbSet<Likes> Likes { get; set; }
+        public DbSet<Client> Client { get; set; }
+        public DbSet<Members> Members { get; set; }
+        public DbSet<Email_Confirmation> Email_Confirmation { get; set; }
+        public DbSet<Administrator> Administrator { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            var likes = modelBuilder.Entity<Likes>();
+            likes.HasKey(b => new {b.Client_Email, b.Category_Id});
+        }
+        
     }
 }

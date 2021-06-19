@@ -10,4 +10,18 @@
     <Property Name="NewName" Value="Id" />
     <Property Name="NewName" Value="Phone_Number" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="4960f9e2-478b-458c-9a3c-758fffef17a7" ChangeDateTime="06/01/2021 15:49:45">
+    <Property Name="ElementName" Value="[dbo].[Email_Confirmation].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Email_Confirmation]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="email" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="5c21e79e-5336-47ad-b30c-a48ca6c9a5f9" ChangeDateTime="06/01/2021 16:01:17">
+    <Property Name="ElementName" Value="[dbo].[Email_Confirmation].[Date]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Email_Confirmation]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Creation_Date" />
+  </Operation>
 </Operations>
