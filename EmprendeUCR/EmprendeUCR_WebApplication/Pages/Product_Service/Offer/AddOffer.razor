@@ -1,7 +1,7 @@
 ﻿@page "/AddOffer"
 @using EmprendeUCR_WebApplication.Data.Services
 @using EmprendeUCR_WebApplication.Data.Entities
-@using System;
+@using System
 @inject ProductService  ProductService
 @inject ServiceService  ServiceService
 @inject NavigationManager NavigationManager
@@ -42,7 +42,8 @@
                                 <button class="btn-primary m-2 material-icons-outlined" type="button" @onclick="() => addProductToOffer(currentProduct.Code_ID)">add</button>
                             </td>
                         </tr>
-                    }}
+                    }
+                }
             </tbody>
         </table><br />
 
@@ -148,7 +149,8 @@
             <!--fill the offer details-->
             @if ((_addedProducts?.Count > 0 || _addedServices?.Count > 0) && !showConfirmation)
             {
-                <input type="button" class="btn btn-primary w-30" @onclick="@confirmOffer" value="Confirmar" />}
+                <input type="button" class="btn btn-primary w-30" @onclick="@confirmOffer" value="Confirmar" />
+            }
 
             @if (showConfirmation)
             {
@@ -200,7 +202,8 @@
     </div>
 </body>
 
-@code {
+@code 
+{
     // The offer that will be store in the DB
     Offer offer = new Offer();
     // A list with the productServices items where the ID's will be taken
@@ -429,7 +432,7 @@
     // Load the service related to the given entrepreneur email
     public async Task loadService(String email)
     {
-        _service = await ServiceService.GetServiceEntrepreneurAsync(email);
+        _service = await ServiceService.GetServicesEntrepreneurAsync(email);
     }
 
     // Load the productServices related to the given entrepreneur email
@@ -437,6 +440,5 @@
     {
         _productsServices = await Product_ServiceService.GetProductsServicesEntrepreneurAsync(email);
     }
+
 }
-
-

@@ -1,0 +1,311 @@
+﻿@page "/AddService"
+@using EmprendeUCR_WebApplication.Data.Services
+@using EmprendeUCR_WebApplication.Data.Entities
+@using System.IO
+@using System
+@using BlazorInputFile
+@using Syncfusion.Blazor.TreeGrid
+@inject ServiceService serviceService
+@inject NavigationManager NavigationManager
+@inject EntrepreneurService EntrepreneurService
+@inject Product_ServiceService Product_ServiceService
+@inject CategoryService CategoryService
+@inject Service_PhotosService Service_PhotosService
+
+<h2>Agregar servicio</h2>
+<hr />
+<body>
+
+    <select @bind="prodServ.Entrepreneur_Email">
+        <option value="" selected disabled>Seleccione un emprendedor</option>
+        @if (entrepreneurs?.Count > 0)
+        {
+            @foreach (var cnt in entrepreneurs)
+            {
+                <option value="@cnt.User_Email">@cnt.User_Email @cnt.Presentation</option>
+            }
+        }
+    </select>
+
+    <div class=" border-blue">
+
+        <section class=" w-70 float_right  ">
+            <div class="   pt-3  ">
+                <div class="form-group">
+                    <label for="Name" class="control-label">Nombre</label>
+                    <input form="Name" class="form-control" @bind="@serv.Service_Name" />
+                </div>
+                <div class="form-group">
+                    <label for="Service_Description" class="control-label">Descripción</label>
+                    <input form="Service_Description" class="form-control" @bind="@serv.Service_Description" />
+                </div>
+                <div class="form-group">
+                    <label for="Price_per_hour" class="control-label">Precio por hora (CRC)</label>
+                    <input form="Price_per_hour" type="number" class="form-control" @bind="@serv.Price_per_hour" />
+                </div>
+            </div><br />
+
+            <div class="border-orange ">
+                <div class="wrapper w-90">
+                    <div class="one">
+                        <p class="color-blue">*Esta foto será la portada de su servicio</p>
+                        <EditForm Model="@photosOne">
+                            <BlazorInputFile.InputFile OnChange="args => HandleImageSelected(args, photosOne)" class="custom-file-input" accept=".jpg,.png"></BlazorInputFile.InputFile>
+                            <th><img src="@Service_PhotosService.convertServiceImageDisplay(photosOne.Photos)" width="350" /></th>
+                        </EditForm>
+                    </div>
+                    <div class="two">
+                        <EditForm Model="@photosTwo">
+                            <BlazorInputFile.InputFile OnChange="args => HandleImageSelected(args, photosTwo)" class="custom-file-input" accept=".jpg,.png"></BlazorInputFile.InputFile>
+                            <th><img src="@Service_PhotosService.convertServiceImageDisplay(photosTwo.Photos)" width="350" /></th>
+                        </EditForm>
+                    </div>
+                    <div class="three">
+                        <EditForm Model="@photosThree">
+                            <BlazorInputFile.InputFile OnChange="args => HandleImageSelected(args, photosThree)" class="custom-file-input" accept=".jpg,.png"></BlazorInputFile.InputFile>
+                            <th><img src="@Service_PhotosService.convertServiceImageDisplay(photosThree.Photos)" width="350" /></th>
+                        </EditForm>
+                    </div>
+                    <div class="four">
+                        <EditForm Model="@photosFour">
+                            <BlazorInputFile.InputFile OnChange="args => HandleImageSelected(args, photosFour)" class="custom-file-input" accept=".jpg,.png"></BlazorInputFile.InputFile>
+                            <th><img src="@Service_PhotosService.convertServiceImageDisplay(photosFour.Photos)" width="350" /></th>
+                        </EditForm>
+                    </div>
+                    <div class="five">
+                        <EditForm Model="@photosFive">
+                            <BlazorInputFile.InputFile OnChange="args => HandleImageSelected(args, photosFive)" class="custom-file-input" accept=".jpg,.png"></BlazorInputFile.InputFile>
+                            <th><img src="@Service_PhotosService.convertServiceImageDisplay(photosFive.Photos)" width="350" /></th>
+                        </EditForm>
+                    </div>
+                    <div class="six">
+                        <EditForm Model="@photosSix">
+                            <BlazorInputFile.InputFile OnChange="args => HandleImageSelected(args, photosSix)" class="custom-file-input" accept=".jpg,.png"></BlazorInputFile.InputFile>
+                            <th><img src="@Service_PhotosService.convertServiceImageDisplay(photosSix.Photos)" width="350" /></th>
+                        </EditForm>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                <label class="form-check-label" for="flexSwitchCheckDefault">Disponibilidad</label>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <input type="button" class="btn btn-primary" @onclick="@onCreateService" value="Guardar" />
+                        <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Cancelar" />
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <aside class="w-30 float_left">
+            <div class="form-group">
+
+                <h2 class="text-center fs-2  bg-blue">Categoria</h2>
+                <SfTreeGrid ID="TreeGrid" @ref="TreeGrid" AllowSorting="true" AllowRowDragAndDrop="true" DataSource="@categories" IdMapping="Id" ParentIdMapping="ParentId" AllowSelection="true" TreeColumnIndex="0">
+                    <TreeGridEvents TValue="Category" RowDropped="Rowdrop" RowSelected="SelectionHandler"></TreeGridEvents>
+                    <TreeGridSortSettings>
+                        <TreeGridSortColumns>
+                            <TreeGridSortColumn Field="Title" Direction="Syncfusion.Blazor.Grids.SortDirection.Ascending"></TreeGridSortColumn>
+                        </TreeGridSortColumns>
+                    </TreeGridSortSettings>
+                    <TreeGridColumns>
+                        <TreeGridColumn Field="Title" HeaderText="Nombre" Width="100"></TreeGridColumn>
+                        <TreeGridColumn Field="Description" HeaderText="Descripción" Width="160"></TreeGridColumn>
+                    </TreeGridColumns>
+                </SfTreeGrid>
+
+            </div>
+        </aside>
+
+    </div>
+
+    <div>
+        <h4 id="error" hidden="@hideError">Informacion incompleta.</h4>
+    </div>
+
+
+</body>
+
+
+
+@code {
+
+    EmprendeUCR_WebApplication.Data.Entities.Service serv = new EmprendeUCR_WebApplication.Data.Entities.Service();
+    EmprendeUCR_WebApplication.Data.Entities.Product_Service prodServ = new EmprendeUCR_WebApplication.Data.Entities.Product_Service();
+
+    IList<Entrepreneur> entrepreneurs;
+    IList<Category> categories;
+    IList<Service_Photos> photosDisplay;
+    List<byte[]> photosArray = new List<byte[]>();
+    public byte[] photoUploaded { get; set; }
+    private bool _isLoading = true;
+    bool hideError = true;
+
+    Service_Photos photosOne = new Service_Photos();
+    Service_Photos photosTwo = new Service_Photos();
+    Service_Photos photosThree = new Service_Photos();
+    Service_Photos photosFour = new Service_Photos();
+    Service_Photos photosFive = new Service_Photos();
+    Service_Photos photosSix = new Service_Photos();
+    Service_Photos photos = new Service_Photos();
+    SfTreeGrid<Category> TreeGrid { get; set; }
+    private Category SelectedCategory;
+
+
+    public async Task HandleImageSelected(IFileListEntry[] files, Service_Photos photos)
+    {
+        var file = files.FirstOrDefault();
+        if (file != null)
+        {
+            var ms = new MemoryStream();
+            await file.Data.CopyToAsync(ms);
+            photos.Photos = ms.ToArray();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        entrepreneurs = await EntrepreneurService.GetAsync();
+        categories = await CategoryService.GetAsync();
+        photosDisplay = Service_PhotosService.loadAllPhotos();
+        _isLoading = false;
+    }
+
+    protected Task createService()
+    {
+
+        if (String.IsNullOrEmpty(serv.Entrepreneur_Email))
+        {
+            // service details are incomplete, show error
+            hideError = false;
+            return Task.CompletedTask;
+        }
+        else
+        {
+            return serviceService.InsertServiceAsync(serv);
+        }
+
+    }
+
+    protected async Task<int> createProduct_Service()
+    {
+        if (String.IsNullOrEmpty(prodServ.Entrepreneur_Email))
+        {
+            // productService details are incomplete, show error
+            hideError = false;
+            await Task.CompletedTask;
+            return 0;
+        }
+        else
+        {
+            int id = await Product_ServiceService.InsertProductServiceAsync(prodServ);
+            return id;
+        }
+    }
+
+    protected async void onCreateService()
+    {
+        prodServ.Availability = prodServ.Availability;
+        prodServ.Category_ID = SelectedCategory.Id;
+
+        serv.Category_ID = SelectedCategory.Id;
+
+        serv.Entrepreneur_Email = prodServ.Entrepreneur_Email;
+
+        int idToInsert = await createProduct_Service();
+        serv.Code_ID = idToInsert;
+        await createService();
+
+        /// Save photos on data base
+        if (photosOne.Photos != null)
+        {
+            photosOne.Code_ID = idToInsert;
+            photosOne.Entrepreneur_Email = prodServ.Entrepreneur_Email;
+            photosOne.Category_ID = SelectedCategory.Id;
+            Service_PhotosService.UploadingServicePhotos(photosOne);
+        }
+
+        if (photosTwo.Photos != null)
+        {
+            photosTwo.Code_ID = idToInsert;
+            photosTwo.Entrepreneur_Email = prodServ.Entrepreneur_Email;
+            photosTwo.Category_ID = SelectedCategory.Id;
+            Service_PhotosService.UploadingServicePhotos(photosTwo);
+        }
+
+        if (photosThree.Photos != null)
+        {
+            photosThree.Code_ID = idToInsert;
+            photosThree.Entrepreneur_Email = prodServ.Entrepreneur_Email;
+            photosThree.Category_ID = SelectedCategory.Id;
+            Service_PhotosService.UploadingServicePhotos(photosThree);
+        }
+
+        if (photosFour.Photos != null)
+        {
+            photosFour.Code_ID = idToInsert;
+            photosFour.Entrepreneur_Email = prodServ.Entrepreneur_Email;
+            photosFour.Category_ID = SelectedCategory.Id;
+            Service_PhotosService.UploadingServicePhotos(photosFour);
+        }
+
+        if (photosFive.Photos != null)
+        {
+            photosFive.Code_ID = idToInsert;
+            photosFive.Entrepreneur_Email = prodServ.Entrepreneur_Email;
+            photosFive.Category_ID = SelectedCategory.Id;
+            Service_PhotosService.UploadingServicePhotos(photosFive);
+        }
+
+        if (photosSix.Photos != null)
+        {
+            photosSix.Code_ID = idToInsert;
+            photosSix.Entrepreneur_Email = prodServ.Entrepreneur_Email;
+            photosSix.Category_ID = SelectedCategory.Id;
+            Service_PhotosService.UploadingServicePhotos(photosSix);
+        }
+
+        /// End of save photos on database
+
+        NavigationManager.NavigateTo("ListServices");
+    }
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("ListServices");
+    }
+
+    // metodos para prueba de categories
+
+    //RowDrop
+    private void Rowdrop(Syncfusion.Blazor.Grids.RowDragEventArgs<Category> args)
+    {
+        CategoryService.Rowdrop(args, this.TreeGrid);
+    }
+
+    //SelectionHandler
+
+
+
+
+    public async Task SelectionHandler(Syncfusion.Blazor.Grids.RowSelectEventArgs<Category> args)
+    {
+        var SelectedCategories = await this.TreeGrid.GetSelectedRecords();
+        if (SelectedCategories.Count() == 0)
+        {
+
+        }
+        else
+        {
+            SelectedCategory = SelectedCategories.First();
+
+        }
+    }
+
+}

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using EmprendeUCR_WebApplication.Data.Entities;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using EmprendeUCR_WebApplication.Data;
 
 namespace EmprendeUCR_WebApplication.Data.Services
 {
@@ -57,12 +56,12 @@ namespace EmprendeUCR_WebApplication.Data.Services
         }
 
 
-        public async Task<List<Service>> GetAllServiceAsync()
+        public async Task<List<Service>> GetAllServicesAsync()
         {
             return await _context.Service.ToListAsync();        // Listado 2
         }
 
-        public async Task<IList<Service>> GetServiceEntrepreneurAsync(string email)
+        public async Task<IList<Service>> GetServicesEntrepreneurAsync(string email)
         {
             return await _context.Service.Where(c => String.Equals(c.Entrepreneur_Email, email)).ToListAsync();
 
@@ -75,7 +74,7 @@ namespace EmprendeUCR_WebApplication.Data.Services
 
         }
 
-        public int GetServiceQuantity()
+        public int GetServicesQuantity()
         {
             return _context.Service.Count();
         }

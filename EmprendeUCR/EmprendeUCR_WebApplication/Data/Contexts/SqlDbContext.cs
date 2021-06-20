@@ -26,12 +26,15 @@ namespace EmprendeUCR_WebApplication.Data.Contexts
         public DbSet<Offer> Offer { get; set; }
         public DbSet<Is_Offer> Is_Offer { get; set; }
         public DbSet<Service> Service { get; set; }
-        public DbSet<Product_Photos> Product_Photos { get; set; }
         public DbSet<Likes> Likes { get; set; }
         public DbSet<Client> Client { get; set; }
         public DbSet<Members> Members { get; set; }
         public DbSet<Email_Confirmation> Email_Confirmation { get; set; }
         public DbSet<Administrator> Administrator { get; set; }
+        public DbSet<Product_Photos> Product_Photos { get; set; }
+        public DbSet<Service_Photos> Service_Photos { get; set; }
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -1,12 +1,12 @@
-﻿@page "/ListProducts"
+﻿@page "/ListServices"
 @using EmprendeUCR_WebApplication.Data.Services
 @using EmprendeUCR_WebApplication.Data.Entities
 @inject EntrepreneurService EntrepreneurService
 @inject CategoryService CategoryService
-@inject ProductService ProductService
+@inject ServiceService ServiceService
 @using Syncfusion.Blazor.TreeGrid;
 @inject Product_ServiceService Product_ServiceService
-@inject Product_PhotosService Product_PhotosService
+@inject Service_PhotosService Service_PhotosService
 
 @if (_isLoading)
 {
@@ -34,27 +34,27 @@ else
 
 
         <header>
-            <div class="icon-m display-2"> Mis Productos</div>
+            <div class="icon-m display-2"> Mis Servicios</div>
         </header>
 
         <section class="w-70  float_right ">
 
             <div class="layout wrap">
-                @if (_products?.Count > 0)
+                @if (_services?.Count > 0)
                 {
-                    @foreach (var prod in _products)
+                    @foreach (var serv in _services)
                     {
-                        var prodServ = _productsServices.First(p => p.Code_ID == prod.Code_ID);
-                        var prodPhoto = photosDisplay.FirstOrDefault(p => p.Code_ID == prod.Code_ID);
+                        var prodServ = _productsServices.First(p => p.Code_ID == serv.Code_ID);
+                        var servPhoto = photosDisplay.FirstOrDefault(p => p.Code_ID == serv.Code_ID);
                         <div class="item data border-1 border-blue content-center">
-                            @if (prodPhoto != null)
+                            @if (servPhoto != null)
                             {
-                                <img src="@Product_PhotosService.convertImageDisplay(prodPhoto.Photos)" width="200" />
+                                <img src="@Service_PhotosService.convertServiceImageDisplay(servPhoto.Photos)" width="200" />
                             }
                             <div class="item ">
-                                <div class="item_name">@prod.Product_Name</div>
-                                <div class="item_description">@prod.Product_Description</div>
-                                <div class="item_price">₡@prod.Price</div>
+                                <div class="item_name">@serv.Service_Name</div>
+                                <div class="item_description">@serv.Service_Description</div>
+                                <div class="item_price">₡@serv.Price_per_hour</div>
                             </div>
                         </div>
                     }
@@ -86,13 +86,12 @@ else
                 }
             </div>
 
-
-            <NavLink class="nav-link" href="AddProduct">
-                <button class="btn btn-primary" aria-hidden="true">Agregar nuevo producto</button>
+            <NavLink class="nav-link" href="AddService">
+                <button class="btn btn-primary" aria-hidden="true">Agregar nuevo servicio</button>
             </NavLink>
 
         </aside>
-     
+
 
     </body>
 }
@@ -100,12 +99,12 @@ else
 
 @code {
     private bool _isLoading = true;
-    private IList<EmprendeUCR_WebApplication.Data.Entities.Product> _products;
+    private IList<EmprendeUCR_WebApplication.Data.Entities.Service> _services;
     private IList<EmprendeUCR_WebApplication.Data.Entities.Product_Service> _productsServices;
     private IList<EmprendeUCR_WebApplication.Data.Entities.Category> _categories;
     private IList<EmprendeUCR_WebApplication.Data.Entities.Category> _my_categories = new List<Category>();
     IList<Entrepreneur> entrepreneurs;
-    IList<Product_Photos> photosDisplay;
+    IList<Service_Photos> photosDisplay;
     SfTreeGrid<Category> TreeGrid { get; set; }
 
 
@@ -121,13 +120,14 @@ else
     public async Task loadCategories()
     {
         _my_categories.Clear();
-        foreach (var prod in _products)
+        foreach (var serv in _services)
         {
-            Category cat = CategoryService.getCategory(prod.Category_ID);
+            Category cat = CategoryService.getCategory(serv.Category_ID);
 
-            Category iterator = CategoryService.getCategory(prod.Category_ID);
+            Category iterator = CategoryService.getCategory(serv.Category_ID);
 
-            while (iterator.ParentId != null) {
+            while (iterator.ParentId != null)
+            {
 
                 Category parentcat = CategoryService.getCategory((int)iterator.ParentId);
 
@@ -150,13 +150,13 @@ else
     {
         entrepreneurs = await EntrepreneurService.GetAsync();
         _categories = await CategoryService.GetAsync();
-        photosDisplay = Product_PhotosService.loadAllPhotos();
+        photosDisplay = Service_PhotosService.loadAllPhotos();
         _isLoading = false;
     }
     bool hideError = true;
     public async Task loadProducts(ChangeEventArgs email)
     {
-        _products = await ProductService.GetProductsEntrepreneurAsync(email.Value.ToString());
+        _services = await ServiceService.GetServicesEntrepreneurAsync(email.Value.ToString());
     }
 
     public async Task loadProductsServices(ChangeEventArgs email)
