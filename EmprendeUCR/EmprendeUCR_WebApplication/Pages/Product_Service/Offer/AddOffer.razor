@@ -12,85 +12,87 @@
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 <h3>Crear Oferta</h3>
+<body>
 
-<form>
-    <p>Productos y Servicios de @userLogged</p>
+    <!-- Mis productos -->
 
-    <div class="row">
-        <!-- Mis productos -->
-        <div class="col-md-4">
-            <h4> Mis productos </h4>
-            <table>
-                <thead>
-                    <!--Colmun names tag (Nombre, Precio)-->
-                    <tr>
-                        <th style="width:20%">Nombre</th>
-                        <th style="width:20%">Precio</th>
-                    </tr>
-                </thead>
-                <!--If there are services related to the current entrepreneur, display them to the user-->
-                <tbody>
-                    @if (_products?.Count > 0)
+    <section class="float_left border-1 shadow w-25">
+        <h4 class="bg-blue text-center "> Mis productos </h4>
+        <table>
+            <thead>
+                <!--Colmun names tag (Nombre, Precio)-->
+                <tr>
+                    <th style="width:20%">Nombre</th>
+                    <th style="width:20%">Precio</th>
+                </tr>
+            </thead>
+            <!--If there are services related to the current entrepreneur, display them to the user-->
+            <tbody>
+                @if (_products?.Count > 0)
+                {
+                    @foreach (var currentProduct in _products)
                     {
-                        @foreach (var currentProduct in _products)
-                        {
-                            <tr>
-                                <!--Product name value-->
-                                <td>@currentProduct.Product_Name</td>
-                                <!--Product price value-->
-                                <td>@currentProduct.Price</td>
-                                <!--Add to the current offer button-->
-                                <td>
-                                    <button class="btn" type="button" @onclick="() => addProductToOffer(currentProduct.Code_ID)"><i class="oi oi-plus"></i>Agregar a oferta</button>
-                                </td>
-                            </tr>
-                        }}
-                </tbody>
-            </table>
-            <!--Get back to the list product page button-->
-            <div class="col-md-4">
-                <div class="form-group">
-                    <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Volver" />
-                </div>
+                        <tr>
+                            <!--Product name value-->
+                            <td>@currentProduct.Product_Name</td>
+                            <!--Product price value-->
+                            <td>@currentProduct.Price</td>
+                            <!--Add to the current offer button-->
+                            <td>
+                                <button class="btn-primary m-2 material-icons-outlined" type="button" @onclick="() => addProductToOffer(currentProduct.Code_ID)">add</button>
+                            </td>
+                        </tr>
+                    }}
+            </tbody>
+        </table><br />
+
+        <!-- Mis servicios-->
+
+        <h4 class="bg-blue text-center "> Mis servicios </h4>
+        <table>
+            <!--Colmun names tag (Nombre, Precio por hora)-->
+            <thead>
+                <tr>
+                    <th style="width:20%">Nombre</th>
+                    <th style="width:20%">Precio por hora</th>
+                </tr>
+            </thead>
+            <!--If there are services related to the current entrepreneur, display them to the user-->
+            <tbody>
+                @if (_service?.Count > 0)
+                {
+                    @foreach (var currentService in _service)
+                    {
+                        <tr>
+                            <!--Service name value-->
+                            <td>@currentService.Service_Name</td>
+                            <!--Service Price per hour value-->
+                            <td>@currentService.Price_per_hour</td>
+                            <!--Add to the current offer button-->
+                            <td>
+                                <button class="btn-primary m-2 material-icons-outlined" type="button" @onclick="() => addServiceToOffer(currentService.Code_ID)">add</button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+
+
+        <div class="row">
+            <div class="form-group">
+                <input type="button" class="btn btn-primary text-center m-2" @onclick="@Cancel" value="Volver" />
             </div>
         </div>
 
-        <!-- Mis servicios-->
-        <div class="col-md-3">
-            <h4> Mis servicios </h4>
-            <table>
-                <!--Colmun names tag (Nombre, Precio por hora)-->
-                <thead>
-                    <tr>
-                        <th style="width:20%">Nombre</th>
-                        <th style="width:20%">Precio por hora</th>
-                    </tr>
-                </thead>
-                <!--If there are services related to the current entrepreneur, display them to the user-->
-                <tbody>
-                    @if (_service?.Count > 0)
-                    {
-                        @foreach (var currentService in _service)
-                        {
-                            <tr>
-                                <!--Service name value-->
-                                <td>@currentService.Service_Name</td>
-                                <!--Service Price per hour value-->
-                                <td>@currentService.Price_per_hour</td>
-                                <!--Add to the current offer button-->
-                                <td>
-                                    <button class="btn" type="button" @onclick="() => addServiceToOffer(currentService.Code_ID)"><i class="oi oi-plus"></i>Agregar a oferta</button>
-                                </td>
-                            </tr>
-                        }
-                    }
-                </tbody>
-            </table>
-        </div>
+    </section>
 
+   
+
+    <aside class="float_right  w-70">
         <!-- Productos en la oferta -->
-        <div class="col-md-4">
-            <h4>Productos o servicios en la oferta</h4>
+        <div class="row border-2 shadow">
+            <h4 class="bg-blue text-center">Productos o servicios en la oferta</h4>
             <!--Product and services in the offer display-->
             <table>
                 <!-- Colmun names tag (Nombre, Precio)-->
@@ -115,7 +117,7 @@
                                 <td style="width:20%">@currentProduct.Price</td>
                                 <!--Remove from the offer button-->
                                 <td>
-                                    <button class="btn" type="button" @onclick="() => removeProductFromOffer(currentProduct.Code_ID)"><i class="oi oi-trash"></i>Eliminar de oferta</button>
+                                    <button class="btn-secondary mb-2 material-icons-outlined " type="button" @onclick="() => removeProductFromOffer(currentProduct.Code_ID)">delete</button>
                                 </td>
                             </tr>
                         }
@@ -133,7 +135,7 @@
                                 <td style="width:20%">@currentService.Price_per_hour</td>
                                 <!--Remove from the offer button-->
                                 <td>
-                                    <button class="btn" type="button" @onclick="() => removeServiceFromOffer(currentService.Code_ID)"><i class="oi oi-trash"></i>Eliminar de oferta</button>
+                                    <button class="btn-secondary m-2 material-icons-outlined " type="button" @onclick="() => removeServiceFromOffer(currentService.Code_ID)">delete</button>
                                 </td>
                             </tr>
                         }
@@ -141,11 +143,12 @@
                 </tbody>
             </table>
 
+
             <!--If there are products or services in the current offer, displays the confirmation button so that the user can proceed to-->
             <!--fill the offer details-->
             @if ((_addedProducts?.Count > 0 || _addedServices?.Count > 0) && !showConfirmation)
             {
-                <input type="button" class="btn btn-primary" @onclick="@confirmOffer" value="Confirmar productos" />}
+                <input type="button" class="btn btn-primary w-30" @onclick="@confirmOffer" value="Confirmar" />}
 
             @if (showConfirmation)
             {
@@ -153,19 +156,19 @@
                     <!--Form to let the user choose the initial date for the offer (by default will be todays date)-->
                     <div class="form-group">
                         <label for="Initial_Date" class="control-label">Fecha de inicio de oferta</label>
-                        <input type="date" min="@DateTime.Now" class="form-control" @bind="@initialDateInput" required />
+                        <input type="date" min="@DateTime.Now" class="form-control w-50" @bind="@initialDateInput" required />
                     </div>
 
                     <!--Form to let the user choose the initial date for the offer (by default will be todays date)-->
                     <div class="col px-mb-3">
                         <label for="Expire_Date" class="control-label">Fecha de fin de oferta</label>
-                        <input type="date" min="@DateTime.Now" class="form-control" @bind="@expireDateInput" required />
+                        <input type="date" min="@DateTime.Now" class="form-control w-50" @bind="@expireDateInput" required />
                     </div>
 
                     <!--Form to let the user choose the description of the offer-->
                     <div class="mb-3">
                         <label for="Offer_Description" class="control-label">Descripción</label>
-                        <input form="Offer_Description" class="form-control" @bind="@offer.Offer_Description" />
+                        <input form="Offer_Description" class=" form-control w-70" @bind="@offer.Offer_Description" />
                     </div>
 
                     <!--Display of the total amount of the products and services in the offer-->
@@ -176,7 +179,7 @@
                     <!--Form to let the user choose the new price of the offer-->
                     <div class="col mb-3">
                         <label for="Price" class="control-label">Nuevo precio de oferta (CRC)</label>
-                        <input form="Price" type="number" class="form-control" @bind="@offer.Discount" required />
+                        <input form="Price" type="number" class="form-control w-30" @bind="@offer.Discount" required />
                     </div>
 
                     <!--Check if the data provided by the user is ok, if yes then displays the button to save the offer-->
@@ -191,12 +194,11 @@
                 </div>
             }
         </div>
-    </div>
-
+    </aside>
     <div>
         <h4 id="error" hidden="@hideError">Informacion incompleta.</h4>
     </div>
-</form>
+</body>
 
 @code {
     // The offer that will be store in the DB
