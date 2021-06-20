@@ -1,6 +1,9 @@
 ﻿@using EmprendeUCR_WebApplication.Data.Services
 @using EmprendeUCR_WebApplication.Data.Entities
 @inject ProductService ProductService
+@inject NavigationManager NavigationManager
+@inject UserService UserService 
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 <div class="w-100 navBar">
 
@@ -15,19 +18,15 @@
         </div>
         <div class="acount-links">
             @* If the user had previously clicked on the login button, then... *@
-            @if (logeado)
+
+            @if (!string.IsNullOrEmpty(myEmail))
             {
                 @if (@amountProductsNotifications == 0)
                 {
-                    @*
-                        If the user's shopping cart is empty, then this block of
-                        code will disable the shopping cart icon and let the user know.
-                    *@
                     <a Do Nothing class="color-silver mx-5 a-white isDisabled btn" data-toggle="tooltip" data-placement="bottom" title="El carrito se encuentra vacío.">
                         <span class="material-icons-outlined icon-l">
                             shopping_cart
                         </span>@amountProductsNotifications
-
                     </a>
                 }
                 else
@@ -38,6 +37,7 @@
                     </span>@amountProductsNotifications
                 </a>
             }
+
                 @* Update notifications when the user logs in. *@
                 <a href="/" class="color-silver mx-5 a-white btn">
                     <span class="material-icons icon-l">
@@ -46,16 +46,13 @@
                 </a>
 
                 @* Display account circle when the user logs in. *@
-                <a href="" @onclick="logear" class="color-silver mx-5 a-white btn">
-                    <span class="material-icons icon-l">
-                        account_circle
-                    </span>
-                </a>
+                <img width="40" height="40" src="data:image;base64,@System.Convert.ToBase64String(UserService.GetUserByEmail(myEmail).Photo)" class="rounded-circle" @onclick="goProfile">
+
             }
-            @if (!logeado)
+            else
             {
                 @* If the user has not logged in, then display the log in button *@
-                <a href="/registrationdata" class="color-silver mx-5 a-white">
+                <a href="/registro" class="color-silver mx-5 a-white">
                     Registrarse
                 </a>
                 <button @onclick="logear" class="bg-white border-none p-2">Iniciar Sesion</button>
@@ -66,39 +63,77 @@
     @* Block of code to adjust the navigation menu's position onscreen. *@
     <nav id="SecondaryNav" class="SecondaryNav bg-white  w-100 d-flex flex-row justify-content-between align-items-center px-5">
         <ul class="d-flex flex-row align-bottom">
-            <li class=" "> <a href="/" class="color-grey mx-5 p-2"> HOME </a></li>
+            <li class=" "> <a href=@homeRef class="color-grey mx-5 p-2"> HOME </a></li>
             <li class=" "> <a href="/listProducts" class="color-grey mx-5 p-2"> PRODUCTOS </a></li>
             <li class=" "> <a href="/Categories" class="color-grey mx-5"> CATEGORIAS </a></li>
-            <li class=" "> <a href="/register" class="color-grey mx-5"> REGISTRO </a></li>
             <li class=" "> <a href="/about" class="color-grey mx-5"> SOBRE NOSOTROS </a></li>
+            <li class=" "> <a href="/Offers" class="color-grey mx-5"> OFERTAS </a></li>
         </ul>
 
     </nav>
 </div>
 
-        @code {
-            // Boolean value to determine if the user is logged in.
-            // To be used in HTML section of this file.
-            private bool logeado = false;
+@code {
+    private string myEmail;
+    private string homeRef;
+    private string profileRef;
+    private int myType;
 
-            // Int value used to store the total amount of products stored in
-            // the shopping cart. To be used in the HTML section of this file.
-            private int amountProductsNotifications;
+    // Int value used to store the total amount of products stored in
+    // the shopping cart. To be used in the HTML section of this file.
+    private int amountProductsNotifications;
 
-            // Virtual method from Blazor overridden to adapt it to our program.
-            // It invokes a method to get the total number of elements in a table
-            // when the blazor program starts. In this case, it retrieves the
-            // number of articles from the SC table.
-            protected override async Task OnInitializedAsync()
-            {
-                amountProductsNotifications = ProductService.GetProductsQuantity();
-            }
+    // Virtual method from Blazor overridden to adapt it to our program.
+    // It invokes a method to get the total number of elements in a table
+    // when the blazor program starts. In this case, it retrieves the
+    // number of articles from the SC table.
 
-            // This method changes the logeado value. It lets the system know
-            // when the user has logged into their account. To be used with the
-            // HTML section of this file.
-            private void logear()
-            {
-                logeado = !logeado;
-            }
+    protected override async Task OnInitializedAsync()
+    {
+        amountProductsNotifications = ProductService.GetProductsQuantity();
+        myEmail = await sessionStorage.GetItemAsync<string>("Email");
+        myType = await sessionStorage.GetItemAsync<int>("Type");
+        this.UpdateParams();
+    }
+
+    public void UpdateParams()
+    {
+
+        switch (myType)
+        {
+            case 1:
+                homeRef = "/HomeClient";
+                profileRef = "/ProfileClient";
+                break;
+            case 2:
+                homeRef = "/HomeEntrepreneaur";
+                profileRef = "/ProfileEntrepreneur";
+                break;
+            case 3:
+                homeRef = "/HomeAdministrator";
+                profileRef = "/ProfileAdministrator";
+                break;
+            default:
+                homeRef = "";
+                profileRef = "";
+                break;
         }
+        StateHasChanged();
+    }
+
+    private void logear()
+    {
+        NavigationManager.NavigateTo("/Login");
+    }
+
+    private void goProfile()
+    {
+        NavigationManager.NavigateTo(profileRef);
+    }
+}
+
+@*
+@{
+    MenuService["NavMenu"] = this;
+}
+*@

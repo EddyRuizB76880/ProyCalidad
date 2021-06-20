@@ -1,0 +1,245 @@
+﻿@page "/Offers"
+@using EmprendeUCR_WebApplication.Data.Services
+@using EmprendeUCR_WebApplication.Data.Entities
+@using System;
+@inject ProductService  ProductService
+@inject ServiceService  ServiceService
+@inject NavigationManager NavigationManager
+@inject EntrepreneurService EntrepreneurService
+@inject Product_ServiceService Product_ServiceService
+@inject OfferService OfferService
+@inject Is_OfferService Is_OfferService
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
+<h3>Ofertas</h3>
+
+<form>
+
+    <div class="row">
+        <!-- Ofertas -->
+        <div class="cols-xs-3">
+            <table>
+                <!-- Display de TODAS LAS OFERTAS si existen-->
+                @if (_offers?.Count > 0)
+                {
+                    <thead>
+                        <tr>
+                            <th style="width:20%">Dueño de la oferta</th>
+                            <th style="width:20%">ID de la oferta</th>
+                            <th style="width:20%">Descripción</th>
+                            <th style="width:20%">Precio normal</th>
+                            <th style="width:20%">Precio nuevo</th>
+                            <th style="width:20%">Descuento</th>
+                            <th style="width:20%">Inicio de oferta</th>
+                            <th style="width:20%">Final de oferta</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <!-- Display oferta especifica-->
+                        @foreach (var offer in _offers)
+                        {
+                            <!--Obtiene la suma de todos los objetos ligados a la oferta actual)-->
+                            var normalPrice = getTotalPriceFromListedItemsInOffer(offer);
+                            double actualDiscountPostOffer = (Double.Parse(offer.Discount.ToString()) / normalPrice) * 100;
+                            actualDiscountPostOffer = 100 - actualDiscountPostOffer;
+                            string displayDiscount = string.Format("{0:N2}%", actualDiscountPostOffer);
+                            string asociatedEmail = getAsociatedEmailToOffer(offer);
+
+                            <tr>
+                                <!-- Saca el ID de la oferta-->
+                                <td>@asociatedEmail</td>
+
+                                <!-- Saca el ID de la oferta-->
+                                <td>@offer.Offer_ID</td>
+
+                                <!-- Saca la descripicon de Offer-->
+                                <td>@offer.Offer_Description</td>
+
+                                <!-- Para el precio normal ocupa iterar por todos los Is_Offer asociados al ID de Offer-->
+                                <td>@normalPrice</td>
+
+                                <!-- Saca el precio de la oferta de Offer-->
+                                <td>@offer.Discount</td>
+
+                                <!-- El descuento se saca con precio normal y la oferta (ej: 15% de descuento)-->
+                                <td>@displayDiscount%</td>
+
+                                <!-- Fecha de inicio de oferta-->
+                                <td>@offer.Initial_Date</td>
+
+                                <!-- Fecha de final de oferta-->
+                                <td>@offer.Expire_Date</td>
+
+                                <!-- Boton para ver la oferta -->
+                                <td>
+                                    <button class="btn" type="button" @onclick="() => viewOffer(offer)"><i class="oi oi-plus"></i>Ver oferta</button>
+                                </td>
+
+                                <!-- Boton para gestionar oferta -->
+                                <td>
+                                    <button class="btn" type="button" @onclick="() => editOffer(offer)"><i class="oi oi-pencil"></i>Gestionar oferta</button>
+                                </td>
+
+
+                            </tr>
+                        }
+
+
+                    </tbody>
+                }
+                else
+                {
+                    <td>Actualmente no hay ofertas disponibles.</td>
+                }
+            </table>
+            <!--Botones-->
+            <div class="col-xs-6">
+                <!--Volver-->
+                <input type="button" class="btn btn-primary btn-space" @onclick="@Cancel" value="Volver" />
+
+                <!-- Añadir oferta-->
+                <input type="button" class="btn btn-primary btn-space" @onclick="@AddOffer" value="Añadir oferta" />
+            </div>
+        </div>
+    </div>
+
+
+</form>
+
+@code {
+    IList<Offer> _offers = new List<Offer>();
+    IList<Is_Offer> _Is_offer = new List<Is_Offer>();
+
+    Offer offer = new Offer();
+    IList<Product_Service> _productsServices;
+    IList<Entrepreneur> entrepreneurs;
+    IList<Product> _products;
+    IList<Service> _service;
+
+    int totalPriceFromListedProductsAndServicesInOffer = 0;
+    double discount = 0;
+    string userEmail = "default";
+    string is_offerEmail = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        userEmail = await sessionStorage.GetItemAsync<string>("Email");
+        entrepreneurs = await EntrepreneurService.GetAsync();
+        await loadAll();
+    }
+
+    public int getTotalPriceFromListedItemsInOffer(Offer offer)
+    {
+        int total_price = 0;
+        foreach (var item in _Is_offer)
+        {
+            if (offer.Offer_ID == item.Offer_ID)
+            {
+                foreach (var product in _products)
+                {
+                    if (item.Code_ID == product.Code_ID)
+                    {
+                        total_price += product.Price;
+
+                        is_offerEmail = product.Entrepreneur_Email;
+
+                    }
+                }
+                foreach (var service in _service)
+                {
+                    if (item.Code_ID == service.Code_ID)
+                    {
+                        total_price += service.Price_per_hour;
+
+                        is_offerEmail = service.Entrepreneur_Email;
+
+                    }
+                }
+            }
+        }
+        return total_price;
+    }
+
+    public string getAsociatedEmailToOffer(Offer offer)
+    {
+        string email = "";
+
+        foreach (var item in _Is_offer)
+        {
+            if (offer.Offer_ID == item.Offer_ID)
+            {
+                foreach (var product in _products)
+                {
+                    if (email == "" && product.Code_ID == item.Code_ID)
+                    {
+                        email = product.Entrepreneur_Email;
+                    }
+                }
+                if (email == "")
+                {
+                    foreach (var service in _service)
+                    {
+                        if (email == "" && service.Code_ID == item.Code_ID)
+                        {
+                            email = service.Entrepreneur_Email;
+                        }
+                    }
+                }
+            }
+        }
+
+        return email;
+    }
+
+    void viewOffer(Offer offer)
+    {
+        // NavigationManager.NavigateTo("ViewOffer" + "/" + offer.Offer_ID);
+    }
+
+    void editOffer(Offer offer)
+    {
+        // NavigationManager.NavigateTo("EditOffer");
+    }
+
+    void AddOffer()
+    {
+        NavigationManager.NavigateTo("AddOffer");
+    }
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("ListProducts");
+    }
+
+    public async Task loadAll()
+    {
+        await loadOffers();
+        await loadIs_Offers();
+        await loadProducts();
+        await loadService();
+    }
+
+    public async Task loadOffers()
+    {
+        _offers = await OfferService.GetAllOffersAsync();
+    }
+
+    public async Task loadIs_Offers()
+    {
+        _Is_offer = await Is_OfferService.GetAllIs_OffersAsync();
+    }
+
+    public async Task loadProducts()
+    {
+        _products = await ProductService.GetAllProductsAsync();
+    }
+
+    public async Task loadService()
+    {
+        _service = await ServiceService.GetAllServiceAsync();
+    }
+
+}
+
+

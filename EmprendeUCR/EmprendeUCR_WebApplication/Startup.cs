@@ -17,6 +17,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EmprendeUCR_WebApplication.Data.Services.Categories;
 using Syncfusion.Blazor;
+using Blazored.SessionStorage;
 
 
 namespace EmprendeUCR_WebApplication
@@ -50,6 +51,20 @@ namespace EmprendeUCR_WebApplication
             services.AddScoped<ProvinceService>();
             services.AddScoped<CantonService>();
             services.AddScoped<DistrictService>();
+            services.AddScoped<CredentialsService>();
+            services.AddScoped<LikesService>();
+            services.AddScoped<ClientService>();
+            services.AddScoped<MembersService>();
+            services.AddScoped<RegisterService>();
+            services.AddScoped<MailService>();
+            services.AddScoped<Email_ConfirmationService>();
+            services.AddScoped<AdministratorService>();
+            services.AddScoped<EncrypService>();
+            services.AddScoped<LoginService>();
+            services.AddBlazoredSessionStorage();
+
+            Global.ConnectionString = Configuration.GetConnectionString("SqlConnection");
+            Global.DomainName = Configuration["DomainName"];
             services.AddScoped <CredentialsService>();
             services.AddScoped<OfferService>();
             services.AddScoped<Is_OfferService>();

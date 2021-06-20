@@ -80,6 +80,8 @@ namespace EmprendeUCR_WebApplication.Data.Services
 
             return await _context.Is_Offer.ToListAsync();        // Listado 2
         }
+
+
         /**
         public async Task<IList<Offer>> GetOfferFromEntrepreneurAsync(string email)
         {

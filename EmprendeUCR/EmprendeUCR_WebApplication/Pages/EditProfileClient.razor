@@ -1,0 +1,200 @@
+﻿@page "/EditProfileClient"
+@using EmprendeUCR_WebApplication.Data.Services
+@using EmprendeUCR_WebApplication.Data.Entities
+@inject UserService UserService
+@inject ProvinceService ProvinceService
+@inject CantonService CantonService
+@inject DistrictService DistrictService
+@inject CredentialsService CredentialsService
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
+
+@if (!_isLoading) { 
+
+    <EditForm Model="@myUser" OnValidSubmit="@UpdateUser">
+        <div class="m-5 p -5">
+            <nav class=" mt-3 navbar navbar-light bg-light">
+                <h3>Editar mi perfil</h3>
+            </nav>
+
+            <div class="flex-container">
+                <button type="submit" class=" mt-3  btn-primary"> Guardar cambios </button>
+                <div class=" py-5 card user-card-full">
+                    <div class="row">
+                        <div class=" ml-2 col-6 align-self-center">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col	align-self-start"></div>
+                                    <div class="col	align-self-center">
+                                        @if (myUser.Photo != null)
+                                        {
+                                            <img width="200" height="180" src="data:image;base64,@System.Convert.ToBase64String(myUser.Photo)">
+                                        }
+                                        else
+                                        { <img width="200" height="180" src="https://d500.epimg.net/cincodias/imagenes/2016/07/04/lifestyle/1467646262_522853_1467646344_noticia_normal.jpg" />}
+                                        <InputFile OnChange="uploadImage" accept="image/png, image/jpg, image/jpeg" />
+                                    </div>
+                                    <div class="col	align-self-end"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="container">
+                                <b>INFORMACION PERSONAL</b> <br><br>
+                                <div class="row">
+                                    <div class="col">
+                                        <b>Correo:</b>
+                                        <input class="form-control" type="text" placeholder="@myUser.Email" id="inputEmail" style="width: 60%" maxlength="15" readonly>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col">
+                                        <b>Nombre:</b>
+                                        <InputText type="text" @bind-Value="myUser.Name" class="form-control" id="inputName" style="width: 60%" maxlength="15" />
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col">
+                                        <b>Primer apellido:</b>
+                                        <InputText type="text" @bind-Value="myUser.F_Last_Name" class="form-control" id="inputFLastName" style="width: 60%" maxlength="15" />
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col">
+                                        <b>Segundo apellido:</b>
+                                        <InputText type="text" @bind-Value="myUser.S_Last_Name" class="form-control" id="inputSLastName" style="width: 60%" maxlength="15" />
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col">
+                                        <b>Fecha nacimiento:</b>
+                                        <InputDate type="date" @bind-Value="myUser.Birth_Date" class="form-control" id="inputBDate" style="width: 40%" />
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col">
+                                        <b>Provincia:</b><div class="row"></div>
+                                        <select class="form-control-sm" id="Province" style=" width:50%; font-size:16px" @onchange="getCantons">
+                                            <option hidden> @myUser.Province_Name</option>
+                                            @foreach (var province in _province)
+                                            {
+                                                <option>@province.Name</option>
+                                            }
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col">
+                                        <b>Canton:</b><div class="row"></div>
+                                        <select class="form-control-sm" id="Canton" style="width: 50%; font-size: 16px" @onchange="getDistricts">
+                                            <option hidden> @myUser.Canton_Name </option>
+                                            @if (_canton != null) { }
+                                            {
+                                            @foreach (var canton in _canton)
+                                            {
+                                                <option>@canton.Name</option>
+                                            }
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col">
+                                        <b>Distrito:</b><div class="row"></div>
+                                        <select class="form-control-sm" id="District" style=" width:50%;font-size: 16px">
+                                            <option hidden> @myUser.District_Name </option>
+                                            @if (_district != null)
+                                            {
+                                                @foreach (var district in _district)
+                                                {
+                                                    <option>@district.Name</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <button type="submit" class="btn-primary"> Guardar cambios </button>
+            </div>
+        </div>
+
+    </EditForm>
+
+}else{<p>is loading...</p>}
+
+@code {
+
+    public User myUser;
+    private IList<Province> _province;
+    private IList<Canton> _canton;
+    private IList<District> _district;
+    private string province;
+    private string canton;
+    private string district;
+    private string imageUrl;
+    private byte[] buffer;
+    private bool _isLoading = true;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        string email = await sessionStorage.GetItemAsync<string>("Email");
+        myUser = UserService.GetUserByEmail(email);
+
+        _province = ProvinceService.GetProvinces();
+        _canton = CantonService.GetList(myUser.Province_Name);
+        _district = DistrictService.GetList(myUser.Canton_Name);
+        _isLoading = false;
+    }
+
+    public void UpdateUser()
+    {
+        UserService.UpdateUser(myUser);
+        NavigationManager.NavigateTo("/ProfileClient");
+
+    }
+
+    async Task getCantons()
+    {
+        province = await JsRuntime.InvokeAsync<string>("getValue", "Province");
+        _canton = CantonService.GetList(province);
+        myUser.Canton_Name = "";
+        myUser.District_Name = "";
+    }
+
+    async Task getDistricts()
+    {
+        canton = await JsRuntime.InvokeAsync<string>("getValue", "Canton");
+        _district = DistrictService.GetList(canton);
+        myUser.District_Name = "";
+    }
+
+    private async Task uploadImage(InputFileChangeEventArgs e)
+    {
+        foreach (var imageFile in e.GetMultipleFiles(1))
+        {
+
+            var resizedFile = await imageFile.RequestImageFileAsync("image/png", 350, 350);
+            buffer = new byte[resizedFile.Size];
+            await resizedFile.OpenReadStream().ReadAsync(buffer);
+        }
+        myUser.Photo = buffer;
+    }
+
+}
+

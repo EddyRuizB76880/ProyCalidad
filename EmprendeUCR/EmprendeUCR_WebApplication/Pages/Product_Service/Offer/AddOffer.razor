@@ -9,30 +9,12 @@
 @inject Product_ServiceService Product_ServiceService
 @inject OfferService OfferService
 @inject Is_OfferService Is_OfferService
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 <h3>Crear Oferta</h3>
 
 <form>
-    <!-- Display de emprendedores -->
-    <div class="row">
-        <div class="col-md-4">
-            <div class="form-group">
-                <label for="Entrepreneur_Email" class="control-label">Emprendedor</label>
-                <!--Given to the selected entrepreneur, display the information-->
-                <select @onchange="loadAllProducts">
-                    <option value="" selected disabled>Seleccione un emprendedor</option>
-                    @if (entrepreneurs?.Count > 0)
-                    {
-                        @foreach (var cnt in entrepreneurs)
-                        {
-                            <option value="@cnt.User_Email">@cnt.User_Email @cnt.Presentation</option>
-                        }
-                    }
-                </select>
-
-            </div>
-        </div>
-    </div>
+    <p>Productos y Servicios de @userLogged</p>
 
     <div class="row">
         <!-- Mis productos -->
@@ -62,8 +44,7 @@
                                     <button class="btn" type="button" @onclick="() => addProductToOffer(currentProduct.Code_ID)"><i class="oi oi-plus"></i>Agregar a oferta</button>
                                 </td>
                             </tr>
-                        }
-                    }
+                        }}
                 </tbody>
             </table>
             <!--Get back to the list product page button-->
@@ -164,8 +145,7 @@
             <!--fill the offer details-->
             @if ((_addedProducts?.Count > 0 || _addedServices?.Count > 0) && !showConfirmation)
             {
-                <input type="button" class="btn btn-primary" @onclick="@confirmOffer" value="Confirmar productos" />
-            }
+                <input type="button" class="btn btn-primary" @onclick="@confirmOffer" value="Confirmar productos" />}
 
             @if (showConfirmation)
             {
@@ -218,7 +198,7 @@
     </div>
 </form>
 
-@code { 
+@code {
     // The offer that will be store in the DB
     Offer offer = new Offer();
     // A list with the productServices items where the ID's will be taken
@@ -246,12 +226,14 @@
     System.DateTime expireDateInput = DateTime.Now;
     // The error message that will be display to the user if there is an error with the input data
     String errorMessage = "";
-
-
+    // Stores the email of the user logged
+    String userLogged = "";
     // When initialized, load all the entrepreneurs
     protected override async Task OnInitializedAsync()
     {
         entrepreneurs = await EntrepreneurService.GetAsync();
+        userLogged = await sessionStorage.GetItemAsync<string>("Email");
+        await loadAllProducts(userLogged);
     }
 
     // Add the product with the same id to the current offer
@@ -277,7 +259,7 @@
         showConfirmation = false;
         // Find the product with the same product_id
         Product productFound = _products.First(product => product.Code_ID == productId);
-        // Remove the product found from the added products 
+        // Remove the product found from the added products
         if (productFound is not null)
         {
             _addedProducts.Remove(productFound);
@@ -308,7 +290,7 @@
         showConfirmation = false;
         // Find the service with the same serviceId
         Service serviceFound = _service.First(service => service.Code_ID == serviceId);
-        // Remove the service found from the added services 
+        // Remove the service found from the added services
         if (serviceFound is not null)
         {
             _addedServices.Remove(serviceFound);
@@ -412,7 +394,7 @@
             await Is_OfferService.InsertIs_OfferAsync(is_offerToAdd);
         }
 
-        NavigationManager.NavigateTo("ListProducts");
+        NavigationManager.NavigateTo("Offers");
     }
 
     // Updates the total price and then display the confirmation
@@ -425,33 +407,34 @@
     // Return to the ListProduct page
     void Cancel()
     {
-        NavigationManager.NavigateTo("ListProducts");
+        NavigationManager.NavigateTo("Offers");
     }
 
     // Load all the products, services, and productService related to the email
-    public async Task loadAllProducts(ChangeEventArgs email)
+    public async Task loadAllProducts(String email)
     {
         await loadProducts(email);
         await loadService(email);
         await loadProductsServices(email);
     }
 
-    // Load the products related to the given entrepreneur email 
-    public async Task loadProducts(ChangeEventArgs email)
+    // Load the products related to the given entrepreneur email
+    public async Task loadProducts(String email)
     {
-        _products = await ProductService.GetProductsEntrepreneurAsync(email.Value.ToString());
+        _products = await ProductService.GetProductsEntrepreneurAsync(email);
     }
 
-    // Load the service related to the given entrepreneur email 
-    public async Task loadService(ChangeEventArgs email)
+    // Load the service related to the given entrepreneur email
+    public async Task loadService(String email)
     {
-        _service = await ServiceService.GetServiceEntrepreneurAsync(email.Value.ToString());
+        _service = await ServiceService.GetServiceEntrepreneurAsync(email);
     }
 
-    // Load the productServices related to the given entrepreneur email 
-    public async Task loadProductsServices(ChangeEventArgs email)
+    // Load the productServices related to the given entrepreneur email
+    public async Task loadProductsServices(String email)
     {
-        _productsServices = await Product_ServiceService.GetProductsServicesEntrepreneurAsync(email.Value.ToString());
-    } }
+        _productsServices = await Product_ServiceService.GetProductsServicesEntrepreneurAsync(email);
+    }
+}
 
 

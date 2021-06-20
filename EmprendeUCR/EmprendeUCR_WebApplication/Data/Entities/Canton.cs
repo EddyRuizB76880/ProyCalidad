@@ -10,8 +10,7 @@ namespace EmprendeUCR_WebApplication.Data.Entities
     {
     	[Key]
     	public string Name { get; set; }
-
-        /*[Required]
-        public string Province_Name { get; set; }*/
+        [Required]
+        public string Province_Name { get; set; }
     }
 }
