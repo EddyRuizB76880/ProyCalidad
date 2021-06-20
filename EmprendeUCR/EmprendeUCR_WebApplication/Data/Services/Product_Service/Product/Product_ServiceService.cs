@@ -69,6 +69,14 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return await _context.Product_Service.Where(c => String.Equals(c.Entrepreneur_Email, email)).ToListAsync();
 
         }
+
+
+        public async Task<IList<Product_Service>> GetProductsByCategoryAsync(string email, int category_id)
+        {
+            return await _context.Product_Service.Where(product => String.Equals(product.Entrepreneur_Email, email) && product.Category_ID == category_id).ToListAsync();
+
+        }
+
     }
 
 }

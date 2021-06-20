@@ -88,7 +88,7 @@ else
 
 
             <NavLink class="nav-link" href="AddProduct">
-                <button class="btn btn-primary" aria-hidden="true">Agregar nuevo producto</button>
+                <button class="btn btn-primary" aria-hidden="true">Agregar nuevo Producto</button>
             </NavLink>
 
         </aside>
@@ -107,11 +107,17 @@ else
     IList<Entrepreneur> entrepreneurs;
     IList<Product_Photos> photosDisplay;
     SfTreeGrid<Category> TreeGrid { get; set; }
+    private Category selectedCategory;
+    string selectedEmail;
+    ChangeEventArgs email1;
 
 
     public async Task loadAllProducts(ChangeEventArgs email)
     {
+
         _my_categories.Clear();
+        selectedEmail = email.Value.ToString();
+        email1 = email;
         await loadProducts(email);
         await loadProductsServices(email);
 
@@ -165,6 +171,12 @@ else
     }
 
 
+    public async Task loadProductsByCategory(string email, int category_id)
+    {
+        _products = await ProductService.GetProductsByCategoryAsync(email, category_id);
+        _productsServices = await Product_ServiceService.GetProductsByCategoryAsync(email, category_id);
+    }
+
 
 
     // metodos para prueba de categories
@@ -181,8 +193,19 @@ else
 
     public async Task SelectionHandler(Syncfusion.Blazor.Grids.RowSelectEventArgs<Category> args)
     {
-        var SelectedCategories = await this.TreeGrid.GetSelectedRecords();
 
+        var SelectedCategories = await this.TreeGrid.GetSelectedRecords();
+        if (SelectedCategories.Count() == 0)
+        {
+
+        }
+        else
+        {
+            selectedCategory = SelectedCategories.First();
+            await loadProductsByCategory(selectedEmail,selectedCategory.Id);
+
+
+        }
     }
 
 

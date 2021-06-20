@@ -19,7 +19,6 @@ using EmprendeUCR_WebApplication.Data.Services.Categories;
 using Syncfusion.Blazor;
 using Blazored.SessionStorage;
 
-
 namespace EmprendeUCR_WebApplication
 {
     public class Startup
@@ -71,7 +70,7 @@ namespace EmprendeUCR_WebApplication
             services.AddScoped<ServiceService>();
             services.AddScoped<Product_PhotosService>();
             services.AddScoped<Service_PhotosService>();
-            services.AddScoped<ServiceService>();
+            //services.AddScoped<ServiceService>();
 
         }
 

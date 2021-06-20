@@ -16,66 +16,117 @@
 <hr />
 <body>
 
-    <div class=" border-blue">
+<div class="">
+        <!--Displays the header-->
+        <section class=" w-70 float_right gap-lg-2 ">
 
-        <section class=" w-70 float_right  ">
-            <div class="   pt-3  ">
-                <div class="form-group">
-                    <label for="Name" class="control-label">Nombre</label>
-                    <input form="Name" class="form-control" @bind="@prod.Product_Name" />
-                </div>
-                <div class="form-group">
-                    <label for="Product_Description" class="control-label">Descripción</label>
-                    <input form="Product_Description" class="form-control" @bind="@prod.Product_Description" />
-                </div>
-                <div class="form-group">
-                    <label for="Price" class="control-label">Precio (CRC)</label>
-                    <input form="Price" type="number" class="form-control" @bind="@prod.Price" />
-                </div>
-            </div><br />
+            <div class="grid2 gap-3">
 
-            <div class="border-orange ">
-                <div class="wrapper w-90">
+                <div class=" border-1 shadow  bg-silver">
+                    <div class="form-group w-80">
+                        <label for="Name" class="control-label">Nombre</label>
+                        <input form="Name" class="form-control" @bind="@prod.Product_Name" />
+                    </div><br />
+                    <div class="form-group w-70">
+                        <label for="Product_Description" class="control-label">Descripción</label>
+                        <input form="Product_Description" class="form-control" @bind="@prod.Product_Description" />
+                    </div><br />
+                    <div class="form-group w-20">
+                        <label for="Price" class="control-label">Precio (CRC)</label>
+                        <input form="Price" type="number" class="form-control" @bind="@prod.Price" />
+                    </div>
+                </div>
+
+                <div class=" border-1 shadow">
+
+                    <h3 class="bg-blue text-center">Estados </h3>
+                    <label for="Addstatus" class="control-label">Nuevo estado</label>
+                    <input form="Addstatus" class="form-control w-50" />
+                    <ul>
+                        <li>En proceso</li>
+                        <li>Listo para entregar</li>
+                        <li>En camino</li>
+                    </ul>
+                </div>
+            </div> <br /> <br />
+            <!--Display the option to the user to upload the photo and assign it to the product (the 6 of them)-->
+
+            <div class=" ">
+                <div class="wrapper">
+
                     <div class="one">
-                        <p class="color-blue">*Esta foto será la portada de su producto</p>
                         <EditForm Model="@photosOne">
-                            <BlazorInputFile.InputFile OnChange="args => HandleFileSelected(args, photosOne)" class="custom-file-input" accept=".jpg,.png"></BlazorInputFile.InputFile>
-                            <th><img src="@Product_PhotosService.convertImageDisplay(photosOne.Photos)" width="350" /></th>
+                            <BlazorInputFile.InputFile id="addPhoto1" class="d-none" OnChange="args => HandleFileSelected(args, photosOne)" accept=".jpg,.png"></BlazorInputFile.InputFile>
+                            <label class="" hidden="@isPhotoLoaded(photosOne)" for="addPhoto1"> 
+                                <span class="d-flex align-items-center justify-content-center img-card btn btn-secondary material-icons-outlined">add_photo_alternate</span>
+                            </label>
+                            <img class="img-card" hidden="@(!isPhotoLoaded(photosOne))" src="@Product_PhotosService.convertImageDisplay(photosOne.Photos)" width="350" />
+                            <button @onclick="@(args => deletePhoto(args, photosOne))" hidden="@(!isPhotoLoaded(photosOne))" id="deletePhoto1" type="button" class="btn btn-danger material-icons-outlined ">delete</button>
+
                         </EditForm>
                     </div>
+
                     <div class="two">
                         <EditForm Model="@photosTwo">
-                            <BlazorInputFile.InputFile OnChange="args => HandleFileSelected(args, photosTwo)" class="custom-file-input" accept=".jpg,.png"></BlazorInputFile.InputFile>
-                            <th><img src="@Product_PhotosService.convertImageDisplay(photosTwo.Photos)" width="350" /></th>
+                            <BlazorInputFile.InputFile id="addPhoto2" class="d-none" OnChange="args => HandleFileSelected(args, photosTwo)" accept=".jpg,.png"></BlazorInputFile.InputFile>
+                            <label hidden="@isPhotoLoaded(photosTwo)" for="addPhoto2"> 
+                                <span class="d-flex align-items-center justify-content-center img-card material-icons-outline btn btn-secondary material-icons-outlined">add_photo_alternate</span>
+                            </label>
+                            <img class="img-card" hidden="@(!isPhotoLoaded(photosTwo))" src="@Product_PhotosService.convertImageDisplay(photosTwo.Photos)" width="350" />
+                            <button @onclick="@(args => deletePhoto(args, photosTwo))" hidden="@(isPhotoLoaded(photosTwo) == false)" id="deletePhoto2" type="button" class="btn btn-danger material-icons-outlined ">delete</button>
+
                         </EditForm>
                     </div>
+
                     <div class="three">
                         <EditForm Model="@photosThree">
-                            <BlazorInputFile.InputFile OnChange="args => HandleFileSelected(args, photosThree)" class="custom-file-input" accept=".jpg,.png"></BlazorInputFile.InputFile>
-                            <th><img src="@Product_PhotosService.convertImageDisplay(photosThree.Photos)" width="350" /></th>
+                            <BlazorInputFile.InputFile id="addPhoto3" class="d-none" OnChange="args => HandleFileSelected(args, photosThree)" accept=".jpg,.png"></BlazorInputFile.InputFile>
+                            <label hidden="@isPhotoLoaded(photosThree)" for="addPhoto3"> 
+                                <span class="d-flex align-items-center justify-content-center img-card material-icons-outline btn btn-secondary material-icons-outlined">add_photo_alternate</span>
+                            </label>
+                            <img class="img-card" hidden="@(!isPhotoLoaded(photosThree))" src="@Product_PhotosService.convertImageDisplay(photosThree.Photos)" width="350" />
+                            <button @onclick="@(args => deletePhoto(args, photosThree))" hidden="@(isPhotoLoaded(photosThree) == false)" id="deletePhoto3" type="button" class="btn btn-danger material-icons-outlined ">delete</button>
+
                         </EditForm>
                     </div>
+
                     <div class="four">
                         <EditForm Model="@photosFour">
-                            <BlazorInputFile.InputFile OnChange="args => HandleFileSelected(args, photosFour)" class="custom-file-input" accept=".jpg,.png"></BlazorInputFile.InputFile>
-                            <th><img src="@Product_PhotosService.convertImageDisplay(photosFour.Photos)" width="350" /></th>
+                            <BlazorInputFile.InputFile id="addPhoto4" class="d-none" OnChange="args => HandleFileSelected(args, photosFour)" accept=".jpg,.png"></BlazorInputFile.InputFile>
+                            <label hidden="@isPhotoLoaded(photosFour)" for="addPhoto4"> 
+                                <span class="d-flex align-items-center justify-content-center img-card btn btn-secondary material-icons-outlined">add_photo_alternate</span>
+                            </label>
+                            <img class="img-card" hidden="@(!isPhotoLoaded(photosFour))" src="@Product_PhotosService.convertImageDisplay(photosFour.Photos)" width="350" />
+                            <button @onclick="@(args => deletePhoto(args, photosFour))" hidden="@(isPhotoLoaded(photosFour) == false)" id="deletePhoto4" type="button" class="btn btn-danger material-icons-outlined ">delete</button>
+
                         </EditForm>
                     </div>
+
                     <div class="five">
                         <EditForm Model="@photosFive">
-                            <BlazorInputFile.InputFile OnChange="args => HandleFileSelected(args, photosFive)" class="custom-file-input" accept=".jpg,.png"></BlazorInputFile.InputFile>
-                            <th><img src="@Product_PhotosService.convertImageDisplay(photosFive.Photos)" width="350" /></th>
+                            <BlazorInputFile.InputFile id="addPhoto5" class="d-none" OnChange="args => HandleFileSelected(args, photosFive)" accept=".jpg,.png"></BlazorInputFile.InputFile>
+                            <label hidden="@isPhotoLoaded(photosFive)" for="addPhoto5"> 
+                                <span class="d-flex align-items-center justify-content-center img-card material-icons-outline btn btn-secondary material-icons-outlined">add_photo_alternate</span>
+                            </label>
+                            <img class="img-card" hidden="@(!isPhotoLoaded(photosFive))" src="@Product_PhotosService.convertImageDisplay(photosFive.Photos)" width="350" />
+                            <button @onclick="@(args => deletePhoto(args, photosFive))" hidden="@(isPhotoLoaded(photosFive) == false)" id="deletePhoto5" type="button" class="btn btn-danger material-icons-outlined ">delete</button>
+
                         </EditForm>
                     </div>
+
                     <div class="six">
                         <EditForm Model="@photosSix">
-                            <BlazorInputFile.InputFile OnChange="args => HandleFileSelected(args, photosSix)" class="custom-file-input" accept=".jpg,.png"></BlazorInputFile.InputFile>
-                            <th><img src="@Product_PhotosService.convertImageDisplay(photosSix.Photos)" width="350" /></th>
+                            <BlazorInputFile.InputFile id="addPhoto6" class="d-none" OnChange="args => HandleFileSelected(args, photosSix)" accept=".jpg,.png"></BlazorInputFile.InputFile>
+                            <label hidden="@isPhotoLoaded(photosSix)" for="addPhoto6"> 
+                                <span class="d-flex align-items-center justify-content-center  img-card material-icons-outline btn btn-secondary material-icons-outlined">add_photo_alternate</span>
+                            </label>
+                            <img class="img-card" hidden="@(!isPhotoLoaded(photosSix))" src="@Product_PhotosService.convertImageDisplay(photosSix.Photos)" />
+                            <button @onclick="@(args => deletePhoto(args, photosSix))" hidden="@(isPhotoLoaded(photosSix) == false)" id="deletePhoto6" type="button" class="btn btn-danger material-icons-outlined ">delete</button>
                         </EditForm>
                     </div>
 
                 </div>
-            </div>
+            </div><br />
 
             <div class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
@@ -85,15 +136,18 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
+                        <input type="button" class="btn btn-primary" @onclick="@back" value="Regresar" />
+                        <input type="button" class="btn btn-primary" @onclick="@Clean" value="Limpiar" />
                         <input type="button" class="btn btn-primary" @onclick="@onCreateProduct" value="Guardar" />
-                        <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Cancelar" />
+
                     </div>
                 </div>
             </div>
 
         </section>
 
-        <aside class="w-30 float_left">
+
+        <aside class="w-25 float_left gap-3">
             <div class="form-group">
 
                 <h2 class="text-center fs-2  bg-blue">Categoria</h2>
@@ -115,6 +169,9 @@
 
     </div>
 
+
+
+
     <div>
         <h4 id="error" hidden="@hideError">Informacion incompleta.</h4>
     </div>
@@ -124,30 +181,31 @@
 
 
 
-@code {
+ 
 
+
+
+@code {
     EmprendeUCR_WebApplication.Data.Entities.Product prod = new EmprendeUCR_WebApplication.Data.Entities.Product();
     EmprendeUCR_WebApplication.Data.Entities.Product_Service prodServ = new EmprendeUCR_WebApplication.Data.Entities.Product_Service();
 
     IList<Entrepreneur> entrepreneurs;
     IList<Category> categories;
-    IList<Product_Photos> photosDisplay;
-    List<byte[]> photosArray = new List<byte[]>();
-    public byte[] photoUploaded { get; set; }
     private bool _isLoading = true;
     bool hideError = true;
 
+    // The photos that will be assign to the Product
     Product_Photos photosOne = new Product_Photos();
     Product_Photos photosTwo = new Product_Photos();
     Product_Photos photosThree = new Product_Photos();
     Product_Photos photosFour = new Product_Photos();
     Product_Photos photosFive = new Product_Photos();
     Product_Photos photosSix = new Product_Photos();
-    Product_Photos photos = new Product_Photos();
+
     SfTreeGrid<Category> TreeGrid { get; set; }
-    private Category SelectedCategory;
+    private Category selectedCategory;
 
-
+    // Receives file to insert and product to insert it to.
     public async Task HandleFileSelected(IFileListEntry[] files, Product_Photos photos)
     {
         var file = files.FirstOrDefault();
@@ -157,21 +215,24 @@
             await file.Data.CopyToAsync(ms);
             photos.Photos = ms.ToArray();
         }
+        else
+        {
+
+        }
     }
 
-
+    // Gets called when page first loads.
     protected override async Task OnInitializedAsync()
     {
         prodServ.Entrepreneur_Email = await sessionStorage.GetItemAsync<string>("Email");
         entrepreneurs = await EntrepreneurService.GetAsync();
         categories = await CategoryService.GetAsync();
-        photosDisplay = Product_PhotosService.loadAllPhotos();
         _isLoading = false;
     }
 
+    // Gets called when entrepreneur saves a new product
     protected Task createProduct()
     {
-
         if (String.IsNullOrEmpty(prod.Entrepreneur_Email))
         {
             // product details are incomplete, show error
@@ -182,9 +243,19 @@
         {
             return productService.InsertProductAsync(prod);
         }
-
     }
 
+    protected bool isPhotoLoaded(Product_Photos photo)
+    {
+        return photo.Photos != null;
+    }
+
+    protected void deletePhoto(MouseEventArgs args, Product_Photos photo)
+    {
+        photo.Photos = null;
+    }
+
+    // Creates parent Product_Service entity
     protected async Task<int> createProduct_Service()
     {
         if (String.IsNullOrEmpty(prodServ.Entrepreneur_Email))
@@ -198,16 +269,27 @@
         {
             int id = await Product_ServiceService.InsertProductServiceAsync(prodServ);
             return id;
+        }
+    }
 
+    // Inits all values in a photo object
+    protected void preparePhoto(Product_Photos photo, int idToInsert)
+    {
+        if (photo.Photos != null)
+        {
+            photo.Code_ID = idToInsert;
+            photo.Entrepreneur_Email = prodServ.Entrepreneur_Email;
+            photo.Category_ID = selectedCategory.Id;
+            Product_PhotosService.savePhotoToDb(photo);
         }
     }
 
     protected async void onCreateProduct()
     {
         prodServ.Availability = prodServ.Availability;
-        prodServ.Category_ID = SelectedCategory.Id;
+        prodServ.Category_ID = selectedCategory.Id;
 
-        prod.Category_ID = SelectedCategory.Id;
+        prod.Category_ID = selectedCategory.Id;
 
         prod.Entrepreneur_Email = prodServ.Entrepreneur_Email;
 
@@ -216,53 +298,12 @@
         await createProduct();
 
         /// Save photos on data base
-        if (photosOne.Photos != null)
-        {
-            photosOne.Code_ID = idToInsert;
-            photosOne.Entrepreneur_Email = prodServ.Entrepreneur_Email;
-            photosOne.Category_ID = SelectedCategory.Id;
-            Product_PhotosService.Uploading(photosOne);
-        }
-
-        if (photosTwo.Photos != null)
-        {
-            photosTwo.Code_ID = idToInsert;
-            photosTwo.Entrepreneur_Email = prodServ.Entrepreneur_Email;
-            photosTwo.Category_ID = SelectedCategory.Id;
-            Product_PhotosService.Uploading(photosTwo);
-        }
-
-        if (photosThree.Photos != null)
-        {
-            photosThree.Code_ID = idToInsert;
-            photosThree.Entrepreneur_Email = prodServ.Entrepreneur_Email;
-            photosThree.Category_ID = SelectedCategory.Id;
-            Product_PhotosService.Uploading(photosThree);
-        }
-
-        if (photosFour.Photos != null)
-        {
-            photosFour.Code_ID = idToInsert;
-            photosFour.Entrepreneur_Email = prodServ.Entrepreneur_Email;
-            photosFour.Category_ID = SelectedCategory.Id;
-            Product_PhotosService.Uploading(photosFour);
-        }
-
-        if (photosFive.Photos != null)
-        {
-            photosFive.Code_ID = idToInsert;
-            photosFive.Entrepreneur_Email = prodServ.Entrepreneur_Email;
-            photosFive.Category_ID = SelectedCategory.Id;
-            Product_PhotosService.Uploading(photosFive);
-        }
-
-        if (photosSix.Photos != null)
-        {
-            photosSix.Code_ID = idToInsert;
-            photosSix.Entrepreneur_Email = prodServ.Entrepreneur_Email;
-            photosSix.Category_ID = SelectedCategory.Id;
-            Product_PhotosService.Uploading(photosSix);
-        }
+        preparePhoto(photosOne, idToInsert);
+        preparePhoto(photosTwo, idToInsert);
+        preparePhoto(photosThree, idToInsert);
+        preparePhoto(photosFour, idToInsert);
+        preparePhoto(photosFive, idToInsert);
+        preparePhoto(photosSix, idToInsert);
         /// End of save photos on database
 
         NavigationManager.NavigateTo("ListProducts");
@@ -273,6 +314,17 @@
         NavigationManager.NavigateTo("ListProducts");
     }
 
+    void Clean()//deber ser el boton de clean
+    {
+        prod.Product_Name = null;
+        prod.Price = 0;
+        prod.Product_Description = null;
+    }
+
+    void back()
+    {
+        NavigationManager.NavigateTo("ListProducts");
+    }
 
     // metodos para prueba de categories
 
@@ -283,21 +335,14 @@
     }
 
     //SelectionHandler
-
-
-
-
     public async Task SelectionHandler(Syncfusion.Blazor.Grids.RowSelectEventArgs<Category> args)
     {
-        var SelectedCategories = await this.TreeGrid.GetSelectedRecords();
-        if (SelectedCategories.Count() == 0)
-        {
-
-        }
+        var selectedCategories = await this.TreeGrid.GetSelectedRecords();
+        if (selectedCategories.Count() == 0)
+        { }
         else
         {
-            SelectedCategory = SelectedCategories.First();
-
+            selectedCategory = selectedCategories.First();
         }
     }
 
