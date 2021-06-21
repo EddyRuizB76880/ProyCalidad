@@ -17,13 +17,10 @@ else
 {
 
     <head>
-
         <link rel="stylesheet" href="~/css/EmprendeUCR-template.css" />
     </head>
 
     <body>
-
-
         <header>
             <div class="icon-m display-2"> Mis Servicios</div>
         </header>
@@ -53,16 +50,13 @@ else
             </div>
         </section>
 
-
-
-
         <aside class="w-25 float_left mb-0">
             <div class=" border-blue " @onchange="loadCategories">
                 <h2 class="text-center fs-2  bg-blue">Categorias</h2>
                 @if (_my_categories?.Count > 0)
                 {   //jala la llave del papa no se trae los hijos
                     <SfTreeGrid ID="TreeGrid" @ref="TreeGrid" AllowSorting="true" AllowRowDragAndDrop="true" DataSource="@_my_categories" IdMapping="Id" ParentIdMapping="ParentId" AllowSelection="true" TreeColumnIndex="0">
-                        <TreeGridEvents TValue="Category" RowDropped="Rowdrop" RowSelected="SelectionHandler"></TreeGridEvents>
+                        <TreeGridEvents TValue="Category" RowDropped="Rowdrop" RowDeselected="SelectionHandler2" RowSelected="SelectionHandler"></TreeGridEvents>
                         <TreeGridSortSettings>
                             <TreeGridSortColumns>
                                 <TreeGridSortColumn Field="Title" Direction="Syncfusion.Blazor.Grids.SortDirection.Ascending"></TreeGridSortColumn>
@@ -82,11 +76,8 @@ else
             </NavLink>
 
         </aside>
-
-
     </body>
 }
-
 
 @code {
     private bool _isLoading = true;
@@ -98,10 +89,12 @@ else
     SfTreeGrid<Category> TreeGrid { get; set; }
     private Category selectedCategory;
     string selectedEmail;
+    bool firstClick = true;
 
     public async Task loadAllServices(string email)
     {
         _my_categories.Clear();
+        selectedEmail = email;
         await loadServices(email);
         await loadProductsServices(email);
         await loadCategories();
@@ -162,9 +155,6 @@ else
         _productsServices = await Product_ServiceService.GetProductsByCategoryAsync(email, category_id);
     }
 
-
-
-
     // metodos para prueba de categories
 
     //RowDrop
@@ -180,20 +170,27 @@ else
     public async Task SelectionHandler(Syncfusion.Blazor.Grids.RowSelectEventArgs<Category> args)
     {
         var SelectedCategories = await this.TreeGrid.GetSelectedRecords();
-        if (SelectedCategories.Count() == 0)
-        {
-
-        }
-        else
+        if (SelectedCategories.Count() > 0)
         {
             selectedCategory = SelectedCategories.First();
             await loadServicesByCategory(selectedEmail, selectedCategory.Id);
-
-
+        }
+        else
+        {
+            selectedCategory = null;
         }
     }
 
-
+    public async Task SelectionHandler2(Syncfusion.Blazor.Grids.RowDeselectEventArgs<Category> args)
+    {
+        if (args.Data.Id == selectedCategory.Id && !firstClick)
+        {
+            await loadServices(selectedEmail);
+            await loadProductsServices(selectedEmail);
+            await loadCategories();
+        }
+        firstClick = false;
+    }
 
 }
 

@@ -1,27 +1,33 @@
 ﻿@page "/ProductStatusInput"
 <div class=" border-1 shadow">
-    
-    
-        <h3 class="bg-blue text-center">Estados</h3>
-        <label for="AddStatus" class="control-label m-lg-2 ">Nuevo estado</label>
-        <div class="d-flex">
-            <input @bind="@newStatus.Text" form="AddStatus" class="form-control m-lg-2 w-50  " />
-            <button class="material-icons-outlined  bg-blue  text-center m-lg-2  " hidden="@(!isStatusInputValid())" @onclick="()=>onAddStatus()"> add </button>
-        </div>
-    
+
+
+    <h3 class="bg-blue text-center">Estados</h3>
+    <label for="AddStatus" class="control-label m-lg-2 ">Nuevo estado</label>
+    <div class="d-flex">
+        <input maxlength="20" @bind="@newStatus.Text" form="AddStatus" class="form-control m-lg-2 w-50  " />
+        <button class="material-icons-outlined  bg-blue  text-center m-lg-2  " hidden="@(!isStatusInputValid())" @onclick="()=>onAddStatus()"> add </button>
+    </div>
+
     <ul ondragover="event.preventDefault();" style="margin:20px">
         @for (int i = 0; i < statuses.Count; i++)
         {
             Status item = statuses[i];
             if (item != null)
             {
-                <li draggable="true" style="list-style-type:none;" @key="item.ID" tabindex="1"
-                    @ondrop="@(()=> Drop(item))" @ondrag="@(()=> StartDrag(item))">
-                    <span>@(i+1). </span> <span>@item.Text</span> <span class="material-icons-outlined">
-                        drag_indicator
-                    </span>
-                    <span class="material-icons-outlined" @onclick="()=>onDeleteStatus(item)">clear</span>
-                </li>
+        <div class="container">
+            <li class="row" draggable="true" style="list-style-type:none;" @key="item.ID" tabindex="1"
+                @ondrop="@(()=> Drop(item))" @ondrag="@(()=> StartDrag(item))">
+
+                <span class="col-1">@(i+1). </span> 
+                <span class="col-4">@item.Text</span>
+                <span class="material-icons-outlined valign-center col-1">
+                    drag_indicator
+                </span>
+                <span class="material-icons-outlined valign-center col-1" @onclick="()=>onDeleteStatus(item)">clear</span>
+
+            </li>
+        </div>
             }
             else
             {
@@ -85,7 +91,7 @@
     void onAddStatus()
     {
         statuses.Add(newStatus);
-        newStatus = new Status() { ID = statuses.Count+"test", Text = "" };
+        newStatus = new Status() { ID = statuses.Count + "test", Text = "" };
     }
 
     public class Status
@@ -98,7 +104,8 @@
         }
     }
 
-    bool isStatusInputValid() {
+    bool isStatusInputValid()
+    {
         return newStatus.Text != null || newStatus.Text != "";
     }
 

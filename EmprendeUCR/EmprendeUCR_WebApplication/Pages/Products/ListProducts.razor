@@ -15,16 +15,12 @@
 }
 else
 {
-
-    
+ 
     <head>
-
         <link rel="stylesheet" href="~/css/EmprendeUCR-template.css" />
     </head>
 
     <body>
-
-
         <header>
             <div class="icon-m display-2"> Mis Productos</div>
         </header>
@@ -54,9 +50,6 @@ else
             </div>
         </section>
 
-
-
-
         <aside class="w-25 float_left mb-0">
             <div class=" border-blue " @onchange="loadCategories">
                 <h2 class="text-center fs-2  bg-blue">Categorias</h2>
@@ -78,17 +71,13 @@ else
                 }
             </div>
 
-
             <NavLink class="nav-link" href="AddProduct">
-                <button class="btn btn-primary" aria-hidden="true">Agregar nuevo Producto</button>
+                <button class="btn btn-primary" aria-hidden="true">Agregar nuevo producto</button>
             </NavLink>
 
         </aside>
-     
-
     </body>
 }
-
 
 @code {
     private bool _isLoading = true;
@@ -96,24 +85,20 @@ else
     private IList<EmprendeUCR_WebApplication.Data.Entities.Product_Service> _productsServices;
     private IList<EmprendeUCR_WebApplication.Data.Entities.Category> _categories;
     private IList<EmprendeUCR_WebApplication.Data.Entities.Category> _my_categories = new List<Category>();
-    IList<Entrepreneur> entrepreneurs;
     IList<Product_Photos> photosDisplay;
     SfTreeGrid<Category> TreeGrid { get; set; }
     private Category selectedCategory;
     string selectedEmail;
-    string email1;
+    //string email1;
     bool firstClick = true;
-
 
     public async Task loadAllProducts(string email)
     {
 
         _my_categories.Clear();
         selectedEmail = email;
-        email1 = email;
         await loadProducts(email);
         await loadProductsServices(email);
-
         await loadCategories();
     }
 
@@ -171,8 +156,6 @@ else
         _productsServices = await Product_ServiceService.GetProductsByCategoryAsync(email, category_id);
     }
 
-
-
     // metodos para prueba de categories
 
     //RowDrop
@@ -190,26 +173,21 @@ else
         var SelectedCategories = await this.TreeGrid.GetSelectedRecords();
         if (SelectedCategories.Count() > 0)
         {
-
             selectedCategory = SelectedCategories.First();
-
             await loadProductsByCategory(selectedEmail, selectedCategory.Id);
-
         }
         else
         {
             selectedCategory = null;
         }
-
     }
 
     public async Task SelectionHandler2(Syncfusion.Blazor.Grids.RowDeselectEventArgs<Category> args)
     {
-        if(args.Data.Id == selectedCategory.Id && !firstClick)
+        if (args.Data.Id == selectedCategory.Id && !firstClick)
         {
             await loadProducts(selectedEmail);
             await loadProductsServices(selectedEmail);
-
             await loadCategories();
         }
         firstClick = false;

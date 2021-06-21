@@ -343,3 +343,14 @@ input[type="number"]::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
+
+.valign-center {
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+}
+
+.some-text {
+    float: left;
+    margin-left: 10px;
+}

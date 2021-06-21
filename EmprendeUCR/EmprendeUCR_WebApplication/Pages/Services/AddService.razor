@@ -24,16 +24,16 @@
 
                 <div class=" border-1 shadow  bg-silver">
                     <div class="form-group w-70">
-                        <label for="Name" class="control-label">Nombre</label>
-                        <input form="Name" class="form-control" @bind="@serv.Service_Name" />
+                        <label for="Name" class="control-label m-lg-2">Nombre</label>
+                        <input form="Name" class="form-control m-lg-2" @bind="@serv.Service_Name" />
                     </div><br />
                     <div class="form-group w-70">
-                        <label for="Product_Description" class="control-label">Descripción</label>
-                        <textarea rows="3" form="Product_Description" class="form-control" @bind="@serv.Service_Description" />
+                        <label for="Product_Description" class="control-label m-lg-2">Descripción</label>
+                        <textarea rows="3" form="Product_Description" class="form-control m-lg-2" @bind="@serv.Service_Description" />
                     </div><br />
-                    <div class="form-group w-20">
-                        <label for="Price" class="control-label">Precio por hora(CRC)</label>
-                        <input form="Price" type="number" class="form-control" @bind="@serv.Price_per_hour" />
+                    <div class="form-group w-30">
+                        <label for="Price" class="control-label m-lg-2">Precio por hora(CRC)</label>
+                        <input form="Price" type="number" class="form-control m-lg-2" @bind="@serv.Price_per_hour" />
                     </div>
                 </div>
          
@@ -42,8 +42,7 @@
             <!--Display the option to the user to upload the photo and assign it to the product (the 6 of them)-->
 
             <div class=" ">
-                <div class="wrapper">
-
+                <div class="wrapper w-90">
                     <div class="one">
                         <EditForm Model="@photosOne">
                             <BlazorInputFile.InputFile id="addPhoto1" class="d-none" OnChange="args => HandleImageSelected(args, photosOne)" accept=".jpg,.png"></BlazorInputFile.InputFile>
