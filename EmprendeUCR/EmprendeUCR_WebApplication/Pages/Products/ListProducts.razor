@@ -63,7 +63,7 @@ else
                 @if (_my_categories?.Count > 0)
                 {   //jala la llave del papa no se trae los hijos
                     <SfTreeGrid ID="TreeGrid" @ref="TreeGrid" AllowSorting="true" AllowRowDragAndDrop="true" DataSource="@_my_categories" IdMapping="Id" ParentIdMapping="ParentId" AllowSelection="true" TreeColumnIndex="0">
-                        <TreeGridEvents TValue="Category" RowDropped="Rowdrop" RowSelected="SelectionHandler"></TreeGridEvents>
+                        <TreeGridEvents TValue="Category" RowDropped="Rowdrop" RowDeselected="SelectionHandler2" RowSelected="SelectionHandler"></TreeGridEvents>
                         <TreeGridSortSettings>
                             <TreeGridSortColumns>
                                 <TreeGridSortColumn Field="Title" Direction="Syncfusion.Blazor.Grids.SortDirection.Ascending"></TreeGridSortColumn>
@@ -84,7 +84,7 @@ else
             </NavLink>
 
         </aside>
-
+     
 
     </body>
 }
@@ -96,18 +96,21 @@ else
     private IList<EmprendeUCR_WebApplication.Data.Entities.Product_Service> _productsServices;
     private IList<EmprendeUCR_WebApplication.Data.Entities.Category> _categories;
     private IList<EmprendeUCR_WebApplication.Data.Entities.Category> _my_categories = new List<Category>();
+    IList<Entrepreneur> entrepreneurs;
     IList<Product_Photos> photosDisplay;
     SfTreeGrid<Category> TreeGrid { get; set; }
     private Category selectedCategory;
-    private string selectedEmail;
-   
+    string selectedEmail;
+    string email1;
+    bool firstClick = true;
 
 
     public async Task loadAllProducts(string email)
     {
 
         _my_categories.Clear();
-        
+        selectedEmail = email;
+        email1 = email;
         await loadProducts(email);
         await loadProductsServices(email);
 
@@ -123,8 +126,7 @@ else
 
             Category iterator = CategoryService.getCategory(prod.Category_ID);
 
-            while (iterator.ParentId != null)
-            {
+            while (iterator.ParentId != null) {
 
                 Category parentcat = CategoryService.getCategory((int)iterator.ParentId);
 
@@ -185,19 +187,32 @@ else
 
     public async Task SelectionHandler(Syncfusion.Blazor.Grids.RowSelectEventArgs<Category> args)
     {
-
         var SelectedCategories = await this.TreeGrid.GetSelectedRecords();
-        if (SelectedCategories.Count() == 0)
+        if (SelectedCategories.Count() > 0)
         {
+
+            selectedCategory = SelectedCategories.First();
+
+            await loadProductsByCategory(selectedEmail, selectedCategory.Id);
 
         }
         else
         {
-            selectedCategory = SelectedCategories.First();
-            await loadProductsByCategory(selectedEmail, selectedCategory.Id);
-
-
+            selectedCategory = null;
         }
+
+    }
+
+    public async Task SelectionHandler2(Syncfusion.Blazor.Grids.RowDeselectEventArgs<Category> args)
+    {
+        if(args.Data.Id == selectedCategory.Id && !firstClick)
+        {
+            await loadProducts(selectedEmail);
+            await loadProductsServices(selectedEmail);
+
+            await loadCategories();
+        }
+        firstClick = false;
     }
 
 

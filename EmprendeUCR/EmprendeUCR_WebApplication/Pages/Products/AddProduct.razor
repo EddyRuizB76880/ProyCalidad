@@ -6,7 +6,6 @@
 @using Syncfusion.Blazor.TreeGrid;
 @inject ProductService  productService
 @inject NavigationManager NavigationManager
-@inject EntrepreneurService EntrepreneurService
 @inject Product_ServiceService Product_ServiceService
 @inject CategoryService CategoryService
 @inject Product_PhotosService Product_PhotosService
@@ -16,48 +15,38 @@
 <hr />
 <body>
 
-<div class="">
+    <div class="">
         <!--Displays the header-->
         <section class=" w-70 float_right gap-lg-2 ">
 
             <div class="grid2 gap-3">
 
                 <div class=" border-1 shadow  bg-silver">
-                    <div class="form-group w-80">
-                        <label for="Name" class="control-label">Nombre</label>
-                        <input form="Name" class="form-control" @bind="@prod.Product_Name" />
+                    <div class="form-group w-70">
+                        <label for="Name" class="control-label m-lg-2">Nombre</label>
+                        <input form="Name" class="form-control m-lg-2" @bind="@prod.Product_Name" />
                     </div><br />
                     <div class="form-group w-70">
-                        <label for="Product_Description" class="control-label">Descripción</label>
-                        <input form="Product_Description" class="form-control" @bind="@prod.Product_Description" />
+                        <label for="Product_Description" class="control-label m-lg-2">Descripción</label>
+                        <textarea rows="3" form="Product_Description" class="form-control m-lg-2" @bind="@prod.Product_Description" />
                     </div><br />
                     <div class="form-group w-20">
-                        <label for="Price" class="control-label">Precio (CRC)</label>
-                        <input form="Price" type="number" class="form-control" @bind="@prod.Price" />
+                        <label for="Price" class="control-label m-lg-2">Precio(CRC)</label>
+                        <input form="Price" type="number" class="form-control m-lg-2" @bind="@prod.Price" />
                     </div>
                 </div>
 
-                <div class=" border-1 shadow">
-
-                    <h3 class="bg-blue text-center">Estados </h3>
-                    <label for="Addstatus" class="control-label">Nuevo estado</label>
-                    <input form="Addstatus" class="form-control w-50" />
-                    <ul>
-                        <li>En proceso</li>
-                        <li>Listo para entregar</li>
-                        <li>En camino</li>
-                    </ul>
-                </div>
+                    <EmprendeUCR_WebApplication.Pages.Product_Service.Product.ProductStatusInput/>
+                
             </div> <br /> <br />
+
             <!--Display the option to the user to upload the photo and assign it to the product (the 6 of them)-->
-
             <div class=" ">
-                <div class="wrapper">
-
+                <div class="wrapper w-90">
                     <div class="one">
                         <EditForm Model="@photosOne">
                             <BlazorInputFile.InputFile id="addPhoto1" class="d-none" OnChange="args => HandleFileSelected(args, photosOne)" accept=".jpg,.png"></BlazorInputFile.InputFile>
-                            <label class="" hidden="@isPhotoLoaded(photosOne)" for="addPhoto1"> 
+                            <label class="" hidden="@isPhotoLoaded(photosOne)" for="addPhoto1">
                                 <span class="d-flex align-items-center justify-content-center img-card btn btn-secondary material-icons-outlined">add_photo_alternate</span>
                             </label>
                             <img class="img-card" hidden="@(!isPhotoLoaded(photosOne))" src="@Product_PhotosService.convertImageDisplay(photosOne.Photos)" width="350" />
@@ -69,7 +58,7 @@
                     <div class="two">
                         <EditForm Model="@photosTwo">
                             <BlazorInputFile.InputFile id="addPhoto2" class="d-none" OnChange="args => HandleFileSelected(args, photosTwo)" accept=".jpg,.png"></BlazorInputFile.InputFile>
-                            <label hidden="@isPhotoLoaded(photosTwo)" for="addPhoto2"> 
+                            <label hidden="@isPhotoLoaded(photosTwo)" for="addPhoto2">
                                 <span class="d-flex align-items-center justify-content-center img-card material-icons-outline btn btn-secondary material-icons-outlined">add_photo_alternate</span>
                             </label>
                             <img class="img-card" hidden="@(!isPhotoLoaded(photosTwo))" src="@Product_PhotosService.convertImageDisplay(photosTwo.Photos)" width="350" />
@@ -81,7 +70,7 @@
                     <div class="three">
                         <EditForm Model="@photosThree">
                             <BlazorInputFile.InputFile id="addPhoto3" class="d-none" OnChange="args => HandleFileSelected(args, photosThree)" accept=".jpg,.png"></BlazorInputFile.InputFile>
-                            <label hidden="@isPhotoLoaded(photosThree)" for="addPhoto3"> 
+                            <label hidden="@isPhotoLoaded(photosThree)" for="addPhoto3">
                                 <span class="d-flex align-items-center justify-content-center img-card material-icons-outline btn btn-secondary material-icons-outlined">add_photo_alternate</span>
                             </label>
                             <img class="img-card" hidden="@(!isPhotoLoaded(photosThree))" src="@Product_PhotosService.convertImageDisplay(photosThree.Photos)" width="350" />
@@ -93,7 +82,7 @@
                     <div class="four">
                         <EditForm Model="@photosFour">
                             <BlazorInputFile.InputFile id="addPhoto4" class="d-none" OnChange="args => HandleFileSelected(args, photosFour)" accept=".jpg,.png"></BlazorInputFile.InputFile>
-                            <label hidden="@isPhotoLoaded(photosFour)" for="addPhoto4"> 
+                            <label hidden="@isPhotoLoaded(photosFour)" for="addPhoto4">
                                 <span class="d-flex align-items-center justify-content-center img-card btn btn-secondary material-icons-outlined">add_photo_alternate</span>
                             </label>
                             <img class="img-card" hidden="@(!isPhotoLoaded(photosFour))" src="@Product_PhotosService.convertImageDisplay(photosFour.Photos)" width="350" />
@@ -105,7 +94,7 @@
                     <div class="five">
                         <EditForm Model="@photosFive">
                             <BlazorInputFile.InputFile id="addPhoto5" class="d-none" OnChange="args => HandleFileSelected(args, photosFive)" accept=".jpg,.png"></BlazorInputFile.InputFile>
-                            <label hidden="@isPhotoLoaded(photosFive)" for="addPhoto5"> 
+                            <label hidden="@isPhotoLoaded(photosFive)" for="addPhoto5">
                                 <span class="d-flex align-items-center justify-content-center img-card material-icons-outline btn btn-secondary material-icons-outlined">add_photo_alternate</span>
                             </label>
                             <img class="img-card" hidden="@(!isPhotoLoaded(photosFive))" src="@Product_PhotosService.convertImageDisplay(photosFive.Photos)" width="350" />
@@ -117,7 +106,7 @@
                     <div class="six">
                         <EditForm Model="@photosSix">
                             <BlazorInputFile.InputFile id="addPhoto6" class="d-none" OnChange="args => HandleFileSelected(args, photosSix)" accept=".jpg,.png"></BlazorInputFile.InputFile>
-                            <label hidden="@isPhotoLoaded(photosSix)" for="addPhoto6"> 
+                            <label hidden="@isPhotoLoaded(photosSix)" for="addPhoto6">
                                 <span class="d-flex align-items-center justify-content-center  img-card material-icons-outline btn btn-secondary material-icons-outlined">add_photo_alternate</span>
                             </label>
                             <img class="img-card" hidden="@(!isPhotoLoaded(photosSix))" src="@Product_PhotosService.convertImageDisplay(photosSix.Photos)" />
@@ -181,15 +170,10 @@
 
 
 
- 
-
-
-
 @code {
     EmprendeUCR_WebApplication.Data.Entities.Product prod = new EmprendeUCR_WebApplication.Data.Entities.Product();
     EmprendeUCR_WebApplication.Data.Entities.Product_Service prodServ = new EmprendeUCR_WebApplication.Data.Entities.Product_Service();
 
-    IList<Entrepreneur> entrepreneurs;
     IList<Category> categories;
     private bool _isLoading = true;
     bool hideError = true;
@@ -225,7 +209,6 @@
     protected override async Task OnInitializedAsync()
     {
         prodServ.Entrepreneur_Email = await sessionStorage.GetItemAsync<string>("Email");
-        entrepreneurs = await EntrepreneurService.GetAsync();
         categories = await CategoryService.GetAsync();
         _isLoading = false;
     }
@@ -319,10 +302,15 @@
         prod.Product_Name = null;
         prod.Price = 0;
         prod.Product_Description = null;
+        photosOne.Photos = null;
+        photosTwo.Photos = null;
+        photosThree.Photos = null;
+        photosFour.Photos = null;
+        photosFive.Photos = null;
+        photosSix.Photos = null;
     }
 
-    void back()
-    {
+    void back() {
         NavigationManager.NavigateTo("ListProducts");
     }
 
@@ -338,12 +326,11 @@
     public async Task SelectionHandler(Syncfusion.Blazor.Grids.RowSelectEventArgs<Category> args)
     {
         var selectedCategories = await this.TreeGrid.GetSelectedRecords();
-        if (selectedCategories.Count() == 0)
-        { }
-        else
+        if (selectedCategories.Count() > 0)
         {
             selectedCategory = selectedCategories.First();
         }
+
     }
 
 }

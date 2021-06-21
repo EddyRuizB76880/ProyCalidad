@@ -75,7 +75,6 @@ namespace EmprendeUCR_WebApplication.Data.Services
 
         }
 
-
         public async Task<IEnumerable<Product>> GetProducts()
         {
             return await _context.Product.Select(product => new Product { Code_ID = product.Code_ID, Product_Name = product.Product_Name, Price = product.Price }).ToListAsync();
@@ -87,13 +86,6 @@ namespace EmprendeUCR_WebApplication.Data.Services
 
         }
 
-
-        public async Task RemoveProduct(int Id)
-        {
-            Product ProductToRemove = await _context.Product.FindAsync(Id);
-            _context.Product.Remove(ProductToRemove);
-            await _context.SaveChangesAsync();
-        }
         public int GetProductsQuantity()
         {
             /*var parameterQuantity = new Microsoft.Data.SqlClient.SqlParameter
