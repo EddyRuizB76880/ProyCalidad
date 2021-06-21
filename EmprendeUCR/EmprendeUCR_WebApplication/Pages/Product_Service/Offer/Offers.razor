@@ -32,60 +32,63 @@
                             <th style="width:20%">Descuento</th>
                             <th style="width:20%">Inicio de oferta</th>
                             <th style="width:20%">Final de oferta</th>
+                            <th style="width:20%">Tipo</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         <!-- Display oferta especifica-->
-                        @foreach (var offer in _offers)
+                        @foreach (var offer in _offers) 
                         {
-                            <!--Obtiene la suma de todos los objetos ligados a la oferta actual)-->
-                            var normalPrice = getTotalPriceFromListedItemsInOffer(offer);
-                            double actualDiscountPostOffer = (Double.Parse(offer.Discount.ToString()) / normalPrice) * 100;
-                            actualDiscountPostOffer = 100 - actualDiscountPostOffer;
-                            string displayDiscount = string.Format("{0:N0}", actualDiscountPostOffer);
-                            string asociatedEmail = getAsociatedEmailToOffer(offer);
+                            @if (getAsociatedEmailToOffer(offer).Equals(userEmail.ToLower()))
+                            {
+                                <!--Obtiene la suma de todos los objetos ligados a la oferta actual)-->
+                                var normalPrice = getTotalPriceFromListedItemsInOffer(offer);
+                                double actualDiscountPostOffer = (Double.Parse(offer.Discount.ToString()) / normalPrice) * 100;
+                                actualDiscountPostOffer = 100 - actualDiscountPostOffer;
+                                string displayDiscount = string.Format("{0:N0}", actualDiscountPostOffer);
+                                string typeOffer = getTypeOffer(offer) ? "Combo" : "Descuento";
+                                <tr>
+                                    <!-- Saca el email del usuario logueado -->
+                                    <td>@userEmail</td>
 
-                            <tr>
-                                <!-- Saca el ID de la oferta-->
-                                <td>@asociatedEmail</td>
+                                    <!-- Saca el ID de la oferta-->
+                                    <td>@offer.Offer_ID</td>
 
-                                <!-- Saca el ID de la oferta-->
-                                <td>@offer.Offer_ID</td>
+                                    <!-- Saca la descripicon de Offer-->
+                                    <td>@offer.Offer_Description</td>
 
-                                <!-- Saca la descripicon de Offer-->
-                                <td>@offer.Offer_Description</td>
+                                    <!-- Para el precio normal ocupa iterar por todos los Is_Offer asociados al ID de Offer-->
+                                    <td>@normalPrice</td>
 
-                                <!-- Para el precio normal ocupa iterar por todos los Is_Offer asociados al ID de Offer-->
-                                <td>@normalPrice</td>
+                                    <!-- Saca el precio de la oferta de Offer-->
+                                    <td>@offer.Discount</td>
 
-                                <!-- Saca el precio de la oferta de Offer-->
-                                <td>@offer.Discount</td>
+                                    <!-- El descuento se saca con precio normal y la oferta (ej: 15% de descuento)-->
+                                    <td>@displayDiscount%</td>
 
-                                <!-- El descuento se saca con precio normal y la oferta (ej: 15% de descuento)-->
-                                <td>@displayDiscount%</td>
+                                    <!-- Fecha de inicio de oferta-->
+                                    <td>@offer.Initial_Date</td>
 
-                                <!-- Fecha de inicio de oferta-->
-                                <td>@offer.Initial_Date</td>
+                                    <!-- Fecha de final de oferta-->
+                                    <td>@offer.Expire_Date</td>
 
-                                <!-- Fecha de final de oferta-->
-                                <td>@offer.Expire_Date</td>
+                                    <td>@typeOffer</td>
+                                    <!-- Boton para ver la oferta -->
+                                    <td>
+                                        <button class="btn" type="button" @onclick="() => viewOffer(offer)"><i class="oi oi-plus"></i>Ver oferta</button>
+                                    </td>
 
-                                <!-- Boton para ver la oferta -->
-                                <td>
-                                    <button class="btn" type="button" @onclick="() => viewOffer(offer)"><i class="oi oi-plus"></i>Ver oferta</button>
-                                </td>
-
-                                <!-- Boton para gestionar oferta -->
-                                <td>
-                                    <button class="btn" type="button" @onclick="() => editOffer(offer)"><i class="oi oi-pencil"></i>Gestionar oferta</button>
-                                </td>
+                                    <!-- Boton para gestionar oferta -->
+                                    <td>
+                                        <button class="btn" type="button" @onclick="() => editOffer(offer)"><i class="oi oi-pencil"></i>Gestionar oferta</button>
+                                    </td>
 
 
-                            </tr>
+                                </tr>
+
+                            }
                         }
-
-
                     </tbody>
                 }
                 else
@@ -120,7 +123,6 @@
     int totalPriceFromListedProductsAndServicesInOffer = 0;
     double discount = 0;
     string userEmail = "default";
-    string is_offerEmail = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -142,8 +144,6 @@
                     {
                         total_price += (product.Price * item.Amount);
 
-                        is_offerEmail = product.Entrepreneur_Email;
-
                     }
                 }
 
@@ -152,8 +152,6 @@
                     if (item.Code_ID == service.Code_ID)
                     {
                         total_price += (service.Price_per_hour * item.Amount);
-
-                        is_offerEmail = service.Entrepreneur_Email;
 
                     }
                 }
@@ -240,7 +238,41 @@
     {
         _service = await ServiceService.GetAllServicesAsync();
     }
+    public bool getTypeOffer(Offer offer)
+    {
+        int count = 0;
 
+        foreach (var item in _Is_offer)
+        {
+            if (offer.Offer_ID == item.Offer_ID)
+            {
+                foreach (var product in _products)
+                {
+                    if (product.Code_ID == item.Code_ID)
+                    {
+                        count++;
+                        if (count > 1)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                foreach (var service in _service)
+                {
+                    if (service.Code_ID == item.Code_ID)
+                    {
+                        count++;
+                        if (count > 1)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
 }
 
 
