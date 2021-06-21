@@ -6,6 +6,7 @@ using EmprendeUCR_WebApplication.Data.Entities;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using EmprendeUCR_WebApplication.Data;
+using EmprendeUCR_WebApplication.Data.Entities.ContextShop;
 
 namespace EmprendeUCR_WebApplication.Data.Services
 {
@@ -78,6 +79,20 @@ namespace EmprendeUCR_WebApplication.Data.Services
         public async Task<IEnumerable<Product>> GetProducts()
         {
             return await _context.Product.Select(product => new Product { Code_ID = product.Code_ID, Product_Name = product.Product_Name, Price = product.Price }).ToListAsync();
+        }
+        public async Task<PagedList<Product>> GetProducts(ShopParameters shopParameters)
+        {
+            var products = await _context.Product.ToListAsync();
+            return PagedList<Product>.ToPagedList(products, shopParameters.PageNumber, shopParameters.PageSize);
+
+        }
+
+
+        public async Task RemoveProduct(int Id)
+        {
+            Product ProductToRemove = await _context.Product.FindAsync(Id);
+            _context.Product.Remove(ProductToRemove);
+            await _context.SaveChangesAsync();
         }
         public int GetProductsQuantity()
         {

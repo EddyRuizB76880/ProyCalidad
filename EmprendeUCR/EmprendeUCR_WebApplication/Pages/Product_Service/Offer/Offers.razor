@@ -2,8 +2,8 @@
 @using EmprendeUCR_WebApplication.Data.Services
 @using EmprendeUCR_WebApplication.Data.Entities
 @using System;
-@inject ProductService  ProductService
-@inject ServiceService  ServiceService
+@inject ProductService ProductService
+@inject ServiceService ServiceService
 @inject NavigationManager NavigationManager
 @inject EntrepreneurService EntrepreneurService
 @inject Product_ServiceService Product_ServiceService
@@ -43,7 +43,7 @@
                             var normalPrice = getTotalPriceFromListedItemsInOffer(offer);
                             double actualDiscountPostOffer = (Double.Parse(offer.Discount.ToString()) / normalPrice) * 100;
                             actualDiscountPostOffer = 100 - actualDiscountPostOffer;
-                            string displayDiscount = string.Format("{0:N2}%", actualDiscountPostOffer);
+                            string displayDiscount = string.Format("{0:N0}", actualDiscountPostOffer);
                             string asociatedEmail = getAsociatedEmailToOffer(offer);
 
                             <tr>

@@ -96,15 +96,14 @@ else
     private IList<EmprendeUCR_WebApplication.Data.Entities.Category> _my_categories = new List<Category>();
     IList<Service_Photos> photosDisplay;
     SfTreeGrid<Category> TreeGrid { get; set; }
+    private Category selectedCategory;
     string selectedEmail;
 
-
-    public async Task loadAllProducts(string email)
+    public async Task loadAllServices(string email)
     {
         _my_categories.Clear();
-        await loadProducts(email);
+        await loadServices(email);
         await loadProductsServices(email);
-
         await loadCategories();
     }
 
@@ -142,11 +141,11 @@ else
         selectedEmail = await sessionStorage.GetItemAsync<string>("Email");
         _categories = await CategoryService.GetAsync();
         photosDisplay = Service_PhotosService.loadAllPhotos();
-        await loadAllProducts(selectedEmail);
+        await loadAllServices(selectedEmail);
         _isLoading = false;
     }
     bool hideError = true;
-    public async Task loadProducts(string email)
+    public async Task loadServices(string email)
     {
         _services = await ServiceService.GetServicesEntrepreneurAsync(email);
     }
@@ -154,6 +153,13 @@ else
     public async Task loadProductsServices(string email)
     {
         _productsServices = await Product_ServiceService.GetProductsServicesEntrepreneurAsync(email);
+    }
+
+
+    public async Task loadServicesByCategory(string email, int category_id)
+    {
+        _services = await ServiceService.GetServicesByCategoryAsync(email, category_id);
+        _productsServices = await Product_ServiceService.GetProductsByCategoryAsync(email, category_id);
     }
 
 
@@ -174,7 +180,17 @@ else
     public async Task SelectionHandler(Syncfusion.Blazor.Grids.RowSelectEventArgs<Category> args)
     {
         var SelectedCategories = await this.TreeGrid.GetSelectedRecords();
+        if (SelectedCategories.Count() == 0)
+        {
 
+        }
+        else
+        {
+            selectedCategory = SelectedCategories.First();
+            await loadServicesByCategory(selectedEmail, selectedCategory.Id);
+
+
+        }
     }
 
 

@@ -2,6 +2,7 @@
 @quantity INT OUTPUT 
 
 AS BEGIN 
-	SELECT @quantity = count(*) 
-	FROM Product p
+	SET NOCOUNT ON;
+	SELECT @quantity = count(p.Code_ID) 
+	FROM Product p;
 END

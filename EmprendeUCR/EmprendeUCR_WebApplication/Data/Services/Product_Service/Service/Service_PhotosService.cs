@@ -18,7 +18,7 @@ namespace EmprendeUCR_WebApplication.Data.Services
             _context = context;
         }
 
-        public bool UploadingServicePhotos(Service_Photos s_p)
+        public bool savePhotoToDb(Service_Photos s_p)
         {
             _context.Service_Photos.Add(s_p);
             _context.SaveChanges();
