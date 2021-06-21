@@ -83,7 +83,7 @@ namespace EmprendeUCR_WebApplication.Data.Services
         {
             var products = await _context.Product.ToListAsync();
             return PagedList<Product>.ToPagedList(products, shopParameters.PageNumber, shopParameters.PageSize);
-
+        }
         public async Task RemoveProduct(int Id)
         {
             Product ProductToRemove = await _context.Product.FindAsync(Id);
