@@ -7,6 +7,7 @@
 @using Syncfusion.Blazor.TreeGrid;
 @inject Product_ServiceService Product_ServiceService
 @inject Service_PhotosService Service_PhotosService
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 @if (_isLoading)
 {
@@ -15,16 +16,6 @@
 else
 {
 
-    <select @onchange="loadAllProducts" class="dropdown">
-        <option value="" selected disabled>Emprendedor Logeado</option>
-        @if (entrepreneurs?.Count > 0)
-        {
-            @foreach (var cnt in entrepreneurs)
-            {
-                <option value="@cnt.User_Email">@cnt.User_Email</option>
-            }
-        }
-    </select>
     <head>
 
         <link rel="stylesheet" href="~/css/EmprendeUCR-template.css" />
@@ -103,12 +94,12 @@ else
     private IList<EmprendeUCR_WebApplication.Data.Entities.Product_Service> _productsServices;
     private IList<EmprendeUCR_WebApplication.Data.Entities.Category> _categories;
     private IList<EmprendeUCR_WebApplication.Data.Entities.Category> _my_categories = new List<Category>();
-    IList<Entrepreneur> entrepreneurs;
     IList<Service_Photos> photosDisplay;
     SfTreeGrid<Category> TreeGrid { get; set; }
+    string selectedEmail;
 
 
-    public async Task loadAllProducts(ChangeEventArgs email)
+    public async Task loadAllProducts(string email)
     {
         _my_categories.Clear();
         await loadProducts(email);
@@ -148,20 +139,21 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        entrepreneurs = await EntrepreneurService.GetAsync();
+        selectedEmail = await sessionStorage.GetItemAsync<string>("Email");
         _categories = await CategoryService.GetAsync();
         photosDisplay = Service_PhotosService.loadAllPhotos();
+        await loadAllProducts(selectedEmail);
         _isLoading = false;
     }
     bool hideError = true;
-    public async Task loadProducts(ChangeEventArgs email)
+    public async Task loadProducts(string email)
     {
-        _services = await ServiceService.GetServicesEntrepreneurAsync(email.Value.ToString());
+        _services = await ServiceService.GetServicesEntrepreneurAsync(email);
     }
 
-    public async Task loadProductsServices(ChangeEventArgs email)
+    public async Task loadProductsServices(string email)
     {
-        _productsServices = await Product_ServiceService.GetProductsServicesEntrepreneurAsync(email.Value.ToString());
+        _productsServices = await Product_ServiceService.GetProductsServicesEntrepreneurAsync(email);
     }
 
 

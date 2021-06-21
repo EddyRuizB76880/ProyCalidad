@@ -7,6 +7,7 @@
 @using Syncfusion.Blazor.TreeGrid;
 @inject Product_ServiceService Product_ServiceService
 @inject Product_PhotosService Product_PhotosService
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 @if (_isLoading)
 {
@@ -15,16 +16,7 @@
 else
 {
 
-    <select @onchange="loadAllProducts" class="dropdown">
-        <option value="" selected disabled>Emprendedor Logeado</option>
-        @if (entrepreneurs?.Count > 0)
-        {
-            @foreach (var cnt in entrepreneurs)
-            {
-                <option value="@cnt.User_Email">@cnt.User_Email</option>
-            }
-        }
-    </select>
+    
     <head>
 
         <link rel="stylesheet" href="~/css/EmprendeUCR-template.css" />
@@ -92,7 +84,7 @@ else
             </NavLink>
 
         </aside>
-     
+
 
     </body>
 }
@@ -104,20 +96,18 @@ else
     private IList<EmprendeUCR_WebApplication.Data.Entities.Product_Service> _productsServices;
     private IList<EmprendeUCR_WebApplication.Data.Entities.Category> _categories;
     private IList<EmprendeUCR_WebApplication.Data.Entities.Category> _my_categories = new List<Category>();
-    IList<Entrepreneur> entrepreneurs;
     IList<Product_Photos> photosDisplay;
     SfTreeGrid<Category> TreeGrid { get; set; }
     private Category selectedCategory;
-    string selectedEmail;
-    ChangeEventArgs email1;
+    private string selectedEmail;
+   
 
 
-    public async Task loadAllProducts(ChangeEventArgs email)
+    public async Task loadAllProducts(string email)
     {
 
         _my_categories.Clear();
-        selectedEmail = email.Value.ToString();
-        email1 = email;
+        
         await loadProducts(email);
         await loadProductsServices(email);
 
@@ -133,7 +123,8 @@ else
 
             Category iterator = CategoryService.getCategory(prod.Category_ID);
 
-            while (iterator.ParentId != null) {
+            while (iterator.ParentId != null)
+            {
 
                 Category parentcat = CategoryService.getCategory((int)iterator.ParentId);
 
@@ -154,20 +145,21 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        entrepreneurs = await EntrepreneurService.GetAsync();
+        selectedEmail = await sessionStorage.GetItemAsync<string>("Email");
         _categories = await CategoryService.GetAsync();
         photosDisplay = Product_PhotosService.loadAllPhotos();
+        await loadAllProducts(selectedEmail);
         _isLoading = false;
     }
     bool hideError = true;
-    public async Task loadProducts(ChangeEventArgs email)
+    public async Task loadProducts(string email)
     {
-        _products = await ProductService.GetProductsEntrepreneurAsync(email.Value.ToString());
+        _products = await ProductService.GetProductsEntrepreneurAsync(email);
     }
 
-    public async Task loadProductsServices(ChangeEventArgs email)
+    public async Task loadProductsServices(string email)
     {
-        _productsServices = await Product_ServiceService.GetProductsServicesEntrepreneurAsync(email.Value.ToString());
+        _productsServices = await Product_ServiceService.GetProductsServicesEntrepreneurAsync(email);
     }
 
 
@@ -202,7 +194,7 @@ else
         else
         {
             selectedCategory = SelectedCategories.First();
-            await loadProductsByCategory(selectedEmail,selectedCategory.Id);
+            await loadProductsByCategory(selectedEmail, selectedCategory.Id);
 
 
         }
