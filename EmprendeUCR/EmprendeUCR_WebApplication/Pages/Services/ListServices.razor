@@ -1,12 +1,12 @@
-﻿@page "/ListProducts"
+﻿@page "/ListServices"
 @using EmprendeUCR_WebApplication.Data.Services
 @using EmprendeUCR_WebApplication.Data.Entities
 @inject EntrepreneurService EntrepreneurService
 @inject CategoryService CategoryService
-@inject ProductService ProductService
+@inject ServiceService ServiceService
 @using Syncfusion.Blazor.TreeGrid;
 @inject Product_ServiceService Product_ServiceService
-@inject Product_PhotosService Product_PhotosService
+@inject Service_PhotosService Service_PhotosService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 @if (_isLoading)
@@ -16,7 +16,6 @@
 else
 {
 
-    
     <head>
 
         <link rel="stylesheet" href="~/css/EmprendeUCR-template.css" />
@@ -26,27 +25,27 @@ else
 
 
         <header>
-            <div class="icon-m display-2"> Mis Productos</div>
+            <div class="icon-m display-2"> Mis Servicios</div>
         </header>
 
         <section class="w-70  float_right ">
 
             <div class="layout wrap">
-                @if (_products?.Count > 0)
+                @if (_services?.Count > 0)
                 {
-                    @foreach (var prod in _products)
+                    @foreach (var serv in _services)
                     {
-                        var prodServ = _productsServices.First(p => p.Code_ID == prod.Code_ID);
-                        var prodPhoto = photosDisplay.FirstOrDefault(p => p.Code_ID == prod.Code_ID);
+                        var prodServ = _productsServices.First(p => p.Code_ID == serv.Code_ID);
+                        var servPhoto = photosDisplay.FirstOrDefault(p => p.Code_ID == serv.Code_ID);
                         <div class="item data border-1 border-blue content-center">
-                            @if (prodPhoto != null)
+                            @if (servPhoto != null)
                             {
-                                <img src="@Product_PhotosService.convertImageDisplay(prodPhoto.Photos)" width="200" />
+                                <img src="@Service_PhotosService.convertServiceImageDisplay(servPhoto.Photos)" width="200" />
                             }
                             <div class="item ">
-                                <div class="item_name">@prod.Product_Name</div>
-                                <div class="item_description">@prod.Product_Description</div>
-                                <div class="item_price">₡@prod.Price</div>
+                                <div class="item_name">@serv.Service_Name</div>
+                                <div class="item_description">@serv.Service_Description</div>
+                                <div class="item_price">₡@serv.Price_per_hour</div>
                             </div>
                         </div>
                     }
@@ -63,7 +62,7 @@ else
                 @if (_my_categories?.Count > 0)
                 {   //jala la llave del papa no se trae los hijos
                     <SfTreeGrid ID="TreeGrid" @ref="TreeGrid" AllowSorting="true" AllowRowDragAndDrop="true" DataSource="@_my_categories" IdMapping="Id" ParentIdMapping="ParentId" AllowSelection="true" TreeColumnIndex="0">
-                        <TreeGridEvents TValue="Category" RowDropped="Rowdrop" RowDeselected="SelectionHandler2" RowSelected="SelectionHandler"></TreeGridEvents>
+                        <TreeGridEvents TValue="Category" RowDropped="Rowdrop" RowSelected="SelectionHandler"></TreeGridEvents>
                         <TreeGridSortSettings>
                             <TreeGridSortColumns>
                                 <TreeGridSortColumn Field="Title" Direction="Syncfusion.Blazor.Grids.SortDirection.Ascending"></TreeGridSortColumn>
@@ -78,13 +77,12 @@ else
                 }
             </div>
 
-
-            <NavLink class="nav-link" href="AddProduct">
-                <button class="btn btn-primary" aria-hidden="true">Agregar nuevo Producto</button>
+            <NavLink class="nav-link" href="AddService">
+                <button class="btn btn-primary" aria-hidden="true">Agregar nuevo servicio</button>
             </NavLink>
 
         </aside>
-     
+
 
     </body>
 }
@@ -92,41 +90,34 @@ else
 
 @code {
     private bool _isLoading = true;
-    private IList<EmprendeUCR_WebApplication.Data.Entities.Product> _products;
+    private IList<EmprendeUCR_WebApplication.Data.Entities.Service> _services;
     private IList<EmprendeUCR_WebApplication.Data.Entities.Product_Service> _productsServices;
     private IList<EmprendeUCR_WebApplication.Data.Entities.Category> _categories;
     private IList<EmprendeUCR_WebApplication.Data.Entities.Category> _my_categories = new List<Category>();
-    IList<Entrepreneur> entrepreneurs;
-    IList<Product_Photos> photosDisplay;
+    IList<Service_Photos> photosDisplay;
     SfTreeGrid<Category> TreeGrid { get; set; }
     private Category selectedCategory;
     string selectedEmail;
-    string email1;
-    bool firstClick = true;
 
-
-    public async Task loadAllProducts(string email)
+    public async Task loadAllServices(string email)
     {
-
         _my_categories.Clear();
-        selectedEmail = email;
-        email1 = email;
-        await loadProducts(email);
+        await loadServices(email);
         await loadProductsServices(email);
-
         await loadCategories();
     }
 
     public async Task loadCategories()
     {
         _my_categories.Clear();
-        foreach (var prod in _products)
+        foreach (var serv in _services)
         {
-            Category cat = CategoryService.getCategory(prod.Category_ID);
+            Category cat = CategoryService.getCategory(serv.Category_ID);
 
-            Category iterator = CategoryService.getCategory(prod.Category_ID);
+            Category iterator = CategoryService.getCategory(serv.Category_ID);
 
-            while (iterator.ParentId != null) {
+            while (iterator.ParentId != null)
+            {
 
                 Category parentcat = CategoryService.getCategory((int)iterator.ParentId);
 
@@ -149,14 +140,14 @@ else
     {
         selectedEmail = await sessionStorage.GetItemAsync<string>("Email");
         _categories = await CategoryService.GetAsync();
-        photosDisplay = Product_PhotosService.loadAllPhotos();
-        await loadAllProducts(selectedEmail);
+        photosDisplay = Service_PhotosService.loadAllPhotos();
+        await loadAllServices(selectedEmail);
         _isLoading = false;
     }
     bool hideError = true;
-    public async Task loadProducts(string email)
+    public async Task loadServices(string email)
     {
-        _products = await ProductService.GetProductsEntrepreneurAsync(email);
+        _services = await ServiceService.GetServicesEntrepreneurAsync(email);
     }
 
     public async Task loadProductsServices(string email)
@@ -165,11 +156,12 @@ else
     }
 
 
-    public async Task loadProductsByCategory(string email, int category_id)
+    public async Task loadServicesByCategory(string email, int category_id)
     {
-        _products = await ProductService.GetProductsByCategoryAsync(email, category_id);
+        _services = await ServiceService.GetServicesByCategoryAsync(email, category_id);
         _productsServices = await Product_ServiceService.GetProductsByCategoryAsync(email, category_id);
     }
+
 
 
 
@@ -188,31 +180,17 @@ else
     public async Task SelectionHandler(Syncfusion.Blazor.Grids.RowSelectEventArgs<Category> args)
     {
         var SelectedCategories = await this.TreeGrid.GetSelectedRecords();
-        if (SelectedCategories.Count() > 0)
+        if (SelectedCategories.Count() == 0)
         {
-
-            selectedCategory = SelectedCategories.First();
-
-            await loadProductsByCategory(selectedEmail, selectedCategory.Id);
 
         }
         else
         {
-            selectedCategory = null;
+            selectedCategory = SelectedCategories.First();
+            await loadServicesByCategory(selectedEmail, selectedCategory.Id);
+
+
         }
-
-    }
-
-    public async Task SelectionHandler2(Syncfusion.Blazor.Grids.RowDeselectEventArgs<Category> args)
-    {
-        if(args.Data.Id == selectedCategory.Id && !firstClick)
-        {
-            await loadProducts(selectedEmail);
-            await loadProductsServices(selectedEmail);
-
-            await loadCategories();
-        }
-        firstClick = false;
     }
 
 

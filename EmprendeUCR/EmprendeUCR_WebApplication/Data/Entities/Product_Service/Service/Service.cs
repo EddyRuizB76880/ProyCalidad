@@ -7,18 +7,15 @@ using System.Threading.Tasks;
 
 namespace EmprendeUCR_WebApplication.Data.Entities
 {
-    public class Product
+    public class Service
     {
         //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public int Code_ID { get; set; }
         public string Entrepreneur_Email { get; set; }
         public int Category_ID { get; set; }
-        public string Product_Name { get; set; }
-        public string Product_Description { get; set; }
-        public int Price { get; set; }
-
+        public string Service_Name { get; set; }
+        public string Service_Description { get; set; }
+        public int Price_per_hour { get; set; }
     }
 }
-
-

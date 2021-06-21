@@ -1,7 +1,10 @@
-﻿CREATE TABLE [dbo].[is_offer] (
-    [Offer_ID] INT NOT NULL,
-    [Code_ID]  INT NOT NULL,
-    FOREIGN KEY ([Code_ID]) REFERENCES [dbo].[Product_Service] ([Code_ID]),
-    FOREIGN KEY ([Offer_ID]) REFERENCES [dbo].[Offer] ([Offer_ID])
-);
+﻿create table Is_Offer(
+  Offer_Id int NOT NULL,
+  Code_Id int NOT NULL,
+  User_Email varchar(100) NOT NULL,
+  Category_Id int NOT NULL,
+  PRIMARY KEY (Offer_Id, Code_Id, User_Email, Category_Id),
+  Foreign key (Offer_Id) References Offer (Offer_ID) ON DELETE CASCADE,
+  Foreign key (Code_Id, User_Email, Category_Id) References Product_Service (Code_Id, Entrepreneur_Email, Category_Id) ON DELETE NO ACTION
 
+);

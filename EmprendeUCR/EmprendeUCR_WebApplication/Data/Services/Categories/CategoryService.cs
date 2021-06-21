@@ -77,7 +77,7 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return _context.Category.Find(Id);
         }
 
-        /**
+         /**
         * @brief Verifies if the selected category is a child
         * @param Id of category
         * @return false if is not child, true if it is
@@ -98,7 +98,7 @@ namespace EmprendeUCR_WebApplication.Data.Services
         * @param args selected, to main target
         * @return
         */
-        public async void Rowdrop(Syncfusion.Blazor.Grids.RowDragEventArgs<Category> args, SfTreeGrid<Category> main )
+        public async void Rowdrop(Syncfusion.Blazor.Grids.RowDragEventArgs<Category> args, SfTreeGrid<Category> main)
         {
             this.TreeGrid = main;
             var position = args.Target.ID;

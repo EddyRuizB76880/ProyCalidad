@@ -54,8 +54,9 @@ namespace EmprendeUCR_WebApplication
             });
 
 
-
-        services.AddRazorPages();
+            services.AddDbContext<SqlServerDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            //services.AddIdentity<UserService, IdentityRole>().AddEntityFrameworkStores<BookStoreContext>().AddDefaultTokenProviders();
+            services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSyncfusionBlazor();
             services.AddScoped<CategoryService>();
@@ -84,6 +85,13 @@ namespace EmprendeUCR_WebApplication
             Global.ConnectionString = Configuration.GetConnectionString("SqlConnection");
             Global.DomainName = Configuration["DomainName"];
             services.AddScoped <CredentialsService>();
+            services.AddScoped<OfferService>();
+            services.AddScoped<Is_OfferService>();
+            services.AddScoped<ServiceService>();
+            services.AddScoped<Product_PhotosService>();
+            services.AddScoped<Service_PhotosService>();
+            //services.AddScoped<ServiceService>();
+
 
             services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
 
