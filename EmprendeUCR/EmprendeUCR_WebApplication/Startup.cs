@@ -19,6 +19,14 @@ using EmprendeUCR_WebApplication.Data.Services.Categories;
 using Syncfusion.Blazor;
 using Blazored.SessionStorage;
 
+using EmprendeUCR_WebApplication.Application.ShoppingCartContext;
+using EmprendeUCR_WebApplication.Infrastructure.Core;
+
+using EmprendeUCR_WebApplication.Domain.Repositories;
+
+using EmprendeUCR_WebApplication.Application.ShoppingCartContext.Implementations;
+using EmprendeUCR_WebApplication.Infrastructure.ShoppingCartContext;
+
 namespace EmprendeUCR_WebApplication
 {
     public class Startup
@@ -34,9 +42,20 @@ namespace EmprendeUCR_WebApplication
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<SqlServerDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            //services.AddIdentity<UserService, IdentityRole>().AddEntityFrameworkStores<BookStoreContext>().AddDefaultTokenProviders();
-            services.AddRazorPages();
+            services.AddDbContext<ShoppingCartDbContext2>(options =>
+            {
+                options.UseSqlServer((Configuration.GetConnectionString("DefaultConnection")));
+
+            });
+              
+            services.AddDbContext<SqlServerDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+
+
+        services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSyncfusionBlazor();
             services.AddScoped<CategoryService>();
@@ -64,6 +83,12 @@ namespace EmprendeUCR_WebApplication
 
             Global.ConnectionString = Configuration.GetConnectionString("SqlConnection");
             Global.DomainName = Configuration["DomainName"];
+            services.AddScoped <CredentialsService>();
+
+            services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
+
+            services.AddTransient<IShoppingCartService, ShoppingCartService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

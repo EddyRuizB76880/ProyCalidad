@@ -361,3 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/EmprendeUCR/EmprendeUCR_DB/dbo
+/EmprendeUCR/EmprendeUCR_DB/Security

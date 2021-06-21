@@ -1,0 +1,276 @@
+@page "/ShoppingCart"
+@*
+    I know I'm done when:
+    A delete button is displayed next to each product displayed on the shopping cart's view.
+    I click on the delete button and the product deleted disappears from the list of products displayed by the cart.
+    The shopping cart lets me know when there is no product left to in it.
+*@
+
+
+@using EmprendeUCR_WebApplication.Application.ShoppingCartContext
+@using EmprendeUCR_WebApplication.Domain.ShoppingCartContext.Entities
+@using EmprendeUCR_WebApplication.Domain.Core.CoreEntities
+@using EmprendeUCR_WebApplication.Data.Entities.ContextShop
+@inject IShoppingCartService ShoppingCartService;
+@*
+    @using EmprendeUCR_WebApplication.Data.Services
+    @using EmprendeUCR_WebApplication.Data.Entities
+    @inject ProductService ProductService
+*@
+@* Display "Cargando"" message while shopping cart is still loading. *@
+@if (_isLoading)
+{
+    <p>Cargando...</p>
+}
+else
+{
+
+    <div class="mt-5 shopping-cart w-100 h-100 d-flex justify-content-between m-auto">
+
+        <div class="w-70 lista-items h-100 bg-white d-flex flex-column align-items-center" id="Products">
+            <div class="w-90 row my-5">
+                @*
+                    _products.Count returns the current number of articles loaded
+                    into the shopping cart.
+                *@
+                <p class="fs-2">Productos en el carrito: @shopping.ShopLines.Count()</p>
+                @* <p>Emprendedor</p> *@
+            </div>
+
+            <div class="w-90 row">
+                <div class="col-3 content-center fs-5">Imagen</div>
+                <div class="col-5 content-center fs-5">Nombre</div>
+                <div class="col-2 content-center fs-5">Cantidad</div>
+                <div class="col-2 content-center fs-5">Precio</div>
+            </div>
+            <div class="flex-column d-flex align-items-center w-100 my-4">
+
+                @foreach (var shopLine in shopping.ShopLines)
+                {
+                    <ProductCard shopLine="@shopLine" OnDeleteProduct="DeleteProduct"></ProductCard>
+                }
+
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <Pagination pagingData="pagingData" Spread="2" SelectedPage="SelectedPage" />
+                </div>
+            </div>
+        </div>
+        <form method="post" id="payment-information"
+              class="w-25 height-650 bg-white d-flex flex-column align-items-center justify-content-between py-5 sticky">
+            <p class="fs-2 mb-4">Información de la Compra</p>
+
+            <div class="d-flex flex-column align-items-center">
+                <p class="fs-3">Metodo de pago</p>
+                <button class="border-none bg-white fs-6">Cambiar metodo de pago</button>
+            </div>
+
+            <div class="d-flex flex-column align-items-center my-4 w-90">
+                <p class="fs-3 mb-3">Requerimientos especiales (Máximo 500 caracteres)</p>
+                <textarea @bind="requirements" class="border-blue w-100" id="requirementsField" maxlength="500" rows="4">
+
+                        </textarea>
+            </div>
+            <div class="dateInfo d-flex justify-content-between align-items-center w-90 mb-5 fs-6">
+                <p>Fecha de entrega</p>
+                <input class="p-2 fs-4" @bind="date" id="orderDate" type="date" max="2022-12-31" min="2021-5-23">
+            </div>
+
+            <div class="d-flex justify-content-between w-90 fs-5">
+
+                <p>Total</p>
+
+                <p>
+                    <span> ₡ </span>
+                    @totalAmount
+                </p>
+
+            </div>
+
+            @*
+                This block prevents the creation of an order with an invalid delivey date
+                , like a date that has already passed.
+            *@
+            @if (date <= currentDate || date == null)
+            {
+                invalidDate = true;
+                <button type="button" class="border-none bg-orange color-white w-90 py-3 fs-3 isDisabled btn" data-toggle="tooltip"
+                        data-placement="bottom" title="La fecha seleccionada no es válida.">
+                    Enviar pedido
+                </button>
+            }
+            else
+            {
+                invalidDate = false;
+                <button type="button" class="border-none bg-orange color-white w-90 py-3 icon-m" data-bs-toggle="modal" data-bs-target="#shopping_cart_summary">Enviar pedido</button>
+            }
+        </form>
+    </div>
+
+    <!-- Show the summary of the shopping cart -->
+    <div class="modal fade" id="shopping_cart_summary" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p class="fs-2 modal-title" id="shopping_cart_summary_label">Resumen del pedido</p>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="w-90 row fw-bold">
+                    <div class="col-6 fs-6 content-center">Productos solicitados</div>
+                    <div class="col-3 fs-6 content-center align-self-center text-center">Cantidad</div>
+                    <div class="col-3 fs-6 content-center">Precio</div>
+                </div>
+                <div class="modal-body flex-column">
+                    @{
+                        int j = 0;
+                    }
+                    @foreach (var product in shopping.ShopLines)
+                    {
+                        int productNumber = j;
+                        <div class="w-90 row m-auto mb-5 position-relative">
+                            <div class="col-6">
+                                @*
+                                    This line displays the product name,
+                                    retrieved from the Product_Name method
+                                    defined later in this file.
+                                *@
+                                <p class="fs-6">@product.product.ProductName</p>
+                            </div>
+
+                            <div class="col-3">
+                                <p class="fs-6">
+                                    @* This line displays the quantity of each product in the cart*@
+                                    @quantityPerProduct[productNumber]
+                                </p>
+                            </div>
+
+                            <div class="col-3">
+                                <p class="fs-6 text-center">
+                                    <span> ₡ </span>
+                                    @* Gets the total price of the quantity of each product in the cart *@
+                                    @(product.product.Price * quantityPerProduct[productNumber])
+                                </p>
+                            </div>
+                        </div>
+                        j++;
+                    }
+                    <p class="w-90 fs-6 text-end">
+                        Monto total:
+                        <span> ₡ </span>
+                        @totalAmount
+                    </p>
+                </div>
+
+                <div class="w-90 border-grey mb-5 m-auto overflow-auto height-150">
+                    <p class="fs-6 text-center fw-bold">Requerimientos:</p>
+                    <p class="fs-6 text-start text-break">@requirements</p>
+                </div>
+
+                <div class="w-90 mb-5 m-auto">
+                    <p class="fs-6">Fecha solicitada: @date?.ToString("MM/dd/yyyy")</p>
+                </div>
+
+                <div class="w-90 mb-5 m-auto">
+                    <p class="fs-6">Metodo de pago elegido: XXXXXXX</p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary">Enviar pedido</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+
+    DateTime? date = null;
+
+    // Variable to store today's date.
+    DateTime currentDate = DateTime.Now.AddDays(-1);
+
+    // Boolean to know if entered date is invalid.
+    private bool invalidDate = true;
+
+    private bool _isLoading = true;
+
+    private ShoppingCart shopping;
+
+    private IEnumerable<Product> _products;
+
+    private ShopParameters shopParameters = new ShopParameters();
+
+    public PagingData pagingData { get; set; } = new PagingData();
+
+    // Integer variable to store the total price that the user has to pay for
+    // their order.
+    private int totalAmount;
+
+    // String variable to store the special requirements of a order.
+    private string requirements = "";
+
+    // Array of integers to know how many of each product is currently in the
+    // shopping cart.
+    private int[] quantityPerProduct;
+
+    int _productsQuantity = 3;
+
+    // Method to increase the count of a certain product in the shopping cart.
+    // To be invoked in the HTML section of this file.
+    private void IncrementCount(int index)
+    {
+        quantityPerProduct[index]++;
+
+        totalAmount += (_products.ElementAt(index)).Price;
+    }
+
+    // Method to decrease the count of a certain product in the shopping cart.
+    // To be invoked in the HTML section of this file.
+    private void DecrementCount(int index)
+    {
+        if (quantityPerProduct[index] > 1)
+        {
+            quantityPerProduct[index]--;
+            totalAmount -= (_products.ElementAt(index)).Price;
+        }
+    }
+
+    protected async Task DeleteProduct(ShopLine shopLine)
+    {
+        await ShoppingCartService.DeleteLineFromShoppingCart(this.shopping, shopLine);
+        shopping = await ShoppingCartService.GetByIdAsync("Herson@ucr.ac.cr");
+        StateHasChanged();
+    }
+
+
+    // Overridden method from Blazor that is invoked when the page is loaded.
+    protected override async Task OnInitializedAsync()
+    {
+        shopping = await ShoppingCartService.GetByIdAsync("Herson@ucr.ac.cr");
+        _isLoading = false;
+
+        totalAmount = 0; //shopping.ShoppingCartHas.Sum(x => x.Price);
+        quantityPerProduct = new int[shopping.ShopLines.Count()];
+
+        for (int i = 0; i < shopping.ShopLines.Count(); i++)
+        {
+            quantityPerProduct[i] = 1;
+        }
+    }
+    private async Task SelectedPage(int page)
+    {
+        shopParameters.PageNumber = page;
+        await GetProducts();
+    }
+    private async Task GetProducts()
+    {
+        var pagingResponse = await ShoppingCartService.GetByIdAsync("Herson@ucr.ac.cr");
+        shopping = pagingResponse;
+        //pagingData = pagingResponse.pagingData;
+    }
+
+}

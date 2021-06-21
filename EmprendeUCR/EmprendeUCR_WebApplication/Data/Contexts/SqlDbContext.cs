@@ -4,16 +4,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EmprendeUCR_WebApplication.Data.Entities;
+using Microsoft.Extensions.Logging;
+using Lab2.Infrastructure.Core;
 
 namespace EmprendeUCR_WebApplication.Data.Contexts
 {
-    public class SqlServerDbContext : DbContext
+    public class SqlServerDbContext : ApplicationDbContext
     {
-        public SqlServerDbContext(DbContextOptions<SqlServerDbContext> options)
-           : base(options)
+        public SqlServerDbContext(DbContextOptions<SqlServerDbContext> options, ILogger<SqlServerDbContext> logger)
+           : base(options, logger)
         {
-
         }
+
         public DbSet<Product> Product { get; set; }
         public DbSet<Province> Province { get; set; }
         public DbSet<District> District { get; set; }
