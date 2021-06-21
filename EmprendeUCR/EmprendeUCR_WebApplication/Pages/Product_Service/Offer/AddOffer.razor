@@ -372,27 +372,33 @@
         IList<Is_Offer> Is_offerList = new List<Is_Offer>();
         int aux_cont = 0;
         // Make is_offer products
-        foreach (var p in _addedProducts)
+        foreach (var product in _addedProducts)
         {
             Is_Offer is_offer_toInsert = new Is_Offer();
             is_offer_toInsert.Offer_ID = idToInsert;
-            is_offer_toInsert.Code_ID = p.Code_ID;
-            is_offer_toInsert.Category_ID = p.Category_ID;
-            is_offer_toInsert.User_Email = p.Entrepreneur_Email;
+            is_offer_toInsert.Code_ID = product.Code_ID;
+            is_offer_toInsert.Category_ID = product.Category_ID;
+            is_offer_toInsert.User_Email = product.Entrepreneur_Email;
+            is_offer_toInsert.Amount = 1;
             Is_offerList.Insert(aux_cont, is_offer_toInsert);
             aux_cont++;
         }
         // Make is_offer service
-        foreach (var p in _addedServices)
+        foreach (var service in _addedServices)
         {
             Is_Offer is_offer_toInsert = new Is_Offer();
             is_offer_toInsert.Offer_ID = idToInsert;
-            is_offer_toInsert.Code_ID = p.Code_ID;
-            is_offer_toInsert.Category_ID = p.Category_ID;
-            is_offer_toInsert.User_Email = p.Entrepreneur_Email;
+            is_offer_toInsert.Code_ID = service.Code_ID;
+            is_offer_toInsert.Category_ID = service.Category_ID;
+            is_offer_toInsert.User_Email = service.Entrepreneur_Email;
+            is_offer_toInsert.Amount = 1;
             Is_offerList.Insert(aux_cont, is_offer_toInsert);
             aux_cont++;
         }
+
+        // Clean duplicated items
+        Is_offerList = checkDuplicatedItems(Is_offerList);
+
         // Add Is_offer's to the DataBase
         foreach (var is_offerToAdd in Is_offerList)
         {
@@ -400,6 +406,29 @@
         }
 
         NavigationManager.NavigateTo("Offers");
+    }
+    // Check from the given list, if there are duplicated items. If yes, remove the duplicated and then increase the amount
+    // of the original item by one (for each duplicated)
+    // Return the original list modified (with no duplicates)
+    public IList<Is_Offer> checkDuplicatedItems(IList<Is_Offer> listOfItemsInOffer)
+    {
+        for (int actualOfferIndex = 0; actualOfferIndex < listOfItemsInOffer.Count(); actualOfferIndex++)
+        {
+            for (int checkDuplicated = actualOfferIndex + 1; checkDuplicated < listOfItemsInOffer.Count(); checkDuplicated++)
+            {
+                // Check if the current is_offer is duplicated in the list
+                if (listOfItemsInOffer.ElementAt(actualOfferIndex).Code_ID == listOfItemsInOffer.ElementAt(checkDuplicated).Code_ID)
+                {
+                    // If is duplicated, then increase the amount by one, and then delete the duplicated is_offer
+                    listOfItemsInOffer.ElementAt(actualOfferIndex).Amount++;
+                    listOfItemsInOffer.RemoveAt(checkDuplicated);
+
+                    checkDuplicated--;
+                }
+            }
+        }
+
+        return listOfItemsInOffer;
     }
 
     // Updates the total price and then display the confirmation

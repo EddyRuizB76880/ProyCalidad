@@ -140,17 +140,18 @@
                 {
                     if (item.Code_ID == product.Code_ID)
                     {
-                        total_price += product.Price;
+                        total_price += (product.Price * item.Amount);
 
                         is_offerEmail = product.Entrepreneur_Email;
 
                     }
                 }
+
                 foreach (var service in _service)
                 {
                     if (item.Code_ID == service.Code_ID)
                     {
-                        total_price += service.Price_per_hour;
+                        total_price += (service.Price_per_hour * item.Amount);
 
                         is_offerEmail = service.Entrepreneur_Email;
 

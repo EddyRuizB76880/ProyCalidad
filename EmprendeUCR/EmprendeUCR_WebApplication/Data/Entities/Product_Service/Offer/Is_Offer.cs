@@ -15,5 +15,6 @@ namespace EmprendeUCR_WebApplication.Data.Entities
 
         public string User_Email { get; set; }
         public int Category_ID { get; set; }
+        public int Amount { get; set; }
     }
 }
