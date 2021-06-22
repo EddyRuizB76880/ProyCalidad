@@ -162,7 +162,17 @@
     {
         await sessionStorage.SetItemAsync("Email", credentials.User_Email);
         await sessionStorage.SetItemAsync("Type", userType);
-        NavigationManager.NavigateTo("/",forceLoad: true);
+
+        if (userType == 1 || userType == 2)
+        {
+            NavigationManager.NavigateTo("/", forceLoad: true);
+        } else 
+
+        if (userType == 3) 
+        {
+          NavigationManager.NavigateTo("/admin");
+        }
+    
 
     }
 }

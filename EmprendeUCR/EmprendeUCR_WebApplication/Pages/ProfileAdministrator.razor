@@ -122,7 +122,7 @@
 <div class="row">
     <nav class=" navbar fixed-bottom navbar-light bg-white">
         <div class="col-1"></div>
-        <div class="col-8"> <button type="button" class="btn-lg btn-outline-primary btn btn-link" @onclick="goHome">Volver a comprar </button> </div>
+        @*<div class="col-8"> <button type="button" class="btn-lg btn-outline-primary btn btn-link" @onclick="goHome">Volver a comprar </button> </div>*@
         <div class="col-2"> <button type="button" class=" btn-lg btn-outline-primary btn btn-link" @onclick="@goEditProfile"> Editar perfil </button> </div>
         <div class="col-1"></div>
     </nav>
@@ -148,7 +148,7 @@
 
     private void goHome()
     {
-        NavigationManager.NavigateTo("/HomeAdministrator");
+        NavigationManager.NavigateTo("/admin");
     }
 
     private async void logout()
