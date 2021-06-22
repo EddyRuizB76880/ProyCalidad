@@ -27,31 +27,36 @@ else
 
         <section class="w-70  float_right ">
 
-            <div class="layout wrap">
+            <div class="layout wrap gap-4 w-90">
                 @if (_products?.Count > 0)
                 {
                     @foreach (var prod in _products)
                     {
                         var prodServ = _productsServices.First(p => p.Code_ID == prod.Code_ID);
                         var prodPhoto = photosDisplay.FirstOrDefault(p => p.Code_ID == prod.Code_ID);
-                        <div class="item data border-1 border-blue content-center">
-                            @if (prodPhoto != null)
-                            {
-                                <img src="@Product_PhotosService.convertImageDisplay(prodPhoto.Photos)" width="200" />
-                            }
-                            <div class="item ">
-                                <div class="item_name">@prod.Product_Name</div>
-                                <div class="item_description">@prod.Product_Description</div>
-                                <div class="item_price">₡@prod.Price</div>
-                            </div>
+                <div class="item data border-2 border-blue shadow">
+                    <div class= "content-center ">
+                        @if (prodPhoto != null)
+                        {
+                            <img src="@Product_PhotosService.convertImageDisplay(prodPhoto.Photos)" width="200" class=" img-card mt-2" />
+                        }
+                    </div>
+                        <div class="item m-lg-2 ">
+                            <div class="item_name">@prod.Product_Name</div>
+                            <div class="item_description">@prod.Product_Description</div>
+                            <div class="item_price">₡@prod.Price</div>
+                            <div class="item_Category">@CategoryService.getCategory(prod.Category_ID).Title </div>
                         </div>
+
+                   
+                </div>
                     }
                 }
             </div>
         </section>
 
         <aside class="w-25 float_left mb-0">
-            <div class=" border-blue " @onchange="loadCategories">
+            <div class=" border-blue  shadow" @onchange="loadCategories">
                 <h2 class="text-center fs-2  bg-blue">Categorias</h2>
                 @if (_my_categories?.Count > 0)
                 {   //jala la llave del papa no se trae los hijos

@@ -16,14 +16,14 @@
 
     <!-- Mis productos -->
 
-    <section class="float_left border-1 shadow w-25">
+    <section class="w-25 float_left border-1 shadow">
         <h4 class="bg-blue text-center "> Mis productos </h4>
-        <table>
+        <table class="m-lg-2">
             <thead>
                 <!--Colmun names tag (Nombre, Precio)-->
                 <tr>
-                    <th style="width:20%">Nombre</th>
-                    <th style="width:20%">Precio</th>
+                    <th width="200" valign="middle" align ="center">Nombre</th>
+                    <th width="100" valign="middle" align ="center">Precio</th>
                 </tr>
             </thead>
             <!--If there are services related to the current entrepreneur, display them to the user-->
@@ -34,12 +34,12 @@
                     {
                         <tr>
                             <!--Product name value-->
-                            <td>@currentProduct.Product_Name</td>
+                            <td width="200" valign="middle" align ="left">@currentProduct.Product_Name</td>
                             <!--Product price value-->
-                            <td>@currentProduct.Price</td>
+                            <td width="100" valign="middle" align ="left">@currentProduct.Price</td>
                             <!--Add to the current offer button-->
                             <td>
-                                <button class="btn-primary m-2 material-icons-outlined" type="button" @onclick="() => addProductToOffer(currentProduct.Code_ID)">add</button>
+                                <button class="w-150 btn-primary m-2 material-icons align-right" type="button" @onclick="() => addProductToOffer(currentProduct.Code_ID)">add</button>
                             </td>
                         </tr>
                     }
@@ -47,15 +47,16 @@
             </tbody>
         </table><br />
 
+
         <!-- Mis servicios-->
 
-        <h4 class="bg-blue text-center "> Mis servicios </h4>
-        <table>
+        <h4 class="bg-blue text-center"> Mis servicios </h4>
+        <table class="m-lg-2">
             <!--Colmun names tag (Nombre, Precio por hora)-->
             <thead>
                 <tr>
-                    <th style="width:20%">Nombre</th>
-                    <th style="width:20%">Precio por hora</th>
+                    <th width="200" valign="middle" align="center">Nombre</th>
+                    <th width="100" valign="middle" align="center">Precio por hora</th>
                 </tr>
             </thead>
             <!--If there are services related to the current entrepreneur, display them to the user-->
@@ -66,12 +67,12 @@
                     {
                         <tr>
                             <!--Service name value-->
-                            <td>@currentService.Service_Name</td>
+                            <td width="200" valign="middle" align ="left">@currentService.Service_Name</td>
                             <!--Service Price per hour value-->
-                            <td>@currentService.Price_per_hour</td>
+                            <td width="100" valign="middle" align ="left">@currentService.Price_per_hour</td>
                             <!--Add to the current offer button-->
                             <td>
-                                <button class="btn-primary m-2 material-icons-outlined" type="button" @onclick="() => addServiceToOffer(currentService.Code_ID)">add</button>
+                                <button class="w-150 btn-primary m-2 material-icons align-right " type="button" @onclick="() => addServiceToOffer(currentService.Code_ID)">add</button>
                             </td>
                         </tr>
                     }
@@ -79,28 +80,27 @@
             </tbody>
         </table>
 
-
-        <div class="row">
-            <div class="form-group">
-                <input type="button" class="btn btn-primary text-center m-2" @onclick="@Cancel" value="Volver" />
-            </div>
+    <div class="row">
+        <div class="form-group">
+            <input type="button" class="btn btn-primary text-center m-2" @onclick="@Cancel" value="Volver" />
         </div>
-
+    </div>
     </section>
 
-   
 
-    <aside class="float_right  w-70">
+
+
+    <aside class="float_right  w-70 gap-lg-2">
         <!-- Productos en la oferta -->
         <div class="row border-2 shadow">
             <h4 class="bg-blue text-center">Productos o servicios en la oferta</h4>
             <!--Product and services in the offer display-->
-            <table>
+            <table class="m-lg-2">
                 <!-- Colmun names tag (Nombre, Precio)-->
                 <thead>
                     <tr>
-                        <th style="width:20%">Nombre</th>
-                        <th style="width:20%">Precio</th>
+                        <th width="10" valign="middle" align="center">Nombre</th>
+                        <th width="10" valign="middle" align="center">Precio</th>
                     </tr>
                 </thead>
                 <!--Load the products and services added to the current offer-->
@@ -158,42 +158,44 @@
                     <!--Form to let the user choose the initial date for the offer (by default will be todays date)-->
                     <div class="form-group">
                         <label for="Initial_Date" class="control-label">Fecha de inicio de oferta</label>
-                        <input type="date" min="@DateTime.Now" class="form-control w-50" @bind="@initialDateInput" required />
+                        <input type="date" min="@DateTime.Now" class="form-control w-20" @bind="@initialDateInput" required />
                     </div>
 
                     <!--Form to let the user choose the initial date for the offer (by default will be todays date)-->
                     <div class="col px-mb-3">
                         <label for="Expire_Date" class="control-label">Fecha de fin de oferta</label>
-                        <input type="date" min="@DateTime.Now" class="form-control w-50" @bind="@expireDateInput" required />
+                        <input type="date" min="@DateTime.Now" class="form-control w-20" @bind="@expireDateInput" required />
                     </div>
 
                     <!--Form to let the user choose the description of the offer-->
                     <div class="mb-3">
                         <label for="Offer_Description" class="control-label">Descripción</label>
-                        <input form="Offer_Description" class=" form-control w-70" @bind="@offer.Offer_Description" />
+                        <textarea rows="3" form="Offer_Description" class=" form-control w-30" @bind="@offer.Offer_Description" />
                     </div>
 
-                    <!--Display of the total amount of the products and services in the offer-->
-                    <div>
-                        <h5>Suma total del precio original de productos = @totalPriceFromListedProductsAndServicesInOffer</h5>
-                    </div>
+            <!--Display of the total amount of the products and services in the offer-->
+            <div>
+                <h5>Suma total del precio original de productos = @totalPriceFromListedProductsAndServicesInOffer</h5>
+            </div>
 
                     <!--Form to let the user choose the new price of the offer-->
                     <div class="col mb-3">
                         <label for="Price" class="control-label">Nuevo precio de oferta (CRC)</label>
-                        <input form="Price" type="number" class="form-control w-30" @bind="@offer.Discount" required />
+                        <input form="Price" type="number" class="form-control w-10" @bind="@offer.Discount" required />
                     </div>
 
-                    <!--Check if the data provided by the user is ok, if yes then displays the button to save the offer-->
-                    @if (checkOfferDetails(initialDateInput, expireDateInput, offer.Discount))
-                    {
-                        <input type="button" class="btn btn-primary" @onclick="@onCreateOffer" value="Guardar oferta" />
-                    }
-                    else // if not, then displays the error message according to the input error
-                    {
-                        <p style="color:red;">@errorMessage</p>
-                    }
-                </div>
+            <!--Check if the data provided by the user is ok, if yes then displays the button to save the offer-->
+            @if (checkOfferDetails(initialDateInput, expireDateInput, offer.Discount))
+            {
+                <input type="button" class="btn btn-primary" @onclick="@onCreateOffer" value="Guardar oferta" />
+            }
+            else // if not, then displays the error message according to the input error
+            {
+                <p style="color:red;">@errorMessage</p>
+                <input type="button" class="btn btn-primary" @onclick="@onCreateOffer" value="Guardar oferta" disabled />
+
+            }
+        </div>
             }
         </div>
     </aside>
@@ -342,7 +344,7 @@
         // If the initial date input is greater than the expire date
         if (initialDateInput > expireDateInput)
         {
-            errorMessage += "La fecha de final de oferta debe ser menor a la fecha de inicio. \n";
+            errorMessage += "La fecha de final de oferta debe ser mayor a la fecha de inicio. \n";
             isAValidOffer = false;
         }
 

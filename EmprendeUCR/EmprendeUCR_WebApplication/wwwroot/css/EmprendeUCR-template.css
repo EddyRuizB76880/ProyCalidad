@@ -350,7 +350,18 @@ input[type="number"]::-webkit-inner-spin-button {
     vertical-align: middle;
 }
 
-.some-text {
+.align-left {
     float: left;
     margin-left: 10px;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+}
+
+.align-right {
+    float: right;
+    margin-left: 10px;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
 }
