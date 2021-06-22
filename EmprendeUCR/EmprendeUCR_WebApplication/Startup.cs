@@ -31,6 +31,15 @@ using EmprendeUCR_WebApplication.Domain.Repositories;
 using EmprendeUCR_WebApplication.Application.ShoppingCartContext.Implementations;
 using EmprendeUCR_WebApplication.Infrastructure.ShoppingCartContext;
 
+using EmprendeUCR_WebApplication.Application.OrderContext.Implementations;
+using EmprendeUCR_WebApplication.Application.OrderContext;
+using EmprendeUCR_WebApplication.Infrastructure.OrderContext;
+using EmprendeUCR_WebApplication.Infrastructure.OrderContext.Repositories;
+
+
+
+
+
 namespace EmprendeUCR_WebApplication
 {
     public class Startup
@@ -49,7 +58,6 @@ namespace EmprendeUCR_WebApplication
             services.AddDbContext<ShoppingCartDbContext2>(options =>
             {
                 options.UseSqlServer((Configuration.GetConnectionString("DefaultConnection")));
-
             });
               
             services.AddDbContext<SqlServerDbContext>(options =>
@@ -57,8 +65,11 @@ namespace EmprendeUCR_WebApplication
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            services.AddDbContext<OrderDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
 
-            services.AddDbContext<SqlServerDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSyncfusionBlazor();
@@ -72,6 +83,7 @@ namespace EmprendeUCR_WebApplication
             services.AddScoped<EntrepreneurService>();
             services.AddScoped<UserService>();
             services.AddScoped<Product_ServiceService>();
+            services.AddScoped<Shopping_Cart_HasService>();
             services.AddScoped<ProvinceService>();
             services.AddScoped<CantonService>();
             services.AddScoped<DistrictService>();
@@ -107,6 +119,11 @@ namespace EmprendeUCR_WebApplication
             services.AddApplicationLayer();
             services.AddInfrastructureLayer(
                 Configuration.GetConnectionString("DefaultConnection"));
+            services.AddScoped <CredentialsService>();
+
+            services.AddTransient<IOrderRepository, OrderRepository>();
+            services.AddTransient<IOrderService, OrderService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

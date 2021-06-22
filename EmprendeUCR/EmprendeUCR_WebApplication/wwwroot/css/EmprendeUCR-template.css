@@ -42,6 +42,16 @@ ul, p, span {
     padding: 0;
 }
 
+/* Style rules for font's green color. */
+.ft-green {
+    color: limegreen;
+}
+
+/* Style rules for font's red color. */
+.ft-red {
+    color: red;
+}
+
 /* Style rules for background's blue color. */
 .bg-blue {
     background: var(--blue-color);
@@ -342,4 +352,12 @@ input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+
+.hover-light-grey:hover {
+    background: var(--light-grey);
+}
+
+.zIndex-primary{
+    z-index: 100;
 }

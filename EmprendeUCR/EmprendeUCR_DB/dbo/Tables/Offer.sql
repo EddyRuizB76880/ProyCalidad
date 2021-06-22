@@ -7,3 +7,5 @@
     PRIMARY KEY CLUSTERED ([Offer_ID] ASC)
 );
 
+
+

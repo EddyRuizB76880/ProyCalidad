@@ -49,7 +49,11 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return true;
         }
 
+        public async Task<IList<Product>> GetProductsByCategoryAsync(string email, int category_id)
+        {
+            return await _context.Product.Where(product => String.Equals(product.Entrepreneur_Email, email) && product.Category_ID == category_id).ToListAsync();
 
+        }
 
         public async Task<Product> GetProductAsync(int Id)
         {
@@ -69,21 +73,14 @@ namespace EmprendeUCR_WebApplication.Data.Services
 
         }
 
-        public async Task<IList<Product>> GetProductsByCategoryAsync(string email,int category_id)
-        {
-            return await _context.Product.Where(product => String.Equals(product.Entrepreneur_Email, email) && product.Category_ID==category_id).ToListAsync();
-
-        }
-
-        public async Task<IEnumerable<Product>> GetProducts()
-        {
-            return await _context.Product.Select(product => new Product { Code_ID = product.Code_ID, Product_Name = product.Product_Name, Price = product.Price }).ToListAsync();
-        }
         public async Task<PagedList<Product>> GetProducts(ShopParameters shopParameters)
         {
             var products = await _context.Product.ToListAsync();
             return PagedList<Product>.ToPagedList(products, shopParameters.PageNumber, shopParameters.PageSize);
+
         }
+
+
         public async Task RemoveProduct(int Id)
         {
             Product ProductToRemove = await _context.Product.FindAsync(Id);

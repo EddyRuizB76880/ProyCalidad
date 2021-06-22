@@ -10,3 +10,5 @@
     CONSTRAINT [FK_dbo.Electronic_Bill_dbo.Bill] FOREIGN KEY ([Date_and_hour_of_creation], [Email], [Number_of_bill]) REFERENCES [dbo].[Bill] ([Date_and_hour_of_creation], [Client_Email], [Number_of_bill])
 );
 
+
+
