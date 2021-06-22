@@ -1,5 +1,6 @@
 ﻿@page "/AddProduct"
 @using EmprendeUCR_WebApplication.Data.Services
+@using EmprendeUCR_WebApplication.Data.Services.Categories
 @using EmprendeUCR_WebApplication.Data.Entities
 @using System.IO
 @using BlazorInputFile
@@ -36,8 +37,8 @@
                     </div>
                 </div>
 
-                    <EmprendeUCR_WebApplication.Pages.Product_Service.Product.ProductStatusInput/>
-                
+                <EmprendeUCR_WebApplication.Pages.Product_Service.Product.ProductStatusInput />
+
             </div> <br /> <br />
 
             <!--Display the option to the user to upload the photo and assign it to the product (the 6 of them)-->
@@ -310,7 +311,8 @@
         photosSix.Photos = null;
     }
 
-    void back() {
+    void back()
+    {
         NavigationManager.NavigateTo("ListProducts");
     }
 

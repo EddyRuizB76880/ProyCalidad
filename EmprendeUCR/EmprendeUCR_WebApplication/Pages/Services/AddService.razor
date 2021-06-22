@@ -1,5 +1,6 @@
 ﻿@page "/AddService"
 @using EmprendeUCR_WebApplication.Data.Services
+@using EmprendeUCR_WebApplication.Data.Services.Categories
 @using EmprendeUCR_WebApplication.Data.Entities
 @using System.IO
 @using BlazorInputFile
@@ -36,8 +37,8 @@
                         <input form="Price" type="number" class="form-control" @bind="@serv.Price_per_hour" />
                     </div>
                 </div>
-         
-                <EmprendeUCR_WebApplication.Pages.Product_Service.Product.ProductStatusInput/>
+
+                <EmprendeUCR_WebApplication.Pages.Product_Service.Product.ProductStatusInput />
             </div> <br /> <br />
             <!--Display the option to the user to upload the photo and assign it to the product (the 6 of them)-->
 
@@ -170,168 +171,168 @@
 </body>
 
 @code {
-        EmprendeUCR_WebApplication.Data.Entities.Service serv = new EmprendeUCR_WebApplication.Data.Entities.Service();
-        EmprendeUCR_WebApplication.Data.Entities.Product_Service prodServ = new EmprendeUCR_WebApplication.Data.Entities.Product_Service();
+    EmprendeUCR_WebApplication.Data.Entities.Service serv = new EmprendeUCR_WebApplication.Data.Entities.Service();
+    EmprendeUCR_WebApplication.Data.Entities.Product_Service prodServ = new EmprendeUCR_WebApplication.Data.Entities.Product_Service();
 
-        IList<Entrepreneur> entrepreneurs;
-        IList<Category> categories;
-        private bool _isLoading = true;
-        bool hideError = true;
+    IList<Entrepreneur> entrepreneurs;
+    IList<Category> categories;
+    private bool _isLoading = true;
+    bool hideError = true;
 
-        // The photos that will be assign to the Product
-        Service_Photos photosOne = new Service_Photos();
-        Service_Photos photosTwo = new Service_Photos();
-        Service_Photos photosThree = new Service_Photos();
-        Service_Photos photosFour = new Service_Photos();
-        Service_Photos photosFive = new Service_Photos();
-        Service_Photos photosSix = new Service_Photos();
+    // The photos that will be assign to the Product
+    Service_Photos photosOne = new Service_Photos();
+    Service_Photos photosTwo = new Service_Photos();
+    Service_Photos photosThree = new Service_Photos();
+    Service_Photos photosFour = new Service_Photos();
+    Service_Photos photosFive = new Service_Photos();
+    Service_Photos photosSix = new Service_Photos();
 
-        SfTreeGrid<Category> TreeGrid { get; set; }
-        private Category selectedCategory;
+    SfTreeGrid<Category> TreeGrid { get; set; }
+    private Category selectedCategory;
 
-        // Receives file to insert and product to insert it to.
-        public async Task HandleImageSelected(IFileListEntry[] files, Service_Photos photos)
+    // Receives file to insert and product to insert it to.
+    public async Task HandleImageSelected(IFileListEntry[] files, Service_Photos photos)
+    {
+        var file = files.FirstOrDefault();
+        if (file != null)
         {
-            var file = files.FirstOrDefault();
-            if (file != null)
-            {
-                var ms = new MemoryStream();
-                await file.Data.CopyToAsync(ms);
-                photos.Photos = ms.ToArray();
-            }
-            else
-            {
-
-            }
+            var ms = new MemoryStream();
+            await file.Data.CopyToAsync(ms);
+            photos.Photos = ms.ToArray();
         }
-
-        // Gets called when page first loads.
-        protected override async Task OnInitializedAsync()
+        else
         {
-            prodServ.Entrepreneur_Email = await sessionStorage.GetItemAsync<string>("Email");
-            entrepreneurs = await EntrepreneurService.GetAsync();
-            categories = await CategoryService.GetAsync();
-            _isLoading = false;
-        }
 
-        // Gets called when entrepreneur saves a new product
-        protected Task createService()
+        }
+    }
+
+    // Gets called when page first loads.
+    protected override async Task OnInitializedAsync()
+    {
+        prodServ.Entrepreneur_Email = await sessionStorage.GetItemAsync<string>("Email");
+        entrepreneurs = await EntrepreneurService.GetAsync();
+        categories = await CategoryService.GetAsync();
+        _isLoading = false;
+    }
+
+    // Gets called when entrepreneur saves a new product
+    protected Task createService()
+    {
+        if (String.IsNullOrEmpty(serv.Entrepreneur_Email))
         {
-            if (String.IsNullOrEmpty(serv.Entrepreneur_Email))
-            {
-                // product details are incomplete, show error
-                hideError = false;
-                return Task.CompletedTask;
-            }
-            else
-            {
-                return serviceService.InsertServiceAsync(serv);
-            }
+            // product details are incomplete, show error
+            hideError = false;
+            return Task.CompletedTask;
         }
-
-        protected bool isPhotoLoaded(Service_Photos photo)
+        else
         {
-            return photo.Photos != null;
+            return serviceService.InsertServiceAsync(serv);
         }
+    }
 
-        protected void deletePhoto(MouseEventArgs args, Service_Photos photo)
+    protected bool isPhotoLoaded(Service_Photos photo)
+    {
+        return photo.Photos != null;
+    }
+
+    protected void deletePhoto(MouseEventArgs args, Service_Photos photo)
+    {
+        photo.Photos = null;
+    }
+
+    // Creates parent Product_Service entity
+    protected async Task<int> createProduct_Service()
+    {
+        if (String.IsNullOrEmpty(prodServ.Entrepreneur_Email))
         {
-            photo.Photos = null;
+            // productService details are incomplete, show error
+            hideError = false;
+            await Task.CompletedTask;
+            return 0;
         }
-
-        // Creates parent Product_Service entity
-        protected async Task<int> createProduct_Service()
+        else
         {
-            if (String.IsNullOrEmpty(prodServ.Entrepreneur_Email))
-            {
-                // productService details are incomplete, show error
-                hideError = false;
-                await Task.CompletedTask;
-                return 0;
-            }
-            else
-            {
-                int id = await Product_ServiceService.InsertProductServiceAsync(prodServ);
-                return id;
-            }
+            int id = await Product_ServiceService.InsertProductServiceAsync(prodServ);
+            return id;
         }
+    }
 
-        // Inits all values in a photo object
-        protected void preparePhoto(Service_Photos photo, int idToInsert)
+    // Inits all values in a photo object
+    protected void preparePhoto(Service_Photos photo, int idToInsert)
+    {
+        if (photo.Photos != null)
         {
-            if (photo.Photos != null)
-            {
-                photo.Code_ID = idToInsert;
-                photo.Entrepreneur_Email = prodServ.Entrepreneur_Email;
-                photo.Category_ID = selectedCategory.Id;
-                Service_PhotosService.savePhotoToDb(photo);
-            }
+            photo.Code_ID = idToInsert;
+            photo.Entrepreneur_Email = prodServ.Entrepreneur_Email;
+            photo.Category_ID = selectedCategory.Id;
+            Service_PhotosService.savePhotoToDb(photo);
         }
+    }
 
-        protected async void onCreateService()
+    protected async void onCreateService()
+    {
+        prodServ.Availability = prodServ.Availability;
+        prodServ.Category_ID = selectedCategory.Id;
+
+        serv.Category_ID = selectedCategory.Id;
+
+        serv.Entrepreneur_Email = prodServ.Entrepreneur_Email;
+
+        int idToInsert = await createProduct_Service();
+        serv.Code_ID = idToInsert;
+        await createService();
+
+        /// Save photos on data base
+        preparePhoto(photosOne, idToInsert);
+        preparePhoto(photosTwo, idToInsert);
+        preparePhoto(photosThree, idToInsert);
+        preparePhoto(photosFour, idToInsert);
+        preparePhoto(photosFive, idToInsert);
+        preparePhoto(photosSix, idToInsert);
+        /// End of save photos on database
+
+        NavigationManager.NavigateTo("ListServices");
+    }
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("ListServices");
+    }
+
+    void Clean()//deber ser el boton de clean
+    {
+        serv.Service_Name = null;
+        serv.Price_per_hour = 0;
+        serv.Service_Description = null;
+    }
+
+    void back()
+    {
+        NavigationManager.NavigateTo("ListServices");
+    }
+
+    // metodos para prueba de categories
+
+    //RowDrop
+    private void Rowdrop(Syncfusion.Blazor.Grids.RowDragEventArgs<Category> args)
+    {
+        CategoryService.Rowdrop(args, this.TreeGrid);
+    }
+
+    //SelectionHandler
+    public async Task SelectionHandler(Syncfusion.Blazor.Grids.RowSelectEventArgs<Category> args)
+    {
+        var selectedCategories = await this.TreeGrid.GetSelectedRecords();
+        if (selectedCategories.Count() == 0)
         {
-            prodServ.Availability = prodServ.Availability;
-            prodServ.Category_ID = selectedCategory.Id;
 
-            serv.Category_ID = selectedCategory.Id;
-
-            serv.Entrepreneur_Email = prodServ.Entrepreneur_Email;
-
-            int idToInsert = await createProduct_Service();
-            serv.Code_ID = idToInsert;
-            await createService();
-
-            /// Save photos on data base
-            preparePhoto(photosOne, idToInsert);
-            preparePhoto(photosTwo, idToInsert);
-            preparePhoto(photosThree, idToInsert);
-            preparePhoto(photosFour, idToInsert);
-            preparePhoto(photosFive, idToInsert);
-            preparePhoto(photosSix, idToInsert);
-            /// End of save photos on database
-
-            NavigationManager.NavigateTo("ListServices");
         }
-
-        void Cancel()
+        else
         {
-            NavigationManager.NavigateTo("ListServices");
+            selectedCategory = selectedCategories.First();
         }
-
-        void Clean()//deber ser el boton de clean
-        {
-            serv.Service_Name = null;
-            serv.Price_per_hour = 0;
-            serv.Service_Description = null;
-        }
-
-        void back()
-        {
-            NavigationManager.NavigateTo("ListServices");
-        }
-
-        // metodos para prueba de categories
-
-        //RowDrop
-        private void Rowdrop(Syncfusion.Blazor.Grids.RowDragEventArgs<Category> args)
-        {
-            CategoryService.Rowdrop(args, this.TreeGrid);
-        }
-
-        //SelectionHandler
-        public async Task SelectionHandler(Syncfusion.Blazor.Grids.RowSelectEventArgs<Category> args)
-        {
-            var selectedCategories = await this.TreeGrid.GetSelectedRecords();
-            if (selectedCategories.Count() == 0)
-            {
-
-            }
-            else
-            {
-                selectedCategory = selectedCategories.First();
-            }
-        }
-        public async Task SelectionHandler2(Syncfusion.Blazor.Grids.RowDeselectEventArgs<Category> args)
+    }
+    public async Task SelectionHandler2(Syncfusion.Blazor.Grids.RowDeselectEventArgs<Category> args)
     {
         Console.WriteLine(args);
         var selectedCategories = await this.TreeGrid.GetSelectedRecords();
@@ -343,6 +344,6 @@
         {
             selectedCategory = selectedCategories.First();
         }
-}
+    }
 
 }

@@ -1,5 +1,6 @@
 ﻿@page "/ListProducts"
 @using EmprendeUCR_WebApplication.Data.Services
+@using EmprendeUCR_WebApplication.Data.Services.Categories
 @using EmprendeUCR_WebApplication.Data.Entities
 @inject EntrepreneurService EntrepreneurService
 @inject CategoryService CategoryService
@@ -16,7 +17,7 @@
 else
 {
 
-    
+
     <head>
 
         <link rel="stylesheet" href="~/css/EmprendeUCR-template.css" />
@@ -84,7 +85,7 @@ else
             </NavLink>
 
         </aside>
-     
+
 
     </body>
 }
@@ -126,7 +127,8 @@ else
 
             Category iterator = CategoryService.getCategory(prod.Category_ID);
 
-            while (iterator.ParentId != null) {
+            while (iterator.ParentId != null)
+            {
 
                 Category parentcat = CategoryService.getCategory((int)iterator.ParentId);
 
@@ -205,7 +207,7 @@ else
 
     public async Task SelectionHandler2(Syncfusion.Blazor.Grids.RowDeselectEventArgs<Category> args)
     {
-        if(args.Data.Id == selectedCategory.Id && !firstClick)
+        if (args.Data.Id == selectedCategory.Id && !firstClick)
         {
             await loadProducts(selectedEmail);
             await loadProductsServices(selectedEmail);

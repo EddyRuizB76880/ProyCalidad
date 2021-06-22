@@ -1,0 +1,78 @@
+﻿@using EmprendeUCR_WebApplication.Data.Services
+@using EmprendeUCR_WebApplication.Data.Entities
+@inject ProductService ProductService
+
+<div class="head1 @*w-100 d-flex flex-row justify-content-between align-items-center px-5*@">
+    <div class="logo1" margin-left: 300px;>
+
+        @*
+            Line of code to display the site's name. Clicking on it will take
+            the user back to the main menu.
+        *@
+        <a href="/admin" class="color-white h2">EMPRENDEUCR</a>
+    </div>
+    <div class="acount-links">
+        @* If the user had previously clicked on the login button, then... *@
+        @if (logeado)
+        {
+@if (@amountProductsNotifications == 0)
+{@*
+        If the user's shopping cart is empty, then this block of
+        code will disable the shopping cart icon and let the user know.
+*@
+                    <a Do Nothing class="color-silver mx-5 a-white isDisabled btn" data-toggle="tooltip" data-placement="bottom" title="El carrito se encuentra vacío.">
+                        <span class="material-icons-outlined icon-l">
+                            shopping_cart
+                        </span>@amountProductsNotifications
+
+                    </a> }
+                else
+                { @* If instead, the shopping cart has items inside, then... *@
+                                    <a href="ShoppingCart" class="color-silver mx-5 a-white btn">
+                                        <span class="material-icons-outlined icon-l">
+                                            shopping_cart
+                                        </span>@amountProductsNotifications
+                                    </a>} @* Update notifications when the user logs in. *@
+                                                    <a href="/" class="color-silver mx-5 a-white btn">
+                                                        <span class="material-icons icon-l">
+                                                            notifications
+                                                        </span>
+                                                    </a> @* Display account circle when the user logs in. *@
+                                                                    <a href="" @onclick="logear" class="color-silver mx-5 a-white btn">
+                                                                        <span class="material-icons icon-l">
+                                                                            account_circle
+                                                                        </span>
+                                                                    </a>}
+        @if (!logeado)
+        {@* If the user has not logged in, then display the log in button *@
+                        <a href="/registrationdata" class="color-silver mx-5 a-white">
+                            Registrarse
+                        </a>
+                                        <button @onclick="logear" class="bg-white border-none p-2">Iniciar Sesion</button>}
+    </div>
+</div>
+
+@code { // Boolean value to determine if the user is logged in.
+    // To be used in HTML section of this file.
+    private bool logeado = false;
+
+    // Int value used to store the total amount of products stored in
+    // the shopping cart. To be used in the HTML section of this file.
+    private int amountProductsNotifications;
+
+    // Virtual method from Blazor overridden to adapt it to our program.
+    // It invokes a method to get the total number of elements in a table
+    // when the blazor program starts. In this case, it retrieves the
+    // number of articles from the SC table.
+    protected override async Task OnInitializedAsync()
+    {
+        amountProductsNotifications = ProductService.GetProductsQuantity();
+    }
+
+    // This method changes the logeado value. It lets the system know
+    // when the user has logged into their account. To be used with the
+    // HTML section of this file.
+    private void logear()
+    {
+        logeado = !logeado;
+    } }

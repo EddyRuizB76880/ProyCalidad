@@ -1,6 +1,7 @@
 ﻿<h1 class="d-flex justify-content-center">Registro Administrador</h1>
 @page "/registrationDataAdministrator"
 @using EmprendeUCR_WebApplication.Data.Services
+@using EmprendeUCR_WebApplication.Data.Services.Categories
 @using EmprendeUCR_WebApplication.Data.Entities
 @using Microsoft.AspNetCore.WebUtilities
 @inject UserService UserService
@@ -13,7 +14,6 @@
 @inject NavigationManager NavigationManager
 @inject Email_ConfirmationService Email_ConfirmationService
 @inject AdministratorService AdministratorService
-
 @*<center>*@
 <form>
     <EditForm Model="@newUser" OnValidSubmit="@insertUser">

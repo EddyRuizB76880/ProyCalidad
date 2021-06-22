@@ -1,6 +1,7 @@
 ﻿<h1 class="d-flex justify-content-center">Registro cliente</h1>
 @page "/registrationDataClient"
 @using EmprendeUCR_WebApplication.Data.Services
+@using EmprendeUCR_WebApplication.Data.Services.Categories
 @using EmprendeUCR_WebApplication.Data.Entities
 @using Microsoft.AspNetCore.WebUtilities
 @inject UserService UserService
@@ -115,7 +116,7 @@
                         <br /><br /><br />
 
                         <label style="font-size: 20px;">Dirección exacta </label>
-                        <InputText class="form-control"  @bind-Value="newMembers.Direction" style="height:100px" maxlength="200"></InputText>
+                        <InputText class="form-control" @bind-Value="newMembers.Direction" style="height:100px" maxlength="200"></InputText>
                     }
                 </div>
 
@@ -208,7 +209,7 @@
 
                 if (expiration)
                 {
-                    NavigationManager.NavigateTo("/ExpirationError?email=" + _email.Hash_Code+"&type="+1);
+                    NavigationManager.NavigateTo("/ExpirationError?email=" + _email.Hash_Code + "&type=" + 1);
                     error = true;
                 }
             }
@@ -283,7 +284,7 @@
                 @*User_Email = newUser.Email,*@
                 User_Email = _email.Email,
             };
-            
+
             UserService.UpdateUser(u);
             MembersService.AddMembers(m);
             ClientService.AddClient(cl);

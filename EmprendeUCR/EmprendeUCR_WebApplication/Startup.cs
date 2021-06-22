@@ -16,7 +16,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EmprendeUCR_WebApplication.Data.Services.Categories;
+using EmprendeUCR_WebApplication.Data.Services.Reports;
 using Syncfusion.Blazor;
+using EmprendeUCR_WebApplication.Data.Services.PaymentMethods;
+using EmprendeUCR.Application;
+using EmprendeUCR.Infrastructure;
 using Blazored.SessionStorage;
 
 using EmprendeUCR_WebApplication.Application.ShoppingCartContext;
@@ -55,7 +59,6 @@ namespace EmprendeUCR_WebApplication
 
 
             services.AddDbContext<SqlServerDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            //services.AddIdentity<UserService, IdentityRole>().AddEntityFrameworkStores<BookStoreContext>().AddDefaultTokenProviders();
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSyncfusionBlazor();
@@ -63,6 +66,8 @@ namespace EmprendeUCR_WebApplication
             services.AddScoped<AddCategoryService>();
             services.AddScoped<DeleteCategoryService>();
             services.AddScoped<EditCategoryService>();
+            services.AddScoped<PaymentMethodService>();
+            services.AddScoped<CardService>();
             services.AddScoped<ProductService>();
             services.AddScoped<EntrepreneurService>();
             services.AddScoped<UserService>();
@@ -97,6 +102,11 @@ namespace EmprendeUCR_WebApplication
 
             services.AddTransient<IShoppingCartService, ShoppingCartService>();
 
+            services.AddScoped<ReportService>();
+
+            services.AddApplicationLayer();
+            services.AddInfrastructureLayer(
+                Configuration.GetConnectionString("DefaultConnection"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

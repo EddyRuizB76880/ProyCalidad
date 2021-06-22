@@ -1,6 +1,7 @@
 ﻿<h1 class="d-flex justify-content-center">Registro emprendedor</h1>
 @page "/registrationDataEntrepreneur"
 @using EmprendeUCR_WebApplication.Data.Services
+@using EmprendeUCR_WebApplication.Data.Services.Categories
 @using EmprendeUCR_WebApplication.Data.Entities
 @using Microsoft.AspNetCore.WebUtilities
 @inject UserService UserService
@@ -114,13 +115,13 @@
                         <br /><br />
 
                         <label style="font-size: 20px;">Dirección exacta </label>
-                        <InputText class="form-control"  @bind-Value="newMembers.Direction" style="height:80px" maxlength="200"></InputText>
+                        <InputText class="form-control" @bind-Value="newMembers.Direction" style="height:80px" maxlength="200"></InputText>
                     }
                 </div>
 
                 <div class="mb-3">
                     <label style="font-size: 20px">Presentación</label>
-                    <InputText class="form-control"  @bind-Value="newEntrepreneur.Presentation" style="height:100px" maxlength="300" lock></InputText>
+                    <InputText class="form-control" @bind-Value="newEntrepreneur.Presentation" style="height:100px" maxlength="300" lock></InputText>
                 </div>
             </div>
         </div>
@@ -258,7 +259,8 @@
                 Direction = newMembers.Direction,
             };
 
-            Entrepreneur e = new Entrepreneur {
+            Entrepreneur e = new Entrepreneur
+            {
                 User_Email = _email.Email,
                 Presentation = newEntrepreneur.Presentation,
             };
@@ -269,29 +271,29 @@
             NavigationManager.NavigateTo("/Login");
 
         }
-    else
-    {
-        await JsRuntime.InvokeVoidAsync("alerta", "Solo personas mayores de edad pueden registrarse en la página");
+        else
+        {
+            await JsRuntime.InvokeVoidAsync("alerta", "Solo personas mayores de edad pueden registrarse en la página");
+        }
     }
-}
 
-// Obtains the list of cantons according to the province chosen by the user
-public async Task getCantons()
-{
-    province = await JsRuntime.InvokeAsync<string>("getValue", "Province");
-    _canton = CantonService.GetList(province);
-    _district = DistrictService.GetList(".");
-    await JsRuntime.InvokeVoidAsync("resetOption", "Canton");
-    await JsRuntime.InvokeVoidAsync("resetOption", "District");
-    await JsRuntime.InvokeVoidAsync("enabled", "Canton");
-    await JsRuntime.InvokeVoidAsync("enabled", "District");
-}
+    // Obtains the list of cantons according to the province chosen by the user
+    public async Task getCantons()
+    {
+        province = await JsRuntime.InvokeAsync<string>("getValue", "Province");
+        _canton = CantonService.GetList(province);
+        _district = DistrictService.GetList(".");
+        await JsRuntime.InvokeVoidAsync("resetOption", "Canton");
+        await JsRuntime.InvokeVoidAsync("resetOption", "District");
+        await JsRuntime.InvokeVoidAsync("enabled", "Canton");
+        await JsRuntime.InvokeVoidAsync("enabled", "District");
+    }
 
-// Obtains the list of districts according to the canton chosen by the user
-public async Task getDistricts()
-{
-    canton = await JsRuntime.InvokeAsync<string>("getValue", "Canton");
-    _district = DistrictService.GetList(canton);
-    await JsRuntime.InvokeVoidAsync("resetOption", "District");
-}
+    // Obtains the list of districts according to the canton chosen by the user
+    public async Task getDistricts()
+    {
+        canton = await JsRuntime.InvokeAsync<string>("getValue", "Canton");
+        _district = DistrictService.GetList(canton);
+        await JsRuntime.InvokeVoidAsync("resetOption", "District");
+    }
 }

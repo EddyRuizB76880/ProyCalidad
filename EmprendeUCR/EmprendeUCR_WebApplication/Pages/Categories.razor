@@ -1,18 +1,50 @@
 @page "/categories"
+@using Syncfusion.Blazor.Grids;
 @using Syncfusion.Blazor.TreeGrid;
 @using EmprendeUCR_WebApplication.Data.Services.Categories
 @using EmprendeUCR_WebApplication.Data.Services
 @using EmprendeUCR_WebApplication.Data.Entities
+@using Syncfusion.Blazor.DropDowns
 @using Syncfusion.Blazor.Navigations
 @using Syncfusion.Blazor.Popups
 @using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Spinner
+@using Syncfusion.Blazor.Data
 @inject CategoryService CategoryService
 @inject AddCategoryService AddCategories
 @inject DeleteCategoryService DeleteCategories
 @inject EditCategoryService EditCategories
 
-<h2>Categorías</h2>
+<style>
+    .e-custom-edit {
+        background-color: #145DA2;
+    }
 
+        .e-custom-edit:hover {
+            background-color: #397dbd;
+        }
+
+    .e-custom-delete {
+        background-color: #545454;
+    }
+
+        .e-custom-delete:hover {
+            background-color: #858282;
+        }
+
+    .labels{
+        padding-top: 20px;
+    }
+</style>
+
+<h2>Categorías</h2>
+<div>
+    <div id="container">
+        <SfSpinner @bind-Visible="@SpinnerVisible">
+        </SfSpinner>
+    </div>
+</div>
 <SfToolbar ID="ToolBar">
     <ToolbarItems>
         <ToolbarItem OnClick="@TreeGrid.ExpandAll" Text="Expandir" TooltipText="Muestra todas categorías"></ToolbarItem>
@@ -23,7 +55,8 @@
     </ToolbarItems>
 </SfToolbar>
 <SfTreeGrid ID="TreeGrid" @ref="TreeGrid" AllowSorting="true" AllowRowDragAndDrop="true" DataSource="@_categories" IdMapping="Id" ParentIdMapping="ParentId" AllowSelection="true" TreeColumnIndex="0">
-    <TreeGridEvents TValue="Category" RowDropped="Rowdrop" RowSelected="SelectionHandler"></TreeGridEvents>
+    <TreeGridEvents TValue="Category" RowDropped="Rowdrop" RowSelected="SelectionHandler" CommandClicked="OnCommandClicked"></TreeGridEvents>
+    <TreeGridEditSettings AllowDeleting="true" AllowEditing="true" AllowAdding="true"></TreeGridEditSettings>
     <TreeGridSortSettings>
         <TreeGridSortColumns>
             <TreeGridSortColumn Field="Title" Direction="Syncfusion.Blazor.Grids.SortDirection.Ascending"></TreeGridSortColumn>
@@ -32,15 +65,30 @@
     <TreeGridColumns>
         <TreeGridColumn Field="Title" HeaderText="Nombre" Width="100"></TreeGridColumn>
         <TreeGridColumn Field="Description" HeaderText="Descripción" Width="160"></TreeGridColumn>
+        <TreeGridColumn Field="Id" HeaderText="ID" Width="50" Visible="false"> </TreeGridColumn>
+        <TreeGridColumn HeaderText="Acciones" Width="50">
+            <TreeGridCommandColumns>
+                <TreeGridCommandColumn ButtonOption="@(new CommandButtonOptions() {IconCss=edit, CssClass="e-custom-edit"})"></TreeGridCommandColumn>
+                <TreeGridCommandColumn ButtonOption="@(new CommandButtonOptions() {IconCss=delete, CssClass="e-custom-delete"})"></TreeGridCommandColumn>
+            </TreeGridCommandColumns>
+        </TreeGridColumn>
+
+        <TreeGridColumn Field="Id" HeaderText="Identificacion" Width="160" IsPrimaryKey="true" Visible="false"></TreeGridColumn>
     </TreeGridColumns>
 </SfTreeGrid>
 <SfDialog Width="300px" IsModal="true" @bind-Visible="@AddCategories.AddDialogVisible">
     <DialogTemplates>
         <Header> Nueva categoría </Header>
         <Content>
-            <SfTextBox ID="inVal" @bind-Value="@AddCategories.Title" Type="InputType.Text" Placeholder="Nombre" FloatLabelType='@FloatLabelType.Auto' @oninput="@AddCategories.ValidateTitle" />
-            <SfTextBox ID="inVal" @bind-Value="@AddCategories.Description" Type="InputType.Text" Placeholder="Descripción" FloatLabelType='@FloatLabelType.Auto' />
-            <SfTextBox ID="inVal" @bind-Value="@AddCategories.TitleDad" Type="InputType.Text" Placeholder="Categoría padre" @oninput="@AddCategories.ValidateTitleDad" FloatLabelType='@FloatLabelType.Auto' />
+            <p>Nombre</p>
+            <SfTextBox ID="inVal" @bind-Value="@AddCategories.Title" Type="InputType.Text" Placeholder="Nombre" @oninput="@AddCategories.ValidateTitle" />
+            <p class="labels">Descripción</p>
+            <SfTextBox ID="inVal" @bind-Value="@AddCategories.Description" Type="InputType.Text" Placeholder="Descripción" />
+            <p class="labels">Categoría padre</p>
+            <SfComboBox TItem="Category" TValue="String" DataSource="_categories" Placeholder="Categoría padre" Query="@Query" AllowFiltering=true @bind-Value="@AddCategories.ParentID">
+                <ComboBoxFieldSettings Text="Title" Value="Id">
+                </ComboBoxFieldSettings>
+            </SfComboBox>
         </Content>
     </DialogTemplates>
     <DialogButtons>
@@ -53,9 +101,8 @@
         <Header> Editar categoría </Header>
         <Content>
             <SfTextBox ID="inVal" @bind-Value="@EditCategories.EditTitle" Type="InputType.Text" Placeholder="Nombre" @oninput="@EditCategories.ValidateEditTitle" FloatLabelType='@FloatLabelType.Auto' />
+            <SfTextBox ID="inVal" @bind-Value="@EditCategories.EditDescription" Type="InputType.Text" Placeholder="Descripción" @oninput="@EditCategories.ValidateEditCategory" FloatLabelType='@FloatLabelType.Auto' />
             <!----
-                <SfTextBox ID="inVal" @bind-Value="@EditDescription" Type="InputType.Text" Placeholder="Descripción" />
-
                 <SfTextBox ID="inVal" @bind-Value="@EditTitleDad" Type="InputType.Text" Placeholder="Nombre padre" @oninput="@ValidateEditTitleDad" />
             -->
         </Content>
@@ -78,16 +125,41 @@
     </DialogButtons>
 </SfDialog>
 
+
+
 @code{
+
     //Private Variables
-    private SfTreeGrid<Category> TreeGrid { get; set; }
+    private SfTreeGrid<Category> TreeGrid
+    {
+        get;
+        set;
+    }
     private IList<Category> _categories;
     private Category SelectedCategory;
+    private double SelectedIndex;
+    private const string edit = "e-icons e-edit";
+    private const string delete = "e-icons e-delete";
+    private bool SpinnerVisible = false;
+
+    private Query Query = new Query();
 
     //On Initialized
     protected override async Task OnInitializedAsync()
     {
         _categories = await CategoryService.GetAsync();
+    }
+    public void OnCommandClicked(CommandClickEventArgs<Category> args)
+    {
+        var selCategory = CategoryService.getCategory(args.RowData.Id);
+        if (args.CommandColumn.ButtonOption.IconCss == edit)
+        {
+            EditCategories.OpenEditCategoryDialog(selCategory);
+        }
+        if (args.CommandColumn.ButtonOption.IconCss == delete)
+        {
+            DeleteCategories.OpenRemoveCategoryDialog(selCategory);
+        }
     }
 
     //Add
@@ -103,7 +175,9 @@
     //Remove
     private void RemoveCategory()
     {
+        SpinnerVisible = true;
         DeleteCategories.RemoveCategory(this.TreeGrid);
+        SpinnerVisible = false;
     }
     private void OpenRemoveCategoryDialog()
     {
@@ -131,7 +205,7 @@
         var SelectedCategories = await this.TreeGrid.GetSelectedRecords();
         if (SelectedCategories.Count() == 0)
         {
-            AddCategories.TitleDad = null;
+            AddCategories.ParentID = null;
             EditCategories.EditToolbarItemDisabled = true;
             DeleteCategories.RemoveToolbarItemDisabled = true;
             SelectedCategory = null;
@@ -139,15 +213,9 @@
         else
         {
             SelectedCategory = SelectedCategories.First();
+            SelectedIndex = await TreeGrid.GetRowIndexByPrimaryKey(SelectedCategory.Id);
             EditCategories.EditToolbarItemDisabled = false;
-            if (CategoryService.isChildNode(SelectedCategory.Id))
-            {
-                DeleteCategories.RemoveToolbarItemDisabled = false;
-            }
-            else
-            {
-                DeleteCategories.RemoveToolbarItemDisabled = true;
-            }
+            DeleteCategories.RemoveToolbarItemDisabled = false;
         }
     }
 }
