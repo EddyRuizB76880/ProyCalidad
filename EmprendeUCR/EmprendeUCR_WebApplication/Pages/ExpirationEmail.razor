@@ -38,12 +38,12 @@
             _email = Email_ConfirmationService.getEmailConfirmation(hash_correo);
             if (_email == null)
             {
-                NavigationManager.NavigateTo("/RegisterDataError");
+                NavigationManager.NavigateTo("/messagePage?type=3");
             }
         }
         else
         {
-            NavigationManager.NavigateTo("/RegisterDataError");
+            NavigationManager.NavigateTo("/messagePage?type=3");
         }
         
     }
@@ -64,7 +64,7 @@
 
         Mail mail = this.GetMail(e, type);
         await MailService.SendMail(mail);
-        NavigationManager.NavigateTo("/email_success");
+        NavigationManager.NavigateTo("/messagePage?type=4");
 
     }
 

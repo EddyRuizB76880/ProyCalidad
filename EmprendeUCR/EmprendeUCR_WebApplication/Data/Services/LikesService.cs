@@ -18,14 +18,25 @@ namespace EmprendeUCR_WebApplication.Data.Services
 		}
 
 		public async Task<IList<Likes>> GetAsync()
-		{
-			return await _context.Likes.ToListAsync();
-		}
+        {
+            return await _context.Likes.ToListAsync();
+        }
 
 		public void AddLikes(Likes likes)
 		{
 			_context.Likes.Add(likes);
 			_context.SaveChanges();
+		}
+
+        public void RemoveLikes(Likes likes)
+        {
+            _context.Likes.Remove(likes);
+            _context.SaveChanges();
+        }
+
+		public async Task<IList<Likes>> GetByEmailAsync(string email)
+		{
+			return await _context.Likes.Where(c => String.Equals(c.Client_Email, email)).ToListAsync();
 		}
 	}
 }

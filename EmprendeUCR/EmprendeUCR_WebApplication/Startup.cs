@@ -70,6 +70,11 @@ namespace EmprendeUCR_WebApplication
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            /*Contexto Pandemic*/
+            services.AddDbContext<SqlDbContextPandemic>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            /*Contexto General*/
+            services.AddDbContext<SqlServerDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            //services.AddIdentity<UserService, IdentityRole>().AddEntityFrameworkStores<BookStoreContext>().AddDefaultTokenProviders();
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSyncfusionBlazor();
@@ -87,6 +92,35 @@ namespace EmprendeUCR_WebApplication
             services.AddScoped<ProvinceService>();
             services.AddScoped<CantonService>();
             services.AddScoped<DistrictService>();
+            services.AddScoped<CredentialsService>();
+            services.AddScoped<LikesService>();
+            services.AddScoped<ClientService>();
+            services.AddScoped<MembersService>();
+            services.AddScoped<RegisterService>();
+            services.AddScoped<MailService>();
+            services.AddScoped<Email_ConfirmationService>();
+            services.AddScoped<AdministratorService>();
+            services.AddScoped<EncrypService>();
+            services.AddScoped<LoginService>();
+            services.AddBlazoredSessionStorage();
+            services.AddScoped<PhonesService>();
+            services.AddScoped<Shopping_CartService>();
+
+            services.AddScoped<Product_PhotosService>();
+
+            services.AddScoped<Shopping_Cart_Has_Service_Pandemic>();
+
+            services.AddScoped<Serviceservice>();
+
+            services.AddBlazoredSessionStorage();
+
+            /*Servicios Pandemic*/
+            services.AddScoped<UserServicePandemic>();
+            services.AddScoped<ProductServicePandemic>();
+
+
+            Global.ConnectionString = Configuration.GetConnectionString("SqlConnection");
+            Global.DomainName = Configuration["DomainName"];
             services.AddScoped<CredentialsService>();
             services.AddScoped<LikesService>();
             services.AddScoped<ClientService>();

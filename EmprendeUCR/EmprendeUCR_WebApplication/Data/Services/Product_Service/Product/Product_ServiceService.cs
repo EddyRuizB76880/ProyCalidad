@@ -77,6 +77,11 @@ namespace EmprendeUCR_WebApplication.Data.Services
 
         }
 
+
+        public IList<Product_Service> GetList(string product)
+        {
+            return _context.Product_Service.FromSqlRaw("exec GetProducts @product =\"" + product + "\"").ToArray();
+        }
     }
 
 }

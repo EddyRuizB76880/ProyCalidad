@@ -1,10 +1,11 @@
 ﻿@using EmprendeUCR_WebApplication.Data.Services
 @using EmprendeUCR_WebApplication.Data.Entities
 @using EmprendeUCR_WebApplication.Pages
-@inject ProductService ProductService
-@inject Shopping_Cart_HasService Shopping_Cart_HasService 
+@inject ProductServicePandemic ProductServicePandemic
+@inject Shopping_Cart_HasService Shopping_Cart_HasService
+@inject Shopping_Cart_Has_Service_Pandemic Shopping_Cart_Has_Service_Pandemic
 @inject NavigationManager NavigationManager
-@inject UserService UserService 
+@inject UserServicePandemic UserServicePandemic
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 <div class="w-100 navBar">
@@ -24,24 +25,26 @@
 
             @if (!string.IsNullOrEmpty(myEmail))
             {
-                <div class="zIndex-primary">
-                    @* Update notifications when the user logs in. *@
-                    <button class="color-silver mx-5 a-white btn" @onclick="showNotifications">
-                        <span class="material-icons icon-l">
-                            notifications
-                        </span>
-                    </button>
-                    @* Update notifications when the user logs in. *@
-                    @if (showNotificationsComponent)
-                    {
-                        <NotificationsComponent myType="@myType"
-                                                ShowNotifications="showNotifications">
+                @if (!_isLoading)
+                {
+                    <div class="zIndex-primary">
+                        @* Update notifications when the user logs in. *@
+                        <button class="color-silver mx-5 a-white btn" @onclick="showNotifications">
+                            <span class="material-icons icon-l">
+                                notifications
+                            </span>
+                        </button>
+                        @* Update notifications when the user logs in. *@
+                        @if (showNotificationsComponent)
+                        {
+                            <NotificationsComponent myType="@myType"
+                                                    ShowNotifications="showNotifications">
 
-                        </NotificationsComponent>
-                    }
+                            </NotificationsComponent>
+                        }
 
-                </div>
-                <div>
+                    </div>
+                    <div>
                         @* Checks the user type and displays icons according to it. *@
                         @if (myType == 1)
                         {
@@ -63,17 +66,16 @@
 
                         }
 
-            }
-                </div>
-                
-                @* Display account circle when the user logs in. *@
-                if (UserService.GetUserByEmail(myEmail).Photo != null)
-                {
-                    <img width="40" height="40" src="data:image;base64,@System.Convert.ToBase64String(UserService.GetUserByEmail(myEmail).Photo)" class="rounded-circle" @onclick="goProfile">
+                        }
+                    </div>
+
+                    @* Display account circle when the user logs in. *@
+                    <img title="Mi perfil" width="40" height="40" src=@photo class="rounded-circle">
+                    <button class="btn btn-secondary" @onclick="goProfile"> Ver perfil</button>
                 }
                 else
                 {
-                    <button @onclick="goProfile" class="bg-white border-none p-2">Perfil</button>
+                    <p>Cargando Usuario...</p>
                 }
             }
             else
@@ -106,6 +108,19 @@
     private string profileRef;
     private int myType;
     private bool showNotificationsComponent = false;
+    private bool _isLoading = true;
+    private string photo = "/images/images.png";
+    private string inputValue;
+    private IList<Product> _product;
+    private bool control = false;
+
+    // Boolean value to determine if the user is logged in.
+    // To be used in HTML section of this file.
+    private bool logeado = false;
+
+    // Int value used to store the total amount of products stored in
+    // the shopping cart. To be used in the HTML section of this file.
+    private int amountProductsNotifications;
 
     /*
         Summary: Method to show notifications
@@ -118,11 +133,6 @@
     {
         showNotificationsComponent = !showNotificationsComponent;
     }
-    // Int value used to store the total amount of products stored in
-    // the shopping cart. To be used in the HTML section of this file.
-    private int amountProductsNotifications;
-
-
 
     /*
         Summary:  Virtual method from Blazor overridden to adapt it to our program.
@@ -135,9 +145,14 @@
     {
         myEmail = await sessionStorage.GetItemAsync<string>("Email");
         myType = await sessionStorage.GetItemAsync<int>("Type");
-        amountProductsNotifications = Shopping_Cart_HasService.GetProductsQuantity(myEmail);
-        this.UpdateParams();
+        amountProductsNotifications = Shopping_Cart_Has_Service_Pandemic.GetProductsQuantity(myEmail);
 
+        if (myEmail != null)
+        {
+            try { photo = "data:image;base64," + System.Convert.ToBase64String(UserServicePandemic.GetUserByEmail(myEmail).Photo); } catch { }
+        }
+        UpdateParams(myType);
+        _isLoading = false;
     }
 
     /*
@@ -147,32 +162,28 @@
         Returns: nothing
         What might make this to fail: nothing
     */
-    public void UpdateParams()
+    public void UpdateParams(int myType)
     {
 
         switch (myType)
         {
             case 1:
-                homeRef = "/HomeClient";
-                profileRef = "/ProfileClient";
+                homeRef = "/";
                 break;
             case 2:
                 homeRef = "/HomeEntrepreneaur";
-                profileRef = "/ProfileEntrepreneur";
                 break;
             case 3:
                 homeRef = "/admin";
-                profileRef = "/ProfileAdministrator";
                 break;
             default:
                 homeRef = "";
-                profileRef = "";
                 break;
         }
         StateHasChanged();
     }
     /*
-        Summary:  The following 2 methods just redirect the user to different 
+        Summary:  The following 2 methods just redirect the user to different
                   pages.
         Receives: nothing
         Returns: nothing
@@ -185,6 +196,6 @@
 
     private void goProfile()
     {
-        NavigationManager.NavigateTo(profileRef);
+        NavigationManager.NavigateTo("/Profile");
     }
 }

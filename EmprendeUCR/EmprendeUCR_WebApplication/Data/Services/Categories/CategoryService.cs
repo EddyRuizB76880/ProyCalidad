@@ -123,6 +123,29 @@ namespace EmprendeUCR_WebApplication.Data.Services.Categories
                 args.Cancel = true;
             }
         }
+
+        /**
+         * @brief Get categories that have no parent
+         * @param 
+         * @return List of parent categories
+        **/
+        public IList<Category> getParents()
+        {
+            return _context.Category.FromSqlRaw("SELECT * FROM Category WHERE ParentId IS NULL").ToArray();
+        }
+
+        /**
+         * @brief Get categories that have a specific parent
+         * @param Id of the parent
+         * @return List of children of a parent category
+        **/
+        public IList<Category> getChildrenOf(int parentId)
+        {
+            return _context.Category.FromSqlRaw("SELECT * FROM Category WHERE ParentId = " + parentId).ToArray();
+        }
+
+        public string GetTitle(int id){
+            return _context.Category.Find(id).Title;
+        }
     }
 }
-

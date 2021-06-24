@@ -19,100 +19,109 @@ Se agrega la interfaz para el registro de usuarios.
 @using EmprendeUCR_WebApplication.Data.Entities
 @inject UserService UserService
 @inject CredentialsService CredentialsService
-@inject NavigationManager NavigationManager
 @inject Email_ConfirmationService Email_ConfirmationService
 @inject MailService MailService
 @inject RegisterService RegisterService
 @inject NavigationManager NavManager
-@inject ClientService ClientService
-@inject EntrepreneurService EntrepreneurService
 @inject EncrypService EncrypService
 @inject IJSRuntime JsRuntime
 
-<div class="d-flex justify-content-center">
-    <form>
+<!--HTML-->
+<div class="flexDiv">
+    <div class="mainClass">
         <h1>Registro de Usuarios</h1>
         <EditForm Model="@newRegistro" OnValidSubmit="@insertUser">
-            <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Correo electrónico</label>
-                <InputText style="width: 55%" type="email" class="form-control" aria-describedby="emailHelp" id="exampleInputEmail1" @bind-Value="newRegistro.Email" />
+
+            <!--Email input-->
+            <div class="marginElements">
+                <label for="exampleInputEmail1" class="form-label secondary_title">Correo electrónico:</label>
+                <InputText type="email" class="form-control inputClass" aria-describedby="emailHelp" id="exampleInputEmail1" @bind-Value="newRegistro.Email" />
                 <div id="emailHelp" class="form-text">Nunca compartiremos su información personal</div>
             </div>
 
-            <div class="mb-3">
-                <label for="inputPassword5" class="form-label">Contraseña</label>
-                <InputText style="width: 30%" type="@pwdType" class="form-control" aria-describedby="passwordHelpBlock" id="inputPassword5" @bind-Value="newRegistro.Password" />
+            <!--Password input-->
+            <div class="marginElements">
+                <label for="inputPassword5" class="form-label secondary_title">Contraseña:</label>
+                <InputText type="@pwdType" class="form-control inputClass" aria-describedby="passwordHelpBlock" id="inputPassword5" @bind-Value="newRegistro.Password" />
                 <Input type="checkbox" @onclick="@showPassword"> Mostrar Contraseña
-                <div id="passwordHelpBlock" class="form-text">
-                    Su contraseña debe contener entre 8-20 caracteres, letras y números, no puede tener caracteres especiales.
-                </div>
             </div>
 
-            <div class="mb-3">
-                <label for="inputPassword5" class="form-label">Confirmar Contraseña</label>
-                <InputText style="width: 30%" type="@pwdType" class="form-control" aria-describedby="passwordHelpBlock" id="inputPassword5" @bind-Value="newRegistro.ConfirmPassword" />
+            <!--Confirm password input-->
+            <div class="marginElements">
+                <label for="inputPassword5" class="form-label secondary_title">Confirmar Contraseña:</label>
+                <InputText type="@pwdType" class="form-control inputClass" aria-describedby="passwordHelpBlock" id="inputPassword5" @bind-Value="newRegistro.ConfirmPassword" />
 
             </div>
-            <br />
+
+            <!--User type input-->
+            <p class="secondary_title marginElements">Seleccione su perfil:</p>
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" @onclick="@selectClient" checked>
-                <label class="form-check-label" for="flexRadioDefault1">
-                    Cliente
-                </label>
+                <label class="form-check-label" for="flexRadioDefault1">Cliente</label>
             </div>
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" @onchange="@selectEntrepreneur">
-                <label class="form-check-label" for="flexRadioDefault2">
-                    Emprendedor
-                </label>
+                <label class="form-check-label" for="flexRadioDefault2">Emprendedor</label>
             </div>
 
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" @onchange="@selectAdmin">
-                <label class="form-check-label" for="flexRadioDefault3">
-                    Administrador
-                </label>
+                <label class="form-check-label" for="flexRadioDefault3">Administrador</label>
             </div>
-            <br />
-            <button type="submit" class="btn btn-primary">Registrarse</button>
-            <!--<button type="submit" class="btn btn-primary">Registrarse</button>-->
+
+            <!--Submit button-->
+            <center>
+                <button type="submit" class="btn btn-primary marginElements">Registrarse</button>
+            </center>
         </EditForm>
-    </form>
+    </div>
 </div>
 @code {
+    /*Register atributes*/
     private User newUsuario = new User();
     private Registro newRegistro = new Registro();
     private string pwdType = "password";
     private string text = "Mostrar Contraseña";
     public bool registro = false;
     private int type_user = 1;
-    private bool _continue = true;
 
-    public void userType(int userInput)
-    {
-        Console.WriteLine(userInput);
-        type_user = userInput;
-        Console.WriteLine(type_user);
-    }
-
+    /*
+    Brief: Save the user client type.
+    Parameters:
+    Returns:
+    */
     private void selectClient() {
         type_user = 1;
     }
 
+    /*
+    Brief: Save the user entrepreneur type.
+    Parameters:
+    Returns:
+    */
     private void selectEntrepreneur()
     {
         type_user = 2;
     }
 
+    /*
+    Brief: Save the user admin type.
+    Parameters:
+    Returns:
+    */
     private void selectAdmin()
     {
         type_user = 3;
     }
 
+    /*
+    Brief: Insert the user to the database and send verify email.
+    Parameters:
+    Returns:
+    */
     private async void insertUser()
     {
         registro = await RegisterService.checkRecordExistence(newRegistro);
-
         if (registro == false)
         {
             if (newRegistro.ConfirmPassword == newRegistro.Password)
@@ -148,7 +157,7 @@ Se agrega la interfaz para el registro de usuarios.
 
                 Mail mail = this.GetMail(e, type_user);
                 await MailService.SendMail(mail);
-                NavManager.NavigateTo("/email_success");
+                NavManager.NavigateTo("/messagePage?type=4");
             }
             else
             {
@@ -157,10 +166,16 @@ Se agrega la interfaz para el registro de usuarios.
         }
         else
         {
-            NavManager.NavigateTo("/email_error");
+            NavManager.NavigateTo("/messagePage?type=1");
         }
     }
 
+
+    /*
+    Brief: Get the email confirmation body.
+    Parameters Email_Confirmation email, Int userType.
+    Returns: Mail.
+    */
     public Mail GetMail(Email_Confirmation email, int userType)
     {
         Mail mail = new Mail();
@@ -173,7 +188,11 @@ Se agrega la interfaz para el registro de usuarios.
         return mail;
     }
 
-
+    /*
+    Brief: Show the password on the page.
+    Parameters:
+    Returns:
+    */
     public void showPassword()
     {
         if (pwdType == "password")

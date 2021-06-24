@@ -9,7 +9,7 @@ function contrasenaIncorrecta(mensaje) {
 
 function getSelectedValues(id){
 	var checkbox = document.getElementById(id);
-	if(checkbox.checked == true){
+	if(checkbox.checked === true){
 		return parseInt(checkbox.value);
 	} else {
 		return -1;
@@ -24,6 +24,10 @@ function enabled(id){
 	document.getElementById(id).disabled = false;
 }
 
-function alerta(message) {
+function alerta(message){
 	alert(message);
+}
+
+function setRequired(id){
+	document.getElementById(id).setAttribute("required", "");
 }

@@ -6,15 +6,14 @@ using EmprendeUCR_WebApplication.Data.Entities;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using EmprendeUCR_WebApplication.Data;
-using EmprendeUCR_WebApplication.Data.Entities.ContextShop;
 
 namespace EmprendeUCR_WebApplication.Data.Services
 {
-    public class ProductService : PageModel
+    public class ProductServicePandemic : PageModel
     {
-        private readonly EmprendeUCR_WebApplication.Data.Contexts.SqlServerDbContext _context;
+        private readonly EmprendeUCR_WebApplication.Data.Contexts.SqlDbContextPandemic _context;
 
-        public ProductService(EmprendeUCR_WebApplication.Data.Contexts.SqlServerDbContext context)
+        public ProductServicePandemic(EmprendeUCR_WebApplication.Data.Contexts.SqlDbContextPandemic context)
         {
             _context = context;
         }
@@ -49,11 +48,7 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return true;
         }
 
-        public async Task<IList<Product>> GetProductsByCategoryAsync(string email, int category_id)
-        {
-            return await _context.Product.Where(product => String.Equals(product.Entrepreneur_Email, email) && product.Category_ID == category_id).ToListAsync();
 
-        }
 
         public async Task<Product> GetProductAsync(int Id)
         {
@@ -73,19 +68,11 @@ namespace EmprendeUCR_WebApplication.Data.Services
 
         }
 
-        public async Task<PagedList<Product>> GetProducts(ShopParameters shopParameters)
+        public async Task<IEnumerable<Product>> GetProducts()
         {
-            var products = await _context.Product.ToListAsync();
-            return PagedList<Product>.ToPagedList(products, shopParameters.PageNumber, shopParameters.PageSize);
 
-        }
+            return await _context.Product.Select(product => new Product { Code_ID = product.Code_ID, Product_Name = product.Product_Name, Price = product.Price }).ToListAsync();
 
-
-        public async Task RemoveProduct(int Id)
-        {
-            Product ProductToRemove = await _context.Product.FindAsync(Id);
-            _context.Product.Remove(ProductToRemove);
-            await _context.SaveChangesAsync();
         }
 
         public int GetProductsQuantity()
@@ -101,34 +88,5 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return _context.Product.Count();
 
         }
-
-        public IList<Product> GetList(string product)
-        {
-            return _context.Product.FromSqlRaw("exec GetProducts \"" + product + "\"").ToArray();
-        }
-
-        public IList<Product> GetListByCategory(int categoryID)
-        {
-            return _context.Product.FromSqlRaw("exec GetProductsByCategory " + categoryID  ).ToArray();
-        }
-        
-        public IList<Product> GetListRestricted(string product,int categoryID)
-        {
-            return _context.Product.FromSqlRaw("exec GetProductsRestricted \"" + product + "\","+  categoryID).ToArray();
-        }
-
-        public IList<Product> GetNewProducts()
-        {
-            return _context.Product.FromSqlRaw("exec getNewProducts").ToArray();
-        }
-        public IList<Product> GetOfferProducts()
-        {
-            return _context.Product.FromSqlRaw("exec getOfferProducts").ToArray();
-        }
-        public IList<Product> GetRecommendedProducts(string userEmail)
-        {
-            return _context.Product.FromSqlRaw("exec getRecommendedProducts \"" + userEmail + "\"").ToArray();
-        }
     }
-            
 }

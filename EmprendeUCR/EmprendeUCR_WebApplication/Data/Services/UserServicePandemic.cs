@@ -11,16 +11,20 @@ using System.Threading.Tasks;
 
 namespace EmprendeUCR_WebApplication.Data.Services
 {
-    public class UserService : PageModel
+    public class UserServicePandemic : PageModel
     {
-        private readonly EmprendeUCR_WebApplication.Data.Contexts.SqlServerDbContext _context;
+        private readonly EmprendeUCR_WebApplication.Data.Contexts.SqlDbContextPandemic _context;
         //private readonly EmprendeUCR_WebApplication.Data.Context.AppDbContext _context;
 
-        public UserService(EmprendeUCR_WebApplication.Data.Contexts.SqlServerDbContext context)
+        public UserServicePandemic(EmprendeUCR_WebApplication.Data.Contexts.SqlDbContextPandemic context)
         {
             _context = context;
         }
 
+        public async Task<IList<User>> GetAsync() // Enlista Emprendedores
+        {
+            return await _context.User.ToListAsync();
+        }
 
         public void AddUser(User user)
         {
@@ -31,7 +35,7 @@ namespace EmprendeUCR_WebApplication.Data.Services
         public void UpdateUser(User _user)
         {
             User user = _context.User.FirstOrDefault(c => c.Email.Equals(_user.Email));
-            if (user!=null)
+            if (user != null)
             {
                 user.Province_Name = _user.Province_Name;
                 user.Canton_Name = _user.Canton_Name;
@@ -51,28 +55,55 @@ namespace EmprendeUCR_WebApplication.Data.Services
             }
         }
 
-        public async Task<bool> UpdateAsync(User user)
+        public bool getConfirmEmail(string email)
         {
-            _context.User.Update(user);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        public bool getConfirmEmail(string email) {
             bool confirmado = false;
             User user = _context.User.FirstOrDefault(c => c.Email.Equals(email));
-            if (user != null) 
+            if (user != null)
             {
                 confirmado = (bool)user.Email_Confirmation;
             }
             return confirmado;
         }
 
-        public async Task<User> GetUserByEmailAsync(string email)
+        public async Task<User> getUser(string email)
         {
-            return (await _context.User.FindAsync(email));
+            User _user = new User();
+
+            using (IDbConnection con = new SqlConnection(Global.ConnectionString))
+            {
+                if (con.State == ConnectionState.Closed) con.Open();
+
+                string sSQL = "SELECT * FROM [User] WHERE 1=1 ";
+
+                if (!string.IsNullOrEmpty(email)) sSQL += " AND Email='" + email + "'";
+
+                var oUser = (await con.QueryAsync<User>(sSQL)).ToList();
+
+                if (oUser != null && oUser.Count > 0)
+                {
+
+                    _user = oUser.SingleOrDefault();
+                }
+                else
+                {
+                    return null;
+                }
+
+                return _user;
+            }
+        }
+
+        public IList<User> getPhoto(string email)
+        {
+            return _context.User.FromSqlRaw("SELECT * FROM [User] WHERE [User].Email = " + email).ToArray();
         }
 
 
+        public User GetUserByEmail(string email)
+        {
+            var a = _context.User.Find(email);
+            return a;
+        }
     }
 }
