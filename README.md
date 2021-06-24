@@ -40,13 +40,13 @@
 8. [Referencias bibliográficas](#Ref)
 
 
-## Definiciones, acrónimos y abreviaciones<a name="Def"></a>
+## Definiciones, acrónimos y abreviaciones <a name="Def"></a>
 
-## Introducción<a name="Intro"></a>
+## Introducción <a name="Intro"></a>
 
-## Listado de equipos y miembros<a name="Teams"></a>
+## Listado de equipos y miembros <a name="Teams"></a>
 
-### Roles de iteración<a name="Roles"></a>
+### Roles de iteración <a name="Roles"></a>
 
 #### 3DKR:
     Rafael Porras       ->  Documentación
@@ -80,17 +80,17 @@
     Silvia Aguilar      ->   Scrum Ambassador
     Eddy Ruiz           ->   Documentación
 
-## Descripción general del sistema a desarrollar<a name="id4"></a>
+## Descripción general del sistema a desarrollar <a name="id4"></a>
 
-### Contexto y situación actual<a name="Contexto"></a>
+### Contexto y situación actual <a name="Contexto"></a>
 
 Debido a la pandemia por el coronavirus, existen muchas personas que se han quedado sin trabajo o no han podido hacer ventas de sus negocios. Por este motivo se decidió realizar una página web que permita a cualquier emprendedor promocionar y vender su producto o servicio.
 
-### Problema que resuelve<a name="Trouble"></a>
+### Problema que resuelve <a name="Trouble"></a>
 
 Le permite a los emprendedores de cualquier tamaño dar a conocer sus productos y servicios permitiendo un canal comunicación entre el cliente y el emprendedor.
 
-### Interesados del proyecto y tipos de usuarios<a name="Interesados"></a>
+### Interesados del proyecto y tipos de usuarios <a name="Interesados"></a>
 
 Los interesados del proyecto son los emprendedores que deseen vender su producto/servicio por medio de la página, así como los clientes que estén interesados en algún producto o servicio.
 
@@ -103,24 +103,24 @@ Los interesados del proyecto son los emprendedores que deseen vender su producto
 *Administrador:* El encargado de administrar la página web.
 
 
-### Solución propuesta<a name="Solution"></a>
+### Solución propuesta <a name="Solution"></a>
 
 La solución propuesta es realizar una página web que permita tanto promocionar productos o servicios como realizar las compras dentro de la página. Además la página contará con un canal de comunicación directo(chat) entre cliente y emprendedor que permitirá que ambas partes se pongan de acuerdo en la orden y entrega del pedido/servicio. La app también permitirá crear alianzas entre emprendedores.
 
 
-### Análisis del entorno<a name="Anal"></a>
+### Análisis del entorno <a name="Anal"></a>
 
-### Visión del producto<a name="Vision"></a>
+### Visión del producto <a name="Vision"></a>
 
 Para los emprendedores nacionales, quienes necesitan un medio para promocionar y vender sus productos y/o servicios, EMPRENDE@UCR es una plataforma web que permite la venta y compra en línea de productos y servicios. A diferencia de otras plataformas no enfocadas en los pequeños emprendedores, nuestro producto, además de ser gratuito, busca el crecimiento de los pequeños emprendedores y fomenta la cooperación entre estos.
 
-### Relación con otros sistemas externos<a name="Relation"></a>
+### Relación con otros sistemas externos <a name="Relation"></a>
 
 Los módulos del sistema web tiene relación con otros sistemas que ya existan.
 ejemplo: la parte de los pagos, preguntar a la po si visualiza otros sistemas que quiera integrarle (facturas)
 
 
-### Descripción de los módulos y epics<a name="Epic"></a>
+### Descripción de los módulos y epics <a name="Epic"></a>
 
 Los módulos que fueron asignados a cada equipo son los siguientes: 
 
@@ -185,7 +185,7 @@ Poder categorizar y etiquetar productos o servicios.
 - **Relación módulo emprendedores con módulo administración**
     - Similar al punto anterior existe una relación directa entre estos módulos ya que se debe de tener conocimiento de cuáles son los métodos de pago que si son aceptados para un emprendedor en particular.
 
-### Requerimientos Funcionales<a name="Requirements"></a>
+### Requerimientos Funcionales <a name="Requirements"></a>
 
 El proyecto es organizado usando una herramienta en línea llamada JIRA Software. En JIRA, seguimos la siguiente estructura:
 
@@ -208,7 +208,7 @@ El proyecto es organizado usando una herramienta en línea llamada JIRA Software
 
 Para poder acceder al [proyecto](http://10.1.4.22:8080/secure/RapidBoard.jspa?projectKey=PIIB12021&useStoredSettings=true&rapidView=43) el usuario necesita de acceso a un VPN para conectarse, así como acceso a un usuario y una contraseña.
 
-### Product Road Map<a name="ProductRoadMap"></a>
+### Product Road Map <a name="ProductRoadMap"></a>
 #### 3DKR:
     **Sprint #0:**    ->   Product Management:                  -Rellenar/Agregar informacion al producto
                                                                 -Agregar una categoría al producto
@@ -247,7 +247,7 @@ Para poder acceder al [proyecto](http://10.1.4.22:8080/secure/RapidBoard.jspa?pr
                       ->   Update of Order Status
     **Sprint #3:**    ->   Notif. of req. and their statuses
 
-### Requerimientos no funcionales<a name="NonFuncRequirements"></a>
+### Requerimientos no funcionales <a name="NonFuncRequirements"></a>
 
 #### Eficiencia
 - Toda funcionalidad del sistema debe responder al usuario en menos de 5 segundos
@@ -266,28 +266,28 @@ Para poder acceder al [proyecto](http://10.1.4.22:8080/secure/RapidBoard.jspa?pr
 - El sistema debe estar disponible el 99.981% del tiempo.
 
 
-## Artefactos de bases de datos<a name="ArtefactosBases"></a>
+## Artefactos de bases de datos <a name="ArtefactosBases"></a>
 
-### Requerimiento de Datos<a name="REQDATOS"></a>
+### Requerimiento de Datos <a name="REQDATOS"></a>
 <p>Un Producto_Servicio tiene una descripción, ID que lo identifica como único, también debe tener una disponibilidad. Un Producto_Servicio puede ser un Producto ó un Servicio.
 En donde se tiene que un Producto tiene una o más fotos, posee un precio y un nombre.
 Existe un Carrito que es poseído por cada cliente, en donde un carrito es único para cada cliente, este carrito puede tener productos y servicios. Un carrito tiene como atributos derivados un precio total y una cantidad de productos.</p>
 
-### Esquema conceptual<a name="ERR"></a>
+### Esquema conceptual <a name="ERR"></a>
 
 ![Esquema conceptual de la base de datos](imgs/Conceptual_scheme.png)
 
 Referencia al archivo fuente: [Esquema conceptual de la base de datos](https://lucid.app/lucidchart/521c91fc-fdbb-42cb-8564-09c0ab52c460/edit?page=0_0#)
 
-### Esquema lógico<a name="Mapeo"></a>
+### Esquema lógico <a name="Mapeo"></a>
 
 ![Esquema lógico de la base de datos](imgs/Logical_scheme.png)
 
 Referencia al archivo fuente: [Esquema lógico de la base de datos](https://lucid.app/lucidchart/521c91fc-fdbb-42cb-8564-09c0ab52c460/edit?page=eAhCgoWCmbE2#)
 
-## Decisiones técnicas<a name="Decitions"></a>
+## Decisiones técnicas <a name="Decitions"></a>
 
-### Metodologías utilizadas<a name="Metodology"></a>
+### Metodologías utilizadas <a name="Metodology"></a>
 
 #### Scrum:
 - **Sprints de tres semanas:** 4 (excepto el primer sprint que es de seis semanas).
@@ -310,7 +310,7 @@ Referencia al archivo fuente: [Esquema lógico de la base de datos](https://luci
 - **Integración continua**
 - **definition of done**
 
-### Artefactos utilizadas en el desarrollo<a name="Artefactos"></a>
+### Artefactos utilizadas en el desarrollo <a name="Artefactos"></a>
 
 **Product Backlog:**
 
@@ -321,7 +321,7 @@ Durante el sprint 0, se asignaron módulos a cada equipo de desarrolladores y a 
 Según las tareas prioritarias del backlog, se realizó un product roadmap<a name="ProductRoadMap"></a> en el cuál seleccionaron historias de usuario.
 
 
-### Tecnologías utilizadas<a name="Tecnology"></a>
+### Tecnologías utilizadas <a name="Tecnology"></a>
 
 #### Tecnologías de desarrollo
 
@@ -344,7 +344,7 @@ Según las tareas prioritarias del backlog, se realizó un product roadmap<a nam
 - **Visual Studio:** Entorno de desarrollo integrado (IDE) (v16.9).
 
 
-### Repositorio de código & estrategia git<a name="Git"></a>
+### Repositorio de código & estrategia git <a name="Git"></a>
 
 #### Branches
 
@@ -388,7 +388,7 @@ De Develop a Main. PR, review por los scrum ambassadors.
 
 ![Estrategia Git](imgs/Estrategia_git.jpeg)
 
-### Definición de listo<a name="DOD"></a>
+### Definición de listo <a name="DOD"></a>
 
 La definición de listo (DOD) abarca los siguientes aspectos:
 
@@ -401,7 +401,22 @@ La definición de listo (DOD) abarca los siguientes aspectos:
         - KISS
         - DRY
 
-    - El código debe aprobar el linter de [Google.](https://google.github.io/styleguide/csharp-style.html)
+    - El código debe seguir las siguientes reglas de estilo basadas en el linter de [Google.](https://google.github.io/styleguide/csharp-style.html) , **siempre que estas no interfieran con la compilación ni ejecución del programa**. Las reglas son:
+    - - Las líneas no deben superar más de 80 carácteres.
+    - - Cada archivo debe terminar con una línea en blanco.
+    - - Debe de haber un espacio en blanco entre carácteres ',',':','{','}','(' y el resto de la línea donde se encuentren.
+    - - Usar espacios en blanco en lugar de tabuladores.
+    - - Al añadir comentarios al código, dejar un espacio en blanco entre inicio del mismo y el comentario en  sí. (Ejemplo: // Este es un comentario)
+    - - Resumen de archivo en forma de comentario al comienzo de cada archivo
+    - - Modularizar estilos: No implementar estilos en archivos razor. Separarlo en .css aparte.
+    - - Cada método debe ser resumido usando la siguiente plantilla:
+    /*
+         Resumen:
+         Recibe:
+         Retorna:
+         Qué puede hacer que falle:
+    */
+
 
 - **Repositorio:**
     - Verificar la funcionalidad antes de fusionar una funcionalidad con el master.
@@ -418,7 +433,7 @@ La definición de listo (DOD) abarca los siguientes aspectos:
 - [Daily Meeting Report.](https://docs.google.com/spreadsheets/d/1vboRJwl7TfQBPofRB58tHBFxUC7Q7FTaEbG2q-Etz1M/edit#gid=1481241924)
 - [Retrospective Report.](https://docs.google.com/spreadsheets/d/1vboRJwl7TfQBPofRB58tHBFxUC7Q7FTaEbG2q-Etz1M/edit#gid=203688471)
 - [Sprint Review Report.](https://docs.google.com/spreadsheets/d/1vboRJwl7TfQBPofRB58tHBFxUC7Q7FTaEbG2q-Etz1M/edit#gid=849688878)
-## Referencias bibliográficas<a name="Ref"></a> 
+## Referencias bibliográficas <a name="Ref"></a> 
 
 Atlassian. (n.d.-a). *Agile roadmaps: build, share, use, evolve*. <https://www.atlassian.com/agile/product-management/roadmaps>
 
