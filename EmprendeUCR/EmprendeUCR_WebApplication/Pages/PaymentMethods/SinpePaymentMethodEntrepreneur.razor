@@ -1,0 +1,104 @@
+﻿<!--Pareja: Andres Zamora y Alejandro Ramírez
+    Delimitación:
+    El dia de hoy (1 /6/2021) esta pareja decidió desarrollar la historia de
+    "Add SINPE payment method" , esta histria primero cubrirá la parte de
+    transferencias por medio de numero de teléfono (todavía no el de cuenta
+    bancaria)
+    Tareas a realizar:
+    -Crear la tabla de SINPE en la base de datos.
+    -Guardar el numero SINPE ingresado por el emprendedor.
+    -Crear un checkmark que le permita al emprendedor habilitar o deshabilitar.
+    formas de pago(en caso de ser deshabilitado se borrarán los SINPES asociados).
+    -Crear una interfaz para que el cliente pueda utilizar el metodo de pago si
+    fue habilitado por el emprendedor.
+
+    -Se trabajó en una historia de usuario derivada de la que está en Jira. 
+    -Es necesario hacer una revisión del backlog con la PO para incluir esta funcionalidad
+    y ver si es necesario incluirlas en otras historias.
+-->
+@page "/sinpeMethodEntrepreneur" 
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Inputs
+@using EmprendeUCR_WebApplication.Data.Services.PaymentMethods
+@using EmprendeUCR_WebApplication.Data.Services
+@using EmprendeUCR_WebApplication.Data.Entities
+@inject EntrepreneurService EntrepreneurService 
+@inject SinpePaymentMethodService SinpePaymentMethodService
+<h2>Métodos de pago</h2>
+<SfTab>
+    <TabItems>
+        <TabItem>
+            <ChildContent>
+                <TabHeader Text="SINPE"></TabHeader>
+            </ChildContent>
+            <ContentTemplate>
+                <div style="line-height: 2.5;font-size: 14px;">
+                    <p>
+                        <SfCheckBox @bind-Checked="isSINPEChecked" Label="Activado"></SfCheckBox>
+                        <br>
+                        Número a donde desea recibir la transferencia SINPE Movil:
+                        <br>
+                        <SfNumericTextBox @bind-Value="@numeroSINPE" Placeholder="Número de teléfono" Enabled="@isSINPEChecked" ShowClearButton="true" Format="####-####" TValue="int?" ShowSpinButton="false" Width="175px"></SfNumericTextBox>
+                        <br>
+                        <br>
+                        <div class="buttons">
+                            <SfButton IsPrimary="true" @onclick="addSINPENumber" Content="Guardar"></SfButton>
+                        </div>
+                    </p>
+                </div>
+            </ContentTemplate>
+        </TabItem>
+        <TabItem>
+            <ChildContent>
+                <TabHeader Text="Tarjeta de débito/crédito"></TabHeader>
+            </ChildContent>
+        </TabItem>
+    </TabItems>
+</SfTab>
+
+<style>
+    .buttons {
+        width: 100px;
+        display: grid;
+        grid-auto-flow: column;
+        grid-column-gap: 20px
+    }
+</style>
+
+@code {
+    private int? numeroSINPE = 0;
+    private bool isSINPEChecked = false;
+    private string email = null;
+    // TODO: Habilitar/Deshabilitar el boton de guardar según corresponda
+
+    protected override async Task OnInitializedAsync()
+    {
+        numeroSINPE = 83627641;
+        IList<Entrepreneur> entrepreneurs = await EntrepreneurService.GetAllEntrepreneursAsync();
+        email = entrepreneurs.First().User_Email;
+        // TODO: cuando se inicia la pagina se debe revisar que el emprendedor ya está en la tabla de
+        //       SINPE payment method, si está, isSINPEChecked se debe de poner en true y además
+        //       se debe de asignar el numero de sinpe del emprendedor a numeroSINPE
+    }
+
+    private void addSINPENumber()
+    {
+        int numero = (int)numeroSINPE;
+        if (!isSINPEChecked)
+        {
+            Console.WriteLine("Se ha eliminado el metodo de pago SINPE para este emprendedor");
+            Console.WriteLine(numero);
+            Console.WriteLine(email);
+            SinpePaymentMethodService.DeleteSinpePaymentMethod(email);
+        }
+
+        if (numeroSINPE != null)
+        {
+            Console.WriteLine("Se ha agregado el metodo de pago SINPE para este emprendedor");
+            Console.WriteLine(numero);
+            Console.WriteLine(email);
+            SinpePaymentMethodService.AddSinpePaymentMethod(numero, email);
+        }
+    }
+}

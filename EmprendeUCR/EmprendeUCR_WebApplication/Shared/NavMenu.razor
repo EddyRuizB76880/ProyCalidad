@@ -1,6 +1,12 @@
 ﻿@using EmprendeUCR_WebApplication.Data.Services
 @using EmprendeUCR_WebApplication.Data.Entities
-@inject ProductService ProductService
+@using EmprendeUCR_WebApplication.Pages
+@inject ProductServicePandemic ProductServicePandemic
+@inject Shopping_Cart_HasService Shopping_Cart_HasService
+@inject Shopping_Cart_Has_Service_Pandemic Shopping_Cart_Has_Service_Pandemic
+@inject NavigationManager NavigationManager
+@inject UserServicePandemic UserServicePandemic
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 <div class="w-100 navBar">
 
@@ -8,54 +14,74 @@
         <div class="logo">
 
             @*
-                Line of code to display the site's name. Clicking on it will take
-                the user back to the main menu.
+                NavMenu.razor: This file is used to display and adapt the nav menu,
+                which is the header of the site, to every kind of user, including
+                those who have not logged in yet.
             *@
             <a href="/" class="color-white h2">EMPRENDEUCR</a>
         </div>
-        <div class="acount-links">
+        <div class="acount-links d-flex">
             @* If the user had previously clicked on the login button, then... *@
-            @if (logeado)
-            {
-                @if (@amountProductsNotifications == 0)
-                {
-                    @*
-                        If the user's shopping cart is empty, then this block of
-                        code will disable the shopping cart icon and let the user know.
-                    *@
-                    <a Do Nothing class="color-silver mx-5 a-white isDisabled btn" data-toggle="tooltip" data-placement="bottom" title="El carrito se encuentra vacío.">
-                        <span class="material-icons-outlined icon-l">
-                            shopping_cart
-                        </span>@amountProductsNotifications
 
-                    </a>
+            @if (!string.IsNullOrEmpty(myEmail))
+            {
+                @if (!_isLoading)
+                {
+                    <div class="zIndex-primary">
+                        @* Update notifications when the user logs in. *@
+                        <button class="color-silver mx-5 a-white btn" @onclick="showNotifications">
+                            <span class="material-icons icon-l">
+                                notifications
+                            </span>
+                        </button>
+                        @* Update notifications when the user logs in. *@
+                        @if (showNotificationsComponent)
+                        {
+                            <NotificationsComponent myType="@myType"
+                                                    ShowNotifications="showNotifications">
+
+                            </NotificationsComponent>
+                        }
+
+                    </div>
+                    <div>
+                        @* Checks the user type and displays icons according to it. *@
+                        @if (myType == 1)
+                        {
+                            @if (@amountProductsNotifications == 0)
+                            {
+                                <a Do Nothing class="color-silver mx-5 a-white isDisabled btn" data-toggle="tooltip" data-placement="bottom" title="El carrito se encuentra vacío.">
+                                    <span class="material-icons-outlined icon-l">
+                                        shopping_cart
+                                    </span>@amountProductsNotifications
+                                </a>
+                            }
+                            else
+                            { @* If instead, the shopping cart has items inside, then... *@
+                            <a href="ShoppingCart" class="color-silver mx-5 a-white btn">
+                                <span class="material-icons-outlined icon-l">
+                                    shopping_cart
+                                </span>@amountProductsNotifications
+                            </a>
+
+                        }
+
+                        }
+                    </div>
+
+                    @* Display account circle when the user logs in. *@
+                    <img title="Mi perfil" width="40" height="40" src=@photo class="rounded-circle">
+                    <button class="btn btn-secondary" @onclick="goProfile"> Ver perfil</button>
                 }
                 else
-                { @* If instead, the shopping cart has items inside, then... *@
-                <a href="ShoppingCart" class="color-silver mx-5 a-white btn">
-                    <span class="material-icons-outlined icon-l">
-                        shopping_cart
-                    </span>@amountProductsNotifications
-                </a>
+                {
+                    <p>Cargando Usuario...</p>
+                }
             }
-                @* Update notifications when the user logs in. *@
-                <a href="/" class="color-silver mx-5 a-white btn">
-                    <span class="material-icons icon-l">
-                        notifications
-                    </span>
-                </a>
-
-                @* Display account circle when the user logs in. *@
-                <a href="" @onclick="logear" class="color-silver mx-5 a-white btn">
-                    <span class="material-icons icon-l">
-                        account_circle
-                    </span>
-                </a>
-            }
-            @if (!logeado)
+            else
             {
                 @* If the user has not logged in, then display the log in button *@
-                <a href="/registrationdata" class="color-silver mx-5 a-white">
+                <a href="/registro" class="color-silver mx-5 a-white">
                     Registrarse
                 </a>
                 <button @onclick="logear" class="bg-white border-none p-2">Iniciar Sesion</button>
@@ -66,39 +92,110 @@
     @* Block of code to adjust the navigation menu's position onscreen. *@
     <nav id="SecondaryNav" class="SecondaryNav bg-white  w-100 d-flex flex-row justify-content-between align-items-center px-5">
         <ul class="d-flex flex-row align-bottom">
-            <li class=" "> <a href="/" class="color-grey mx-5 p-2"> HOME </a></li>
+            <li class=" "> <a href=@homeRef class="color-grey mx-5 p-2"> HOME </a></li>
             <li class=" "> <a href="/listProducts" class="color-grey mx-5 p-2"> PRODUCTOS </a></li>
-            <li class=" "> <a href="/Categories" class="color-grey mx-5"> CATEGORIAS </a></li>
-            <li class=" "> <a href="/register" class="color-grey mx-5"> REGISTRO </a></li>
+            <li class=" "> <a href="/ListServices" class="color-grey mx-5 p-2"> SERVICIOS </a></li>
             <li class=" "> <a href="/about" class="color-grey mx-5"> SOBRE NOSOTROS </a></li>
+            <li class=" "> <a href="/Offers" class="color-grey mx-5"> OFERTAS </a></li>
         </ul>
 
     </nav>
 </div>
 
-        @code {
-            // Boolean value to determine if the user is logged in.
-            // To be used in HTML section of this file.
-            private bool logeado = false;
+@code {
+    private string myEmail;
+    private string homeRef;
+    private string profileRef;
+    private int myType;
+    private bool showNotificationsComponent = false;
+    private bool _isLoading = true;
+    private string photo = "/images/images.png";
+    private string inputValue;
+    private IList<Product> _product;
+    private bool control = false;
 
-            // Int value used to store the total amount of products stored in
-            // the shopping cart. To be used in the HTML section of this file.
-            private int amountProductsNotifications;
+    // Boolean value to determine if the user is logged in.
+    // To be used in HTML section of this file.
+    private bool logeado = false;
 
-            // Virtual method from Blazor overridden to adapt it to our program.
-            // It invokes a method to get the total number of elements in a table
-            // when the blazor program starts. In this case, it retrieves the
-            // number of articles from the SC table.
-            protected override async Task OnInitializedAsync()
-            {
-                amountProductsNotifications = ProductService.GetProductsQuantity();
-            }
+    // Int value used to store the total amount of products stored in
+    // the shopping cart. To be used in the HTML section of this file.
+    private int amountProductsNotifications;
 
-            // This method changes the logeado value. It lets the system know
-            // when the user has logged into their account. To be used with the
-            // HTML section of this file.
-            private void logear()
-            {
-                logeado = !logeado;
-            }
+    /*
+        Summary: Method to show notifications
+        Receives: nothing
+        Returns: nothing
+        What might make this to fail: nothing
+    */
+
+    private void showNotifications()
+    {
+        showNotificationsComponent = !showNotificationsComponent;
+    }
+
+    /*
+        Summary:  Virtual method from Blazor overridden to adapt it to our program.
+                  It invokes a method to get the total number of elements in a table
+        Receives: nothing
+        Returns: nothing
+        What might make this to fail: nothing
+    */
+    protected override async Task OnInitializedAsync()
+    {
+        myEmail = await sessionStorage.GetItemAsync<string>("Email");
+        myType = await sessionStorage.GetItemAsync<int>("Type");
+        amountProductsNotifications = Shopping_Cart_Has_Service_Pandemic.GetProductsQuantity(myEmail);
+
+        if (myEmail != null)
+        {
+            try { photo = "data:image;base64," + System.Convert.ToBase64String(UserServicePandemic.GetUserByEmail(myEmail).Photo); } catch { }
         }
+        UpdateParams(myType);
+        _isLoading = false;
+    }
+
+    /*
+        Summary:  This method updates the nav buttons with the respective links
+                  of each type of user.
+        Receives: nothing
+        Returns: nothing
+        What might make this to fail: nothing
+    */
+    public void UpdateParams(int myType)
+    {
+
+        switch (myType)
+        {
+            case 1:
+                homeRef = "/";
+                break;
+            case 2:
+                homeRef = "/HomeEntrepreneaur";
+                break;
+            case 3:
+                homeRef = "/admin";
+                break;
+            default:
+                homeRef = "";
+                break;
+        }
+        StateHasChanged();
+    }
+    /*
+        Summary:  The following 2 methods just redirect the user to different
+                  pages.
+        Receives: nothing
+        Returns: nothing
+        What might make this to fail: nothing
+    */
+    private void logear()
+    {
+        NavigationManager.NavigateTo("/Login");
+    }
+
+    private void goProfile()
+    {
+        NavigationManager.NavigateTo("/Profile");
+    }
+}

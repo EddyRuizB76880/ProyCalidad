@@ -28,6 +28,10 @@ a, .btn-link {
     border-color : #1861ac;
 }
 
+.page {
+    width: 100%;
+}
+
 /* Style rule for .content. It moves the object a little bit away from its top. */
 .content {
     padding-top : 1.1rem;

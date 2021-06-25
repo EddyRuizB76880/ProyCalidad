@@ -1,0 +1,236 @@
+﻿@page "/OrderAcceptance"
+
+@using EmprendeUCR_WebApplication.Application.OrderContext
+@using EmprendeUCR_WebApplication.Domain.OrderContext.Entities
+@using EmprendeUCR_WebApplication.Domain.Core.CoreEntities
+@using EmprendeUCR_WebApplication.Data.Entities.ContextShop
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage;
+@inject IOrderService OrderService;
+
+@* Display "Cargando" message while shopping cart is still loading. *@
+@if (_isLoading)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <div class="mt-5 order-acceptance w-100 h-100 d-flex justify-content-around m-auto">
+
+        <div class="w-70 lista-items h-100 bg-white d-flex flex-column align-items-center" id="Orders">
+            <div class="w-90 row d-flex justify-content-around my-5 fs-2">
+                <p class="text-start">Ordenes</p>
+            </div>
+
+            <div class="w-90 row d-flex justify-content-around align-items-center">
+                <div class="col-3 text-center fs-5">Fecha y hora de creación</div>
+                <div class="col-3 text-center fs-5">Cliente</div>
+                <div class="col-3 text-center fs-5">Fecha de entrega</div>
+                <div class="col-3 text-center fs-5">Estado</div>
+            </div>
+
+            <div class="flex-column d-flex align-items-center w-100 my-4 d-flex justify-content-around">
+                @{
+                    int i = 0;
+                }
+                @foreach (var order in _orders)
+                {
+                    int orderNumber = i;
+                    <div class="w-90 row border-grey mb-5 d-flex align-content-center py-5">
+                        <div class="col-3 text-center d-inline-flex align-items-center"
+                             @onclick="() => getProducts(order)"
+                             style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#pending_orders_summary">
+                            @*
+                                This line displays the order date and hour of creation.
+                            *@
+                            <p class="fs-6 m-auto">@order.DateAndHourCreation.ToString()</p>
+                        </div>
+
+                        <div class="col-3 text-center d-inline-flex align-items-center"
+                             @onclick="() => getProducts(order)"
+                             style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#pending_orders_summary">
+                            @*
+                                This line displays the order client email.
+                            *@
+                            <p class="fs-6 m-auto text-break">@order.ClientEmail</p>
+                        </div>
+
+                        <div class="col-3 d-inline-flex align-items-center"
+                             @onclick="() => getProducts(order)"
+                             style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#pending_orders_summary">
+                            @*
+                                This line displays the order delivery date.
+                            *@
+                            <p class="fs-6 m-auto">@order.DeliveryDate.ToString("d") </p>
+                        </div>
+
+                        <div class="col-3 d-flex flex-row justify-content-center">
+                            <button @onclick="() => DeleteOrder(_orders[orderNumber].DateAndHourCreation, _orders[orderNumber].ClientEmail,true)" class="btn btn-outline-success me-3">Aceptar</button>
+                            <button @onclick="() => DeleteOrder(_orders[orderNumber].DateAndHourCreation, _orders[orderNumber].ClientEmail,false)" class="btn btn-outline-danger">Rechazar</button>
+                        </div>
+                    </div>
+                    i++;
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+
+    @* Show the summary of the orders *@
+    <div class="modal fade" id="pending_orders_summary" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content p-3">
+                <div class="modal-header">
+                    <p class="fs-2 modal-title" id="order_summary_label">Resumen del pedido</p>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                @if (_products != null)
+                {
+                    <div class="modal-body flex-column">
+
+                        <div class="row mb-2">
+                            <div class="col-5 fs-6 content-center">Productos solicitados</div>
+                            <div class="col-3 fs-6 content-center align-self-center text-center">Cantidad Solicitada</div>
+                            <div class="col-4 fs-6 content-center">Precio</div>
+                        </div>
+
+                        @foreach (var product in _products)
+                        {
+                            <div class=" height-100 row mb-1 py-2 d-flex align-content-center">
+                                <div class="col-5 text-center">
+                                    @*
+                                        This line displays the product name.
+                                    *@
+                                    <p class="fs-6 m-auto">@product.Item2.ProductName</p>
+                                </div>
+
+                                <div class="col-3 text-center">
+                                    @*
+                                        This line displays the product quantity.
+                                    *@
+                                    <p class="fs-6 m-auto">@product.Item1</p>
+                                </div>
+
+                                <div class="col-4 text-center">
+                                    @*
+                                        This line displays the product price, multiplied by the quantity.
+                                    *@
+                                    <p class="fs-6 m-auto">
+                                        <span>₡ </span>
+                                        @(product.Item2.Price*product.Item1)
+                                    </p>
+                                </div>
+                            </div>
+                        }
+
+                        <p class="w-90 fs-6 text-end">
+                            Monto total:
+                            <span> ₡ </span>
+                            @totalAmount
+                        </p>
+                    </div>
+
+                    <p class="fs-6 text-center">Requerimientos:</p>
+                    <div class="w-90 border-grey mb-5 m-auto align-items-center content-center overflow-auto height-150">
+                        <p class="fs-6 text-start text-break">@currentOrder.Details</p>
+                    </div>
+
+                    <div class="w-100 mb-5 d-flex flex-row justify-content-around">
+                        <div class="">
+                            <p class="fs-6">Fecha solicitada:</p>
+                            @currentOrder.DeliveryDate.ToString("MM/dd/yyyy")
+                        </div>
+
+                        <div class="">
+                            <p class="fs-6">Cliente:</p>
+                            @currentOrder.ClientEmail
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+}
+
+@code {
+
+    // Loading page variable.
+    private bool _isLoading = true;
+
+    // List or oders asociated to the entrepreneur
+    private List<Order> _orders;
+
+    // List of tuples containig the products and each amount of said products.
+    private List<Tuple<int, Product>> _products;
+
+    // Object order to hold the current Order
+    private Order currentOrder;
+
+    // Email associated to entrepreneur
+    string entrepreneurEmail = "";
+    int totalAmount = 0;
+
+    /*
+      Summary: Overridden method from Blazor that is invoked when the page is loaded
+      Fetchs the userEmail and the orders related to such email. Sets loading to false.
+      Parameters: Method does not recieve parameters
+      Return: Nothing
+      Exceptions: There aren't known exceptions
+    */
+    protected override async Task OnInitializedAsync()
+    {
+        entrepreneurEmail = await sessionStorage.GetItemAsync<string>("Email");
+        _orders = await OrderService.GetEntrepreneurOrders(entrepreneurEmail);
+        _isLoading = false;
+    }
+
+    /*
+      Summary: Method dedicated to delete a given order after it has been answered (Acepted or reyected).
+      Parameters: Recieves the date and hour of creation of said order, the associated email as string
+      and a boolean with the answer.
+      Return: Nothing
+      Exceptions: There aren't known exceptions
+    */
+    protected async Task DeleteOrder(DateTime dateAndHourCreation, string email,bool answer)
+    {
+
+        _orders = await OrderService.sendAnswer(dateAndHourCreation, email,  answer, _orders);
+        await Task.Delay(0);
+    }
+
+    /*
+      Summary: Method dedicated to get the products of a given order. It makes use of a service called GetProducts
+      Parameters: Method recieves an Order object as parameter.
+      Return: Nothing
+      Exceptions: There aren't known exceptions
+    */
+    private async Task getProducts(Order order)
+    {
+        totalAmount = 0;
+        currentOrder = order;
+        _products = await OrderService.GetProducts(order);
+        setTotalAmount(_products);
+        StateHasChanged();
+    }
+
+    /*
+      Summary: This method takes a list of tuples (Products and int) and calculates a total price with the product price and
+      the amount of said product.
+      Parameters: Method recieves a list of tuples with a Product Object and an int.
+      Return: Nothing
+      Exceptions: There aren't known exceptions
+    */
+    private void setTotalAmount(List<Tuple<int, Product>> products)
+    {
+        foreach (Tuple<int, Product> tuple in products)
+        {
+            totalAmount += tuple.Item2.Price * tuple.Item1;
+        }
+    }
+}

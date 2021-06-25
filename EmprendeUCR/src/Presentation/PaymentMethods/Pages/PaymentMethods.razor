@@ -1,0 +1,55 @@
+﻿@page "/payment_methods"
+@using EmprendeUCR.Domain.PaymentMethods.Entities
+@using EmprendeUCR.Application.PaymentMethods
+@inject IPaymentMethodService PaymentMethodService
+
+<div class="container">
+    <h1>Métodos de pago</h1>
+    <Loading IsLoading="_isLoading">
+        @if (!_paymentMethods!.Any())
+        {
+            <h4 class="text-danger">
+                There are no `payment methods currently available.
+            </h4>
+        }
+        else
+        {
+            <table class="table text-center">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var paymentMethod in _paymentMethods)
+                    {
+                        <tr>
+                            <td>@paymentMethod.Name</td>
+                            <td>@paymentMethod.Status</td>
+                            <td>
+                                <button>
+                                    Habilitar
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </Loading>
+</div>
+@code {
+    private bool _isLoading = true;
+    private IEnumerable<PaymentMethod>? _paymentMethods;
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPaymentMethods();
+    }
+    private async Task LoadPaymentMethods()
+    {
+        _isLoading = true;
+        _paymentMethods = await PaymentMethodService.GetPaymentMethodsAsync();
+        _isLoading = false;
+    }
+}
