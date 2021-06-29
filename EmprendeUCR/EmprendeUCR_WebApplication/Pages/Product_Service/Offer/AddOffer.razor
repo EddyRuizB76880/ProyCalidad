@@ -151,7 +151,8 @@
 
             @if (showConfirmation)
             {
-        <EditForm Model="@offer">
+        <EditForm Model="@offer" OnValidSubmit="@onCreateOffer">
+            <DataAnnotationsValidator />
             <div id="FormOfferDetails" class="form-group">
                 <!--Form to let the user choose the initial date for the offer (by default will be todays date)-->
                 <div class="form-group">
@@ -166,6 +167,7 @@
                 </div>
 
                 <!--Form to let the user choose the description of the offer-->
+                <ValidationMessage For=@(() => offer.Offer_Description) />
                 <div class="mb-3">
                     <label for="Offer_Description" class="control-label">Descripción</label>
                     <textarea rows="3" form="Offer_Description" class=" form-control w-30" @bind="@offer.Offer_Description" />
@@ -177,18 +179,18 @@
                 </div>
 
                 <!--Form to let the user choose the new price of the offer-->
-                <DataAnnotationsValidator />
+
+                <ValidationMessage For=@(() => offer.Discount) />
                 <div class="col mb-3">
                     <label for="Price" class="control-label">Nuevo precio de oferta (CRC)</label>
-                    <input form="Price" type="number" class="form-control w-10" @bind="@offer.Discount" required />
+                    <input form="Price" type="number" class="form-control w-10" @bind-value="@offer.Discount" required />
                 </div>
 
                 <!--Check if the data provided by the user is ok, if yes then displays the button to save the offer-->
-                
-                    @*<p style="color:red;">@errorMessage</p>*@
-                    <input type="submit" class="btn btn-primary" @onclick="@onCreateOffer" value="Guardar oferta" />
+                @*<p style="color:red;">@errorMessage</p>*@
+                <input type="submit" class="btn btn-primary" value="Guardar oferta" />
 
-                
+
             </div>
         </EditForm>
             }
