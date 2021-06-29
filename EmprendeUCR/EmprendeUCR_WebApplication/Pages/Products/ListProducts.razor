@@ -26,7 +26,7 @@ else
         <header>
             <div class="icon-m display-2"> Mis Productos</div>
             <div class="flex-buscar">
-                <input @bind="@inputValue" @onkeyup="@EnterKey" class="form-control mr-sm-2 w-25" type="search" placeholder="Buscar productos" aria-label="Search" />
+                <input @bind="@inputValue" @onkeyup="@EnterKey" class="form-control mr-sm-2 w-25 mb-2" type="search" placeholder="Buscar productos" aria-label="Search" />
                 <button @onclick="buscar" class="btn btn-primary mb-2" type="submit">Buscar</button>
             </div>
         </header>
@@ -172,8 +172,6 @@ else
 
     //SelectionHandler
 
-
-
     public async Task SelectionHandler(Syncfusion.Blazor.Grids.RowSelectEventArgs<Category> args)
     {
         var SelectedCategories = await this.TreeGrid.GetSelectedRecords();
@@ -216,11 +214,11 @@ else
 
             if (emptyCharacters != inputValue.Length)
             {
-               // NavigationManager.NavigateTo($"/ProductsSearch/{inputValue}", true);
+                // NavigationManager.NavigateTo($"/ProductsSearch/{inputValue}", true);
             }
         }
     }
-   
+
     private string inputValue;
     private void buscar()
     {
@@ -238,7 +236,7 @@ else
 
             if (emptyCharacters != inputValue.Length)
             {
-               // NavigationManager.NavigateTo($"/ProductsSearch/{inputValue}", true);
+                // NavigationManager.NavigateTo($"/ProductsSearch/{inputValue}", true);
             }
         }
 
