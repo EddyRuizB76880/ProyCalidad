@@ -15,6 +15,8 @@ namespace EmprendeUCR_WebApplication.Data.Entities
         public DateTime Initial_Date { get; set; }
         public DateTime Expire_Date { get; set; }
         public string Offer_Description { get; set; }
+        [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "El precio nuevo debe ser mayor a 0.")]
         public int Discount { get; set; }
     }
 }

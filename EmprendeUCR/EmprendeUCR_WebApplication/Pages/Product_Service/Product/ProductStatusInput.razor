@@ -39,60 +39,63 @@
 @code
 {
 
-    int currentIndex;
-    Status newStatus = new Status() { ID = "test", Text = "" };
+        int currentIndex;
+        Status newStatus = new Status() { ID = "test", Text = "" };
 
-    void StartDrag(Status item)
-    {
-        currentIndex = GetIndex(item);
-        Console.WriteLine($"DragStart for {item.ID} index {currentIndex}");
-    }
-
-    void ClickItem(Status item)
-    {
-        currentIndex = GetIndex(item);
-    }
-
-    int GetIndex(Status item)
-    {
-        return statuses.FindIndex(a => a.ID == item.ID);
-    }
-
-    void Drop(Status item)
-    {
-        if (item != null)
+        void StartDrag(Status item)
         {
-            Console.WriteLine($"Drop item {item.Text} ({item.ID})");
+            currentIndex = GetIndex(item);
+            Console.WriteLine($"DragStart for {item.ID} index {currentIndex}");
+        }
+
+        void ClickItem(Status item)
+        {
+            currentIndex = GetIndex(item);
+        }
+
+        int GetIndex(Status item)
+        {
+            return statuses.FindIndex(a => a.ID == item.ID);
+        }
+
+        void Drop(Status item)
+        {
+            if (item != null)
+            {
+                Console.WriteLine($"Drop item {item.Text} ({item.ID})");
+                var index = GetIndex(item);
+                Console.WriteLine($"Drop index is {index}, move from {currentIndex}");
+                // get current item
+                var current = statuses[currentIndex];
+                // remove game from current index
+                statuses.RemoveAt(currentIndex);
+                statuses.Insert(index, current);
+
+                // update current selection
+                currentIndex = index;
+
+                StateHasChanged();
+            }
+            else
+            {
+                Console.WriteLine("Drop - null");
+            }
+        }
+
+        void onDeleteStatus(Status item)
+        {
             var index = GetIndex(item);
-            Console.WriteLine($"Drop index is {index}, move from {currentIndex}");
-            // get current item
-            var current = statuses[currentIndex];
-            // remove game from current index
-            statuses.RemoveAt(currentIndex);
-            statuses.Insert(index, current);
-
-            // update current selection
-            currentIndex = index;
-
-            StateHasChanged();
+            statuses.RemoveAt(index);
         }
-        else
+
+        void onAddStatus()
         {
-            Console.WriteLine("Drop - null");
+            if (newStatus.Text != "")
+            {
+                statuses.Add(newStatus);
+                newStatus = new Status() { ID = statuses.Count + "test", Text = "" };
+            }
         }
-    }
-
-    void onDeleteStatus(Status item)
-    {
-        var index = GetIndex(item);
-        statuses.RemoveAt(index);
-    }
-
-    void onAddStatus()
-    {
-        statuses.Add(newStatus);
-        newStatus = new Status() { ID = statuses.Count + "test", Text = "" };
-    }
 
     public class Status
     {
