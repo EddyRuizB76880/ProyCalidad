@@ -155,23 +155,23 @@
                     <DataAnnotationsValidator />
                     <div id="FormOfferDetails" class="form-group">
                         <!--Form to let the user choose the initial date for the offer (by default will be todays date)-->
-                        <ValidationMessage For=@(() => offer.Initial_Date) />
                         <div class="form-group">
                             <label for="Initial_Date" class="control-label">Fecha de inicio de oferta</label>
+                            <ValidationMessage For=@(() => offer.Initial_Date) />
                             <input type="date" min="@DateTime.Now" class="form-control w-20" @bind="@initialDateInput" required />
                         </div>
 
-                        <ValidationMessage For=@(() => offer.Expire_Date) />
                         <!--Form to let the user choose the expire date for the offer (by default will be todays date)-->
                         <div class="col px-mb-3">
                             <label for="Expire_Date" class="control-label">Fecha de fin de oferta</label>
+                            <ValidationMessage For=@(() => offer.Expire_Date) />
                             <input type="date" min="@DateTime.Now" class="form-control w-20" @bind="@expireDateInput" required />
                         </div>
 
                         <!--Form to let the user choose the description of the offer-->
-                        <ValidationMessage For=@(() => offer.Offer_Description) />
                         <div class="mb-3">
                             <label for="Offer_Description" class="control-label">Descripción</label>
+                            <ValidationMessage For=@(() => offer.Offer_Description) />
                             <textarea rows="3" form="Offer_Description" class=" form-control w-30" @bind="@offer.Offer_Description" />
                         </div>
 
@@ -181,15 +181,13 @@
                         </div>
 
                         <!--Form to let the user choose the new price of the offer-->
-
-                        <ValidationMessage For=@(() => offer.Discount) />
                         <div class="col mb-3">
                             <label for="Price" class="control-label">Nuevo precio de oferta (CRC)</label>
+                            <ValidationMessage For=@(() => offer.Discount) />
                             <input form="Price" type="number" class="form-control w-10" @bind-value="@offer.Discount" required />
                         </div>
 
                         <!--Check if the data provided by the user is ok, if yes then displays the button to save the offer-->
-                        @*<p style="color:red;">@errorMessage</p>*@
                         <input type="submit" class="btn btn-primary" value="Guardar oferta" />
 
 
@@ -207,8 +205,6 @@
 {
     private EditContext editContext;
     private ValidationMessageStore messageStore;
-
-
 
     // The offer that will be store in the DB
     Offer offer = new Offer();
@@ -232,14 +228,14 @@
     // The sum of the total price of the products and services added to the offer
     int totalPriceFromListedProductsAndServicesInOffer = 0;
     // The initial date of the offer (by default: today)
+    System.DateTime FirstinitialDateInput = DateTime.Now;
     System.DateTime initialDateInput = DateTime.Now;
     // The expire date of the offer (by default: today)
     System.DateTime expireDateInput = DateTime.Now;
-    // The error message that will be display to the user if there is an error with the input data
-    String errorMessage = "";
     // Stores the email of the user logged
     String userLogged = "";
-    // When initialized, load all the entrepreneurs
+
+
     protected override async Task OnInitializedAsync()
     {
         editContext = new(offer);
@@ -257,14 +253,27 @@
         messageStore.Clear();
 
         // Custom validation logic
-        if (initialDateInput < DateTime.Now)
+        if (initialDateInput < FirstinitialDateInput)
         {
-            messageStore.Add(() => offer.Initial_Date, "La fecha de creacion debe ser igual o mayor que la fecha de hoy");
+            messageStore.Add(() => offer.Initial_Date, "La fecha de creacion debe ser igual o mayor que la fecha de hoy.");
         }
         // If the initial date input is greater than the expire date
         if (initialDateInput > expireDateInput)
         {
-            messageStore.Add(() => offer.Initial_Date, "La fecha de final de oferta debe ser mayor a la fecha de inicio.");
+            messageStore.Add(() => offer.Expire_Date, "La fecha de final de oferta debe ser mayor a la fecha de inicio.");
+        }
+
+        // Discount validations
+
+        // If the discount is negative or is empty
+        if (offer.Discount <= 0 || String.IsNullOrEmpty(offer.Discount.ToString()))
+        {
+            messageStore.Add(() => offer.Discount, "El precio nuevo de la oferta debe ser mayor que 0.");
+        }
+        // If the discount is greater than the sum of the products and services from the offer
+        if (offer.Discount > totalPriceFromListedProductsAndServicesInOffer)
+        {
+            messageStore.Add(() => offer.Discount, "El precio nuevo de la oferta debe ser menor que la suma total de los productos o servicios.");
         }
     }
 
@@ -348,54 +357,6 @@
         }
     }
 
-    // Check if the offer details (dates and discount) are valid. Returns true if they are valid, if not fills the error message and return false
-    bool checkOfferDetails(System.DateTime initialDateInput, System.DateTime expireDateInput, int discount)
-    {
-        bool isAValidOffer = true;
-
-        // Empty the error message
-        errorMessage = "";
-
-
-        // Dates validations
-
-        // If there are empty expire or initial dates
-        if (String.IsNullOrEmpty(initialDateInput.ToString()) || String.IsNullOrEmpty(expireDateInput.ToString()))
-        {
-            errorMessage += "La fecha de inicio u oferta deben ser validas. \n";
-            isAValidOffer = false;
-        }
-
-        // If the initial date input is greater than the expire date
-        if (initialDateInput > expireDateInput)
-        {
-            errorMessage += "La fecha de final de oferta debe ser mayor a la fecha de inicio. \n";
-            isAValidOffer = false;
-        }
-
-        // If the Initial date input is below todays date
-        if (initialDateInput < DateTime.Now)
-        {
-            errorMessage += "La fecha de creacion de la oferta debe ser menor a la fecha de hoy \n";
-            isAValidOffer = false;
-        }
-
-        // Discount validations
-
-        // If the discount is negative or is empty
-        if (discount <= 0 || String.IsNullOrEmpty(discount.ToString()))
-        {
-            errorMessage += "El precio nuevo de la oferta debe ser mayor que 0. \n";
-            isAValidOffer = false;
-        }
-        // If the discount is greater than the sum of the products and services from the offer
-        if (discount > totalPriceFromListedProductsAndServicesInOffer)
-        {
-            errorMessage += "El precio nuevo de la oferta debe ser menor que la suma total de los productos o servicios. \n";
-            isAValidOffer = false;
-        }
-        return isAValidOffer;
-    }
 
     protected async void onCreateOffer()
     {
