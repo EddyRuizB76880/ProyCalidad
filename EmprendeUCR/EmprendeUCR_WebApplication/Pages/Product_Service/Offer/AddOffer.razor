@@ -348,6 +348,13 @@
             isAValidOffer = false;
         }
 
+        // If the Initial date input is below todays date
+        if (initialDateInput < DateTime.Now)
+        {
+            errorMessage += "La fecha de creacion de la oferta debe ser menor a la fecha de hoy \n";
+            isAValidOffer = false;
+        }
+
         // Discount validations
 
         // If the discount is negative or is empty
