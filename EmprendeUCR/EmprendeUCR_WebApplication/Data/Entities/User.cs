@@ -10,9 +10,13 @@ namespace EmprendeUCR_WebApplication.Data.Entities
 	public class User
 	{
 		[Key]
+		[Required]
 		public string Email { get; set; }
+		[StringLength(15)]
 		public string Name { get; set; }
+		[StringLength(15)]
 		public string F_Last_Name { get; set; }
+		[StringLength(15)]
 		public string S_Last_Name { get; set; }
 		public byte[] Photo { get; set; }
 		public DateTime Birth_Date { get; set; } = DateTime.Now;
