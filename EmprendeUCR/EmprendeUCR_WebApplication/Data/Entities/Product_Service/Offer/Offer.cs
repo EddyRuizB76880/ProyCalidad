@@ -15,6 +15,7 @@ namespace EmprendeUCR_WebApplication.Data.Entities
         public DateTime Initial_Date { get; set; }
         public DateTime Expire_Date { get; set; }
         public string Offer_Description { get; set; }
+        [Required]
         public int Discount { get; set; }
     }
 }

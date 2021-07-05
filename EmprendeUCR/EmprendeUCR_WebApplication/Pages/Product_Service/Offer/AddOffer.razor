@@ -22,8 +22,8 @@
             <thead>
                 <!--Colmun names tag (Nombre, Precio)-->
                 <tr>
-                    <th width="200" valign="middle" align ="center">Nombre</th>
-                    <th width="100" valign="middle" align ="center">Precio</th>
+                    <th width="200" valign="middle" align="center">Nombre</th>
+                    <th width="150" valign="middle" align="center">Precio</th>
                 </tr>
             </thead>
             <!--If there are services related to the current entrepreneur, display them to the user-->
@@ -34,9 +34,9 @@
                     {
                         <tr>
                             <!--Product name value-->
-                            <td width="200" valign="middle" align ="left">@currentProduct.Product_Name</td>
+                            <td width="200" valign="middle" align="left">@currentProduct.Product_Name</td>
                             <!--Product price value-->
-                            <td width="100" valign="middle" align ="left">@currentProduct.Price</td>
+                            <td width="150" valign="middle" align="left">@currentProduct.Price</td>
                             <!--Add to the current offer button-->
                             <td>
                                 <button class="w-150 btn-primary m-2 material-icons align-right" type="button" @onclick="() => addProductToOffer(currentProduct.Code_ID)">add</button>
@@ -67,9 +67,9 @@
                     {
                         <tr>
                             <!--Service name value-->
-                            <td width="200" valign="middle" align ="left">@currentService.Service_Name</td>
+                            <td width="200" valign="middle" align="left">@currentService.Service_Name</td>
                             <!--Service Price per hour value-->
-                            <td width="100" valign="middle" align ="left">@currentService.Price_per_hour</td>
+                            <td width="150" valign="middle" align="left">@currentService.Price_per_hour</td>
                             <!--Add to the current offer button-->
                             <td>
                                 <button class="w-150 btn-primary m-2 material-icons align-right " type="button" @onclick="() => addServiceToOffer(currentService.Code_ID)">add</button>
@@ -80,15 +80,12 @@
             </tbody>
         </table>
 
-    <div class="row">
-        <div class="form-group">
-            <input type="button" class="btn btn-primary text-center m-2" @onclick="@Cancel" value="Volver" />
+        <div class="row">
+            <div class="form-group">
+                <input type="button" class="btn btn-primary text-center m-2" @onclick="@Cancel" value="Volver" />
+            </div>
         </div>
-    </div>
     </section>
-
-
-
 
     <aside class="float_right  w-70 gap-lg-2">
         <!-- Productos en la oferta -->
@@ -113,9 +110,9 @@
                         {
                             <tr>
                                 <!--Product name value-->
-                                <td style="width:20%">@currentProduct.Product_Name</td>
+                                <td style="width:40%">@currentProduct.Product_Name</td>
                                 <!--Product price value-->
-                                <td style="width:20%">@currentProduct.Price</td>
+                                <td style="width:40%">@currentProduct.Price</td>
                                 <!--Remove from the offer button-->
                                 <td>
                                     <button class="btn-secondary mb-2 material-icons-outlined " type="button" @onclick="() => removeProductFromOffer(currentProduct.Code_ID)">delete</button>
@@ -131,12 +128,12 @@
                         {
                             <tr>
                                 <!--Service name value-->
-                                <td style="width:20%">@currentService.Service_Name</td>
+                                <td style="width:40%">@currentService.Service_Name</td>
                                 <!--Service price per hour value-->
-                                <td style="width:20%">@currentService.Price_per_hour</td>
+                                <td style="width:40%">@currentService.Price_per_hour</td>
                                 <!--Remove from the offer button-->
                                 <td>
-                                    <button class="btn-secondary m-2 material-icons-outlined " type="button" @onclick="() => removeServiceFromOffer(currentService.Code_ID)">delete</button>
+                                    <button class="btn-secondary mb-2 material-icons-outlined " type="button" @onclick="() => removeServiceFromOffer(currentService.Code_ID)">delete</button>
                                 </td>
                             </tr>
                         }
@@ -154,48 +151,48 @@
 
             @if (showConfirmation)
             {
-                <div id="FormOfferDetails">
-                    <!--Form to let the user choose the initial date for the offer (by default will be todays date)-->
-                    <div class="form-group">
-                        <label for="Initial_Date" class="control-label">Fecha de inicio de oferta</label>
-                        <input type="date" min="@DateTime.Now" class="form-control w-20" @bind="@initialDateInput" required />
+                <EditForm EditContext="editContext" OnValidSubmit="@onCreateOffer">
+                    <DataAnnotationsValidator />
+                    <div id="FormOfferDetails" class="form-group">
+                        <!--Form to let the user choose the initial date for the offer (by default will be todays date)-->
+                        <div class="form-group">
+                            <label for="Initial_Date" class="control-label">Fecha de inicio de oferta</label>
+                            <ValidationMessage For=@(() => offer.Initial_Date) />
+                            <input type="date" min="@DateTime.Now" class="form-control w-20" @bind="@initialDateInput" required />
+                        </div>
+
+                        <!--Form to let the user choose the expire date for the offer (by default will be todays date)-->
+                        <div class="col px-mb-3">
+                            <label for="Expire_Date" class="control-label">Fecha de fin de oferta</label>
+                            <ValidationMessage For=@(() => offer.Expire_Date) />
+                            <input type="date" min="@DateTime.Now" class="form-control w-20" @bind="@expireDateInput" required />
+                        </div>
+
+                        <!--Form to let the user choose the description of the offer-->
+                        <div class="mb-3">
+                            <label for="Offer_Description" class="control-label">Descripción</label>
+                            <ValidationMessage For=@(() => offer.Offer_Description) />
+                            <textarea rows="3" form="Offer_Description" class=" form-control w-30" @bind="@offer.Offer_Description" />
+                        </div>
+
+                        <!--Display of the total amount of the products and services in the offer-->
+                        <div>
+                            <h5>Suma total del precio original de productos = @totalPriceFromListedProductsAndServicesInOffer</h5>
+                        </div>
+
+                        <!--Form to let the user choose the new price of the offer-->
+                        <div class="col mb-3">
+                            <label for="Price" class="control-label">Nuevo precio de oferta (CRC)</label>
+                            <ValidationMessage For=@(() => offer.Discount) />
+                            <input form="Price" type="number" class="form-control w-10" @bind-value="@offer.Discount" required />
+                        </div>
+
+                        <!--Check if the data provided by the user is ok, if yes then displays the button to save the offer-->
+                        <input type="submit" class="btn btn-primary" value="Guardar oferta" />
+
+
                     </div>
-
-                    <!--Form to let the user choose the initial date for the offer (by default will be todays date)-->
-                    <div class="col px-mb-3">
-                        <label for="Expire_Date" class="control-label">Fecha de fin de oferta</label>
-                        <input type="date" min="@DateTime.Now" class="form-control w-20" @bind="@expireDateInput" required />
-                    </div>
-
-                    <!--Form to let the user choose the description of the offer-->
-                    <div class="mb-3">
-                        <label for="Offer_Description" class="control-label">Descripción</label>
-                        <textarea rows="3" form="Offer_Description" class=" form-control w-30" @bind="@offer.Offer_Description" />
-                    </div>
-
-            <!--Display of the total amount of the products and services in the offer-->
-            <div>
-                <h5>Suma total del precio original de productos = @totalPriceFromListedProductsAndServicesInOffer</h5>
-            </div>
-
-                    <!--Form to let the user choose the new price of the offer-->
-                    <div class="col mb-3">
-                        <label for="Price" class="control-label">Nuevo precio de oferta (CRC)</label>
-                        <input form="Price" type="number" class="form-control w-10" @bind="@offer.Discount" required />
-                    </div>
-
-            <!--Check if the data provided by the user is ok, if yes then displays the button to save the offer-->
-            @if (checkOfferDetails(initialDateInput, expireDateInput, offer.Discount))
-            {
-                <input type="button" class="btn btn-primary" @onclick="@onCreateOffer" value="Guardar oferta" />
-            }
-            else // if not, then displays the error message according to the input error
-            {
-                <p style="color:red;">@errorMessage</p>
-                <input type="button" class="btn btn-primary" @onclick="@onCreateOffer" value="Guardar oferta" disabled />
-
-            }
-        </div>
+                </EditForm>
             }
         </div>
     </aside>
@@ -204,8 +201,11 @@
     </div>
 </body>
 
-@code 
+@code
 {
+    private EditContext editContext;
+    private ValidationMessageStore messageStore;
+
     // The offer that will be store in the DB
     Offer offer = new Offer();
     // A list with the productServices items where the ID's will be taken
@@ -228,19 +228,53 @@
     // The sum of the total price of the products and services added to the offer
     int totalPriceFromListedProductsAndServicesInOffer = 0;
     // The initial date of the offer (by default: today)
+    System.DateTime FirstinitialDateInput = DateTime.Now;
     System.DateTime initialDateInput = DateTime.Now;
     // The expire date of the offer (by default: today)
     System.DateTime expireDateInput = DateTime.Now;
-    // The error message that will be display to the user if there is an error with the input data
-    String errorMessage = "";
     // Stores the email of the user logged
     String userLogged = "";
-    // When initialized, load all the entrepreneurs
+
+
     protected override async Task OnInitializedAsync()
     {
+        editContext = new(offer);
+        editContext.OnValidationRequested += HandleValidationRequested;
+        messageStore = new(editContext);
+
         entrepreneurs = await EntrepreneurService.GetAsync();
         userLogged = await sessionStorage.GetItemAsync<string>("Email");
         await loadAllProducts(userLogged);
+    }
+
+    private void HandleValidationRequested(object sender,
+        ValidationRequestedEventArgs args)
+    {
+        messageStore.Clear();
+
+        // Custom validation logic
+        if (initialDateInput < FirstinitialDateInput)
+        {
+            messageStore.Add(() => offer.Initial_Date, "La fecha de creacion debe ser igual o mayor que la fecha de hoy.");
+        }
+        // If the initial date input is greater than the expire date
+        if (initialDateInput > expireDateInput)
+        {
+            messageStore.Add(() => offer.Expire_Date, "La fecha de final de oferta debe ser mayor a la fecha de inicio.");
+        }
+
+        // Discount validations
+
+        // If the discount is negative or is empty
+        if (offer.Discount <= 0 || String.IsNullOrEmpty(offer.Discount.ToString()))
+        {
+            messageStore.Add(() => offer.Discount, "El precio nuevo de la oferta debe ser mayor que 0.");
+        }
+        // If the discount is greater than the sum of the products and services from the offer
+        if (offer.Discount > totalPriceFromListedProductsAndServicesInOffer)
+        {
+            messageStore.Add(() => offer.Discount, "El precio nuevo de la oferta debe ser menor que la suma total de los productos o servicios.");
+        }
     }
 
     // Add the product with the same id to the current offer
@@ -323,47 +357,6 @@
         }
     }
 
-    // Check if the offer details (dates and discount) are valid. Returns true if they are valid, if not fills the error message and return false
-    bool checkOfferDetails(System.DateTime initialDateInput, System.DateTime expireDateInput, int discount)
-    {
-        bool isAValidOffer = true;
-
-        // Empty the error message
-        errorMessage = "";
-
-
-        // Dates validations
-
-        // If there are empty expire or initial dates
-        if (String.IsNullOrEmpty(initialDateInput.ToString()) || String.IsNullOrEmpty(expireDateInput.ToString()))
-        {
-            errorMessage += "La fecha de inicio u oferta deben ser validas. \n";
-            isAValidOffer = false;
-        }
-
-        // If the initial date input is greater than the expire date
-        if (initialDateInput > expireDateInput)
-        {
-            errorMessage += "La fecha de final de oferta debe ser mayor a la fecha de inicio. \n";
-            isAValidOffer = false;
-        }
-
-        // Discount validations
-
-        // If the discount is negative or is empty
-        if (discount <= 0 || String.IsNullOrEmpty(discount.ToString()))
-        {
-            errorMessage += "El precio nuevo de la oferta debe ser mayor que 0. \n";
-            isAValidOffer = false;
-        }
-        // If the discount is greater than the sum of the products and services from the offer
-        if (discount > totalPriceFromListedProductsAndServicesInOffer)
-        {
-            errorMessage += "El precio nuevo de la oferta debe ser menor que la suma total de los productos o servicios. \n";
-            isAValidOffer = false;
-        }
-        return isAValidOffer;
-    }
 
     protected async void onCreateOffer()
     {
