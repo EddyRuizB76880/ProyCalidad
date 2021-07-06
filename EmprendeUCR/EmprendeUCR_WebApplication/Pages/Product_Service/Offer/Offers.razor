@@ -28,21 +28,19 @@
     <!-- Display de las ofertas al usuario -->
     <section class="w-100 float_left border-1 shadow">
         <table class="table">
-
             <!-- Display de TODAS LAS OFERTAS si existen-->
             @if (_offers?.Count > 0)
             {
                 <thead class="bg-blue">
                     <tr>
-                        <th scope="col" width="200" valign="middle" align="center">Dueño de la oferta</th>
                         <th scope="col" width="200" valign="middle" align="center">ID de la oferta</th>
                         <th scope="col" width="200" valign="middle" align="center">Descripción</th>
-                        <th scope="col" width="200" valign="middle" align="center">Precio normal</th>
-                        <th scope="col" width="200" valign="middle" align="center">Precio final de oferta</th>
+                        <th scope="col" width="200" valign="middle" align="center">Tipo</th>
+                        <th scope="col" width="200" valign="middle" align="center">Precio inicio</th>
+                        <th scope="col" width="200" valign="middle" align="center">Precio oferta</th>
                         <th scope="col" width="200" valign="middle" align="center">Descuento</th>
                         <th scope="col" width="200" valign="middle" align="center">Fecha de inicio</th>
                         <th scope="col" width="200" valign="middle" align="center">Fecha de expiracion</th>
-                        <th scope="col" width="200" valign="middle" align="center">Tipo</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -60,14 +58,14 @@
                                 string displayDiscount = string.Format("{0:N0}", actualDiscountPostOffer);
                                 string typeOffer = getTypeOffer(offer) ? "Combo" : "Descuento";
                                 <tr>
-                                    <!-- Saca el email del usuario logueado -->
-                                    <th scope="row" td width="200" valign="middle" align="left">@userEmail</th>
-
                                     <!-- Saca el ID de la oferta-->
                                     <td scope="row" width="200" valign="middle" align="left">@offer.Offer_ID</td>
 
                                     <!-- Saca la descripicon de Offer-->
                                     <td scope="row" width="200" valign="middle" align="left">@offer.Offer_Description</td>
+
+                                    <!--Tipo de oferta, descuento o combo-->
+                                    <td scope="row" width="200" valign="middle" align="left">@typeOffer</td>
 
                                     <!-- Para el precio normal ocupa iterar por todos los Is_Offer asociados al ID de Offer-->
                                     <td scope="row" width="200" valign="middle" align="left">@normalPrice</td>
@@ -79,12 +77,11 @@
                                     <td scope="row" width="200" valign="middle" align="left">@displayDiscount%</td>
 
                                     <!-- Fecha de inicio de oferta-->
-                                    <td scope="row" width="200" valign="middle" align="left">@offer.Initial_Date</td>
+                                    <td scope="row" width="200" valign="middle" align="left">@offer.Initial_Date.ToShortDateString()</td>
 
                                     <!-- Fecha de final de oferta-->
-                                    <td scope="row" width="200" valign="middle" align="left">@offer.Expire_Date</td>
+                                    <td scope="row" width="200" valign="middle" align="left">@offer.Expire_Date.ToShortDateString()</td>
 
-                                    <td scope="row" width="200" valign="middle" align="left">@typeOffer</td>
                                     <!-- Boton para ver la oferta -->
                                     <td>
                                         <button class="btn" type="button" @onclick="() => viewOffer(offer)"><i class="oi oi-plus"></i>Ver oferta</button>
@@ -108,14 +105,14 @@
                                 string displayDiscount = string.Format("{0:N0}", actualDiscountPostOffer);
                                 string typeOffer = getTypeOffer(offer) ? "Combo" : "Descuento";
                                 <tr>
-                                    <!-- Saca el email del usuario logueado -->
-                                    <th scope="row" td width="200" valign="middle" align="left">@userEmail</th>
-
                                     <!-- Saca el ID de la oferta-->
                                     <td scope="row" width="200" valign="middle" align="left">@offer.Offer_ID</td>
 
                                     <!-- Saca la descripicon de Offer-->
                                     <td scope="row" width="200" valign="middle" align="left">@offer.Offer_Description</td>
+
+                                    <!--Tipo de oferta, descuento o combo-->
+                                    <td scope="row" width="200" valign="middle" align="left">@typeOffer</td>
 
                                     <!-- Para el precio normal ocupa iterar por todos los Is_Offer asociados al ID de Offer-->
                                     <td scope="row" width="200" valign="middle" align="left">@normalPrice</td>
@@ -127,12 +124,11 @@
                                     <td scope="row" width="200" valign="middle" align="left">@displayDiscount%</td>
 
                                     <!-- Fecha de inicio de oferta-->
-                                    <td scope="row" width="200" valign="middle" align="left">@offer.Initial_Date</td>
+                                    <td scope="row" width="200" valign="middle" align="left">@offer.Initial_Date.ToShortDateString()</td>
 
                                     <!-- Fecha de final de oferta-->
-                                    <td scope="row" width="200" valign="middle" align="left">@offer.Expire_Date</td>
+                                    <td scope="row" width="200" valign="middle" align="left">@offer.Expire_Date.ToShortDateString()</td>
 
-                                    <td scope="row" width="200" valign="middle" align="left">@typeOffer</td>
                                     <!-- Boton para ver la oferta -->
                                     <td>
                                         <button class="btn" type="button" @onclick="() => viewOffer(offer)"><i class="oi oi-plus"></i>Ver oferta</button>
@@ -144,14 +140,14 @@
                     }
                     @if (!displayVigentOffers && !displayExpiredOffers)
                     {
-<td>Por favor seleccione las ofertas que desea desplegar</td>
-                    }
-                </tbody>
-            }
-            else
-            {
-                <td>Actualmente no hay ofertas disponibles.</td>
-            }
+                    <td>Por favor seleccione las ofertas que desea desplegar</td>
+                }
+                    </tbody>
+                }
+                else
+                {
+                    <td>Actualmente no hay ofertas disponibles.</td>
+                }
 
             <!--Botones-->
             <div class="col-xs-6">
