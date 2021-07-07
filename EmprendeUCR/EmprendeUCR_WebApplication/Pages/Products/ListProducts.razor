@@ -5,6 +5,7 @@
 @inject CategoryService CategoryService
 @inject ProductService ProductService
 @using Syncfusion.Blazor.TreeGrid;
+@inject NavigationManager NavManager
 @inject Product_ServiceService Product_ServiceService
 @inject Product_PhotosService Product_PhotosService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
@@ -15,7 +16,7 @@
 }
 else
 {
- 
+
     <head>
         <link rel="stylesheet" href="~/css/EmprendeUCR-template.css" />
     </head>
@@ -34,22 +35,24 @@ else
                     {
                         var prodServ = _productsServices.First(p => p.Code_ID == prod.Code_ID);
                         var prodPhoto = photosDisplay.FirstOrDefault(p => p.Code_ID == prod.Code_ID);
-                <div class="item data border-2 border-blue shadow">
-                    <div class= "content-center ">
-                        @if (prodPhoto != null)
-                        {
-                            <img src="@Product_PhotosService.convertImageDisplay(prodPhoto.Photos)" width="200" class=" img-card mt-2" />
-                        }
-                    </div>
-                        <div class="item m-lg-2 ">
-                            <div class="item_name">@prod.Product_Name</div>
-                            <div class="item_description">@prod.Product_Description</div>
-                            <div class="item_price">₡@prod.Price</div>
-                            <div class="item_Category">@CategoryService.getCategory(prod.Category_ID).Title </div>
-                        </div>
 
-                   
-                </div>
+                        <div class="item data border-1 border-blue content-center" @onclick="()=>Prueba(prod.Code_ID.ToString())">
+
+                            <div class="content-center ">
+                                @if (prodPhoto != null)
+                                {
+                                    <img src="@Product_PhotosService.convertImageDisplay(prodPhoto.Photos)" width="200" class=" img-card mt-2" />
+                                }
+                            </div>
+                            <div class="item m-lg-2 ">
+                                <div class="item_name">@prod.Product_Name</div>
+                                <div class="item_description">@prod.Product_Description</div>
+                                <div class="item_price">₡@prod.Price</div>
+                                <div class="item_Category">@CategoryService.getCategory(prod.Category_ID).Title </div>
+                            </div>
+
+
+                        </div>
                     }
                 }
             </div>
@@ -116,7 +119,8 @@ else
 
             Category iterator = CategoryService.getCategory(prod.Category_ID);
 
-            while (iterator.ParentId != null) {
+            while (iterator.ParentId != null)
+            {
 
                 Category parentcat = CategoryService.getCategory((int)iterator.ParentId);
 
@@ -198,7 +202,14 @@ else
         firstClick = false;
     }
 
+    //puede rescibir parametro
+    void Prueba(string CodeId)
+    {
+        NavManager.NavigateTo("/ViewProduct");
+        //NavManager.NavigateTo("/ViewProduct" + "/" + CodeId);
 
+
+    }
 
 }
 
