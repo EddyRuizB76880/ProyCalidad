@@ -9,6 +9,8 @@
 @inject Product_ServiceService Product_ServiceService
 @inject OfferService OfferService
 @inject Is_OfferService Is_OfferService
+@inject Product_PhotosService Product_PhotosService
+@inject Service_PhotosService Service_PhotosService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 <body>
@@ -34,29 +36,59 @@
                 <!--Headers-->
                 <thead class="bg-blue">
                     <tr>
+                        <!--Header for the photo column-->
+                        <th scope="col" width="200" valign="middle" align="center">Foto</th>
+                        <!--Header for the offer ID column-->
                         <th scope="col" width="200" valign="middle" align="center">ID de la oferta</th>
+                        <!--Header for the Description column-->
                         <th scope="col" width="200" valign="middle" align="center">Descripción</th>
+                        <!--Header for the Type column-->
                         <th scope="col" width="200" valign="middle" align="center">Tipo</th>
+                        <!--Header for the Initial price column-->
                         <th scope="col" width="200" valign="middle" align="center">Precio inicio</th>
+                        <!--Header for the final price column-->
                         <th scope="col" width="200" valign="middle" align="center">Precio oferta</th>
+                        <!--Header for the Discount column-->
                         <th scope="col" width="200" valign="middle" align="center">Descuento</th>
+                        <!--Header for the initial offer date column-->
                         <th scope="col" width="200" valign="middle" align="center">Fecha de inicio</th>
+                        <!--Header for the expiracy offer date column-->
                         <th scope="col" width="200" valign="middle" align="center">Fecha de expiracion</th>
                     </tr>
                 </thead>
+                <!-- Displays de todas las ofertas-->
                 <tbody>
+                    <!-- Display active offers-->
                     @if (displayActiveOffers)
                     {
-                        <!-- Display active offers-->
                         @foreach (var offer in activeOffers)
                         {
                             <!--Obtiene la suma de todos los objetos ligados a la oferta actual)-->
                             var normalPrice = getTotalPriceFromListedItemsInOffer(offer);
-                            double actualDiscountPostOffer = (Double.Parse(offer.Discount.ToString()) / normalPrice) * 100;
-                            actualDiscountPostOffer = 100 - actualDiscountPostOffer;
+                            <!-- Obtiene el porcentaje de descuento que aplica la oferta-->
+                            double actualDiscountPostOffer = 100 - (Double.Parse(offer.Discount.ToString()) / normalPrice) * 100;
+                            <!-- Formato con el que se va imprimir el descuento-->
                             string displayDiscount = string.Format("{0:N0}", actualDiscountPostOffer);
+                            <!--Obtiene el tipo de oferta (combo o descuento)-->
                             string typeOffer = getTypeOffer(offer) ? "Combo" : "Descuento";
-                            <tr>
+                            <!--Obtiene la foto del primer producto involucrado en la oferta-->
+                            var product_foto = Product_PhotosService.loadProductPhoto(getPhotoIDFromOffer(offer));
+                            <!--Obtiene la foto del primer servicio incolucrado en la oferta-->
+                            var service_foto = Service_PhotosService.loadServicePhoto(getServiceIDFromOffer(offer));
+                            <!--Hace que todo el cuadro sea clickeable, si se hace click redirige al usuario a la vista de la oferta-->
+                            <tr @onclick="() => viewOffer(offer)">
+                                <!--Display de la foto asignada para la oferta-->
+                                @if (product_foto != null)
+                                {
+                                    <img src="@Product_PhotosService.convertImageDisplay(product_foto.Photos)" width="200" class=" img-card mt-2" />
+                                }
+                                else
+                                {
+                                    @if (service_foto != null)
+                                    {
+                                        <img src="@Service_PhotosService.convertServiceImageDisplay(service_foto.Photos)" width="200" class=" img-card mt-2" />
+                                    }
+                                }
                                 <!-- Saca el ID de la oferta-->
                                 <td scope="row" width="200" valign="middle" align="left">@offer.Offer_ID</td>
 
@@ -80,28 +112,43 @@
 
                                 <!-- Fecha de final de oferta-->
                                 <td scope="row" width="200" valign="middle" align="left">@offer.Expire_Date.ToShortDateString()</td>
-
-                                <!-- Boton para ver la oferta -->
-                                <td>
-                                    <button class="btn" type="button" @onclick="() => viewOffer(offer)"><i class="oi oi-plus"></i>Ver oferta</button>
-                                </td>
                             </tr>
 
                         }
                     }
+
                     @if (displayExpiredOffers)
                     {
                         <!-- Display expired offers-->
                         @foreach (var offer in expiredOffers)
                         {
-
                             <!--Obtiene la suma de todos los objetos ligados a la oferta actual)-->
                             var normalPrice = getTotalPriceFromListedItemsInOffer(offer);
-                            double actualDiscountPostOffer = (Double.Parse(offer.Discount.ToString()) / normalPrice) * 100;
-                            actualDiscountPostOffer = 100 - actualDiscountPostOffer;
+                            <!-- Obtiene el porcentaje de descuento que aplica la oferta-->
+                            double actualDiscountPostOffer = 100 - (Double.Parse(offer.Discount.ToString()) / normalPrice) * 100;
+                            <!-- Formato con el que se va imprimir el descuento-->
                             string displayDiscount = string.Format("{0:N0}", actualDiscountPostOffer);
+                            <!--Obtiene el tipo de oferta (combo o descuento)-->
                             string typeOffer = getTypeOffer(offer) ? "Combo" : "Descuento";
-                            <tr>
+                            <!--Obtiene la foto del primer producto involucrado en la oferta-->
+                            var product_foto = Product_PhotosService.loadProductPhoto(getPhotoIDFromOffer(offer));
+                            <!--Obtiene la foto del primer servicio incolucrado en la oferta-->
+                            var service_foto = Service_PhotosService.loadServicePhoto(getServiceIDFromOffer(offer));
+                            <!--Hace que todo el cuadro sea clickeable, si se hace click redirige al usuario a la vista de la oferta-->
+                            <tr @onclick="() => viewOffer(offer)">
+                                <!--Display photo-->
+                                @if (product_foto != null)
+                                {
+                                    <img src="@Product_PhotosService.convertImageDisplay(product_foto.Photos)" width="200" class=" img-card mt-2" />
+                                }
+                                else
+                                {
+                                    @if (service_foto != null)
+                                    {
+                                        <img src="@Service_PhotosService.convertServiceImageDisplay(service_foto.Photos)" width="200" class=" img-card mt-2" />
+                                    }
+                                }
+
                                 <!-- Saca el ID de la oferta-->
                                 <td scope="row" width="200" valign="middle" align="left">@offer.Offer_ID</td>
 
@@ -125,25 +172,21 @@
 
                                 <!-- Fecha de final de oferta-->
                                 <td scope="row" width="200" valign="middle" align="left">@offer.Expire_Date.ToShortDateString()</td>
-
-                                <!-- Boton para ver la oferta -->
-                                <td>
-                                    <button class="btn" type="button" @onclick="() => viewOffer(offer)"><i class="oi oi-plus"></i>Ver oferta</button>
-                                </td>
                             </tr>
 
 
                         }
                     }
+                    <!-- Sugiere al usuario mostrar alguna oferta si no tiene ningun tipo de oferta seleccionada-->
                     @if (!displayActiveOffers && !displayExpiredOffers)
                     {
                     <td>Por favor seleccione las ofertas que desea desplegar</td>
-                }
+                    }
                     </tbody>
                 }
                 else
                 {
-                    <td>Actualmente no hay ofertas disponibles.</td>
+                    <p>Actualmente no hay ofertas disponibles.</p>
                 }
 
             <!--Botones-->
@@ -158,78 +201,90 @@
 @code {
 
 
-    // ---------------------------------------------
-    IList<Offer> _offers = new List<Offer>();
+    // Almacena todas las ofertas
+    List<Offer> _offers = new List<Offer>();
+    // Contiene solo las ofertas vigentes o activas
     IList<Offer> activeOffers = new List<Offer>();
+    // Contiene las ofertas expiradas
     IList<Offer> expiredOffers = new List<Offer>();
+    // Insntancia auxiliar de una oferta vacia
     Offer offer = new Offer();
-    IList<Product_Service> _productsServices;
     // Contains all the active offers related to the current entrepreneur
     IList<Offer> myExpiredOffers;
     // Contains all the active offers related to the current entrepreneur
     IList<Offer> myActiveOffers;
-
-    double discount = 0;
+    // Almacena el email dle usuario logeado
     string userEmail = "default";
-
+    // Senal de display para ofertas activas
     bool displayActiveOffers = true;
-
+    // Senal de display para ofertas inactivas
     bool displayExpiredOffers = true;
 
     protected override async Task OnInitializedAsync()
     {
+        // Carga el email del usuario
         userEmail = await sessionStorage.GetItemAsync<string>("Email");
+        // Carga el resto de cosas
         await loadAll();
     }
 
+    // Intercambia la senal de mostrar las ofertas vigentes entre activado y no activado
     public void allowVigentOffers()
     {
         displayActiveOffers = !displayActiveOffers;
     }
 
+    // Intercambia la senal de mostrar las ofertas expiradas entre activado y no activado
     public void allowExpiredOffers()
     {
         displayExpiredOffers = !displayExpiredOffers;
     }
 
+    // Suma el precio total de todos los productos y servicios en la oferta
     public int getTotalPriceFromListedItemsInOffer(Offer offer)
     {
         int total_price = 0;
+        // Toma todas los is_offer relacionados con la offerta (cada uno representa un producto o un servicio)
         List<Is_Offer> relatedIs_Offers = OfferService.GetAllIs_OfferRelatedToOfferNOTAsync(offer);
+        // Por cada producto o servicio, suma su precio al total de la oferta o el producto
         foreach (var is_offer in relatedIs_Offers)
         {
             Product product = Is_OfferService.GetProductRelated(is_offer);
             if (product is not null)
             {
-                total_price += product.Price;
+                total_price += product.Price * is_offer.Amount;
             }
             else
             {
                 Service service = Is_OfferService.GetServiceRelated(is_offer);
-                total_price += service.Price_per_hour;
+                total_price += service.Price_per_hour * is_offer.Amount;
             }
         }
         return total_price;
     }
 
+    // Redirige a la pagina para ver la oferta
     void viewOffer(Offer offer)
     {
         NavigationManager.NavigateTo("ViewOffer" + "/" + offer.Offer_ID);
     }
 
+    // Redirige a la pagina de anadir una oferta
     void AddOffer()
     {
         NavigationManager.NavigateTo("AddOffer");
     }
 
+    // Redirige a la pagina de la lista de productos
     void Cancel()
     {
         NavigationManager.NavigateTo("ListProducts");
     }
 
+    // Carga las ofertas y las filtra por expirados o vigentes
     public async Task loadAll()
     {
-        await loadOffers();
+        loadOffers();
         filterOfferByExpirationDate();
     }
 
@@ -249,9 +304,9 @@
         }
     }
 
-    public async Task loadOffers()
+    public void loadOffers()
     {
-        _offers = await OfferService.GetAllOffersAsync();
+        _offers = OfferService.GetOfferFromEntrepreneur(userEmail);
     }
 
     public bool getTypeOffer(Offer offer)
@@ -261,6 +316,20 @@
         List<Is_Offer> relatedIs_Offers = OfferService.GetAllIs_OfferRelatedToOfferNOTAsync(offer);
 
         return relatedIs_Offers.Count > 1;
+    }
+
+    public int getPhotoIDFromOffer(Offer offer)
+    {
+        var is_OffersFromProduct = OfferService.GetAllIs_OfferRelatedToOfferNOTAsync(offer);
+        var firstProductFromOffer = Is_OfferService.GetProductRelated(is_OffersFromProduct.First());
+        return firstProductFromOffer.Code_ID;
+    }
+
+    public int getServiceIDFromOffer(Offer offer)
+    {
+        var is_OffersFromService = OfferService.GetAllIs_OfferRelatedToOfferNOTAsync(offer);
+        var firstServiceFromOffer = Is_OfferService.GetProductRelated(is_OffersFromService.First());
+        return firstServiceFromOffer.Code_ID;
     }
 }
 

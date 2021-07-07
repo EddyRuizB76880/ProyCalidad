@@ -75,15 +75,24 @@ namespace EmprendeUCR_WebApplication.Data.Services
         {
             return _context.Is_Offer.Where(is_Offer => String.Equals(offer.Offer_ID, is_Offer.Offer_ID)).ToList();
         }
-        /*
-        public async Task<IList<Offer>> GetOfferFromEntrepreneurAsync(string email)
+
+        public List<Offer> GetOfferFromEntrepreneur(string email)
         {
-
-            return await _context.Offer.Where(_context.Is_Offer.Where(c => String.Equals(c.User_Email, email)).ToListAsync().offer).ToListAsync();
-                Is_Offer.Where(c => String.Equals(c.User_Email, email)).ToListAsync();
-
+            List<Offer> relatedOffers = new List<Offer>();
+            // Filtra los is_offer ligados al email
+            var is_offers = _context.Is_Offer.Where(c => String.Equals(c.User_Email, email)).ToList();
+            // Consiue todos los offers ligados a 
+            foreach (var is_offer in is_offers)
+            {
+                var relatedOffer = _context.Offer.FirstOrDefault(c => String.Equals(c.Offer_ID, is_offer.Offer_ID));
+                var alreadyAdded = relatedOffers.FirstOrDefault(c => String.Equals(c.Offer_ID, relatedOffer.Offer_ID));
+                if(alreadyAdded is null)
+                {
+                    relatedOffers.Add(relatedOffer);
+                }
+            }
+            return relatedOffers;
         }
-        */
     }
 
 }
