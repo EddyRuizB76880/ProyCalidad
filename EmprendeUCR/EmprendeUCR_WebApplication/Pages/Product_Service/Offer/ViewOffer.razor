@@ -10,42 +10,78 @@
 @inject Product_ServiceService Product_ServiceService
 @inject OfferService OfferService
 @inject Is_OfferService Is_OfferService
-
+@inject Product_PhotosService Product_PhotosService
+@inject Service_PhotosService Service_PhotosService
 
 
 <h3>Oferta #@Offer_ID</h3>
 <body>
-    <section class="w-100 float_left border-1 shadow">
-
-            <section class="w-40 float_right border-1 shadow">
-                <tr>
-                    <!-- Saca la descripicon de Offer-->
-                    <td scope="row" width="200" valign="middle" align="left"> Descripcion: @offer.Offer_Description</td>
-                    <!-- Combo o descuento-->
-                    <td scope="row" width="200" valign="middle" align="left"> Tipo: Combo</td>
-                    <!-- Suma de todos los articulos en la oferta-->
-                    <td scope="row" width="200" valign="middle" align="left"> Precio Normal: @totalOfTheOfferOriginalAmount</td>
-                    <!-- Precio final despues de la oferta-->
-                    <td scope="row" width="200" valign="middle" align="left"> Precio Oferta: @(offer.Discount)</td>
-                    <!-- Initial active offer date-->
-                    <td scope="row" width="200" valign="middle" align="left"> Inicio de oferta: @(offer.Initial_Date.ToShortDateString())</td>
-                    <!-- Expire offer date-->
-                    <td scope="row" width="200" valign="middle" align="left"> Fin de oferta: @(offer.Expire_Date.ToShortDateString())</td>
-                </tr>
-
-            </section>
-
-        <!--Botones-->
-        <div class="col-xs-6">
-            <!--Volver-->
-            <input type="button" class="btn btn-primary btn-space" @onclick="@Cancel" value="Regresar" />
-            <!--Editar-->
-            <input type="button" class="btn btn-primary btn-space" @onclick="@Cancel" value="Editar" />
-            <!--Eliminar-->
-            <input type="button" class="btn btn-primary btn-space" @onclick="@Cancel" value="Regresar" />
+    <div class="w-100 float_left border-1 shadow d-flex">
+        <!--La foto-->
+        <div class="w-40 float-md-start border-1 shadow">
+            @if (product_foto != null)
+            {
+                
+                <img src="@Product_PhotosService.convertImageDisplay(product_foto.Photos)" width="200" class=" img-card mt-2" />
+            }
+            else
+            {
+                @if (service_foto != null)
+                {
+                    <img src="@Service_PhotosService.convertServiceImageDisplay(service_foto.Photos)" width="200" class=" img-card mt-2" />
+                }
+            }
         </div>
-    </section>
+        <!--Detalles de la oferta-->
+        <div class="w-40 border-1 shadow m-lg-5 float-end">
+            <ul>
+                <!-- Saca la descripicon de Offer-->
+                <li scope="row" width="200" valign="middle" align="left"> Descripcion: @offer.Offer_Description</li>
+                <!-- Combo o descuento-->
+                <li scope="row" width="200" valign="middle" align="left"> Tipo: Combo</li>
+                <!-- Suma de todos los articulos en la oferta-->
+                <li scope="row" width="200" valign="middle" align="left"> Precio Normal: @totalOfTheOfferOriginalAmount</li>
+                <!-- Precio final despues de la oferta-->
+                <li scope="row" width="200" valign="middle" align="left"> Precio Oferta: @(offer.Discount)</li>
+                <!-- Initial active offer date-->
+                <li scope="row" width="200" valign="middle" align="left"> Inicio de oferta: @(offer.Initial_Date.ToShortDateString())</li>
+                <!-- Expire offer date-->
+                <li scope="row" width="200" valign="middle" align="left"> Fin de oferta: @(offer.Expire_Date.ToShortDateString())</li>
+            </ul>
+        </div>
+    </div>
+    <div class=" mt-3">
+        <!--Los productos o servicios involucrados-->
+        <div class="w-40 float-md-start border-1 shadow">
 
+            <t scope="auto" width="200" valign="middle" align="left"> Productos o servicios asociados:</t>
+            <ul>
+                @foreach (var product in _myProducts)
+                {
+                    <li scope="row" width="200" valign="middle" align="left"> @product.Product_Name</li>
+
+                }
+                @foreach (var service in _myServices)
+                {
+                    <li scope="row" width="200" valign="middle" align="left"> @service.Service_Name</li>
+
+                }
+            </ul>
+
+
+        </div>
+        <!--Botones-->
+        <div class=" float-end">
+            <div class="col-xs-6">
+                <!--Volver-->
+                <input type="button" class="btn btn-primary btn-space" @onclick="@Cancel" value="Regresar" />
+                <!--Editar-->
+                <input type="button" class="btn btn-primary btn-space" @onclick="@Cancel" value="Editar" />
+                <!--Eliminar-->
+                <input type="button" class="btn btn-primary btn-space" @onclick="@Cancel" value="Eliminar" />
+            </div>
+        </div>
+    </div>
 </body>
 @functions{
     [Parameter]
@@ -56,11 +92,16 @@
     Offer offer = new Offer();
     Product myProduct = new Product();
     Service myService = new Service();
+    IList<Product_Photos> photosDisplay = new List<Product_Photos>();
+    IList<Service_Photos> servicePhotosDisplay = new List<Service_Photos>();
+
     // --------------------------------------
     IList<Offer> _offers = new List<Offer>();
     IList<Is_Offer> _Is_offer = new List<Is_Offer>();
     IList<Product> _myProducts = new List<Product>();
     IList<Service> _myServices = new List<Service>();
+    Product_Photos product_foto;
+    Service_Photos service_foto;
 
     int totalOfTheOfferOriginalAmount = 0;
     double discount = 0;
@@ -72,7 +113,8 @@
         await loadAll();
     }
 
-    public void getTotalSumOfPricesOfTheProductsAndServicesInOffer() {
+    public void getTotalSumOfPricesOfTheProductsAndServicesInOffer()
+    {
         // Sum the prices from products in the offer
         foreach (var product in _myProducts)
         {
@@ -98,10 +140,12 @@
     public async Task loadAll()
     {
         offer = await OfferService.GetOfferAsync(Int32.Parse(Offer_ID));
-        // await loadOffers();
         await loadIs_Offers();
-        await loadProductsAndServicesRelated();
         getTotalSumOfPricesOfTheProductsAndServicesInOffer();
+        await loadProductsAndServicesRelated();
+        photosDisplay = Product_PhotosService.loadAllPhotos();
+        product_foto = photosDisplay.FirstOrDefault(p => p.Code_ID == _myProducts.FirstOrDefault().Code_ID);
+        service_foto = servicePhotosDisplay.FirstOrDefault(service => service.Code_ID == _myServices.FirstOrDefault().Code_ID);
     }
 
     public async Task loadIs_Offers()
@@ -117,7 +161,8 @@
             if (product is not null)
             {
                 _myProducts.Add(product);
-            } else
+            }
+            else
             {
                 var service = await Is_OfferService.GetServiceRelated(is_offer);
                 _myServices.Add(service);
