@@ -291,24 +291,46 @@ Referencia al archivo fuente: [Esquema lógico de la base de datos](https://luci
 
 #### Scrum:
 - **Sprints de tres semanas:** 4 (excepto el primer sprint que es de seis semanas).
-- **Daily Meetings por semana:**  2. 
-- **reunión de Revisión:** Realizado al final de cada sprint y junto a los steakholders.
+    - Sprint es el nombre con el que conocemos a los ciclos de desarrollo en metodología SCRUM. 
+    - Al final de cada sprint, entregamos nuevas funcionalidades al producto y recibimos retroalimentación del  PO (product owner).
+- **Daily Meetings por semana:**  2.
+    - Por su traducción al español, un daily meeting son reuniones diarias que se hacen en un equipo SCRUM, en las cada miembro del equipo explica sus avances, lo que se disponen a hacer y qué impedimentos puede llegar a tener para cumplir lo que tiene propuesto
+- **reunión de Revisión:** Realizado al final de cada sprint y junto a los stakeholders.
+    - Esta reunión ocurre al final de cada sprint. Aquí se presenta al PO y a los stakeholders los avances de la iteración recién acabada. 
+    - El equipo recibe del PO y stakeholder retroalimentación que deberá ser tomada en cuenta para la siguiente iteración.
 - **reunión de Sprint Retrospective:** Realizado al final de cada sprint y entre el equipo de trabajo.
+    - En esta reunión, los equipos SCRUM reflexionan sobre lo bueno, malo y mejorable del sprint, y proponen acciones que puedan ayudar a mejorar resultados en el siguiente sprint. 
 - **reunión de Planning:** Realizado  antes de empezar cada sprint.
+    - En el sprint planning, se realiza la planeación del sprint nuevo. 
+    - Con la ayuda del PO, los equipos forman sus backlogs de historias por trabajar en el sprint nuevo.
 
 #### Principio SOLID:
 - **S-Single Responsibility Principle**
+    - Responsabilidad única: Cada componente del software sólo tiene una responsabilidad y con ello, sólo una razón para ser modificado.
 - **O-Open/Closed Principle**
+    - Abierto/Cerrado: El código es cerrado a modificaciones, pero abierto a ser expandido.
 - **L-Liskov Substitution Principle**
+    - Sustitución de Liskov: En relaciones de herencia, sustituir al padre por cualquiera de sus hijos no afectará al programa.
 - **I-Interface Segregation Principle**
+    - Segregación de interfaces: No se debe forzar a las clases del producto a recibir interfaces que no va a necesitar.
 - **D-Dependency Inversion Principle**
-
+    - Inversión de dependencia: Las clases deben depender en abstracciones y no de otras clases concretas.
 #### Otras:
 - **pair programming**
+    - Se define una pareja de programadores, cada una con un driver y un navigator, así como un tiempo de rotación.
+    - El driver escribe el código y el navigator observa la pantalla en todo momento para apoyar al driver en lógica y sintáxis.
+    - Cuando se cumple el tiempo definido inicialmente, los programadores intercambian roles.
 - **clean architecture**
 - **Refactoring**
+    - Consiste en rehacer una parte de código.
 - **Integración continua**
+    - Una práctica de XP, extreme programming.
+    - En integración continua, las integraciones de avances al producto se realizan constantmente y con commits pequeños.
+    - Lo anterior para reducir la cantidad potencial de conflictos.
 - **definition of done**
+    - Son criterios que  indican cuándo una historia puede ser considerada hecha.
+    - Son definidos por los equipos de desarrollo y aplican a cada historia.
+    
 
 ### Artefactos utilizadas en el desarrollo <a name="Artefactos"></a>
 
