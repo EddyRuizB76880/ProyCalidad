@@ -44,7 +44,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (displayVigentOffers)
+                    @if (displayActiveOffers)
                     {
                         <!-- Display oferta especifica-->
                         @foreach (var offer in _offers)
@@ -138,7 +138,7 @@
                             }
                         }
                     }
-                    @if (!displayVigentOffers && !displayExpiredOffers)
+                    @if (!displayActiveOffers && !displayExpiredOffers)
                     {
                     <td>Por favor seleccione las ofertas que desea desplegar</td>
                 }
@@ -156,8 +156,6 @@
             </div>
         </table>
     </section>
-
-
 </body>
 
 @code {
@@ -169,12 +167,16 @@
     IList<Entrepreneur> entrepreneurs;
     IList<Product> _products;
     IList<Service> _service;
+    // Contains all the active offers related to the current entrepreneur
+    IList<Offer> myExpiredOffers;
+    // Contains all the active offers related to the current entrepreneur
+    IList<Offer> myActiveOffers;
 
     int totalPriceFromListedProductsAndServicesInOffer = 0;
     double discount = 0;
     string userEmail = "default";
 
-    bool displayVigentOffers = true;
+    bool displayActiveOffers = true;
 
     bool displayExpiredOffers = true;
 
@@ -187,7 +189,7 @@
 
     public void allowVigentOffers()
     {
-        displayVigentOffers = !displayVigentOffers;
+        displayActiveOffers = !displayActiveOffers;
     }
 
     public void allowExpiredOffers()
@@ -257,7 +259,7 @@
 
     void viewOffer(Offer offer)
     {
-        // NavigationManager.NavigateTo("ViewOffer" + "/" + offer.Offer_ID);
+        NavigationManager.NavigateTo("ViewOffer" + "/" + offer.Offer_ID);
     }
 
     void editOffer(Offer offer)

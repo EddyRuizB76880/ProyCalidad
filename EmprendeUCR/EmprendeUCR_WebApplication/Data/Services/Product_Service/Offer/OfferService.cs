@@ -65,11 +65,19 @@ namespace EmprendeUCR_WebApplication.Data.Services
            
             return await _context.Offer.ToListAsync();        // Listado 2
         }
-        /**
+
+        public async Task<List<Is_Offer>> GetAllIs_OfferRelatedToOffer(Offer offer)
+        {
+            return await _context.Is_Offer.Where(is_Offer => String.Equals(offer.Offer_ID, is_Offer.Offer_ID)).ToListAsync();
+        }
+
+
+        /*
         public async Task<IList<Offer>> GetOfferFromEntrepreneurAsync(string email)
         {
 
-            return await _context.Offer.Where(c => String.Equals(c.Offer_Id, email)).ToListAsync();
+            return await _context.Offer.Where(_context.Is_Offer.Where(c => String.Equals(c.User_Email, email)).ToListAsync().offer).ToListAsync();
+                Is_Offer.Where(c => String.Equals(c.User_Email, email)).ToListAsync();
 
         }
         */

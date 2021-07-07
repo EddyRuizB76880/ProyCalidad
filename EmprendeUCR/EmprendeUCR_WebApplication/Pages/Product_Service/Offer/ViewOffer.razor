@@ -14,165 +14,53 @@
 
 
 <h3>Oferta #@Offer_ID</h3>
+<body>
+    <section class="w-100 float_left border-1 shadow">
 
-<form>
-    <div class="row">
-        <!-- Oferta -->
-        <div class="cols-xs-3">
+            <section class="w-40 float_right border-1 shadow">
+                <tr>
+                    <!-- Saca la descripicon de Offer-->
+                    <td scope="row" width="200" valign="middle" align="left"> Descripcion: @offer.Offer_Description</td>
+                    <!-- Combo o descuento-->
+                    <td scope="row" width="200" valign="middle" align="left"> Tipo: Combo</td>
+                    <!-- Suma de todos los articulos en la oferta-->
+                    <td scope="row" width="200" valign="middle" align="left"> Precio Normal: @totalOfTheOfferOriginalAmount</td>
+                    <!-- Precio final despues de la oferta-->
+                    <td scope="row" width="200" valign="middle" align="left"> Precio Oferta: @(offer.Discount)</td>
+                    <!-- Initial active offer date-->
+                    <td scope="row" width="200" valign="middle" align="left"> Inicio de oferta: @(offer.Initial_Date.ToShortDateString())</td>
+                    <!-- Expire offer date-->
+                    <td scope="row" width="200" valign="middle" align="left"> Fin de oferta: @(offer.Expire_Date.ToShortDateString())</td>
+                </tr>
 
-            <table>
-                <!-- Display de los nombres de las columnas (Precio, fechas etc)-->
-                <thead>
-                    <tr>
-                        <th style="width:20%">Dueño de la oferta</th>
-                        <th style="width:20%">ID de la oferta</th>
-                        <th style="width:20%">Descripción</th>
-                        <th style="width:20%">Precio normal</th>
-                        <th style="width:20%">Precio nuevo</th>
-                        <th style="width:20%">Descuento</th>
-                        <th style="width:20%">Inicio de oferta</th>
-                        <th style="width:20%">Final de oferta</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Display oferta especifica-->
-                    @foreach (var offer in _offers)
-                    {
-                        @if (offer.Offer_ID == Int32.Parse(Offer_ID))
-                        {
-                            <!--Obtiene la suma de todos los objetos ligados a la oferta actual)-->
-                            double actualDiscountPostOffer = (Double.Parse(offer.Discount.ToString()) / totalOfTheOfferOriginalAmount) * 100;
-                            actualDiscountPostOffer = 100 - actualDiscountPostOffer;
-                            string displayDiscount = string.Format("{0:N2}%", actualDiscountPostOffer);
+            </section>
 
-                            <tr>
-                                <!-- Saca el ID de la oferta-->
-                                <td>@userEmail</td>
-
-                                <!-- Saca el ID de la oferta-->
-                                <td>@offer.Offer_ID</td>
-
-                                <!-- Saca la descripicon de Offer-->
-                                <td>@offer.Offer_Description</td>
-
-                                <!-- Para el precio normal ocupa iterar por todos los Is_Offer asociados al ID de Offer-->
-                                <td>@totalOfTheOfferOriginalAmount</td>
-
-                                <!-- Saca el precio de la oferta de Offer-->
-                                <td>@offer.Discount</td>
-
-                                <!-- El descuento se saca con precio normal y la oferta (ej: 15% de descuento)-->
-                                <td>@displayDiscount%</td>
-
-                                <!-- Fecha de inicio de oferta-->
-                                <td>@offer.Initial_Date</td>
-
-                                <!-- Fecha de final de oferta-->
-                                <td>@offer.Expire_Date</td>
-                            </tr>
-                        }
-                    }
-                </tbody>
-            </table>
-            <!-- Products Display-->>
-            @if (_myProducts?.Count > 0)
-            {
-                <h3>Productos en la oferta</h3>
-                <table>
-                    <!-- Display de los nombres de las columnas (Nombre, precio, etc..c)-->
-                    <thead>
-                        <tr>
-                            <th style="width:20%">Nombre</th>
-                            <th style="width:20%">Descripción</th>
-                            <th style="width:20%">Precio</th>
-                            <th style="width:20%">Categoria</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Display de Productos-->
-                        @foreach (var product in _myProducts)
-                        {
-                        <tr>
-                            <!-- Saca el Nombre del Productos-->
-                            <td>@product.Product_Name</td>
-
-                            <!-- Despliega la descripcion del Productos-->
-                            <td>@product.Product_Description</td>
-
-                            <!-- Despliega el precio del Productos-->
-                            <td>@product.Price</td>
-
-                            <!-- Despliega el id de la categoria-->
-                            <td>@product.Category_ID</td>
-                        </tr>
-                        }
-                    </tbody>
-                </table>
-            }
-            <!-- Service Display-->>
-            @if (_myServices?.Count > 0)
-            {
-                <h3>Servicios en la oferta</h3>
-                <table>
-                    <!-- Display de los nombres de las columnas (Nombre, precio, etc..c)-->
-                    <thead>
-                        <tr>
-                            <th style="width:20%">Nombre</th>
-                            <th style="width:20%">Descripción</th>
-                            <th style="width:20%">Precio por hora</th>
-                            <th style="width:20%">Categoria</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Display de servicios-->
-                        @foreach (var service in _myServices)
-                        {
-                            <tr>
-                                <!-- Saca el Nombre del servicioa-->
-                                <td>@service.Service_Name</td>
-
-                                <!-- Despliega la descripcion del servicio-->
-                                <td>@service.Service_Description</td>
-
-                                <!-- Despliega el precio por hora del servicio-->
-                                <td>@service.Price_per_hour</td>
-
-                                <!-- Despliega el id de la categoria-->
-                                <td>@service.Category_ID</td>
-                            </tr>
-
-                        }
-                    </tbody>
-                </table>
-            }
-            <!--Botones-->
-            <div class="col-xs-6">
-                <!--Volver-->
-                <input type="button" class="btn btn-primary btn-space" @onclick="@Cancel" value="Volver" />
-
-                <!-- Comprar oferta-->
-                <input type="button" class="btn btn-primary btn-space" @onclick="@buyOffer" value="Comprar oferta" />
-            </div>
+        <!--Botones-->
+        <div class="col-xs-6">
+            <!--Volver-->
+            <input type="button" class="btn btn-primary btn-space" @onclick="@Cancel" value="Regresar" />
+            <!--Editar-->
+            <input type="button" class="btn btn-primary btn-space" @onclick="@Cancel" value="Editar" />
+            <!--Eliminar-->
+            <input type="button" class="btn btn-primary btn-space" @onclick="@Cancel" value="Regresar" />
         </div>
-    </div>
+    </section>
 
-
-</form>
+</body>
 @functions{
     [Parameter]
     public string Offer_ID { get; set; }
 }
 
 @code {
-    IList<Offer> _offers = new List<Offer>();
-    IList<Is_Offer> _Is_offer = new List<Is_Offer>();
+    Offer offer = new Offer();
     Product myProduct = new Product();
     Service myService = new Service();
-    Offer offer = new Offer();
-    IList<Product> _products;
-    IList<Service> _service;
-    IList<Product> _myProducts;
-    IList<Service> _myServices;
+    // --------------------------------------
+    IList<Offer> _offers = new List<Offer>();
+    IList<Is_Offer> _Is_offer = new List<Is_Offer>();
+    IList<Product> _myProducts = new List<Product>();
+    IList<Service> _myServices = new List<Service>();
 
     int totalOfTheOfferOriginalAmount = 0;
     double discount = 0;
@@ -184,63 +72,17 @@
         await loadAll();
     }
 
-    public void getDataFromActualOffer(int actual_offerID)
-    {
-        foreach (var item in _Is_offer)
+    public void getTotalSumOfPricesOfTheProductsAndServicesInOffer() {
+        // Sum the prices from products in the offer
+        foreach (var product in _myProducts)
         {
-            if (actual_offerID == item.Offer_ID)
-            {
-                foreach (var product in _products)
-                {
-                    if (item.Code_ID == product.Code_ID)
-                    {
-                        /** Sum the price to the total of the offers amount*/
-                        totalOfTheOfferOriginalAmount += product.Price;
-                        userEmail = myProduct.Entrepreneur_Email;
-
-                        /** Copy the Product attributes and copy it into myProduct info*/
-                        myProduct.Category_ID = product.Category_ID;
-                        myProduct.Code_ID = product.Code_ID;
-                        myProduct.Price = product.Price;
-                        myProduct.Product_Description = product.Product_Description;
-                        myProduct.Product_Name = product.Product_Name;
-                        myProduct.Entrepreneur_Email = product.Entrepreneur_Email;
-                        /** Add the product to my related products*/
-                        _myProducts.Add(myProduct);
-                        /** Links the email to the userEmail*/
-                        is_offerEmail = product.Entrepreneur_Email;
-
-                    }
-                }
-                foreach (var service in _service)
-                {
-                    if (item.Code_ID == service.Code_ID)
-                    {
-                        /** Sum the price to the total of the offers amount*/
-                        totalOfTheOfferOriginalAmount += service.Price_per_hour;
-                        userEmail = myService.Entrepreneur_Email;
-                        /** Copy the Service attributes and copy it into myService info*/
-                        myService.Category_ID = service.Category_ID;
-                        myService.Code_ID = service.Code_ID;
-                        myService.Price_per_hour = service.Price_per_hour;
-                        myService.Service_Description = service.Service_Description;
-                        myService.Service_Name = service.Service_Name;
-                        myService.Entrepreneur_Email = service.Entrepreneur_Email;
-                        /** Add the service to my related products*/
-                        _myServices.Add(myService);
-                        /** Links the email to the userEmail*/
-                        is_offerEmail = service.Entrepreneur_Email;
-
-                    }
-                }
-            }
+            totalOfTheOfferOriginalAmount += product.Price;
         }
-    }
-
-    void buyOffer()
-    {
-        string offer_id = Offer_ID;
-        // NavigationManager.NavigateTo("ViewOffer");
+        // Sum the prices from service in the offer
+        foreach (var service in _myServices)
+        {
+            totalOfTheOfferOriginalAmount += service.Price_per_hour;
+        }
     }
 
     void editOffer(Offer offer)
@@ -255,32 +97,32 @@
 
     public async Task loadAll()
     {
-        await loadOffers();
+        offer = await OfferService.GetOfferAsync(Int32.Parse(Offer_ID));
+        // await loadOffers();
         await loadIs_Offers();
-        await loadProducts();
-        await loadService();
-
-        getDataFromActualOffer(Int32.Parse(Offer_ID));
-    }
-
-    public async Task loadOffers()
-    {
-        _offers = await OfferService.GetAllOffersAsync();
+        await loadProductsAndServicesRelated();
+        getTotalSumOfPricesOfTheProductsAndServicesInOffer();
     }
 
     public async Task loadIs_Offers()
     {
-        _Is_offer = await Is_OfferService.GetAllIs_OffersAsync();
+        _Is_offer = await OfferService.GetAllIs_OfferRelatedToOffer(offer);
     }
 
-    public async Task loadProducts()
+    public async Task loadProductsAndServicesRelated()
     {
-        _products = await ProductService.GetAllProductsAsync();
-    }
-
-    public async Task loadService()
-    {
-        _service = await ServiceService.GetAllServicesAsync();
+        foreach (var is_offer in _Is_offer)
+        {
+            var product = await Is_OfferService.GetProductRelated(is_offer);
+            if (product is not null)
+            {
+                _myProducts.Add(product);
+            } else
+            {
+                var service = await Is_OfferService.GetServiceRelated(is_offer);
+                _myServices.Add(service);
+            }
+        }
     }
 
 }
