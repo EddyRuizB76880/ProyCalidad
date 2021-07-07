@@ -143,9 +143,14 @@
         await loadIs_Offers();
         getTotalSumOfPricesOfTheProductsAndServicesInOffer();
         await loadProductsAndServicesRelated();
-        photosDisplay = Product_PhotosService.loadAllPhotos();
-        product_foto = photosDisplay.FirstOrDefault(p => p.Code_ID == _myProducts.FirstOrDefault().Code_ID);
-        service_foto = servicePhotosDisplay.FirstOrDefault(service => service.Code_ID == _myServices.FirstOrDefault().Code_ID);
+        if (_myProducts?.Count > 0)
+        {
+            product_foto = Product_PhotosService.loadProductPhoto(_myProducts.FirstOrDefault().Code_ID);
+        }
+        if (_myServices?.Count > 0)
+        {
+            service_foto = Service_PhotosService.loadServicePhoto(_myServices.FirstOrDefault().Code_ID);
+        }
     }
 
     public async Task loadIs_Offers()
