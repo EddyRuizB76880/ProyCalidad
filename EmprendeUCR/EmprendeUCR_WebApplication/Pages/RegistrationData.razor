@@ -44,6 +44,7 @@ else // Administrator
 else
 {
     <EditForm Model="@newUser" OnValidSubmit="@insertUser">
+
         <div class="principal">
 
             <div class="principalObject">
@@ -56,13 +57,7 @@ else
                             <label for="staticEmail" class="form-label secondary_title">Correo electrónico:</label>
                             <InputText type="text" @bind-Value="@_email.Email" class="form-control inputsClass" id="staticEmail" placeholder="@_email.Email" readonly />
                         </div>
-                        <div class="mb-3">
-                            <label for="phone" class="form-label" style="font-size: 25px">Telefono</label>
-                            <!-- <InputNumber placeholder="0000-0000" @bind-Value="number" />-->
-                            @*<SfMaskedTextBox Mask="0000-0000" @bind-Value="newPhone.Phone_Number"></SfMaskedTextBox>*@
-                            <InputText type="text" @bind-Value="@newPhone.Phone_Number" class="form-control inputsClass" id="staticEmail" placeholder="@newPhone.Phone_Number" required maxlength="8" />
 
-                        </div>
                         <!--Name-->
                         <div class="marginElements">
                             <label for="inputName" class="form-label secondary_title">Nombre:</label>
@@ -71,14 +66,22 @@ else
 
                         <!--First last name-->
                         <div class="marginElements">
-                            <label for="inputFLastName" class="form-label secondary_title">Primer apellido</label>
+                            <label for="inputFLastName" class="form-label secondary_title">Primer apellido:</label>
                             <InputText type="text" @bind-Value="newUser.F_Last_Name" class="form-control inputsClass" id="inputFLastName" maxlength="15" required />
                         </div>
 
                         <!--Second last name-->
                         <div class="marginElements">
-                            <label for="inputSLastName" class="form-label secondary_title">Segundo apellido</label>
+                            <label for="inputSLastName" class="form-label secondary_title">Segundo apellido:</label>
                             <InputText type="text" @bind-Value="newUser.S_Last_Name" class="form-control inputsClass" id="inputSLastName" maxlength="15" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phone" class="form-label secondary_title">Telefono:</label>
+                            <!-- <InputNumber placeholder="0000-0000" @bind-Value="number" />-->
+                            @*<SfMaskedTextBox Mask="0000-0000" @bind-Value="newPhone.Phone_Number"></SfMaskedTextBox>*@
+                            <InputText type="text" @bind-Value="@newPhone.Phone_Number" class="form-control inputsClass" id="inputPhoneNumber" required maxlength="8" />
+
                         </div>
 
                         <!--Birth date-->
@@ -374,7 +377,6 @@ else
     private async void insertUser()
     {
 
-
         var ageInDays = DateTime.Now - newUser.Birth_Date;
         if (ageInDays.TotalDays >= 6570) //18 years in days
         {
@@ -386,10 +388,6 @@ else
 
 
             PhonesService.addPhone(p);
-
-
-
-
 
             User u = new User
             {
@@ -435,12 +433,13 @@ else
                     int selections = -1; // Sin categorías favoritas
                     foreach (var category in _categories)
                     {
-                        selections = await JsRuntime.InvokeAsync<int>("getSelectedValues", "box_"+category.Id.ToString());
+                        Console.WriteLine(category.Id.ToString());
+                        selections = await JsRuntime.InvokeAsync<int>("getSelectedValues", "box_" + category.Id.ToString());
                         if (selections != -1)
                         {
                             Likes l = new Likes
                             {
-                                Client_Email = _email.Email,
+                                Members_Email = _email.Email,
                                 Category_Id = selections,
                             };
                             LikesService.AddLikes(l);
@@ -472,6 +471,7 @@ else
         else
         {
             await JsRuntime.InvokeVoidAsync("alerta", "Solo personas mayores de edad pueden registrarse en la página");
+            //await JsRuntime.InvokeVoidAsync("abrirModal");
         }
     }
 
@@ -505,19 +505,9 @@ else
 }
 
 @*
-    *  PIIB12021-15 Registration data:
-    *      Interface improve, text-box align
-    *      Add functionality to upload profile picture
-    *      Add functionality for the user to choose their favourite categories
-    *      Begin to split the registration form for each kind of user
-    *      Fix address failures
-    *
     *  Isaac Herrera Aguilar B4332
     *  Johel Phillips Ugalde B75821
-    *  PIIB12021-15 Registration data:
-    *      -Fix address failures
-    *      -Interface improve, text-box align
-    *      -Text box for address
-    *      -Add functionality for the user to choose their favourite categories
-    *      -Template for profile picture
+    *  PIIB12021-346 Feedback messages:
+    *      -Standarization of feedback messages visualy in pages.
+    *      -Verification of data in the inner frames.
 *@

@@ -10,7 +10,7 @@ namespace EmprendeUCR_WebApplication.Data.Entities
     {
         [Key]
         public string User_Email { get; set; }
-
+        [RegularExpression("[0-9].{7,7}")]
         public string Phone_Number { get; set; }
     }
 }

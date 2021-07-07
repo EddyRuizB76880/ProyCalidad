@@ -37,7 +37,7 @@ namespace EmprendeUCR_WebApplication.Data.Contexts
                 .HasKey(o => new { o.Offer_ID, o.Code_ID, o.User_Email, o.Category_ID });
 
             var likes = modelBuilder.Entity<Likes>();
-            likes.HasKey(b => new { b.Client_Email, b.Category_Id });
+            likes.HasKey(b => new { b.Members_Email, b.Category_Id });
 
             var shoppingCartHas = modelBuilder.Entity<Shopping_Cart_Has>();
             shoppingCartHas.HasKey(c => new { c.Email, c.Code_ID, c.Entrepreneur_Email, c.Category_ID });

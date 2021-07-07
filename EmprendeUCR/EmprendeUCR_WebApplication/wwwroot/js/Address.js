@@ -9,7 +9,7 @@ function contrasenaIncorrecta(mensaje) {
 
 function getSelectedValues(id){
 	var checkbox = document.getElementById(id);
-	if(checkbox.checked === true){
+	if(checkbox.checked == true){
 		return parseInt(checkbox.value);
 	} else {
 		return -1;

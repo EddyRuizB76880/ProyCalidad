@@ -36,7 +36,7 @@ namespace EmprendeUCR_WebApplication.Data.Services
 
 		public async Task<IList<Likes>> GetByEmailAsync(string email)
 		{
-			return await _context.Likes.Where(c => String.Equals(c.Client_Email, email)).ToListAsync();
+			return await _context.Likes.Where(c => String.Equals(c.Members_Email, email)).ToListAsync();
 		}
 	}
 }
