@@ -23,7 +23,7 @@
 
         <!--Ofertas expiradas-->
         <div class="form-check form-switch m-lg-3">
-            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked @onchange="@allowExpiredOffers">
+            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" @onchange="@allowExpiredOffers">
             <label class="form-check-label" for="flexSwitchCheckChecked">Mostrar ofertas expiradas</label>
         </div>
     </div>
@@ -218,7 +218,7 @@
     // Senal de display para ofertas activas
     bool displayActiveOffers = true;
     // Senal de display para ofertas inactivas
-    bool displayExpiredOffers = true;
+    bool displayExpiredOffers = false;
 
     protected override async Task OnInitializedAsync()
     {
