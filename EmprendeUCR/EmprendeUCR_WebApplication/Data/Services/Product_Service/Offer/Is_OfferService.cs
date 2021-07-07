@@ -65,6 +65,15 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return true;
         }
 
+        public async Task<bool> DeleteIs_OfferRelatedToOfferAsync(List<Is_Offer> relatedIsOffers) // Eliminar Ofertas
+        {
+            
+           foreach(var is_offer in relatedIsOffers)
+            {
+                await DeleteIs_OfferAsync(is_offer);
+            }
+            return true;
+        }
 
 
         public async Task<Is_Offer> GetIs_OfferAsync(int Is_Offer_Id)
@@ -100,6 +109,8 @@ namespace EmprendeUCR_WebApplication.Data.Services
         {
             return _context.Service.FirstOrDefault(service => String.Equals(service.Code_ID, is_offer.Code_ID));
         }
+
+
     }
 
 }

@@ -131,8 +131,9 @@
     }
 
     // Elimina la oferta
-    void Delete()
+    public async Task Delete()
     {
+        await OfferService.DeleteOfferAsync(offer);
         NavigationManager.NavigateTo("Offers");
     }
 

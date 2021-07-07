@@ -293,7 +293,7 @@
         foreach (var offer in _offers)
         {
             // Check if is expired
-            if (offer.Expire_Date < DateTime.Now)
+            if (offer.Expire_Date < DateTime.Today)
             {
                 expiredOffers.Add(offer);
             }
