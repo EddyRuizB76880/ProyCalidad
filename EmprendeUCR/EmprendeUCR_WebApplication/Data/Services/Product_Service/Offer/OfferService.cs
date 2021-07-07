@@ -71,7 +71,10 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return await _context.Is_Offer.Where(is_Offer => String.Equals(offer.Offer_ID, is_Offer.Offer_ID)).ToListAsync();
         }
 
-
+        public List<Is_Offer> GetAllIs_OfferRelatedToOfferNOTAsync(Offer offer)
+        {
+            return _context.Is_Offer.Where(is_Offer => String.Equals(offer.Offer_ID, is_Offer.Offer_ID)).ToList();
+        }
         /*
         public async Task<IList<Offer>> GetOfferFromEntrepreneurAsync(string email)
         {

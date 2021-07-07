@@ -31,6 +31,7 @@
             <!-- Display de TODAS LAS OFERTAS si existen-->
             @if (_offers?.Count > 0)
             {
+                <!--Headers-->
                 <thead class="bg-blue">
                     <tr>
                         <th scope="col" width="200" valign="middle" align="center">ID de la oferta</th>
@@ -46,96 +47,92 @@
                 <tbody>
                     @if (displayActiveOffers)
                     {
-                        <!-- Display oferta especifica-->
-                        @foreach (var offer in _offers)
+                        <!-- Display active offers-->
+                        @foreach (var offer in activeOffers)
                         {
-                            @if (getAsociatedEmailToOffer(offer).Equals(userEmail.ToLower()))
-                            {
-                                <!--Obtiene la suma de todos los objetos ligados a la oferta actual)-->
-                                var normalPrice = getTotalPriceFromListedItemsInOffer(offer);
-                                double actualDiscountPostOffer = (Double.Parse(offer.Discount.ToString()) / normalPrice) * 100;
-                                actualDiscountPostOffer = 100 - actualDiscountPostOffer;
-                                string displayDiscount = string.Format("{0:N0}", actualDiscountPostOffer);
-                                string typeOffer = getTypeOffer(offer) ? "Combo" : "Descuento";
-                                <tr>
-                                    <!-- Saca el ID de la oferta-->
-                                    <td scope="row" width="200" valign="middle" align="left">@offer.Offer_ID</td>
+                            <!--Obtiene la suma de todos los objetos ligados a la oferta actual)-->
+                            var normalPrice = getTotalPriceFromListedItemsInOffer(offer);
+                            double actualDiscountPostOffer = (Double.Parse(offer.Discount.ToString()) / normalPrice) * 100;
+                            actualDiscountPostOffer = 100 - actualDiscountPostOffer;
+                            string displayDiscount = string.Format("{0:N0}", actualDiscountPostOffer);
+                            string typeOffer = getTypeOffer(offer) ? "Combo" : "Descuento";
+                            <tr>
+                                <!-- Saca el ID de la oferta-->
+                                <td scope="row" width="200" valign="middle" align="left">@offer.Offer_ID</td>
 
-                                    <!-- Saca la descripicon de Offer-->
-                                    <td scope="row" width="200" valign="middle" align="left">@offer.Offer_Description</td>
+                                <!-- Saca la descripicon de Offer-->
+                                <td scope="row" width="200" valign="middle" align="left">@offer.Offer_Description</td>
 
-                                    <!--Tipo de oferta, descuento o combo-->
-                                    <td scope="row" width="200" valign="middle" align="left">@typeOffer</td>
+                                <!--Tipo de oferta, descuento o combo-->
+                                <td scope="row" width="200" valign="middle" align="left">@typeOffer</td>
 
-                                    <!-- Para el precio normal ocupa iterar por todos los Is_Offer asociados al ID de Offer-->
-                                    <td scope="row" width="200" valign="middle" align="left">@normalPrice</td>
+                                <!-- Para el precio normal ocupa iterar por todos los Is_Offer asociados al ID de Offer-->
+                                <td scope="row" width="200" valign="middle" align="left">@normalPrice</td>
 
-                                    <!-- Saca el precio de la oferta de Offer-->
-                                    <td scope="row" width="200" valign="middle" align="left">@offer.Discount</td>
+                                <!-- Saca el precio de la oferta de Offer-->
+                                <td scope="row" width="200" valign="middle" align="left">@offer.Discount</td>
 
-                                    <!-- El descuento se saca con precio normal y la oferta (ej: 15% de descuento)-->
-                                    <td scope="row" width="200" valign="middle" align="left">@displayDiscount%</td>
+                                <!-- El descuento se saca con precio normal y la oferta (ej: 15% de descuento)-->
+                                <td scope="row" width="200" valign="middle" align="left">@displayDiscount%</td>
 
-                                    <!-- Fecha de inicio de oferta-->
-                                    <td scope="row" width="200" valign="middle" align="left">@offer.Initial_Date.ToShortDateString()</td>
+                                <!-- Fecha de inicio de oferta-->
+                                <td scope="row" width="200" valign="middle" align="left">@offer.Initial_Date.ToShortDateString()</td>
 
-                                    <!-- Fecha de final de oferta-->
-                                    <td scope="row" width="200" valign="middle" align="left">@offer.Expire_Date.ToShortDateString()</td>
+                                <!-- Fecha de final de oferta-->
+                                <td scope="row" width="200" valign="middle" align="left">@offer.Expire_Date.ToShortDateString()</td>
 
-                                    <!-- Boton para ver la oferta -->
-                                    <td>
-                                        <button class="btn" type="button" @onclick="() => viewOffer(offer)"><i class="oi oi-plus"></i>Ver oferta</button>
-                                    </td>
-                                </tr>
+                                <!-- Boton para ver la oferta -->
+                                <td>
+                                    <button class="btn" type="button" @onclick="() => viewOffer(offer)"><i class="oi oi-plus"></i>Ver oferta</button>
+                                </td>
+                            </tr>
 
-                            }
                         }
                     }
                     @if (displayExpiredOffers)
                     {
-                        <!-- Display oferta especifica-->
-                        @foreach (var offer in _offers)
+                        <!-- Display expired offers-->
+                        @foreach (var offer in expiredOffers)
                         {
-                            @if (getAsociatedEmailToOffer(offer).Equals(userEmail.ToLower()))
-                            {
-                                <!--Obtiene la suma de todos los objetos ligados a la oferta actual)-->
-                                var normalPrice = getTotalPriceFromListedItemsInOffer(offer);
-                                double actualDiscountPostOffer = (Double.Parse(offer.Discount.ToString()) / normalPrice) * 100;
-                                actualDiscountPostOffer = 100 - actualDiscountPostOffer;
-                                string displayDiscount = string.Format("{0:N0}", actualDiscountPostOffer);
-                                string typeOffer = getTypeOffer(offer) ? "Combo" : "Descuento";
-                                <tr>
-                                    <!-- Saca el ID de la oferta-->
-                                    <td scope="row" width="200" valign="middle" align="left">@offer.Offer_ID</td>
 
-                                    <!-- Saca la descripicon de Offer-->
-                                    <td scope="row" width="200" valign="middle" align="left">@offer.Offer_Description</td>
+                            <!--Obtiene la suma de todos los objetos ligados a la oferta actual)-->
+                            var normalPrice = getTotalPriceFromListedItemsInOffer(offer);
+                            double actualDiscountPostOffer = (Double.Parse(offer.Discount.ToString()) / normalPrice) * 100;
+                            actualDiscountPostOffer = 100 - actualDiscountPostOffer;
+                            string displayDiscount = string.Format("{0:N0}", actualDiscountPostOffer);
+                            string typeOffer = getTypeOffer(offer) ? "Combo" : "Descuento";
+                            <tr>
+                                <!-- Saca el ID de la oferta-->
+                                <td scope="row" width="200" valign="middle" align="left">@offer.Offer_ID</td>
 
-                                    <!--Tipo de oferta, descuento o combo-->
-                                    <td scope="row" width="200" valign="middle" align="left">@typeOffer</td>
+                                <!-- Saca la descripicon de Offer-->
+                                <td scope="row" width="200" valign="middle" align="left">@offer.Offer_Description</td>
 
-                                    <!-- Para el precio normal ocupa iterar por todos los Is_Offer asociados al ID de Offer-->
-                                    <td scope="row" width="200" valign="middle" align="left">@normalPrice</td>
+                                <!--Tipo de oferta, descuento o combo-->
+                                <td scope="row" width="200" valign="middle" align="left">@typeOffer</td>
 
-                                    <!-- Saca el precio de la oferta de Offer-->
-                                    <td scope="row" width="200" valign="middle" align="left">@offer.Discount</td>
+                                <!-- Para el precio normal ocupa iterar por todos los Is_Offer asociados al ID de Offer-->
+                                <td scope="row" width="200" valign="middle" align="left">@normalPrice</td>
 
-                                    <!-- El descuento se saca con precio normal y la oferta (ej: 15% de descuento)-->
-                                    <td scope="row" width="200" valign="middle" align="left">@displayDiscount%</td>
+                                <!-- Saca el precio de la oferta de Offer-->
+                                <td scope="row" width="200" valign="middle" align="left">@offer.Discount</td>
 
-                                    <!-- Fecha de inicio de oferta-->
-                                    <td scope="row" width="200" valign="middle" align="left">@offer.Initial_Date.ToShortDateString()</td>
+                                <!-- El descuento se saca con precio normal y la oferta (ej: 15% de descuento)-->
+                                <td scope="row" width="200" valign="middle" align="left">@displayDiscount%</td>
 
-                                    <!-- Fecha de final de oferta-->
-                                    <td scope="row" width="200" valign="middle" align="left">@offer.Expire_Date.ToShortDateString()</td>
+                                <!-- Fecha de inicio de oferta-->
+                                <td scope="row" width="200" valign="middle" align="left">@offer.Initial_Date.ToShortDateString()</td>
 
-                                    <!-- Boton para ver la oferta -->
-                                    <td>
-                                        <button class="btn" type="button" @onclick="() => viewOffer(offer)"><i class="oi oi-plus"></i>Ver oferta</button>
-                                    </td>
-                                </tr>
+                                <!-- Fecha de final de oferta-->
+                                <td scope="row" width="200" valign="middle" align="left">@offer.Expire_Date.ToShortDateString()</td>
 
-                            }
+                                <!-- Boton para ver la oferta -->
+                                <td>
+                                    <button class="btn" type="button" @onclick="() => viewOffer(offer)"><i class="oi oi-plus"></i>Ver oferta</button>
+                                </td>
+                            </tr>
+
+
                         }
                     }
                     @if (!displayActiveOffers && !displayExpiredOffers)
@@ -159,20 +156,19 @@
 </body>
 
 @code {
-    IList<Offer> _offers = new List<Offer>();
-    IList<Is_Offer> _Is_offer = new List<Is_Offer>();
 
+
+    // ---------------------------------------------
+    IList<Offer> _offers = new List<Offer>();
+    IList<Offer> activeOffers = new List<Offer>();
+    IList<Offer> expiredOffers = new List<Offer>();
     Offer offer = new Offer();
     IList<Product_Service> _productsServices;
-    IList<Entrepreneur> entrepreneurs;
-    IList<Product> _products;
-    IList<Service> _service;
     // Contains all the active offers related to the current entrepreneur
     IList<Offer> myExpiredOffers;
     // Contains all the active offers related to the current entrepreneur
     IList<Offer> myActiveOffers;
 
-    int totalPriceFromListedProductsAndServicesInOffer = 0;
     double discount = 0;
     string userEmail = "default";
 
@@ -183,7 +179,6 @@
     protected override async Task OnInitializedAsync()
     {
         userEmail = await sessionStorage.GetItemAsync<string>("Email");
-        entrepreneurs = await EntrepreneurService.GetAsync();
         await loadAll();
     }
 
@@ -200,71 +195,26 @@
     public int getTotalPriceFromListedItemsInOffer(Offer offer)
     {
         int total_price = 0;
-        foreach (var item in _Is_offer)
+        List<Is_Offer> relatedIs_Offers = OfferService.GetAllIs_OfferRelatedToOfferNOTAsync(offer);
+        foreach (var is_offer in relatedIs_Offers)
         {
-            if (offer.Offer_ID == item.Offer_ID)
+            Product product = Is_OfferService.GetProductRelated(is_offer);
+            if (product is not null)
             {
-                foreach (var product in _products)
-                {
-                    if (item.Code_ID == product.Code_ID)
-                    {
-                        total_price += (product.Price * item.Amount);
-
-                    }
-                }
-
-                foreach (var service in _service)
-                {
-                    if (item.Code_ID == service.Code_ID)
-                    {
-                        total_price += (service.Price_per_hour * item.Amount);
-
-                    }
-                }
+                total_price += product.Price;
+            }
+            else
+            {
+                Service service = Is_OfferService.GetServiceRelated(is_offer);
+                total_price += service.Price_per_hour;
             }
         }
         return total_price;
     }
 
-    public string getAsociatedEmailToOffer(Offer offer)
-    {
-        string email = "";
-
-        foreach (var item in _Is_offer)
-        {
-            if (offer.Offer_ID == item.Offer_ID)
-            {
-                foreach (var product in _products)
-                {
-                    if (email == "" && product.Code_ID == item.Code_ID)
-                    {
-                        email = product.Entrepreneur_Email;
-                    }
-                }
-                if (email == "")
-                {
-                    foreach (var service in _service)
-                    {
-                        if (email == "" && service.Code_ID == item.Code_ID)
-                        {
-                            email = service.Entrepreneur_Email;
-                        }
-                    }
-                }
-            }
-        }
-
-        return email;
-    }
-
     void viewOffer(Offer offer)
     {
         NavigationManager.NavigateTo("ViewOffer" + "/" + offer.Offer_ID);
-    }
-
-    void editOffer(Offer offer)
-    {
-        // NavigationManager.NavigateTo("EditOffer");
     }
 
     void AddOffer()
@@ -280,9 +230,23 @@
     public async Task loadAll()
     {
         await loadOffers();
-        await loadIs_Offers();
-        await loadProducts();
-        await loadService();
+        filterOfferByExpirationDate();
+    }
+
+    public void filterOfferByExpirationDate()
+    {
+        foreach (var offer in _offers)
+        {
+            // Check if is expired
+            if (offer.Expire_Date < DateTime.Now)
+            {
+                expiredOffers.Add(offer);
+            }
+            else
+            {
+                activeOffers.Add(offer);
+            }
+        }
     }
 
     public async Task loadOffers()
@@ -290,54 +254,13 @@
         _offers = await OfferService.GetAllOffersAsync();
     }
 
-    public async Task loadIs_Offers()
-    {
-        _Is_offer = await Is_OfferService.GetAllIs_OffersAsync();
-    }
-
-    public async Task loadProducts()
-    {
-        _products = await ProductService.GetAllProductsAsync();
-    }
-
-    public async Task loadService()
-    {
-        _service = await ServiceService.GetAllServicesAsync();
-    }
     public bool getTypeOffer(Offer offer)
     {
-        int count = 0;
+        // True = Combo
+        // False = descuento
+        List<Is_Offer> relatedIs_Offers = OfferService.GetAllIs_OfferRelatedToOfferNOTAsync(offer);
 
-        foreach (var item in _Is_offer)
-        {
-            if (offer.Offer_ID == item.Offer_ID)
-            {
-                foreach (var product in _products)
-                {
-                    if (product.Code_ID == item.Code_ID)
-                    {
-                        count++;
-                        if (count > 1)
-                        {
-                            return true;
-                        }
-                    }
-                }
-                foreach (var service in _service)
-                {
-                    if (service.Code_ID == item.Code_ID)
-                    {
-                        count++;
-                        if (count > 1)
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-
-        return false;
+        return relatedIs_Offers.Count > 1;
     }
 }
 
