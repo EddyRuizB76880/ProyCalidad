@@ -21,27 +21,34 @@
             <div class="grid2 gap-3">
                 <div class=" border-1 shadow  bg-silver">
                     @*Imput for name of the product*@
-                    <div class="form-group w-70">
-                        <label for="Name" class="control-label m-lg-2">Nombre</label>
-                        <div class="d-none">@checkInputProduct()</div>
-                        <input form="Name" class="form-control m-lg-2" @bind="@prod.Product_Name" />
-                    </div><br />
+                    <EditForm id="@MyID" EditContext="editContext" OnValidSubmit="@onCreateProduct">
+                        <DataAnnotationsValidator />
+                        <div class="form-group w-70">
+                            <label for="Name" class="control-label m-lg-2">Nombre</label>
+                            <ValidationMessage For=@(() => prod.Product_Name) />
+                            <input form="Name" class="form-control m-lg-2" @bind="@prod.Product_Name" />
+                        </div><br />
 
-                    @*Imput for description of the product*@
-                    <div class="form-group w-70">
-                        <label for="Product_Description" class="control-label m-lg-2">Descripción</label>
-                        <div class="d-none">@checkInputProduct()</div>
-                        <textarea rows="3" form="Product_Description" class="form-control m-lg-2" @bind="@prod.Product_Description" />
-                    </div><br />
 
-                    @*Imput for price of the product*@
+                        @*Imput for description of the product*@
+                        <div class="form-group w-70">
+                            <label for="Product_Description" class="control-label m-lg-2">Descripción</label>
+                            <textarea rows="3" form="Product_Description" class="form-control m-lg-2" @bind="@prod.Product_Description" />
+                        </div><br />
+
+                        @*Imput for price of the product*@
                     <div class="form-group w-30">
                         <label for="Price" class="control-label m-lg-2">Precio(CRC)</label>
-                        <div class="d-none">@checkInputProduct()</div>
+                        <ValidationMessage For=@(() => prod.Price) />
+
                         <input form="Price" type="number" class="form-control m-lg-2" @bind="@prod.Price" />
                     </div>
+                        
+
+                    </EditForm>
                 </div>
-                <EmprendeUCR_WebApplication.Pages.Product_Service.Product.ProductStatusInput />
+
+                    <EmprendeUCR_WebApplication.Pages.Product_Service.Product.ProductStatusInput />
             </div> <br /> <br />
 
             @*Display the option to the user to upload the photo and assign it to the product (the 6 of them)*@
@@ -70,7 +77,6 @@
                             </label>
                             <img class="img-card" hidden="@(!isPhotoLoaded(photosTwo))" src="@Product_PhotosService.convertImageDisplay(photosTwo.Photos)" width="350" />
                             <button @onclick="@(args => deletePhoto(args, photosTwo))" hidden="@(isPhotoLoaded(photosTwo) == false)" id="deletePhoto2" type="button" class="btn btn-danger material-icons-outlined ">delete</button>
-
                         </EditForm>
                     </div>
 
@@ -145,15 +151,9 @@
                         <input type="button" class="btn btn-primary m-lg-2" @onclick="@Clean" value="Limpiar" />
 
                         @*if there are no error, shows the button "Guardar"*@
-                        @if(ready)
-                        {
-                        <input type="button" class="btn btn-primary m-lg-2" @onclick="@onCreateProduct" value="Guardar" />
-                        }
-                        @*if there are errors disables the button "Guardar"*@
-                        else
-                        {
-                        <input type="button" class="btn btn-primary m-lg-2" @onclick="@onCreateProduct" value="Guardar" disabled />
-                        }
+                         
+                        <input type="submit" form ="@MyID"class="btn btn-primary m-lg-2" value="Guardar" />
+                        
                     </div>
                 </div>
             </div>
@@ -198,13 +198,15 @@
     EmprendeUCR_WebApplication.Data.Entities.Product prod = new EmprendeUCR_WebApplication.Data.Entities.Product();
     //The product service to add     
     EmprendeUCR_WebApplication.Data.Entities.Product_Service prodServ = new EmprendeUCR_WebApplication.Data.Entities.Product_Service();
-
+    private string MyID = "myid";
     //List of categories
     IList<Category> categories;
+    private EditContext editContext;
     //Loading
     private bool _isLoading = true;
     //hideError
     bool hideError = true;
+    private ValidationMessageStore messageStore;
 
     // The photos that will be assign to the Product
     Product_Photos photosOne = new Product_Photos();
@@ -223,7 +225,7 @@
     string errorMessage = "";
     //boolean to control if it's possible save 
     bool ready=false;
-
+    bool categorieSelected = false;
     // Receives file to insert and product to insert it to.
     public async Task HandleFileSelected(IFileListEntry[] files, Product_Photos photos)
     {
@@ -241,35 +243,18 @@
     }
 
     //Check if it's possible to save
-    protected async Task checkInputProduct()
-    {
-        bool check = true;
-        errorMessage = "";
-        if(selectedCategory == null)
-        {
-            errorMessage += "Debe elegir una categoría.\n";
-            check = false;
-        }
-        if(prod.Price <= 0)
-        {
-            errorMessage += "El precio debe ser un numero mayor a 0. \n";
-            check = false;
-        }
-        if (String.IsNullOrEmpty( prod.Product_Name))
-        {
-            errorMessage += "El producto necesita un nombre. \n";
-            check = false;
-        }
-        ready=check;
-    }
+
 
     // Gets called when page first loads.
     protected override async Task OnInitializedAsync()
     {
+        editContext = new(prod);
+        editContext.OnValidationRequested += HandleValidationRequested;
+        messageStore = new(editContext);
+
         prodServ.Entrepreneur_Email = await sessionStorage.GetItemAsync<string>("Email");
-        
+
         categories = await CategoryService.GetAsync();
-        checkInputProduct(); 
         _isLoading = false;
     }
 
@@ -293,7 +278,7 @@
     {
         return photo.Photos != null;
     }
-    
+
     //Deletes one photo
     protected void deletePhoto(MouseEventArgs args, Product_Photos photo)
     {
@@ -332,29 +317,29 @@
     //Creates a product
     protected async void onCreateProduct()
     {
-        if (ready ){
-            prodServ.Availability = prodServ.Availability;
-            prodServ.Category_ID = selectedCategory.Id;
 
-            prod.Category_ID = selectedCategory.Id;
+        prodServ.Availability = prodServ.Availability;
+        prodServ.Category_ID = selectedCategory.Id;
 
-            prod.Entrepreneur_Email = prodServ.Entrepreneur_Email;
+        prod.Category_ID = selectedCategory.Id;
 
-            int idToInsert = await createProduct_Service();
-            prod.Code_ID = idToInsert;
-            await createProduct();
+        prod.Entrepreneur_Email = prodServ.Entrepreneur_Email;
 
-            /// Save photos on data base
-            preparePhoto(photosOne, idToInsert);
-            preparePhoto(photosTwo, idToInsert);
-            preparePhoto(photosThree, idToInsert);
-            preparePhoto(photosFour, idToInsert);
-            preparePhoto(photosFive, idToInsert);
-            preparePhoto(photosSix, idToInsert);
-            /// End of save photos on database
+        int idToInsert = await createProduct_Service();
+        prod.Code_ID = idToInsert;
+        await createProduct();
 
-            NavigationManager.NavigateTo("ListProducts");
-        }
+        /// Save photos on data base
+        preparePhoto(photosOne, idToInsert);
+        preparePhoto(photosTwo, idToInsert);
+        preparePhoto(photosThree, idToInsert);
+        preparePhoto(photosFour, idToInsert);
+        preparePhoto(photosFive, idToInsert);
+        preparePhoto(photosSix, idToInsert);
+        /// End of save photos on database
+
+        NavigationManager.NavigateTo("ListProducts");
+
     }
 
     //Button to cancel and return to List of Products
@@ -398,11 +383,31 @@
         }
 
     }
-    
+
     //SelectionHandler2 row deselected 
     public async Task SelectionHandler2(Syncfusion.Blazor.Grids.RowDeselectEventArgs<Category> args)
     {
 
         selectedCategory = null;
+    }
+    private void HandleValidationRequested(object sender,
+        ValidationRequestedEventArgs args)
+    {
+        messageStore.Clear();
+
+        // Custom validation logic
+        if (String.IsNullOrEmpty(prod.Category_ID.ToString()))
+        {
+            messageStore.Add(() => prod.Category_ID, "El producto debe asociarse a una categoria");
+        }
+        // If the initial date input is greater than the expire date
+        if (String.IsNullOrEmpty(prod.Product_Name))
+        {
+            messageStore.Add(() => prod.Product_Name, "El producto debe tener un nombre asociado.");
+        }
+        if(prod.Price <= 0)
+        {
+            messageStore.Add(() => prod.Price, "El producto debe tener un precio mayor a 0.");
+        }
     }
 }

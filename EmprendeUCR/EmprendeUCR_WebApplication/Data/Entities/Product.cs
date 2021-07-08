@@ -13,9 +13,12 @@ namespace EmprendeUCR_WebApplication.Data.Entities
         [Key]
         public int Code_ID { get; set; }
         public string Entrepreneur_Email { get; set; }
+        [Required]
         public int Category_ID { get; set; }
+        [Required]
         public string Product_Name { get; set; }
         public string Product_Description { get; set; }
+        [Required]
         public int Price { get; set; }
 
     }
