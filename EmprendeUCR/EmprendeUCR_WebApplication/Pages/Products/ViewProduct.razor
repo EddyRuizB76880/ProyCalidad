@@ -1,4 +1,5 @@
 ﻿@page "/ViewProduct"
+@page "/ViewProduct/{CodeId}"
 @using EmprendeUCR_WebApplication.Data.Services
 @using EmprendeUCR_WebApplication.Data.Entities
 @using System.IO
@@ -15,104 +16,109 @@
 
     <div class="">
         <!--Displays the header-->
-        <section class=" w-100 gap-lg-2 border-blue">
+        <section class=" w-100 gap-lg-2">
 
+
+           
             <div class="grid2 gap-3">
 
                 <div class=" border-1 shadow  bg-silver">
                     <div class="form-group w-70">
-                        <label for="Name" class="control-label m-lg-2">Nombre</label>
-                        <label for="Name" class="control-label m-lg-2">Producto 1</label>
+                        <label for="Name" class="control-label m-lg-2">Nombre:</label>
+                        <label for="Name" class="control-label">@_product.Product_Name</label>
                     </div><br />
                     <div class="form-group w-30">
-                        <label for="Price" class="control-label m-lg-2">Categoria</label>
-                        <label for="Price" class="control-label m-lg-2">Categoria 1</label>
+                        <label for="Price" class="control-label m-lg-2">Categoria:</label>
+                        <label for="Price" class="control-label ">@CategoryService.getCategory(_product.Category_ID).Title</label>
                     </div>
                     <div class="form-group w-70">
-                        <label for="Product_Description" class="control-label m-lg-2">Descripción</label>
-                        <textarea rows="3" form="Product_Description" class="form-control m-lg-2" value="Descripcion sabrosa" />
+                        <label for="Product_Description" class="control-label m-lg-2">Descripción:</label>
+                        <textarea readonly="readonly" rows="3" form="Product_Description" class="form-control m-lg-2">@_product.Product_Description</textarea>
+
                     </div><br />
                     <div class="form-group w-30">
-                        <label for="Price" class="control-label m-lg-2">Precio(CRC)</label>
-                        <label for="Price" class="control-label m-lg-2">1400</label>
+                        <label for="Price" class="control-label m-lg-2">Precio(CRC):</label>
+                        <label for="Price" class="control-label ">@_product.Price</label>
                     </div>
 
 
                 </div>
-
+               
                 <EmprendeUCR_WebApplication.Pages.Product_Service.Product.ProductStatusInput />
 
             </div> <br /> <br />
-
-              <div> <div class="wrapper w-90">
+            
+            <div>
+                <div class="wrapper w-90">
 
                     @*display photo one*@
                     <div class="one">
-                       
-                            <label class="" for="addPhoto1">
-                                <span class="d-flex align-items-center justify-content-center img-card btn btn-secondary material-icons-outlined">add_photo_alternate</span>
-                            </label>
+
+                        <label class="" for="addPhoto1">
+                            <span class="d-flex align-items-center justify-content-center img-card btn btn-secondary material-icons-outlined">add_photo_alternate</span>
+                        </label>
                     </div>
 
-                   <div class="one">
-                       
-                            <label class="" for="addPhoto1">
-                                <span class="d-flex align-items-center justify-content-center img-card btn btn-secondary material-icons-outlined">add_photo_alternate</span>
-                            </label>
+                    <div class="one">
+
+                        <label class="" for="addPhoto1">
+                            <span class="d-flex align-items-center justify-content-center img-card btn btn-secondary material-icons-outlined">add_photo_alternate</span>
+                        </label>
                     </div>
 
-                   <div class="one">
-                       
-                            <label class="" for="addPhoto1">
-                                <span class="d-flex align-items-center justify-content-center img-card btn btn-secondary material-icons-outlined">add_photo_alternate</span>
-                            </label>
+                    <div class="one">
+
+                        <label class="" for="addPhoto1">
+                            <span class="d-flex align-items-center justify-content-center img-card btn btn-secondary material-icons-outlined">add_photo_alternate</span>
+                        </label>
                     </div>
 
-                   <div class="one">
-                       
-                            <label class="" for="addPhoto1">
-                                <span class="d-flex align-items-center justify-content-center img-card btn btn-secondary material-icons-outlined">add_photo_alternate</span>
-                            </label>
+                    <div class="one">
+
+                        <label class="" for="addPhoto1">
+                            <span class="d-flex align-items-center justify-content-center img-card btn btn-secondary material-icons-outlined">add_photo_alternate</span>
+                        </label>
                     </div>
 
 
-                   <div class="one">
+                    <div class="one">
 
-                       <label class="" for="addPhoto1">
-                           <span class="d-flex align-items-center justify-content-center img-card btn btn-secondary material-icons-outlined">add_photo_alternate</span>
-                       </label>
-                   </div>
-                     
-                   <div class="one">
-
-                       <label class="" for="addPhoto1">
-                           <span class="d-flex align-items-center justify-content-center img-card btn btn-secondary material-icons-outlined">add_photo_alternate</span>
-                       </label>
-                   </div>
-
-
-
-
-             </div></div>
-                
-
-
-
-
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                        <label class="form-check-label" for="flexSwitchCheckDefault">Disponibilidad</label>
+                        <label class="" for="addPhoto1">
+                            <span class="d-flex align-items-center justify-content-center img-card btn btn-secondary material-icons-outlined">add_photo_alternate</span>
+                        </label>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <input type="button" class="btn btn-primary" value="Regresar" />
+                    <div class="one">
 
-
-                            </div>
-                        </div>
+                        <label class="" for="addPhoto1">
+                            <span class="d-flex align-items-center justify-content-center img-card btn btn-secondary material-icons-outlined">add_photo_alternate</span>
+                        </label>
                     </div>
+
+
+
+
+                </div>
+            </div>
+           
+
+
+
+
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                <label class="form-check-label" for="flexSwitchCheckDefault">Disponibilidad</label>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <input type="button" class="btn btn-primary" value="Regresar" />
+
+
+                    </div>
+                </div>
+            </div>
 
         </section>
 
@@ -128,17 +134,41 @@
 
 </body>
 
+@functions {
 
+    [Parameter]
+
+    public string CodeId { get; set; }
+
+
+}
 
 @code {
 
-    private IList<Product> _product;
 
-    public async Task loadProducts(string CodeId)
+    Product _product = new Product();
+
+
+    public void  c(string CodeId)
     {
-        _product = await ProductService.GetProductsEntrepreneurAsync(CodeId);
+
+        //selectedProduct = CodeId;
+        loadProduct(CodeId);
+
+    }
+
+    public void  loadProduct(string CodeId)
+    {
+        _product =  ProductService.GetProduct(CodeId);
     }
 
 
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        loadProduct(CodeId);
+    }
 
 }
