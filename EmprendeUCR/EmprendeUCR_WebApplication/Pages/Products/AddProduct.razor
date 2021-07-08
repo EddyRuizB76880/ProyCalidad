@@ -25,7 +25,7 @@
                         <DataAnnotationsValidator />
                         <div class="form-group w-70">
                             <label for="Name" class="control-label m-lg-2">Nombre</label>
-                            <ValidationMessage For=@(() => prod.Product_Name) />
+                            <ValidationMessage class="text-left" For=@(() => prod.Product_Name) />
                             <input form="Name" class="form-control m-lg-2" @bind="@prod.Product_Name" />
                         </div><br />
 
@@ -35,17 +35,24 @@
                             <label for="Product_Description" class="control-label m-lg-2">Descripción</label>
                             <textarea rows="3" form="Product_Description" class="form-control m-lg-2" @bind="@prod.Product_Description" />
                         </div><br />
+                              <div class="form-group w-30">
+                                  <label class="control-label m-lg-2">Categoria Selecionada:</label>
+                                  @if (selectedCategory != null)
+                                  {
+                                      <p>@selectedCategory.Title</p>
+                                      categorieSelected = true;
+                                  }
+                                  <ValidationMessage For=@(() => prod.Category_ID) />
 
+                              </div><br />
                         @*Imput for price of the product*@
                     <div class="form-group w-30">
                         <label for="Price" class="control-label m-lg-2">Precio(CRC)</label>
                         <ValidationMessage For=@(() => prod.Price) />
+                        <input form="Price" class="form-control m-lg-2" @bind="@prod.Price" />
 
-                        <input form="Price" type="number" class="form-control m-lg-2" @bind="@prod.Price" />
                     </div>
-                        
-
-                    </EditForm>
+                </EditForm>
                 </div>
 
                     <EmprendeUCR_WebApplication.Pages.Product_Service.Product.ProductStatusInput />
@@ -151,9 +158,15 @@
                         <input type="button" class="btn btn-primary m-lg-2" @onclick="@Clean" value="Limpiar" />
 
                         @*if there are no error, shows the button "Guardar"*@
-                         
-                        <input type="submit" form ="@MyID"class="btn btn-primary m-lg-2" value="Guardar" />
-                        
+                        @if (categorieSelected)
+                        {
+                            <input type="submit" form="@MyID" class="btn btn-primary m-lg-2" value="Guardar" />
+                        }
+                        else
+                        {
+                            <input type="submit" form="@MyID" class="btn btn-primary m-lg-2" value="Guardar" disabled />
+
+                        }
                     </div>
                 </div>
             </div>
@@ -207,7 +220,6 @@
     //hideError
     bool hideError = true;
     private ValidationMessageStore messageStore;
-
     // The photos that will be assign to the Product
     Product_Photos photosOne = new Product_Photos();
     Product_Photos photosTwo = new Product_Photos();
@@ -380,7 +392,9 @@
         if (selectedCategories.Count() > 0)
         {
             selectedCategory = args.Data;
+            prod.Category_ID = selectedCategory.Id;
         }
+        categorieSelected = true;
 
     }
 
@@ -389,6 +403,7 @@
     {
 
         selectedCategory = null;
+        categorieSelected = false;
     }
     private void HandleValidationRequested(object sender,
         ValidationRequestedEventArgs args)
@@ -407,7 +422,7 @@
         }
         if(prod.Price <= 0)
         {
-            messageStore.Add(() => prod.Price, "El producto debe tener un precio mayor a 0.");
+            messageStore.Add(() => prod.Price, "El precio debe ser mayor a 0.");
         }
     }
 }
