@@ -33,24 +33,24 @@
         <div class=" w-40 border-1 shadow  ">
             <ul>
                 <!-- Saca la descripicon de Offer-->
-                <li scope="row" width="200" valign="middle" align="left"> Descripción: @offer.Offer_Description</li>
+                <li scope="row" width="200" valign="middle" align="left"> <b>Descripción:</b> @offer.Offer_Description</li>
                 <!-- Combo o descuento-->
-                <li scope="row" width="200" valign="middle" align="left"> Tipo: @(_Is_offer.Count > 1? "Combo" : "Descuento")</li>
+                <li scope="row" width="200" valign="middle" align="left"> <b>Tipo:</b> @(_Is_offer.Count > 1? "Combo" : "Descuento")</li>
                 <!-- Suma de todos los articulos en la oferta-->
-                <li scope="row" width="200" valign="middle" align="left"> Precio Normal: @totalOfTheOfferOriginalAmount</li>
+                <li scope="row" width="200" valign="middle" align="left"> <b>Precio Normal:</b> @totalOfTheOfferOriginalAmount</li>
                 <!-- Precio final despues de la oferta-->
-                <li scope="row" width="200" valign="middle" align="left"> Precio Oferta: @(offer.Discount)</li>
+                <li scope="row" width="200" valign="middle" align="left"> <b>Precio Oferta:</b> @(offer.Discount)</li>
                 <!-- Initial active offer date-->
-                <li scope="row" width="200" valign="middle" align="left"> Inicio de oferta: @(offer.Initial_Date.ToShortDateString())</li>
+                <li scope="row" width="200" valign="middle" align="left"> <b>Inicio de oferta:</b> @(offer.Initial_Date.ToShortDateString())</li>
                 <!-- Expire offer date-->
-                <li scope="row" width="200" valign="middle" align="left"> Fin de oferta: @(offer.Expire_Date.ToShortDateString())</li>
+                <li scope="row" width="200" valign="middle" align="left"> <b>Fin de oferta:</b> @(offer.Expire_Date.ToShortDateString())</li>
             </ul>
         </div>
     </div>
     <div class=" mt-3">
         <!--Display de los productos o servicios involucrados-->
         <div class=" float-md-start border-1 shadow w-100">
-            <t scope="auto" width="200" valign="middle" align="left"> Productos o servicios asociados:</t>
+            <t scope="auto" width="200" valign="middle" align="left"> <b>Productos o servicios asociados:</b></t>
             <ul>
                 <!--Display de los productos involucrados en la oferta-->
                 @foreach (var product in _myProducts)

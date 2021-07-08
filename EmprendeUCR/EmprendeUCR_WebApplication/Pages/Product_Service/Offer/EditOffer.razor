@@ -160,14 +160,14 @@
                         <div class="form-group">
                             <label for="Initial_Date" class="control-label">Fecha de inicio de oferta</label>
                             <ValidationMessage For=@(() => offer.Initial_Date) />
-                            <input type="date" min="@DateTime.Now" class="form-control w-20" @bind="@initialDateInput" required />
+                            <input type="date" min="@DateTime.Today" class="form-control w-20" @bind="@initialDateInput" required />
                         </div>
 
                         <!--Form to let the user choose the expire date for the offer (by default will be todays date)-->
                         <div class="col px-mb-3">
                             <label for="Expire_Date" class="control-label">Fecha de fin de oferta</label>
                             <ValidationMessage For=@(() => offer.Expire_Date) />
-                            <input type="date" min="@DateTime.Now" class="form-control w-20" @bind="@expireDateInput" required />
+                            <input type="date" min="@DateTime.Today" class="form-control w-20" @bind="@expireDateInput" required />
                         </div>
 
                         <!--Form to let the user choose the description of the offer-->
@@ -234,10 +234,10 @@
     // The sum of the total price of the products and services added to the offer
     int totalPriceFromListedProductsAndServicesInOffer = 0;
     // The initial date of the offer (by default: today)
-    System.DateTime FirstinitialDateInput = DateTime.Now;
-    System.DateTime initialDateInput = DateTime.Now;
+    System.DateTime FirstinitialDateInput = DateTime.Today;
+    System.DateTime initialDateInput = DateTime.Today;
     // The expire date of the offer (by default: today)
-    System.DateTime expireDateInput = DateTime.Now;
+    System.DateTime expireDateInput = DateTime.Today;
     // Stores the email of the user logged
     String userLogged = "";
 
