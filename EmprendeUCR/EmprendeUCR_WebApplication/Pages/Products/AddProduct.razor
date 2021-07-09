@@ -3,14 +3,15 @@
 @using EmprendeUCR_WebApplication.Data.Entities
 @using System.IO
 @using BlazorInputFile
-@using Syncfusion.Blazor.TreeGrid;
+@using Syncfusion.Blazor.TreeGrid
+@using System.Drawing ;
+
 @inject ProductService  productService
 @inject NavigationManager NavigationManager
 @inject Product_ServiceService Product_ServiceService
 @inject CategoryService CategoryService
 @inject Product_PhotosService Product_PhotosService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
-
 <h2>Agregar producto</h2>
 <hr />
 <body>
@@ -35,27 +36,27 @@
                             <label for="Product_Description" class="control-label m-lg-2">Descripción</label>
                             <textarea rows="3" form="Product_Description" class="form-control m-lg-2" @bind="@prod.Product_Description" />
                         </div><br />
-                              <div class="form-group w-30">
-                                  <label class="control-label m-lg-2">Categoria Selecionada:</label>
-                                  @if (selectedCategory != null)
-                                  {
-                                      <p>@selectedCategory.Title</p>
-                                      categorieSelected = true;
-                                  }
-                                  <ValidationMessage For=@(() => prod.Category_ID) />
+                        <div class="form-group w-30">
+                            <label class="control-label m-lg-2">Categoria Selecionada:</label>
+                            @if (selectedCategory != null)
+                            {
+                                <p>@selectedCategory.Title</p>
+                                categorieSelected = true;
+                            }
+                            <ValidationMessage For=@(() => prod.Category_ID) />
 
-                              </div><br />
+                        </div><br />
                         @*Imput for price of the product*@
-                    <div class="form-group w-30">
-                        <label for="Price" class="control-label m-lg-2">Precio(CRC)</label>
-                        <ValidationMessage For=@(() => prod.Price) />
-                        <input form="Price" class="form-control m-lg-2" @bind="@prod.Price" />
+                        <div class="form-group w-30">
+                            <label for="Price" class="control-label m-lg-2">Precio(CRC)</label>
+                            <ValidationMessage For=@(() => prod.Price) />
+                            <input form="Price" class="form-control m-lg-2" @bind="@prod.Price" />
 
-                    </div>
-                </EditForm>
+                        </div>
+                    </EditForm>
                 </div>
 
-                    <EmprendeUCR_WebApplication.Pages.Product_Service.Product.ProductStatusInput />
+                <EmprendeUCR_WebApplication.Pages.Product_Service.Product.ProductStatusInput />
             </div> <br /> <br />
 
             @*Display the option to the user to upload the photo and assign it to the product (the 6 of them)*@
@@ -139,7 +140,6 @@
                     </div>
                 </div>
             </div><br />
-
             @*Switch for avalability of the product*@
             <div class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
@@ -207,11 +207,12 @@
 
 
 @code {
-    //The product to add 
+    //The product to add
     EmprendeUCR_WebApplication.Data.Entities.Product prod = new EmprendeUCR_WebApplication.Data.Entities.Product();
-    //The product service to add     
+    //The product service to add
     EmprendeUCR_WebApplication.Data.Entities.Product_Service prodServ = new EmprendeUCR_WebApplication.Data.Entities.Product_Service();
     private string MyID = "myid";
+    Image img = Image.FromFile("./wwwroot/images/image.jpg");
     //List of categories
     IList<Category> categories;
     private EditContext editContext;
@@ -235,8 +236,8 @@
 
     //Error message if there are errors in the input
     string errorMessage = "";
-    //boolean to control if it's possible save 
-    bool ready=false;
+    //boolean to control if it's possible save
+    bool ready = false;
     bool categorieSelected = false;
     // Receives file to insert and product to insert it to.
     public async Task HandleFileSelected(IFileListEntry[] files, Product_Photos photos)
@@ -248,15 +249,16 @@
             await file.Data.CopyToAsync(ms);
             photos.Photos = ms.ToArray();
         }
-        else
-        {
-
-        }
     }
 
-    //Check if it's possible to save
-
-
+    public void insertDefaultPhoto(System.Drawing.Image imageIn,Product_Photos photos)
+    {
+        using (var ms = new MemoryStream())
+        {
+            imageIn.Save(ms, imageIn.RawFormat);
+            photosOne.Photos = ms.ToArray();
+        }
+    }
     // Gets called when page first loads.
     protected override async Task OnInitializedAsync()
     {
@@ -285,7 +287,7 @@
         }
     }
 
-    //Return if the photo is loaded or not as a boolean 
+    //Return if the photo is loaded or not as a boolean
     protected bool isPhotoLoaded(Product_Photos photo)
     {
         return photo.Photos != null;
@@ -340,8 +342,12 @@
         int idToInsert = await createProduct_Service();
         prod.Code_ID = idToInsert;
         await createProduct();
-
         /// Save photos on data base
+        if(photosOne.Photos == null && photosTwo.Photos == null && photosThree.Photos == null
+            && photosFour.Photos == null && photosFive.Photos == null && photosSix.Photos == null)
+        {
+            insertDefaultPhoto(img, photosOne);
+        }
         preparePhoto(photosOne, idToInsert);
         preparePhoto(photosTwo, idToInsert);
         preparePhoto(photosThree, idToInsert);
@@ -359,7 +365,6 @@
     {
         NavigationManager.NavigateTo("ListProducts");
     }
-
     //Clears all in the input
     void Clean()
     {
@@ -374,8 +379,9 @@
         photosSix.Photos = null;
     }
 
-    //Return to the List of Products 
-    void back() {
+    //Return to the List of Products
+    void back()
+    {
         NavigationManager.NavigateTo("ListProducts");
     }
 
@@ -398,7 +404,7 @@
 
     }
 
-    //SelectionHandler2 row deselected 
+    //SelectionHandler2 row deselected
     public async Task SelectionHandler2(Syncfusion.Blazor.Grids.RowDeselectEventArgs<Category> args)
     {
 
@@ -420,7 +426,7 @@
         {
             messageStore.Add(() => prod.Product_Name, "El producto debe tener un nombre asociado.");
         }
-        if(prod.Price <= 0)
+        if (prod.Price <= 0)
         {
             messageStore.Add(() => prod.Price, "El precio debe ser mayor a 0.");
         }
