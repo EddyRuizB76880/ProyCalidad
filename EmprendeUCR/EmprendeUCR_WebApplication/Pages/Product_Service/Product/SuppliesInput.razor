@@ -1,0 +1,115 @@
+﻿@page "/SuppliesInput"
+@using EmprendeUCR_WebApplication.Data.Services
+@using EmprendeUCR_WebApplication.Data.Entities
+@using System.IO
+@using BlazorInputFile
+@using Syncfusion.Blazor.TreeGrid;
+@inject ProductService  productService
+@inject NavigationManager NavigationManager
+@inject Product_ServiceService Product_ServiceService
+@inject CategoryService CategoryService
+@inject Product_PhotosService Product_PhotosService
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
+<div class=" border-1 shadow">
+    <h3 class="bg-blue text-center">Insumos</h3>
+
+    <button class="control-label m-lg-2" @onclick="Show">Seleccionar insumos</button>
+
+    @if (ShowDialog)
+    {
+
+        <div class="modal fade show d-block" id="exampleModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="titleLabel">Seleccione insumos</h5>
+                        <button type="button" class="close" @onclick="@Close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <SfTreeGrid ID="TreeGrid" @ref="TreeGrid" AllowSorting="true" DataSource="@categories" IdMapping="Id" ParentIdMapping="ParentId" AllowSelection="true" TreeColumnIndex="0">
+                            <TreeGridSelectionSettings Type="Syncfusion.Blazor.Grids.SelectionType.Multiple"></TreeGridSelectionSettings>
+                            <TreeGridEvents TValue="Category" RowDropped="Rowdrop" RowDeselected="SelectionHandler2" RowSelected="SelectionHandler"></TreeGridEvents>
+                            <TreeGridSortSettings>
+                                <TreeGridSortColumns>
+                                    <TreeGridSortColumn Field="Title" Direction="Syncfusion.Blazor.Grids.SortDirection.Ascending"></TreeGridSortColumn>
+                                </TreeGridSortColumns>
+                            </TreeGridSortSettings>
+                            <TreeGridColumns>
+                                <TreeGridColumn Field="Title" HeaderText="Nombre" Width="100"></TreeGridColumn>
+                                <TreeGridColumn Field="Description" HeaderText="Descripción" Width="160"></TreeGridColumn>
+                            </TreeGridColumns>
+                        </SfTreeGrid>
+
+                        <button type="submit" class="btn btn-primary">Guardar seleccion</button>
+                        <a class="btn btn-outline-primary" @onclick="@Close">Close</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+
+@code
+{
+
+    //TreeGrid of categories
+    SfTreeGrid<Category> TreeGrid { get; set; }
+    //Selected category on the treeGrid
+    private Category selectedCategory;
+    // Whether to show dialog or not
+    Boolean ShowDialog = false;
+    // List of all categories
+    IList<Category> categories;
+
+    // Gets called when page first loads.
+    protected override async Task OnInitializedAsync()
+    {
+
+        categories = await CategoryService.GetAsync();
+    }
+
+    //RowDrop
+    private void Rowdrop(Syncfusion.Blazor.Grids.RowDragEventArgs<Category> args)
+    {
+        CategoryService.Rowdrop(args, this.TreeGrid);
+    }
+
+    //SelectionHandler row selected
+    public async Task SelectionHandler(Syncfusion.Blazor.Grids.RowSelectEventArgs<Category> args)
+    {
+        var selectedCategories = await this.TreeGrid.GetSelectedRecords();
+        if (selectedCategories.Count() > 0)
+        {
+            selectedCategory = args.Data;
+        }
+
+
+    }
+
+    //SelectionHandler2 row deselected
+    public async Task SelectionHandler2(Syncfusion.Blazor.Grids.RowDeselectEventArgs<Category> args)
+    {
+
+        selectedCategory = null;
+
+    }
+
+
+
+
+    public void Show()
+    {
+        ShowDialog = true;
+        StateHasChanged();
+    }
+    public void Close()
+    {
+        ShowDialog = false;
+        StateHasChanged();
+    }
+
+}

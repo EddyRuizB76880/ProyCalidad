@@ -35,27 +35,29 @@
                             <label for="Product_Description" class="control-label m-lg-2">Descripción</label>
                             <textarea rows="3" form="Product_Description" class="form-control m-lg-2" @bind="@prod.Product_Description" />
                         </div><br />
-                              <div class="form-group w-30">
-                                  <label class="control-label m-lg-2">Categoria Selecionada:</label>
-                                  @if (selectedCategory != null)
-                                  {
-                                      <p>@selectedCategory.Title</p>
-                                      categorieSelected = true;
-                                  }
-                                  <ValidationMessage For=@(() => prod.Category_ID) />
+                        <div class="form-group w-30">
+                            <label class="control-label m-lg-2">Categoria Selecionada:</label>
+                            @if (selectedCategory != null)
+                            {
+                                <p>@selectedCategory.Title</p>
+                                categorieSelected = true;
+                            }
+                            <ValidationMessage For=@(() => prod.Category_ID) />
 
-                              </div><br />
+                        </div><br />
                         @*Imput for price of the product*@
-                    <div class="form-group w-30">
-                        <label for="Price" class="control-label m-lg-2">Precio(CRC)</label>
-                        <ValidationMessage For=@(() => prod.Price) />
-                        <input form="Price" class="form-control m-lg-2" @bind="@prod.Price" />
+                        <div class="form-group w-30">
+                            <label for="Price" class="control-label m-lg-2">Precio(CRC)</label>
+                            <ValidationMessage For=@(() => prod.Price) />
+                            <input form="Price" class="form-control m-lg-2" @bind="@prod.Price" />
 
-                    </div>
-                </EditForm>
+                        </div>
+                    </EditForm>
                 </div>
 
-                    <EmprendeUCR_WebApplication.Pages.Product_Service.Product.ProductStatusInput />
+                <EmprendeUCR_WebApplication.Pages.Product_Service.Product.ProductStatusInput />
+
+                <EmprendeUCR_WebApplication.Pages.Product_Service.Product.SuppliesInput />
             </div> <br /> <br />
 
             @*Display the option to the user to upload the photo and assign it to the product (the 6 of them)*@
@@ -207,9 +209,9 @@
 
 
 @code {
-    //The product to add 
+    //The product to add
     EmprendeUCR_WebApplication.Data.Entities.Product prod = new EmprendeUCR_WebApplication.Data.Entities.Product();
-    //The product service to add     
+    //The product service to add
     EmprendeUCR_WebApplication.Data.Entities.Product_Service prodServ = new EmprendeUCR_WebApplication.Data.Entities.Product_Service();
     private string MyID = "myid";
     //List of categories
@@ -235,8 +237,8 @@
 
     //Error message if there are errors in the input
     string errorMessage = "";
-    //boolean to control if it's possible save 
-    bool ready=false;
+    //boolean to control if it's possible save
+    bool ready = false;
     bool categorieSelected = false;
     // Receives file to insert and product to insert it to.
     public async Task HandleFileSelected(IFileListEntry[] files, Product_Photos photos)
@@ -285,7 +287,7 @@
         }
     }
 
-    //Return if the photo is loaded or not as a boolean 
+    //Return if the photo is loaded or not as a boolean
     protected bool isPhotoLoaded(Product_Photos photo)
     {
         return photo.Photos != null;
@@ -374,8 +376,9 @@
         photosSix.Photos = null;
     }
 
-    //Return to the List of Products 
-    void back() {
+    //Return to the List of Products
+    void back()
+    {
         NavigationManager.NavigateTo("ListProducts");
     }
 
@@ -398,7 +401,7 @@
 
     }
 
-    //SelectionHandler2 row deselected 
+    //SelectionHandler2 row deselected
     public async Task SelectionHandler2(Syncfusion.Blazor.Grids.RowDeselectEventArgs<Category> args)
     {
 
@@ -420,7 +423,7 @@
         {
             messageStore.Add(() => prod.Product_Name, "El producto debe tener un nombre asociado.");
         }
-        if(prod.Price <= 0)
+        if (prod.Price <= 0)
         {
             messageStore.Add(() => prod.Price, "El precio debe ser mayor a 0.");
         }
