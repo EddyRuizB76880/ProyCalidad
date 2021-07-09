@@ -26,8 +26,8 @@
                         <DataAnnotationsValidator />
                         <div class="form-group w-70">
                             <label for="Name" class="control-label m-lg-2">Nombre</label>
-                            <ValidationMessage class="text-left" For=@(() => prod.Product_Name) />
                             <input form="Name" class="form-control m-lg-2" @bind="@prod.Product_Name" />
+                            <ValidationMessage class="text-left" For=@(() => prod.Product_Name) />
                         </div><br />
 
 
@@ -47,12 +47,12 @@
 
                         </div><br />
                         @*Imput for price of the product*@
-                        <div class="form-group w-30">
-                            <label for="Price" class="control-label m-lg-2">Precio(CRC)</label>
-                            <ValidationMessage For=@(() => prod.Price) />
-                            <input form="Price" class="form-control m-lg-2" @bind="@prod.Price" />
+                    <div class="form-group w-30">
+                        <label for="Price" class="control-label m-lg-2">Precio(CRC)</label>
+                        <input form="Price" class="form-control m-lg-2" @bind="@prod.Price" />
+                        <ValidationMessage For=@(() => prod.Price) />
 
-                        </div>
+                    </div>
                     </EditForm>
                 </div>
 
@@ -175,6 +175,7 @@
         @*TreeGrid*@
         <aside class="w-25 float_left gap-3">
             <div class="form-group">
+                <span>Seleccione una categoria</span>
                 <h2 class="text-center fs-2  bg-blue">Categoria</h2>
                 <SfTreeGrid ID="TreeGrid" @ref="TreeGrid" AllowSorting="true" AllowRowDragAndDrop="true" DataSource="@categories" IdMapping="Id" ParentIdMapping="ParentId" AllowSelection="true" TreeColumnIndex="0">
                     <TreeGridEvents TValue="Category" RowDropped="Rowdrop" RowDeselected="SelectionHandler2" RowSelected="SelectionHandler"></TreeGridEvents>

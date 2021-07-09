@@ -28,10 +28,9 @@
                         @*Imput for name of the service*@
                         <div class="form-group w-70">
                             <label for="Name" class="control-label m-lg-2">Nombre</label>
-                            <ValidationMessage class="text-left" For=@(() => serv.Service_Name) />
                             <input form="Name" class="form-control m-lg-2" @bind="@serv.Service_Name" />
+                            <ValidationMessage class="text-left" For=@(() => serv.Service_Name) />
                         </div><br />
-
                         @*Imput for description of the service*@
                         <div class="form-group w-70">
                             <label for="Product_Description" class="control-label m-lg-2">Descripción</label>
@@ -50,8 +49,8 @@
                         @*Imput for price per hour of the service*@
                         <div class="form-group w-30">
                             <label for="Price" class="control-label m-lg-2">Precio por hora(CRC)</label>
-                            <ValidationMessage For=@(() => serv.Price_per_hour) />
                             <input form="Price" type="number" class="form-control m-lg-2" @bind="@serv.Price_per_hour" />
+                            <ValidationMessage For=@(() => serv.Price_per_hour) />
                         </div>
                     </EditForm>
 </div>
