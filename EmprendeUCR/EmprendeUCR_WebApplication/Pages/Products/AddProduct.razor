@@ -3,14 +3,15 @@
 @using EmprendeUCR_WebApplication.Data.Entities
 @using System.IO
 @using BlazorInputFile
-@using Syncfusion.Blazor.TreeGrid;
+@using Syncfusion.Blazor.TreeGrid
+@using System.Drawing ;
+
 @inject ProductService  productService
 @inject NavigationManager NavigationManager
 @inject Product_ServiceService Product_ServiceService
 @inject CategoryService CategoryService
 @inject Product_PhotosService Product_PhotosService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
-
 <h2>Agregar producto</h2>
 <hr />
 <body>
@@ -21,26 +22,40 @@
             <div class="grid2 gap-3">
                 <div class=" border-1 shadow  bg-silver">
                     @*Imput for name of the product*@
-                    <div class="form-group w-70">
-                        <label for="Name" class="control-label m-lg-2">Nombre</label>
-                        <div class="d-none">@checkInputProduct()</div>
-                        <input form="Name" class="form-control m-lg-2" @bind="@prod.Product_Name" />
-                    </div><br />
+                    <EditForm id="@MyID" EditContext="editContext" OnValidSubmit="@onCreateProduct">
+                        <DataAnnotationsValidator />
+                        <div class="form-group w-70">
+                            <label for="Name" class="control-label m-lg-2">Nombre</label>
+                            <input form="Name" class="form-control m-lg-2" @bind="@prod.Product_Name" />
+                            <ValidationMessage class="text-left" For=@(() => prod.Product_Name) />
+                        </div><br />
 
-                    @*Imput for description of the product*@
-                    <div class="form-group w-70">
-                        <label for="Product_Description" class="control-label m-lg-2">Descripción</label>
-                        <div class="d-none">@checkInputProduct()</div>
-                        <textarea rows="3" form="Product_Description" class="form-control m-lg-2" @bind="@prod.Product_Description" />
-                    </div><br />
 
-                    @*Imput for price of the product*@
+                        @*Imput for description of the product*@
+                        <div class="form-group w-70">
+                            <label for="Product_Description" class="control-label m-lg-2">Descripción</label>
+                            <textarea rows="3" form="Product_Description" class="form-control m-lg-2" @bind="@prod.Product_Description" />
+                        </div><br />
+                        <div class="form-group w-30">
+                            <label class="control-label m-lg-2">Categoria Selecionada:</label>
+                            @if (selectedCategory != null)
+                            {
+                                <p>@selectedCategory.Title</p>
+                                categorieSelected = true;
+                            }
+                            <ValidationMessage For=@(() => prod.Category_ID) />
+
+                        </div><br />
+                        @*Imput for price of the product*@
                     <div class="form-group w-30">
                         <label for="Price" class="control-label m-lg-2">Precio(CRC)</label>
-                        <div class="d-none">@checkInputProduct()</div>
-                        <input form="Price" type="number" class="form-control m-lg-2" @bind="@prod.Price" />
+                        <input form="Price" class="form-control m-lg-2" @bind="@prod.Price" />
+                        <ValidationMessage For=@(() => prod.Price) />
+
                     </div>
+                    </EditForm>
                 </div>
+
                 <EmprendeUCR_WebApplication.Pages.Product_Service.Product.ProductStatusInput />
             </div> <br /> <br />
 
@@ -70,7 +85,6 @@
                             </label>
                             <img class="img-card" hidden="@(!isPhotoLoaded(photosTwo))" src="@Product_PhotosService.convertImageDisplay(photosTwo.Photos)" width="350" />
                             <button @onclick="@(args => deletePhoto(args, photosTwo))" hidden="@(isPhotoLoaded(photosTwo) == false)" id="deletePhoto2" type="button" class="btn btn-danger material-icons-outlined ">delete</button>
-
                         </EditForm>
                     </div>
 
@@ -126,7 +140,6 @@
                     </div>
                 </div>
             </div><br />
-
             @*Switch for avalability of the product*@
             <div class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
@@ -145,14 +158,14 @@
                         <input type="button" class="btn btn-primary m-lg-2" @onclick="@Clean" value="Limpiar" />
 
                         @*if there are no error, shows the button "Guardar"*@
-                        @if(ready)
+                        @if (categorieSelected)
                         {
-                        <input type="button" class="btn btn-primary m-lg-2" @onclick="@onCreateProduct" value="Guardar" />
+                            <input type="submit" form="@MyID" class="btn btn-primary m-lg-2" value="Guardar" />
                         }
-                        @*if there are errors disables the button "Guardar"*@
                         else
                         {
-                        <input type="button" class="btn btn-primary m-lg-2" @onclick="@onCreateProduct" value="Guardar" disabled />
+                            <input type="submit" form="@MyID" class="btn btn-primary m-lg-2" value="Guardar" disabled />
+
                         }
                     </div>
                 </div>
@@ -162,6 +175,7 @@
         @*TreeGrid*@
         <aside class="w-25 float_left gap-3">
             <div class="form-group">
+                <span>Seleccione una categoria</span>
                 <h2 class="text-center fs-2  bg-blue">Categoria</h2>
                 <SfTreeGrid ID="TreeGrid" @ref="TreeGrid" AllowSorting="true" AllowRowDragAndDrop="true" DataSource="@categories" IdMapping="Id" ParentIdMapping="ParentId" AllowSelection="true" TreeColumnIndex="0">
                     <TreeGridEvents TValue="Category" RowDropped="Rowdrop" RowDeselected="SelectionHandler2" RowSelected="SelectionHandler"></TreeGridEvents>
@@ -194,18 +208,20 @@
 
 
 @code {
-    //The product to add 
+    //The product to add
     EmprendeUCR_WebApplication.Data.Entities.Product prod = new EmprendeUCR_WebApplication.Data.Entities.Product();
-    //The product service to add     
+    //The product service to add
     EmprendeUCR_WebApplication.Data.Entities.Product_Service prodServ = new EmprendeUCR_WebApplication.Data.Entities.Product_Service();
-
+    private string MyID = "myid";
+    Image img = Image.FromFile("./wwwroot/images/image.jpg");
     //List of categories
     IList<Category> categories;
+    private EditContext editContext;
     //Loading
     private bool _isLoading = true;
     //hideError
     bool hideError = true;
-
+    private ValidationMessageStore messageStore;
     // The photos that will be assign to the Product
     Product_Photos photosOne = new Product_Photos();
     Product_Photos photosTwo = new Product_Photos();
@@ -221,9 +237,9 @@
 
     //Error message if there are errors in the input
     string errorMessage = "";
-    //boolean to control if it's possible save 
-    bool ready=false;
-
+    //boolean to control if it's possible save
+    bool ready = false;
+    bool categorieSelected = false;
     // Receives file to insert and product to insert it to.
     public async Task HandleFileSelected(IFileListEntry[] files, Product_Photos photos)
     {
@@ -234,42 +250,26 @@
             await file.Data.CopyToAsync(ms);
             photos.Photos = ms.ToArray();
         }
-        else
-        {
-
-        }
     }
 
-    //Check if it's possible to save
-    protected async Task checkInputProduct()
+    public void insertDefaultPhoto(System.Drawing.Image imageIn,Product_Photos photos)
     {
-        bool check = true;
-        errorMessage = "";
-        if(selectedCategory == null)
+        using (var ms = new MemoryStream())
         {
-            errorMessage += "Debe elegir una categoría.\n";
-            check = false;
+            imageIn.Save(ms, imageIn.RawFormat);
+            photosOne.Photos = ms.ToArray();
         }
-        if(prod.Price <= 0)
-        {
-            errorMessage += "El precio debe ser un numero mayor a 0. \n";
-            check = false;
-        }
-        if (String.IsNullOrEmpty( prod.Product_Name))
-        {
-            errorMessage += "El producto necesita un nombre. \n";
-            check = false;
-        }
-        ready=check;
     }
-
     // Gets called when page first loads.
     protected override async Task OnInitializedAsync()
     {
+        editContext = new(prod);
+        editContext.OnValidationRequested += HandleValidationRequested;
+        messageStore = new(editContext);
+
         prodServ.Entrepreneur_Email = await sessionStorage.GetItemAsync<string>("Email");
-        
+
         categories = await CategoryService.GetAsync();
-        checkInputProduct(); 
         _isLoading = false;
     }
 
@@ -288,12 +288,12 @@
         }
     }
 
-    //Return if the photo is loaded or not as a boolean 
+    //Return if the photo is loaded or not as a boolean
     protected bool isPhotoLoaded(Product_Photos photo)
     {
         return photo.Photos != null;
     }
-    
+
     //Deletes one photo
     protected void deletePhoto(MouseEventArgs args, Product_Photos photo)
     {
@@ -332,29 +332,33 @@
     //Creates a product
     protected async void onCreateProduct()
     {
-        if (ready ){
-            prodServ.Availability = prodServ.Availability;
-            prodServ.Category_ID = selectedCategory.Id;
 
-            prod.Category_ID = selectedCategory.Id;
+        prodServ.Availability = prodServ.Availability;
+        prodServ.Category_ID = selectedCategory.Id;
 
-            prod.Entrepreneur_Email = prodServ.Entrepreneur_Email;
+        prod.Category_ID = selectedCategory.Id;
 
-            int idToInsert = await createProduct_Service();
-            prod.Code_ID = idToInsert;
-            await createProduct();
+        prod.Entrepreneur_Email = prodServ.Entrepreneur_Email;
 
-            /// Save photos on data base
-            preparePhoto(photosOne, idToInsert);
-            preparePhoto(photosTwo, idToInsert);
-            preparePhoto(photosThree, idToInsert);
-            preparePhoto(photosFour, idToInsert);
-            preparePhoto(photosFive, idToInsert);
-            preparePhoto(photosSix, idToInsert);
-            /// End of save photos on database
-
-            NavigationManager.NavigateTo("ListProducts");
+        int idToInsert = await createProduct_Service();
+        prod.Code_ID = idToInsert;
+        await createProduct();
+        /// Save photos on data base
+        if(photosOne.Photos == null && photosTwo.Photos == null && photosThree.Photos == null
+            && photosFour.Photos == null && photosFive.Photos == null && photosSix.Photos == null)
+        {
+            insertDefaultPhoto(img, photosOne);
         }
+        preparePhoto(photosOne, idToInsert);
+        preparePhoto(photosTwo, idToInsert);
+        preparePhoto(photosThree, idToInsert);
+        preparePhoto(photosFour, idToInsert);
+        preparePhoto(photosFive, idToInsert);
+        preparePhoto(photosSix, idToInsert);
+        /// End of save photos on database
+
+        NavigationManager.NavigateTo("ListProducts");
+
     }
 
     //Button to cancel and return to List of Products
@@ -362,7 +366,6 @@
     {
         NavigationManager.NavigateTo("ListProducts");
     }
-
     //Clears all in the input
     void Clean()
     {
@@ -377,8 +380,9 @@
         photosSix.Photos = null;
     }
 
-    //Return to the List of Products 
-    void back() {
+    //Return to the List of Products
+    void back()
+    {
         NavigationManager.NavigateTo("ListProducts");
     }
 
@@ -395,14 +399,37 @@
         if (selectedCategories.Count() > 0)
         {
             selectedCategory = args.Data;
+            prod.Category_ID = selectedCategory.Id;
         }
+        categorieSelected = true;
 
     }
-    
-    //SelectionHandler2 row deselected 
+
+    //SelectionHandler2 row deselected
     public async Task SelectionHandler2(Syncfusion.Blazor.Grids.RowDeselectEventArgs<Category> args)
     {
 
         selectedCategory = null;
+        categorieSelected = false;
+    }
+    private void HandleValidationRequested(object sender,
+        ValidationRequestedEventArgs args)
+    {
+        messageStore.Clear();
+
+        // Custom validation logic
+        if (String.IsNullOrEmpty(prod.Category_ID.ToString()))
+        {
+            messageStore.Add(() => prod.Category_ID, "El producto debe asociarse a una categoria");
+        }
+        // If the initial date input is greater than the expire date
+        if (String.IsNullOrEmpty(prod.Product_Name))
+        {
+            messageStore.Add(() => prod.Product_Name, "El producto debe tener un nombre asociado.");
+        }
+        if (prod.Price <= 0)
+        {
+            messageStore.Add(() => prod.Price, "El precio debe ser mayor a 0.");
+        }
     }
 }
