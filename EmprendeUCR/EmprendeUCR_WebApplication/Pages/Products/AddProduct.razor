@@ -3,14 +3,15 @@
 @using EmprendeUCR_WebApplication.Data.Entities
 @using System.IO
 @using BlazorInputFile
-@using Syncfusion.Blazor.TreeGrid;
+@using Syncfusion.Blazor.TreeGrid
+@using System.Drawing ;
+
 @inject ProductService  productService
 @inject NavigationManager NavigationManager
 @inject Product_ServiceService Product_ServiceService
 @inject CategoryService CategoryService
 @inject Product_PhotosService Product_PhotosService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
-
 <h2>Agregar producto</h2>
 <hr />
 <body>
@@ -25,8 +26,8 @@
                         <DataAnnotationsValidator />
                         <div class="form-group w-70">
                             <label for="Name" class="control-label m-lg-2">Nombre</label>
-                            <ValidationMessage class="text-left" For=@(() => prod.Product_Name) />
                             <input form="Name" class="form-control m-lg-2" @bind="@prod.Product_Name" />
+                            <ValidationMessage class="text-left" For=@(() => prod.Product_Name) />
                         </div><br />
 
 
@@ -46,12 +47,12 @@
 
                         </div><br />
                         @*Imput for price of the product*@
-                        <div class="form-group w-30">
-                            <label for="Price" class="control-label m-lg-2">Precio(CRC)</label>
-                            <ValidationMessage For=@(() => prod.Price) />
-                            <input form="Price" class="form-control m-lg-2" @bind="@prod.Price" />
+                    <div class="form-group w-30">
+                        <label for="Price" class="control-label m-lg-2">Precio(CRC)</label>
+                        <input form="Price" class="form-control m-lg-2" @bind="@prod.Price" />
+                        <ValidationMessage For=@(() => prod.Price) />
 
-                        </div>
+                    </div>
                     </EditForm>
                 </div>
 
@@ -141,7 +142,6 @@
                     </div>
                 </div>
             </div><br />
-
             @*Switch for avalability of the product*@
             <div class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
@@ -177,6 +177,7 @@
         @*TreeGrid*@
         <aside class="w-25 float_left gap-3">
             <div class="form-group">
+                <span>Seleccione una categoria</span>
                 <h2 class="text-center fs-2  bg-blue">Categoria</h2>
                 <SfTreeGrid ID="TreeGrid" @ref="TreeGrid" AllowSorting="true" AllowRowDragAndDrop="true" DataSource="@categories" IdMapping="Id" ParentIdMapping="ParentId" AllowSelection="true" TreeColumnIndex="0">
                     <TreeGridEvents TValue="Category" RowDropped="Rowdrop" RowDeselected="SelectionHandler2" RowSelected="SelectionHandler"></TreeGridEvents>
@@ -214,6 +215,7 @@
     //The product service to add
     EmprendeUCR_WebApplication.Data.Entities.Product_Service prodServ = new EmprendeUCR_WebApplication.Data.Entities.Product_Service();
     private string MyID = "myid";
+    Image img = Image.FromFile("./wwwroot/images/image.jpg");
     //List of categories
     IList<Category> categories;
     private EditContext editContext;
@@ -250,15 +252,16 @@
             await file.Data.CopyToAsync(ms);
             photos.Photos = ms.ToArray();
         }
-        else
-        {
-
-        }
     }
 
-    //Check if it's possible to save
-
-
+    public void insertDefaultPhoto(System.Drawing.Image imageIn,Product_Photos photos)
+    {
+        using (var ms = new MemoryStream())
+        {
+            imageIn.Save(ms, imageIn.RawFormat);
+            photosOne.Photos = ms.ToArray();
+        }
+    }
     // Gets called when page first loads.
     protected override async Task OnInitializedAsync()
     {
@@ -342,8 +345,12 @@
         int idToInsert = await createProduct_Service();
         prod.Code_ID = idToInsert;
         await createProduct();
-
         /// Save photos on data base
+        if(photosOne.Photos == null && photosTwo.Photos == null && photosThree.Photos == null
+            && photosFour.Photos == null && photosFive.Photos == null && photosSix.Photos == null)
+        {
+            insertDefaultPhoto(img, photosOne);
+        }
         preparePhoto(photosOne, idToInsert);
         preparePhoto(photosTwo, idToInsert);
         preparePhoto(photosThree, idToInsert);
@@ -361,7 +368,6 @@
     {
         NavigationManager.NavigateTo("ListProducts");
     }
-
     //Clears all in the input
     void Clean()
     {
