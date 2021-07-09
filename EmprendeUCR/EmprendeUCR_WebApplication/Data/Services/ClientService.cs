@@ -9,6 +9,7 @@ using EmprendeUCR_WebApplication.Data.Entities;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace EmprendeUCR_WebApplication.Data.Services
 {
     public class ClientService : PageModel
@@ -29,6 +30,18 @@ namespace EmprendeUCR_WebApplication.Data.Services
         {
             _context.Client.Add(client);
             _context.SaveChanges();
+        }
+
+        public async Task<Client> GetByEmailAsync(string email)
+        {
+            return (await _context.Client.FindAsync(email));
+        }
+
+        public async Task<bool> Update(Client client)
+        {
+            _context.Client.Update(client);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

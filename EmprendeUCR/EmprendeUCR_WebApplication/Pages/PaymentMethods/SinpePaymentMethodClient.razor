@@ -1,0 +1,78 @@
+﻿@page "/sinpe_client"
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Inputs
+
+<h2>Métodos de pago</h2>
+
+<SfTab>
+    <TabItems>
+        <TabItem>
+            <ChildContent>
+                <TabHeader Text="SINPE"></TabHeader>
+            </ChildContent>
+            <ContentTemplate>
+                <div style="line-height: 2.5;font-size: 14px;">
+                    <p>
+                        Importante: para utilizar esta funcionalidad debe tener habilitado el servicio de SINPE Movil en la entidad financiera donde dispone los fondos.
+                        <br>
+                        Número a donde debe realizar la transferencia SINPE Movil:
+                        <br>
+                        <SfNumericTextBox Format="####-####" TValue="int?" ShowSpinButton="false" Width="175px" Readonly="true" Value="@numeroSINPE"></SfNumericTextBox>
+                        <br>
+                        Monto de la transferencia:
+                        <br>
+                        <SfNumericTextBox TValue="int?" Format="c2" Currency="CRC" ShowSpinButton="false" Width="175px" Readonly="true" Value="@montoTotal"></SfNumericTextBox>
+                        <br>
+                        Detalle (Opcional):
+                        <br>
+                        <SfTextBox TValue="string?" ShowSpinButton="false" Width="175px" Readonly="true" Value="@detalle"></SfTextBox>
+                        <br>
+                        Número de comprobante:
+                        <br>
+                        <SfNumericTextBox Width="175px" TValue="int?" Max="99999999" Format="########" ShowClearButton="true" ShowSpinButton=false Placeholder="Número de comprobante"></SfNumericTextBox>
+                        <br>
+                        <br>
+                        <div class="buttons">
+                            <SfButton IsPrimary="true" @onclick="addSINPEVoucher" Content="Aceptar y adjuntar comprobante"></SfButton>
+                            <SfButton>Regresar al paso anterior</SfButton>
+                        </div>
+                    </p>
+                </div>
+            </ContentTemplate>
+        </TabItem>
+        <TabItem Content="">
+            <ChildContent>
+                <TabHeader Text="Tarjeta de débito/crédito"></TabHeader>
+            </ChildContent>
+        </TabItem>
+    </TabItems>
+</SfTab>
+
+<style>
+    .buttons {
+        width: 500px;
+        display: grid;
+        grid-auto-flow: column;
+        grid-column-gap: 20px
+    }
+</style>
+
+@code {
+    private int? numeroSINPE = 0;
+    private int? montoTotal = 0;
+    private string detalle = null;
+
+    private void addSINPEVoucher(MouseEventArgs args)
+    {
+        Console.WriteLine("Comprobante agregado con exito");
+    }
+
+    //On Initialized
+    protected override async Task OnInitializedAsync()
+    {
+        numeroSINPE = 83627641;
+        montoTotal = 26784;
+        detalle = "FA2343";
+    }
+}

@@ -67,7 +67,7 @@ namespace EmprendeUCR_WebApplication.Data.Services
 
         public async Task<bool> DeleteIs_OfferRelatedToOfferAsync(List<Is_Offer> relatedIsOffers) // Eliminar Ofertas
         {
-            
+
            foreach(var is_offer in relatedIsOffers)
             {
                 await DeleteIs_OfferAsync(is_offer);

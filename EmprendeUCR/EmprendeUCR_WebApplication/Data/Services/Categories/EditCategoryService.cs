@@ -26,6 +26,7 @@ namespace EmprendeUCR_WebApplication.Data.Services.Categories
          */
         private bool EditTitleDadNotValid;
         private bool EditTitleNotValid;
+        private bool EditDescriptionNotValid;
         private double EditCategoryIndex;
         private int SelectedId;
         private Category SelectedCategory;
@@ -77,8 +78,10 @@ namespace EmprendeUCR_WebApplication.Data.Services.Categories
         {
             this.TreeGrid = main;
             this.EditDialogVisible = false;
-            await EditCategoryName(SelectedCategory.Title, EditTitle);
-            //await this.TreeGrid.SetCellValue(SelectedCategory.Id, Title, SelectedCategory.Title);
+                await EditCategoryName(SelectedCategory.Id, EditTitle);
+                await EditCategoryDescription(SelectedCategory.Id, EditDescription);
+                //await this.TreeGrid.SetCellValue(SelectedCategory.Id, Title, SelectedCategory.Title);
+            
         }
 
         /**
@@ -91,14 +94,34 @@ namespace EmprendeUCR_WebApplication.Data.Services.Categories
         {
             EditTitleNotValid = true;
             EditTitle = (String)args.Value;
-            if (EditTitle.Length > 0)
-            {
-                if (CategoryService.ValidateTitle(EditTitle) == true)
+           if (SelectedCategory.Title != EditTitle)
+           {
+
+                if (EditTitle.Length > 0)
                 {
-                    EditTitleNotValid = false;
+                    if (CategoryService.ValidateTitle(EditTitle) == true)
+                    {
+                        EditTitleNotValid = false;
+                    }
+
                 }
+           }
+           else {
+            EditTitleNotValid = false;
             }
-            EditCategoryDisabled = EditTitleNotValid || EditTitleDadNotValid;
+           EditCategoryDisabled = EditTitleNotValid || EditTitleDadNotValid || EditDescriptionNotValid;
+        }
+        public void ValidateEditCategory(Microsoft.AspNetCore.Components.ChangeEventArgs args)
+        {
+            EditDescriptionNotValid = true;
+            EditDescription = (String)args.Value;
+            if (SelectedCategory.Title == EditTitle) 
+            {
+                EditDescriptionNotValid = false;
+                EditTitleNotValid = false;
+            }
+            //EditTitleNotValid = false;
+            EditCategoryDisabled = EditTitleNotValid || EditTitleDadNotValid || EditDescriptionNotValid;
         }
 
         /**
@@ -118,7 +141,7 @@ namespace EmprendeUCR_WebApplication.Data.Services.Categories
                     EditTitleDadNotValid = true;
                 }
             }
-            EditCategoryDisabled = EditTitleNotValid || EditTitleDadNotValid;
+            EditCategoryDisabled = EditTitleNotValid || EditTitleDadNotValid || EditDescriptionNotValid;
         }
 
         /**
@@ -143,12 +166,25 @@ namespace EmprendeUCR_WebApplication.Data.Services.Categories
         * @param oldTitle as the name of the actual category and newTitle that was choose for the selected category
         * @return
         */
-        private async Task EditCategoryName(String oldTitle, string newTitle)
+        private async Task EditCategoryName(int id, string newTitle)
         {
-            Category parentCategory = _context.Category.Where(c => c.Title.Equals(oldTitle)).First();
-            parentCategory.Title = newTitle;
-            _context.Update(parentCategory);
+            Category category = _context.Category.Find(id);
+            category.Title = newTitle;
+            var index = await TreeGrid.GetRowIndexByPrimaryKey(category.Id);
+            await TreeGrid.UpdateRow(index,category);
+            _context.Update(category);
             await _context.SaveChangesAsync();
         }
+
+        private async Task EditCategoryDescription(int id, string newDescription)
+        {
+            Category category = _context.Category.Find(id);
+            category.Description = newDescription;
+            var index = await TreeGrid.GetRowIndexByPrimaryKey(category.Id);
+            await TreeGrid.UpdateRow(index, category);
+            _context.Update(category);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

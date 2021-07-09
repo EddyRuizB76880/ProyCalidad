@@ -16,7 +16,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EmprendeUCR_WebApplication.Data.Services.Categories;
+using EmprendeUCR_WebApplication.Data.Services.Reports;
 using Syncfusion.Blazor;
+using EmprendeUCR_WebApplication.Data.Services.PaymentMethods;
+using EmprendeUCR.Application;
+using EmprendeUCR.Infrastructure;
 using Blazored.SessionStorage;
 
 using EmprendeUCR_WebApplication.Application.ShoppingCartContext;
@@ -26,6 +30,15 @@ using EmprendeUCR_WebApplication.Domain.Repositories;
 
 using EmprendeUCR_WebApplication.Application.ShoppingCartContext.Implementations;
 using EmprendeUCR_WebApplication.Infrastructure.ShoppingCartContext;
+
+using EmprendeUCR_WebApplication.Application.OrderContext.Implementations;
+using EmprendeUCR_WebApplication.Application.OrderContext;
+using EmprendeUCR_WebApplication.Infrastructure.OrderContext;
+using EmprendeUCR_WebApplication.Infrastructure.OrderContext.Repositories;
+
+
+
+
 
 namespace EmprendeUCR_WebApplication
 {
@@ -45,7 +58,6 @@ namespace EmprendeUCR_WebApplication
             services.AddDbContext<ShoppingCartDbContext2>(options =>
             {
                 options.UseSqlServer((Configuration.GetConnectionString("DefaultConnection")));
-
             });
               
             services.AddDbContext<SqlServerDbContext>(options =>
@@ -53,7 +65,14 @@ namespace EmprendeUCR_WebApplication
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            services.AddDbContext<OrderDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
 
+            /*Contexto Pandemic*/
+            services.AddDbContext<SqlDbContextPandemic>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            /*Contexto General*/
             services.AddDbContext<SqlServerDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             //services.AddIdentity<UserService, IdentityRole>().AddEntityFrameworkStores<BookStoreContext>().AddDefaultTokenProviders();
             services.AddRazorPages();
@@ -63,13 +82,45 @@ namespace EmprendeUCR_WebApplication
             services.AddScoped<AddCategoryService>();
             services.AddScoped<DeleteCategoryService>();
             services.AddScoped<EditCategoryService>();
+            services.AddScoped<PaymentMethodService>();
+            services.AddScoped<CardService>();
             services.AddScoped<ProductService>();
             services.AddScoped<EntrepreneurService>();
             services.AddScoped<UserService>();
             services.AddScoped<Product_ServiceService>();
+            services.AddScoped<Shopping_Cart_HasService>();
             services.AddScoped<ProvinceService>();
             services.AddScoped<CantonService>();
             services.AddScoped<DistrictService>();
+            services.AddScoped<CredentialsService>();
+            services.AddScoped<LikesService>();
+            services.AddScoped<ClientService>();
+            services.AddScoped<MembersService>();
+            services.AddScoped<RegisterService>();
+            services.AddScoped<MailService>();
+            services.AddScoped<Email_ConfirmationService>();
+            services.AddScoped<AdministratorService>();
+            services.AddScoped<EncrypService>();
+            services.AddScoped<LoginService>();
+            services.AddBlazoredSessionStorage();
+            services.AddScoped<PhonesService>();
+            services.AddScoped<Shopping_CartService>();
+
+            services.AddScoped<Product_PhotosService>();
+
+            services.AddScoped<Shopping_Cart_Has_Service_Pandemic>();
+
+            services.AddScoped<Serviceservice>();
+
+            services.AddBlazoredSessionStorage();
+
+            /*Servicios Pandemic*/
+            services.AddScoped<UserServicePandemic>();
+            services.AddScoped<ProductServicePandemic>();
+
+
+            Global.ConnectionString = Configuration.GetConnectionString("SqlConnection");
+            Global.DomainName = Configuration["DomainName"];
             services.AddScoped<CredentialsService>();
             services.AddScoped<LikesService>();
             services.AddScoped<ClientService>();
@@ -93,9 +144,20 @@ namespace EmprendeUCR_WebApplication
             //services.AddScoped<ServiceService>();
 
 
+
             services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
 
             services.AddTransient<IShoppingCartService, ShoppingCartService>();
+
+            services.AddScoped<ReportService>();
+
+            services.AddApplicationLayer();
+            services.AddInfrastructureLayer(
+                Configuration.GetConnectionString("DefaultConnection"));
+            services.AddScoped <CredentialsService>();
+
+            services.AddTransient<IOrderRepository, OrderRepository>();
+            services.AddTransient<IOrderService, OrderService>();
 
         }
 

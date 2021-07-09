@@ -22,5 +22,18 @@ namespace EmprendeUCR_WebApplication.Data.Services
             _context.Administrator.Add(administrator);
             _context.SaveChanges();
         }
+
+        public async Task<Administrator> GetByEmailAsync(string email)
+        {
+            return await _context.Administrator.FindAsync(email);
+        }
+
+        public async Task<bool> UpdateAsync(Administrator admin)
+        {
+            _context.Administrator.Update(admin);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
     }
 }
