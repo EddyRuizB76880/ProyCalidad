@@ -4,6 +4,8 @@
 @using System.IO
 @using BlazorInputFile
 @using Syncfusion.Blazor.TreeGrid
+@using System.Drawing ;
+
 @inject ServiceService serviceService
 @inject NavigationManager NavigationManager
 @inject EntrepreneurService EntrepreneurService
@@ -21,27 +23,38 @@
         <section class=" w-70 float_right gap-lg-2 ">
             <div class="grid2 gap-3">
                 <div class=" border-1 shadow  bg-silver">
-                    @*Imput for name of the service*@
-                    <div class="form-group w-70">
-                        <label for="Name" class="control-label m-lg-2">Nombre</label>
-                        <div class="d-none">@checkInputProduct()</div>
-                        <input form="Name" class="form-control m-lg-2" @bind="@serv.Service_Name" />
-                    </div><br />
+                    <EditForm id="@MyID" EditContext="editContext" OnValidSubmit="@onCreateService">
+                        <DataAnnotationsValidator />
+                        @*Imput for name of the service*@
+                        <div class="form-group w-70">
+                            <label for="Name" class="control-label m-lg-2">Nombre</label>
+                            <ValidationMessage class="text-left" For=@(() => serv.Service_Name) />
+                            <input form="Name" class="form-control m-lg-2" @bind="@serv.Service_Name" />
+                        </div><br />
 
-                    @*Imput for description of the service*@
-                    <div class="form-group w-70">
-                        <label for="Product_Description" class="control-label m-lg-2">Descripción</label>
-                        <div class="d-none">@checkInputProduct()</div>
-                        <textarea rows="3" form="Product_Description" class="form-control m-lg-2" @bind="@serv.Service_Description" />
-                    </div><br />
+                        @*Imput for description of the service*@
+                        <div class="form-group w-70">
+                            <label for="Product_Description" class="control-label m-lg-2">Descripción</label>
+                            <textarea rows="3" form="Product_Description" class="form-control m-lg-2" @bind="@serv.Service_Description" />
+                        </div><br />
+                        <div class="form-group w-30">
+                            <label class="control-label m-lg-2">Categoria Selecionada:</label>
+                            @if (selectedCategory != null)
+                            {
+                                <p>@selectedCategory.Title</p>
+                                categorieSelected = true;
+                            }
+                            <ValidationMessage For=@(() => serv.Category_ID) />
 
-                    @*Imput for price per hour of the service*@
-                    <div class="form-group w-30">
-                        <label for="Price" class="control-label m-lg-2">Precio por hora(CRC)</label>
-                        <div class="d-none">@checkInputProduct()</div>
-                        <input form="Price" type="number" class="form-control m-lg-2" @bind="@serv.Price_per_hour" />
-                    </div>
-                </div>
+                        </div><br />
+                        @*Imput for price per hour of the service*@
+                        <div class="form-group w-30">
+                            <label for="Price" class="control-label m-lg-2">Precio por hora(CRC)</label>
+                            <ValidationMessage For=@(() => serv.Price_per_hour) />
+                            <input form="Price" type="number" class="form-control m-lg-2" @bind="@serv.Price_per_hour" />
+                        </div>
+                    </EditForm>
+</div>
 
                 <EmprendeUCR_WebApplication.Pages.Product_Service.Product.ProductStatusInput />
             </div> <br /> <br />
@@ -147,14 +160,13 @@
                         <input type="button" class="btn btn-primary m-lg-2" @onclick="@Clean" value="Limpiar" />
 
                         @*if there are not error shows the button "Guardar"*@
-                        @if (ready)
+                        @if (categorieSelected)
                         {
-                            <input type="button" class="btn btn-primary m-lg-2" @onclick="@onCreateService" value="Guardar" />
+                            <input type="submit" form="@MyID" class="btn btn-primary m-lg-2" value="Guardar" />
                         }
-                        else @*if there are errors disables the button "Guardar"*@
+                        else
                         {
-
-                            <input type="button" class="btn btn-primary m-lg-2" @onclick="@onCreateService" value="Guardar" disabled />
+                            <input type="submit" form="@MyID" class="btn btn-primary m-lg-2" value="Guardar" disabled />
                         }
                     </div>
                 </div>
@@ -164,6 +176,7 @@
         @*TreeGrid*@
         <aside class="w-25 float_left gap-3">
             <div class="form-group">
+                <span>Seleccione una categoria</span>
                 <h2 class="text-center fs-2  bg-blue">Categoria</h2>
                 <SfTreeGrid ID="TreeGrid" @ref="TreeGrid" AllowSorting="true" AllowRowDragAndDrop="true" DataSource="@categories" IdMapping="Id" ParentIdMapping="ParentId" AllowSelection="true" TreeColumnIndex="0">
                     <TreeGridEvents TValue="Category" RowDropped="Rowdrop" RowDeselected="SelectionHandler2" RowSelected="SelectionHandler"></TreeGridEvents>
@@ -190,7 +203,7 @@
 </body>
 
 @code {
-    //The service to add 
+    //The service to add
     EmprendeUCR_WebApplication.Data.Entities.Service serv = new EmprendeUCR_WebApplication.Data.Entities.Service();
     //The product service to add
     EmprendeUCR_WebApplication.Data.Entities.Product_Service prodServ = new EmprendeUCR_WebApplication.Data.Entities.Product_Service();
@@ -201,7 +214,9 @@
     private bool _isLoading = true;
     //hideError
     bool hideError = true;
-
+    private string MyID = "myid";
+    Image img = Image.FromFile("./wwwroot/images/image.jpg");
+    private ValidationMessageStore messageStore;
     // The photos that will be assign to the Product
     Service_Photos photosOne = new Service_Photos();
     Service_Photos photosTwo = new Service_Photos();
@@ -216,9 +231,10 @@
     private Category selectedCategory;
     //Error message if there are errors in the input
     String errorMessage = "";
-    //boolean to control if it's possible save 
+    //boolean to control if it's possible save
     bool ready = false;
-
+    private EditContext editContext;
+    bool categorieSelected = false;
     // Receives file to insert and product to insert it to.
     public async Task HandleImageSelected(IFileListEntry[] files, Service_Photos photos)
     {
@@ -238,9 +254,11 @@
     // Gets called when page first loads.
     protected override async Task OnInitializedAsync()
     {
+        editContext = new(serv);
+        editContext.OnValidationRequested += HandleValidationRequested;
+        messageStore = new(editContext);
         prodServ.Entrepreneur_Email = await sessionStorage.GetItemAsync<string>("Email");
         categories = await CategoryService.GetAsync();
-        checkInputProduct();
         _isLoading = false;
     }
 
@@ -259,7 +277,7 @@
         }
     }
 
-    //Return if the photo is loaded or not as a boolean 
+    //Return if the photo is loaded or not as a boolean
     protected bool isPhotoLoaded(Service_Photos photo)
     {
         return photo.Photos != null;
@@ -272,26 +290,25 @@
     }
 
     //Check if it's possible to save
-    protected async Task checkInputProduct()
+    private void HandleValidationRequested(object sender,
+         ValidationRequestedEventArgs args)
     {
-        bool check = true;
-        errorMessage = "";
-        if (selectedCategory == null)
+        messageStore.Clear();
+
+        // Custom validation logic
+        if (String.IsNullOrEmpty(serv.Category_ID.ToString()))
         {
-            errorMessage += "Debe elegir una categoría. \n";
-            check = false;
+            messageStore.Add(() => serv.Category_ID, "El servicio debe asociarse a una categoria");
         }
-        if (serv.Price_per_hour <= 0)
-        {
-            errorMessage += "El precio debe ser un numero mayor a 0. \n";
-            check = false;
-        }
+        // If the initial date input is greater than the expire date
         if (String.IsNullOrEmpty(serv.Service_Name))
         {
-            errorMessage += "El servicio necesita un nombre. \n";
-            check = false;
+            messageStore.Add(() => serv.Service_Name, "El servicio debe tener un nombre asociado.");
         }
-        ready = check;
+        if (serv.Price_per_hour < 0)
+        {
+            messageStore.Add(() => serv.Price_per_hour, "El precio del servicio debe ser mayor o igual a 0.");
+        }
     }
 
     // Creates parent Product_Service entity
@@ -326,8 +343,6 @@
     //Creates a service
     protected async void onCreateService()
     {
-        if (ready)
-        {
             prodServ.Availability = prodServ.Availability;
             prodServ.Category_ID = selectedCategory.Id;
 
@@ -338,7 +353,12 @@
             int idToInsert = await createProduct_Service();
             serv.Code_ID = idToInsert;
             await createService();
-
+            //if no photo is added then add the default picture
+            if (photosOne.Photos == null && photosTwo.Photos == null && photosThree.Photos == null
+            && photosFour.Photos == null && photosFive.Photos == null && photosSix.Photos == null)
+            {
+                insertDefaultPhoto(img, photosOne);
+            }
             /// Save photos on data base
             preparePhoto(photosOne, idToInsert);
             preparePhoto(photosTwo, idToInsert);
@@ -349,9 +369,15 @@
             /// End of save photos on database
 
             NavigationManager.NavigateTo("ListServices");
+    }
+    public void insertDefaultPhoto(System.Drawing.Image imageIn, Service_Photos photos)
+    {
+        using (var ms = new MemoryStream())
+        {
+            imageIn.Save(ms, imageIn.RawFormat);
+            photosOne.Photos = ms.ToArray();
         }
     }
-
     //Button to cancel and return to List of Services
     void Cancel()
     {
@@ -366,7 +392,7 @@
         serv.Service_Description = null;
     }
 
-    //Return to the List of Services 
+    //Return to the List of Services
     void back()
     {
         NavigationManager.NavigateTo("ListServices");
@@ -387,13 +413,14 @@
         {
             selectedCategory = args.Data;
         }
-
+        categorieSelected = true;
     }
 
-    //SelectionHandler2 row deselected 
+    //SelectionHandler2 row deselected
     public async Task SelectionHandler2(Syncfusion.Blazor.Grids.RowDeselectEventArgs<Category> args)
     {
 
         selectedCategory = null;
+        categorieSelected = false;
     }
 }
