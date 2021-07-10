@@ -4,7 +4,8 @@
 @using System.IO
 @using BlazorInputFile
 @using Syncfusion.Blazor.TreeGrid
-@using System.Drawing ;
+@using System.Drawing
+@using Syncfusion.Blazor.Buttons
 
 @inject ProductService  productService
 @inject NavigationManager NavigationManager
@@ -17,162 +18,6 @@
 <body>
 
     <div class="">
-        @*Displays the header*@
-        <section class=" w-70 float_right gap-lg-2 ">
-            <div class="grid2 gap-3">
-                <div class=" border-1 shadow  bg-silver">
-                    @*Imput for name of the product*@
-                    <EditForm id="@MyID" EditContext="editContext" OnValidSubmit="@onCreateProduct">
-                        <DataAnnotationsValidator />
-                        <div class="form-group w-70">
-                            <label for="Name" class="control-label m-lg-2">Nombre</label>
-                            <input form="Name" class="form-control m-lg-2" @bind="@prod.Product_Name" />
-                            <ValidationMessage class="text-left" For=@(() => prod.Product_Name) />
-                        </div><br />
-
-
-                        @*Imput for description of the product*@
-                        <div class="form-group w-70">
-                            <label for="Product_Description" class="control-label m-lg-2">Descripción</label>
-                            <textarea rows="3" form="Product_Description" class="form-control m-lg-2" @bind="@prod.Product_Description" />
-                        </div><br />
-                        <div class="form-group w-30">
-                            <label class="control-label m-lg-2">Categoria Selecionada:</label>
-                            @if (selectedCategory != null)
-                            {
-                                <p>@selectedCategory.Title</p>
-                                categorieSelected = true;
-                            }
-                            <ValidationMessage For=@(() => prod.Category_ID) />
-
-                        </div><br />
-                        @*Imput for price of the product*@
-                    <div class="form-group w-30">
-                        <label for="Price" class="control-label m-lg-2">Precio(CRC)</label>
-                        <input form="Price" class="form-control m-lg-2" @bind="@prod.Price" />
-                        <ValidationMessage For=@(() => prod.Price) />
-
-                    </div>
-                    </EditForm>
-                </div>
-
-                <EmprendeUCR_WebApplication.Pages.Product_Service.Product.ProductStatusInput />
-
-                <EmprendeUCR_WebApplication.Pages.Product_Service.Product.SuppliesInput />
-            </div> <br /> <br />
-
-            @*Display the option to the user to upload the photo and assign it to the product (the 6 of them)*@
-            <div class=" ">
-                <div class="wrapper w-90">
-
-                    @*display photo one*@
-                    <div class="one">
-                        <EditForm Model="@photosOne">
-                            <BlazorInputFile.InputFile id="addPhoto1" class="d-none" OnChange="args => HandleFileSelected(args, photosOne)" accept=".jpg,.png"></BlazorInputFile.InputFile>
-                            <label class="" hidden="@isPhotoLoaded(photosOne)" for="addPhoto1">
-                                <span class="d-flex align-items-center justify-content-center img-card btn btn-secondary material-icons-outlined">add_photo_alternate</span>
-                            </label>
-                            <img class="img-card" hidden="@(!isPhotoLoaded(photosOne))" src="@Product_PhotosService.convertImageDisplay(photosOne.Photos)" width="350" />
-                            <button @onclick="@(args => deletePhoto(args, photosOne))" hidden="@(!isPhotoLoaded(photosOne))" id="deletePhoto1" type="button" class="btn btn-danger material-icons-outlined ">delete</button>
-
-                        </EditForm>
-                    </div>
-
-                    @*display photo two*@
-                    <div class="two">
-                        <EditForm Model="@photosTwo">
-                            <BlazorInputFile.InputFile id="addPhoto2" class="d-none" OnChange="args => HandleFileSelected(args, photosTwo)" accept=".jpg,.png"></BlazorInputFile.InputFile>
-                            <label hidden="@isPhotoLoaded(photosTwo)" for="addPhoto2">
-                                <span class="d-flex align-items-center justify-content-center img-card material-icons-outline btn btn-secondary material-icons-outlined">add_photo_alternate</span>
-                            </label>
-                            <img class="img-card" hidden="@(!isPhotoLoaded(photosTwo))" src="@Product_PhotosService.convertImageDisplay(photosTwo.Photos)" width="350" />
-                            <button @onclick="@(args => deletePhoto(args, photosTwo))" hidden="@(isPhotoLoaded(photosTwo) == false)" id="deletePhoto2" type="button" class="btn btn-danger material-icons-outlined ">delete</button>
-                        </EditForm>
-                    </div>
-
-                    @*display photo three*@
-                    <div class="three">
-                        <EditForm Model="@photosThree">
-                            <BlazorInputFile.InputFile id="addPhoto3" class="d-none" OnChange="args => HandleFileSelected(args, photosThree)" accept=".jpg,.png"></BlazorInputFile.InputFile>
-                            <label hidden="@isPhotoLoaded(photosThree)" for="addPhoto3">
-                                <span class="d-flex align-items-center justify-content-center img-card material-icons-outline btn btn-secondary material-icons-outlined">add_photo_alternate</span>
-                            </label>
-                            <img class="img-card" hidden="@(!isPhotoLoaded(photosThree))" src="@Product_PhotosService.convertImageDisplay(photosThree.Photos)" width="350" />
-                            <button @onclick="@(args => deletePhoto(args, photosThree))" hidden="@(isPhotoLoaded(photosThree) == false)" id="deletePhoto3" type="button" class="btn btn-danger material-icons-outlined ">delete</button>
-
-                        </EditForm>
-                    </div>
-
-                    @*display photo four*@
-                    <div class="four">
-                        <EditForm Model="@photosFour">
-                            <BlazorInputFile.InputFile id="addPhoto4" class="d-none" OnChange="args => HandleFileSelected(args, photosFour)" accept=".jpg,.png"></BlazorInputFile.InputFile>
-                            <label hidden="@isPhotoLoaded(photosFour)" for="addPhoto4">
-                                <span class="d-flex align-items-center justify-content-center img-card btn btn-secondary material-icons-outlined">add_photo_alternate</span>
-                            </label>
-                            <img class="img-card" hidden="@(!isPhotoLoaded(photosFour))" src="@Product_PhotosService.convertImageDisplay(photosFour.Photos)" width="350" />
-                            <button @onclick="@(args => deletePhoto(args, photosFour))" hidden="@(isPhotoLoaded(photosFour) == false)" id="deletePhoto4" type="button" class="btn btn-danger material-icons-outlined ">delete</button>
-
-                        </EditForm>
-                    </div>
-
-                    @*display photo five*@
-                    <div class="five">
-                        <EditForm Model="@photosFive">
-                            <BlazorInputFile.InputFile id="addPhoto5" class="d-none" OnChange="args => HandleFileSelected(args, photosFive)" accept=".jpg,.png"></BlazorInputFile.InputFile>
-                            <label hidden="@isPhotoLoaded(photosFive)" for="addPhoto5">
-                                <span class="d-flex align-items-center justify-content-center img-card material-icons-outline btn btn-secondary material-icons-outlined">add_photo_alternate</span>
-                            </label>
-                            <img class="img-card" hidden="@(!isPhotoLoaded(photosFive))" src="@Product_PhotosService.convertImageDisplay(photosFive.Photos)" width="350" />
-                            <button @onclick="@(args => deletePhoto(args, photosFive))" hidden="@(isPhotoLoaded(photosFive) == false)" id="deletePhoto5" type="button" class="btn btn-danger material-icons-outlined ">delete</button>
-
-                        </EditForm>
-                    </div>
-
-                    @*display photo six*@
-                    <div class="six">
-                        <EditForm Model="@photosSix">
-                            <BlazorInputFile.InputFile id="addPhoto6" class="d-none" OnChange="args => HandleFileSelected(args, photosSix)" accept=".jpg,.png"></BlazorInputFile.InputFile>
-                            <label hidden="@isPhotoLoaded(photosSix)" for="addPhoto6">
-                                <span class="d-flex align-items-center justify-content-center  img-card material-icons-outline btn btn-secondary material-icons-outlined">add_photo_alternate</span>
-                            </label>
-                            <img class="img-card" hidden="@(!isPhotoLoaded(photosSix))" src="@Product_PhotosService.convertImageDisplay(photosSix.Photos)" />
-                            <button @onclick="@(args => deletePhoto(args, photosSix))" hidden="@(isPhotoLoaded(photosSix) == false)" id="deletePhoto6" type="button" class="btn btn-danger material-icons-outlined ">delete</button>
-                        </EditForm>
-                    </div>
-                </div>
-            </div><br />
-            @*Switch for avalability of the product*@
-            <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                <label class="form-check-label" for="flexSwitchCheckDefault">Disponibilidad</label>
-            </div>
-
-            @*Shows and error if there are error in the input of a product*@
-            <p style="color:red;">@errorMessage</p>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="d-flex p-2">
-                        @*Button "Regresar"*@
-                        <input type="button" class="btn btn-primary m-lg-2" @onclick="@back" value="Regresar" />
-
-                        @*Button "Limpiar"*@
-                        <input type="button" class="btn btn-primary m-lg-2" @onclick="@Clean" value="Limpiar" />
-
-                        @*if there are no error, shows the button "Guardar"*@
-                        @if (categorieSelected)
-                        {
-                            <input type="submit" form="@MyID" class="btn btn-primary m-lg-2" value="Guardar" />
-                        }
-                        else
-                        {
-                            <input type="submit" form="@MyID" class="btn btn-primary m-lg-2" value="Guardar" disabled />
-
-                        }
-                    </div>
-                </div>
-            </div>
-        </section>
 
         @*TreeGrid*@
         <aside class="w-25 float_left gap-3">
@@ -195,13 +40,172 @@
             </div>
         </aside>
 
-    </div>
+
+        @*Displays the header*@
+        <section class=" w-70 float_right gap-lg-5 ">
+            <div class=" w-70">
+                <div class=" border-1 shadow  bg-silver">
+                    <div class="m-lg-4">
+                        <br/>
+                        @*Input for name of the product*@
+                        <EditForm id="@MyID" EditContext="editContext" OnValidSubmit="@onCreateProduct">
+                            <DataAnnotationsValidator />
+                            <div class="form-group w-70">
+                                <label for="Name" class="control-label">Nombre</label>
+                                <input form="Name" class="form-control" @bind="@prod.Product_Name" />
+                                <ValidationMessage class="text-left" For=@(() => prod.Product_Name) />
+                            </div><br />
 
 
+                            @*Imput for description of the product*@
+                            <div class="form-group w-70">
+                                <label for="Product_Description" class="control-label">Descripción</label>
+                                <textarea rows="3" form="Product_Description" class="form-control" @bind="@prod.Product_Description" />
+                            </div><br />
+                            <div class="form-group w-30">
+                                <label class="control-label">Categoria Selecionada:</label>
+                                @if (selectedCategory != null)
+                                {
+                                    <p>@selectedCategory.Title</p>
+                                    categorieSelected = true;
+                                }
+                                <ValidationMessage For=@(() => prod.Category_ID) />
 
+                            </div><br />
+                            @*Imput for price of the product*@
+                            <div class="form-group w-30">
+                                <label for="Price" class="control-label">Precio(CRC)</label>
+                                <input form="Price" class="form-control" @bind="@prod.Price" />
+                                <ValidationMessage For=@(() => prod.Price) />
 
-    <div>
-        <h4 id="error" hidden="@hideError">Informacion incompleta.</h4>
+                            </div><br/>
+
+                            @*Switch for avalability of the product*@
+                            <div>
+                                <label class="form-check-label" for="flexSwitchCheckDefault">Disponibilidad</label>
+                                <SfSwitch id="flexSwitchCheckDefault" @bind-Checked="isAvailabilityChecked" ValueChange="onChangeAvailability" TChecked="bool"></SfSwitch>
+                            </div>
+
+                        </EditForm>
+                    </div>
+                    <br /> 
+                </div>
+                <br />
+
+                <EmprendeUCR_WebApplication.Pages.Product_Service.Product.ProductStatusInput />
+                <br />
+                <EmprendeUCR_WebApplication.Pages.Product_Service.Product.SuppliesInput />
+                <br />
+
+                @*Display the option to the user to upload the photo and assign it to the product (the 6 of them)*@
+                <div class=" ">
+                    <div class="wrapper w-90">
+
+                        @*display photo one*@
+                        <div class="one">
+                            <EditForm Model="@photosOne">
+                                <BlazorInputFile.InputFile id="addPhoto1" class="d-none" OnChange="args => HandleFileSelected(args, photosOne)" accept=".jpg,.png"></BlazorInputFile.InputFile>
+                                <label class="" hidden="@isPhotoLoaded(photosOne)" for="addPhoto1">
+                                    <span class="d-flex align-items-center justify-content-center img-card btn btn-secondary material-icons-outlined">add_photo_alternate</span>
+                                </label>
+                                <img class="img-card" hidden="@(!isPhotoLoaded(photosOne))" src="@Product_PhotosService.convertImageDisplay(photosOne.Photos)" width="350" />
+                                <button @onclick="@(args => deletePhoto(args, photosOne))" hidden="@(!isPhotoLoaded(photosOne))" id="deletePhoto1" type="button" class="btn btn-danger material-icons-outlined ">delete</button>
+
+                            </EditForm>
+                        </div>
+
+                        @*display photo two*@
+                        <div class="two">
+                            <EditForm Model="@photosTwo">
+                                <BlazorInputFile.InputFile id="addPhoto2" class="d-none" OnChange="args => HandleFileSelected(args, photosTwo)" accept=".jpg,.png"></BlazorInputFile.InputFile>
+                                <label hidden="@isPhotoLoaded(photosTwo)" for="addPhoto2">
+                                    <span class="d-flex align-items-center justify-content-center img-card material-icons-outline btn btn-secondary material-icons-outlined">add_photo_alternate</span>
+                                </label>
+                                <img class="img-card" hidden="@(!isPhotoLoaded(photosTwo))" src="@Product_PhotosService.convertImageDisplay(photosTwo.Photos)" width="350" />
+                                <button @onclick="@(args => deletePhoto(args, photosTwo))" hidden="@(isPhotoLoaded(photosTwo) == false)" id="deletePhoto2" type="button" class="btn btn-danger material-icons-outlined ">delete</button>
+                            </EditForm>
+                        </div>
+
+                        @*display photo three*@
+                        <div class="three">
+                            <EditForm Model="@photosThree">
+                                <BlazorInputFile.InputFile id="addPhoto3" class="d-none" OnChange="args => HandleFileSelected(args, photosThree)" accept=".jpg,.png"></BlazorInputFile.InputFile>
+                                <label hidden="@isPhotoLoaded(photosThree)" for="addPhoto3">
+                                    <span class="d-flex align-items-center justify-content-center img-card material-icons-outline btn btn-secondary material-icons-outlined">add_photo_alternate</span>
+                                </label>
+                                <img class="img-card" hidden="@(!isPhotoLoaded(photosThree))" src="@Product_PhotosService.convertImageDisplay(photosThree.Photos)" width="350" />
+                                <button @onclick="@(args => deletePhoto(args, photosThree))" hidden="@(isPhotoLoaded(photosThree) == false)" id="deletePhoto3" type="button" class="btn btn-danger material-icons-outlined ">delete</button>
+
+                            </EditForm>
+                        </div>
+
+                        @*display photo four*@
+                        <div class="four">
+                            <EditForm Model="@photosFour">
+                                <BlazorInputFile.InputFile id="addPhoto4" class="d-none" OnChange="args => HandleFileSelected(args, photosFour)" accept=".jpg,.png"></BlazorInputFile.InputFile>
+                                <label hidden="@isPhotoLoaded(photosFour)" for="addPhoto4">
+                                    <span class="d-flex align-items-center justify-content-center img-card btn btn-secondary material-icons-outlined">add_photo_alternate</span>
+                                </label>
+                                <img class="img-card" hidden="@(!isPhotoLoaded(photosFour))" src="@Product_PhotosService.convertImageDisplay(photosFour.Photos)" width="350" />
+                                <button @onclick="@(args => deletePhoto(args, photosFour))" hidden="@(isPhotoLoaded(photosFour) == false)" id="deletePhoto4" type="button" class="btn btn-danger material-icons-outlined ">delete</button>
+
+                            </EditForm>
+                        </div>
+
+                        @*display photo five*@
+                        <div class="five">
+                            <EditForm Model="@photosFive">
+                                <BlazorInputFile.InputFile id="addPhoto5" class="d-none" OnChange="args => HandleFileSelected(args, photosFive)" accept=".jpg,.png"></BlazorInputFile.InputFile>
+                                <label hidden="@isPhotoLoaded(photosFive)" for="addPhoto5">
+                                    <span class="d-flex align-items-center justify-content-center img-card material-icons-outline btn btn-secondary material-icons-outlined">add_photo_alternate</span>
+                                </label>
+                                <img class="img-card" hidden="@(!isPhotoLoaded(photosFive))" src="@Product_PhotosService.convertImageDisplay(photosFive.Photos)" width="350" />
+                                <button @onclick="@(args => deletePhoto(args, photosFive))" hidden="@(isPhotoLoaded(photosFive) == false)" id="deletePhoto5" type="button" class="btn btn-danger material-icons-outlined ">delete</button>
+
+                            </EditForm>
+                        </div>
+
+                        @*display photo six*@
+                        <div class="six">
+                            <EditForm Model="@photosSix">
+                                <BlazorInputFile.InputFile id="addPhoto6" class="d-none" OnChange="args => HandleFileSelected(args, photosSix)" accept=".jpg,.png"></BlazorInputFile.InputFile>
+                                <label hidden="@isPhotoLoaded(photosSix)" for="addPhoto6">
+                                    <span class="d-flex align-items-center justify-content-center  img-card material-icons-outline btn btn-secondary material-icons-outlined">add_photo_alternate</span>
+                                </label>
+                                <img class="img-card" hidden="@(!isPhotoLoaded(photosSix))" src="@Product_PhotosService.convertImageDisplay(photosSix.Photos)" />
+                                <button @onclick="@(args => deletePhoto(args, photosSix))" hidden="@(isPhotoLoaded(photosSix) == false)" id="deletePhoto6" type="button" class="btn btn-danger material-icons-outlined ">delete</button>
+                            </EditForm>
+                        </div>
+                    </div>
+                </div><br />
+
+                @*Shows and error if there are error in the input of a product*@
+                <p style="color:red;">@errorMessage</p>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="d-flex p-2">
+                            @*Button "Regresar"*@
+                            <input type="button" class="btn btn-primary m-lg-2" @onclick="@back" value="Regresar" />
+
+                            @*Button "Limpiar"*@
+                            <input type="button" class="btn btn-primary m-lg-2" @onclick="@Clean" value="Limpiar" />
+
+                            @*if there are no error, shows the button "Guardar"*@
+                            @if (categorieSelected)
+                            {
+                                <input type="submit" form="@MyID" class="btn btn-primary m-lg-2" value="Guardar" />
+                            }
+                            else
+                            {
+                                <input type="submit" form="@MyID" class="btn btn-primary m-lg-2" value="Guardar" disabled />
+
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </div>
 
 
@@ -210,20 +214,28 @@
 
 
 @code {
-    //The product to add
+
+    // The product service to add
     EmprendeUCR_WebApplication.Data.Entities.Product prod = new EmprendeUCR_WebApplication.Data.Entities.Product();
-    //The product service to add
     EmprendeUCR_WebApplication.Data.Entities.Product_Service prodServ = new EmprendeUCR_WebApplication.Data.Entities.Product_Service();
+
+
     private string MyID = "myid";
     Image img = Image.FromFile("./wwwroot/images/image.jpg");
+
     //List of categories
     IList<Category> categories;
-    private EditContext editContext;
+
     //Loading
     private bool _isLoading = true;
-    //hideError
-    bool hideError = true;
+
+    // availability
+    bool isAvailabilityChecked = true;
+
+    // stores error messages
+    private EditContext editContext;
     private ValidationMessageStore messageStore;
+
     // The photos that will be assign to the Product
     Product_Photos photosOne = new Product_Photos();
     Product_Photos photosTwo = new Product_Photos();
@@ -234,14 +246,17 @@
 
     //TreeGrid of categories
     SfTreeGrid<Category> TreeGrid { get; set; }
+
     //Selected category on the treeGrid
     private Category selectedCategory;
 
     //Error message if there are errors in the input
     string errorMessage = "";
+
     //boolean to control if it's possible save
     bool ready = false;
     bool categorieSelected = false;
+
     // Receives file to insert and product to insert it to.
     public async Task HandleFileSelected(IFileListEntry[] files, Product_Photos photos)
     {
@@ -254,7 +269,7 @@
         }
     }
 
-    public void insertDefaultPhoto(System.Drawing.Image imageIn,Product_Photos photos)
+    public void insertDefaultPhoto(System.Drawing.Image imageIn, Product_Photos photos)
     {
         using (var ms = new MemoryStream())
         {
@@ -269,7 +284,8 @@
         editContext.OnValidationRequested += HandleValidationRequested;
         messageStore = new(editContext);
 
-        prodServ.Entrepreneur_Email = await sessionStorage.GetItemAsync<string>("Email");
+        prodServ.Entrepreneur_Email = await sessionStorage.GetItemAsync<string>
+            ("Email");
 
         categories = await CategoryService.GetAsync();
         _isLoading = false;
@@ -280,8 +296,6 @@
     {
         if (String.IsNullOrEmpty(prod.Entrepreneur_Email))
         {
-            // product details are incomplete, show error
-            hideError = false;
             return Task.CompletedTask;
         }
         else
@@ -303,12 +317,11 @@
     }
 
     // Creates parent Product_Service entity
-    protected async Task<int> createProduct_Service()
+    protected async Task<int>
+        createProduct_Service()
     {
         if (String.IsNullOrEmpty(prodServ.Entrepreneur_Email))
         {
-            // productService details are incomplete, show error
-            hideError = false;
             await Task.CompletedTask;
             return 0;
         }
@@ -346,8 +359,8 @@
         prod.Code_ID = idToInsert;
         await createProduct();
         /// Save photos on data base
-        if(photosOne.Photos == null && photosTwo.Photos == null && photosThree.Photos == null
-            && photosFour.Photos == null && photosFive.Photos == null && photosSix.Photos == null)
+        if (photosOne.Photos == null && photosTwo.Photos == null && photosThree.Photos == null
+        && photosFour.Photos == null && photosFive.Photos == null && photosSix.Photos == null)
         {
             insertDefaultPhoto(img, photosOne);
         }
@@ -368,6 +381,7 @@
     {
         NavigationManager.NavigateTo("ListProducts");
     }
+
     //Clears all in the input
     void Clean()
     {
@@ -389,13 +403,15 @@
     }
 
     //RowDrop
-    private void Rowdrop(Syncfusion.Blazor.Grids.RowDragEventArgs<Category> args)
+    private void Rowdrop(Syncfusion.Blazor.Grids.RowDragEventArgs<Category>
+        args)
     {
         CategoryService.Rowdrop(args, this.TreeGrid);
     }
 
     //SelectionHandler row selected
-    public async Task SelectionHandler(Syncfusion.Blazor.Grids.RowSelectEventArgs<Category> args)
+    public async Task SelectionHandler(Syncfusion.Blazor.Grids.RowSelectEventArgs<Category>
+        args)
     {
         var selectedCategories = await this.TreeGrid.GetSelectedRecords();
         if (selectedCategories.Count() > 0)
@@ -408,14 +424,15 @@
     }
 
     //SelectionHandler2 row deselected
-    public async Task SelectionHandler2(Syncfusion.Blazor.Grids.RowDeselectEventArgs<Category> args)
+    public async Task SelectionHandler2(Syncfusion.Blazor.Grids.RowDeselectEventArgs<Category>
+        args)
     {
-
         selectedCategory = null;
         categorieSelected = false;
     }
+
     private void HandleValidationRequested(object sender,
-        ValidationRequestedEventArgs args)
+    ValidationRequestedEventArgs args)
     {
         messageStore.Clear();
 
@@ -433,5 +450,10 @@
         {
             messageStore.Add(() => prod.Price, "El precio debe ser mayor a 0.");
         }
+    }
+
+    private void onChangeAvailability(ChangeEventArgs<bool> args)
+    {
+        prodServ.Availability = isAvailabilityChecked ? (byte)1 : (byte)0;
     }
 }

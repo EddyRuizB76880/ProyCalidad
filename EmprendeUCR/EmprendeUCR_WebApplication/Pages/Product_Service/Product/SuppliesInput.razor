@@ -14,8 +14,29 @@
 <div class=" border-1 shadow">
     <h3 class="bg-blue text-center">Insumos</h3>
 
-    <button class="control-label m-lg-2" @onclick="Show">Seleccionar insumos</button>
+    <div class="m-lg-4">
+        <button class="btn btn-primary control-label m-lg-2" @onclick="Show">Seleccionar insumos</button>
+    </div>
 
+    <ul style="margin:20px">
+        @for (int i = 0; i < supplies.Count; i++)
+        {
+            Category item = supplies[i];
+            if (item != null)
+            {
+
+                <li class="row" style="list-style-type:none;" @key="item.Id" tabindex="1">
+
+                    <span class="col-4">@item.Title</span>
+
+                </li>
+            }
+            else
+            {
+                <li>NULL??</li>
+            }
+        }
+    </ul>
     @if (ShowDialog)
     {
 
@@ -25,13 +46,13 @@
                     <div class="modal-header">
                         <h5 class="modal-title" id="titleLabel">Seleccione insumos</h5>
                         <button type="button" class="close" @onclick="@Close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
+                            <span aria-hidden="true">X</span>
                         </button>
                     </div>
                     <div class="modal-body">
                         <SfTreeGrid ID="TreeGrid" @ref="TreeGrid" AllowSorting="true" DataSource="@categories" IdMapping="Id" ParentIdMapping="ParentId" AllowSelection="true" TreeColumnIndex="0">
                             <TreeGridSelectionSettings Type="Syncfusion.Blazor.Grids.SelectionType.Multiple"></TreeGridSelectionSettings>
-                            <TreeGridEvents TValue="Category" RowDropped="Rowdrop" RowDeselected="SelectionHandler2" RowSelected="SelectionHandler"></TreeGridEvents>
+                            <TreeGridEvents DataBound="OnDataBound" TValue="Category" RowSelected="SelectionHandler"></TreeGridEvents>
                             <TreeGridSortSettings>
                                 <TreeGridSortColumns>
                                     <TreeGridSortColumn Field="Title" Direction="Syncfusion.Blazor.Grids.SortDirection.Ascending"></TreeGridSortColumn>
@@ -43,13 +64,14 @@
                             </TreeGridColumns>
                         </SfTreeGrid>
 
-                        <button type="submit" class="btn btn-primary">Guardar seleccion</button>
-                        <a class="btn btn-outline-primary" @onclick="@Close">Close</a>
+                        <button type="submit" class="btn btn-primary" @onclick="@Close">Guardar seleccion</button>
                     </div>
                 </div>
             </div>
         </div>
     }
+
+    <br />
 
 </div>
 
@@ -58,58 +80,42 @@
 
     //TreeGrid of categories
     SfTreeGrid<Category> TreeGrid { get; set; }
-    //Selected category on the treeGrid
-    private Category selectedCategory;
+
     // Whether to show dialog or not
     Boolean ShowDialog = false;
     // List of all categories
     IList<Category> categories;
+    List<Category> supplies = new List<Category>();
+    List<double> selectedIndexes = new List<double>();
 
     // Gets called when page first loads.
     protected override async Task OnInitializedAsync()
     {
-
         categories = await CategoryService.GetAsync();
     }
 
-    //RowDrop
-    private void Rowdrop(Syncfusion.Blazor.Grids.RowDragEventArgs<Category> args)
-    {
-        CategoryService.Rowdrop(args, this.TreeGrid);
-    }
 
     //SelectionHandler row selected
     public async Task SelectionHandler(Syncfusion.Blazor.Grids.RowSelectEventArgs<Category> args)
     {
-        var selectedCategories = await this.TreeGrid.GetSelectedRecords();
-        if (selectedCategories.Count() > 0)
-        {
-            selectedCategory = args.Data;
-        }
-
-
+        supplies = await this.TreeGrid.GetSelectedRecords();
+        selectedIndexes = await this.TreeGrid.GetSelectedRowIndexes();
     }
 
-    //SelectionHandler2 row deselected
-    public async Task SelectionHandler2(Syncfusion.Blazor.Grids.RowDeselectEventArgs<Category> args)
+    public void OnDataBound(object args)
     {
-
-        selectedCategory = null;
-
+        // The filtered index values are selected
+        this.TreeGrid.SelectRows(selectedIndexes);
     }
-
-
-
 
     public void Show()
     {
         ShowDialog = true;
-        StateHasChanged();
+
     }
     public void Close()
     {
         ShowDialog = false;
-        StateHasChanged();
     }
 
 }
