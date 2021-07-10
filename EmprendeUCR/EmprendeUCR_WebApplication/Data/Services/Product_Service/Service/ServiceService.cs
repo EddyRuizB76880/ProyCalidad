@@ -75,9 +75,7 @@ namespace EmprendeUCR_WebApplication.Data.Services
 
         public async Task<IEnumerable<Service>> GetServices()
         {
-
             return await _context.Service.Select(service => new Service { Code_ID = service.Code_ID, Service_Name = service.Service_Name, Price_per_hour = service.Price_per_hour }).ToListAsync();
-
         }
 
         public int GetServicesQuantity()
