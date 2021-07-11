@@ -49,7 +49,7 @@
     // Gets called when page first loads.
     protected override async Task OnInitializedAsync()
     {
-        if(statuses.Count < 1)
+        if(statuses.Count() < 1)
         {
             statuses.Add(new Personalized_Status() { Name = "Orden recibida" });
             statuses.Add(new Personalized_Status() { Name = "En preparación" });
