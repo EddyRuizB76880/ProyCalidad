@@ -46,7 +46,7 @@
             <div class=" w-70">
                 <div class=" border-1 shadow  bg-silver">
                     <div class="m-lg-4">
-                        <br/>
+                        <br />
                         @*Input for name of the product*@
                         <EditForm id="@MyID" EditContext="editContext" OnValidSubmit="@onCreateProduct">
                             <DataAnnotationsValidator />
@@ -78,7 +78,7 @@
                                 <input form="Price" class="form-control" @bind="@prod.Price" />
                                 <ValidationMessage For=@(() => prod.Price) />
 
-                            </div><br/>
+                            </div><br />
 
                             @*Switch for avalability of the product*@
                             <div>
@@ -88,13 +88,13 @@
 
                         </EditForm>
                     </div>
-                    <br /> 
+                    <br />
                 </div>
                 <br />
 
-                <EmprendeUCR_WebApplication.Pages.Product_Service.Product.ProductStatusInput />
+                <EmprendeUCR_WebApplication.Pages.Product_Service.Product.ProductStatusInput statuses="@statuses" OnStatusesUpdated="StatusesUpdateHandler" />
                 <br />
-                <EmprendeUCR_WebApplication.Pages.Product_Service.Product.SuppliesInput />
+                @*<EmprendeUCR_WebApplication.Pages.Product_Service.Product.SuppliesInput OnSuppliesUpdated="SuppliesUpdateHandler" />*@
                 <br />
 
                 @*Display the option to the user to upload the photo and assign it to the product (the 6 of them)*@
@@ -219,7 +219,6 @@
     EmprendeUCR_WebApplication.Data.Entities.Product prod = new EmprendeUCR_WebApplication.Data.Entities.Product();
     EmprendeUCR_WebApplication.Data.Entities.Product_Service prodServ = new EmprendeUCR_WebApplication.Data.Entities.Product_Service();
 
-
     private string MyID = "myid";
     Image img = Image.FromFile("./wwwroot/images/image.jpg");
 
@@ -256,6 +255,10 @@
     //boolean to control if it's possible save
     bool ready = false;
     bool categorieSelected = false;
+
+    // Lists
+    List<Personalized_Status> statuses = new List<Personalized_Status>();
+    List<HasSupplies> supplies = new List<HasSupplies>();
 
     // Receives file to insert and product to insert it to.
     public async Task HandleFileSelected(IFileListEntry[] files, Product_Photos photos)
@@ -455,5 +458,16 @@
     private void onChangeAvailability(ChangeEventArgs<bool> args)
     {
         prodServ.Availability = isAvailabilityChecked ? (byte)1 : (byte)0;
+    }
+
+
+    void StatusesUpdateHandler(List<Personalized_Status> newList)
+    {
+        statuses = newList;
+    }
+
+    void SuppliesUpdateHandler(List<HasSupplies> newList)
+    {
+        supplies = newList;
     }
 }
