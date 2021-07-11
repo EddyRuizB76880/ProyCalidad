@@ -35,7 +35,7 @@ namespace EmprendeUCR_WebApplication.Data.Contexts
         public DbSet<Administrator> Administrator { get; set; }
         public DbSet<Product_Photos> Product_Photos { get; set; }
         public DbSet<Service_Photos> Service_Photos { get; set; }
-
+        public DbSet<HasSupplies> HasSupplies { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
