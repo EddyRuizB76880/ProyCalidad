@@ -28,13 +28,17 @@ namespace EmprendeUCR_WebApplication.Data.Services
             await _context.SaveChangesAsync();
             return true;
         }
-        public async Task<bool> InsertListOfHasSupplie(IList<HasSupplies> HasSuppliesList) // Agrega Ofertas
+        public async Task<bool> InsertListOfHasSupplie(IList<HasSupplies> HasSuppliesList,int Code_ID,
+        int Category_ID,string Entrepreneur_Email ) // Agrega Ofertas
         {
             try
             {
-                foreach (var offer in HasSuppliesList)
+                foreach (var supply in HasSuppliesList)
                 {
-                    await InsertHasSuppliesrAsync(offer);
+                    supply.Category_ID = Category_ID;
+                    supply.Entrepreneur_Email = Entrepreneur_Email;
+                    supply.Code_ID = Code_ID;
+                    await InsertHasSuppliesrAsync(supply);
                 }
                 await _context.SaveChangesAsync();
             }

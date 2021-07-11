@@ -220,7 +220,6 @@
     // The product service to add
     EmprendeUCR_WebApplication.Data.Entities.Product prod = new EmprendeUCR_WebApplication.Data.Entities.Product();
     EmprendeUCR_WebApplication.Data.Entities.Product_Service prodServ = new EmprendeUCR_WebApplication.Data.Entities.Product_Service();
-    EmprendeUCR_WebApplication.Data.Entities.HasSupplies supply = new EmprendeUCR_WebApplication.Data.Entities.HasSupplies();
 
     private string MyID = "myid";
     Image img = Image.FromFile("./wwwroot/images/image.jpg");
@@ -309,7 +308,7 @@
             return productService.InsertProductAsync(prod);
         }
     }
-    
+
     //Return if the photo is loaded or not as a boolean
     protected bool isPhotoLoaded(Product_Photos photo)
     {
@@ -358,16 +357,12 @@
         prodServ.Category_ID = selectedCategory.Id;
 
         prod.Category_ID = selectedCategory.Id;
-        supply.Category_ID = selectedCategory.Id;
-        supply.Entrepreneur_Email = prodServ.Entrepreneur_Email;
         prod.Entrepreneur_Email = prodServ.Entrepreneur_Email;
 
         int idToInsert = await createProduct_Service();
-        supply.Code_ID = idToInsert;
         prod.Code_ID = idToInsert;
-        supply.Supplie_ID = selectedCategory.Id;
         await createProduct();
-        await HasSuppliesService.InsertHasSuppliesrAsync(supply);
+        await HasSuppliesService.InsertListOfHasSupplie(supplies, idToInsert, selectedCategory.Id, prodServ.Entrepreneur_Email);
         /// Save photos on data base
         if (photosOne.Photos == null && photosTwo.Photos == null && photosThree.Photos == null
         && photosFour.Photos == null && photosFive.Photos == null && photosSix.Photos == null)
