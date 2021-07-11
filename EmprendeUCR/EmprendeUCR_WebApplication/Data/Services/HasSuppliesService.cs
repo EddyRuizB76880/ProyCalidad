@@ -1,0 +1,54 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using EmprendeUCR_WebApplication.Data.Entities;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using System.IO;
+
+
+namespace EmprendeUCR_WebApplication.Data.Services
+{
+    public class HasSuppliesService:PageModel
+    {
+        private readonly EmprendeUCR_WebApplication.Data.Contexts.SqlServerDbContext _context;
+
+        public HasSuppliesService(EmprendeUCR_WebApplication.Data.Contexts.SqlServerDbContext context)
+        {
+            _context = context;
+        }
+        public async Task<IList<HasSupplies>> GetAsync()    // Enlista Ofertas
+        {
+            return await _context.HasSupplies.ToListAsync();
+        }
+        public async Task<bool> InsertHasSuppliesrAsync(HasSupplies supply) // Agrega Ofertas
+        {
+            await _context.HasSupplies.AddAsync(supply);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        public async Task<bool> InsertListOfHasSupplie(IList<HasSupplies> HasSuppliesList) // Agrega Ofertas
+        {
+            try
+            {
+                foreach (var offer in HasSuppliesList)
+                {
+                    await InsertHasSuppliesrAsync(offer);
+                }
+                await _context.SaveChangesAsync();
+            }
+            catch (InvalidOperationException)
+            {
+
+            }
+
+            return true;
+        }
+        public async Task<List<HasSupplies>> GetAllHasSuppliesAsync()
+        {
+            return await _context.HasSupplies.ToListAsync();        // Listado 2
+        }
+
+    }
+}
