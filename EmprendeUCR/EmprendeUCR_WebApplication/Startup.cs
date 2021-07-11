@@ -91,6 +91,7 @@ namespace EmprendeUCR_WebApplication
             services.AddScoped<Product_PhotosService>();
             services.AddScoped<Service_PhotosService>();
             services.AddScoped<HasSuppliesService>();
+            services.AddScoped<Has_StatusService>();
             //services.AddScoped<ServiceService>();
 
 
