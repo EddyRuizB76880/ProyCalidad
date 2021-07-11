@@ -41,7 +41,7 @@
 {
 
     int currentIndex;
-    Personalized_Status newStatus = new Personalized_Status() { Name = "test" };
+    Personalized_Status newStatus = new Personalized_Status() { Name = "" };
 
     [Parameter] public EventCallback<List<Personalized_Status>> OnStatusesUpdated { get; set; }
     [Parameter] public List<Personalized_Status> statuses { get; set; }
@@ -103,7 +103,7 @@
         if (newStatus.Name != "")
         {
             statuses.Add(newStatus);
-            newStatus = new Personalized_Status() { Name = statuses.Count + "test" };
+            newStatus = new Personalized_Status() { Name = "" };
             sendListToParent();
         }
     }
