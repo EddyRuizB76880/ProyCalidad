@@ -33,9 +33,5 @@ namespace EmprendeUCR_WebApplication.Data.Services
         {
             return _context.ServicePandemic.FromSqlRaw("exec GetServicesRestricted \"" + product + "\"," + categoryID).ToArray();
         }
-
-
-
-
     }
 }

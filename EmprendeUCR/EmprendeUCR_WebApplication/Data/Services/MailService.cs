@@ -30,7 +30,7 @@ namespace EmprendeUCR_WebApplication.Data.Services
 
                 result = string.Format(@"<div style='text-align:center;'>
                                     <h1>Bienvenido a EmprendeUCR</h1>
-                                    <h3>Haga click sobre el link debajo para registrarse como cliente</h3>
+                                    <h3>Haga click sobre el link debajo para registrarse como cliente(a)</h3>
                                     <a href=" + '"' + url + '"' +
                                    ">Confirmar email</a> </div>", url, hash_mail);
             }
@@ -41,7 +41,7 @@ namespace EmprendeUCR_WebApplication.Data.Services
 
                 result = string.Format(@"<div style='text-align:center;'>
                                     <h1>Bienvenido a EmprendeUCR</h1>
-                                    <h3>Haga click sobre el link debajo para registrarse como emprendedor</h3>
+                                    <h3>Haga click sobre el link debajo para registrarse como emprendedor(a)</h3>
                                     <a href=" + '"' + url + '"' +
                                    ">Confirmar email</a> </div>", url, hash_mail);
             }
@@ -52,7 +52,7 @@ namespace EmprendeUCR_WebApplication.Data.Services
 
                 result = string.Format(@"<div style='text-align:center;'>
                                     <h1>Bienvenido a EmprendeUCR</h1>
-                                    <h3>Haga click sobre el link debajo para registrarse como administrador</h3>
+                                    <h3>Haga click sobre el link debajo para registrarse como administrador(a)</h3>
                                     <a href=" + '"' + url + '"' +
                                    ">Confirmar email</a> </div>", url, hash_mail);
             }

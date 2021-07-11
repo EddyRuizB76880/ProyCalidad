@@ -129,6 +129,12 @@ namespace EmprendeUCR_WebApplication.Data.Services
         {
             return _context.Product.FromSqlRaw("exec getRecommendedProducts \"" + userEmail + "\"").ToArray();
         }
+
+        public Product GetProduct(int Id)
+        {
+            Product product =  _context.Product.FirstOrDefault(c => c.Code_ID.Equals(Id));
+            return product;
+        }
     }
             
 }

@@ -2,7 +2,7 @@
 @inject NavigationManager _navManager
 
 @if ((_navManager.Uri.Contains("/Categories")) || (_navManager.Uri.Contains("/admin")) || (_navManager.Uri.Contains("/viewreports")) ||
-  (_navManager.Uri.Contains("/payment_methods"))) {
+  (_navManager.Uri.Contains("/payment_methods")) || _navManager.Uri.Contains("/activeAdministrator")) {
 <div class="sidebar1">
     <Header />
 </div>
