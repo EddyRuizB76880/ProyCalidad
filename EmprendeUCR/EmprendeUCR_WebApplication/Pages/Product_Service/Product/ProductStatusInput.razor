@@ -6,7 +6,7 @@
     <h3 class="bg-blue text-center">Estados</h3>
     <label for="AddStatus" class="control-label m-lg-2 ">Nuevo estado</label>
     <div class="d-flex">
-        <input maxlength="20" @bind="@newStatus.Name" form="AddStatus" class="form-control m-lg-2 w-50  " />
+        <input maxlength="30" @bind="@newStatus.Name" form="AddStatus" class="form-control m-lg-2 w-50  " />
         <button class="material-icons-outlined  bg-blue  text-center m-lg-2  " hidden="@(!isStatusInputValid())" @onclick="()=>onAddStatus()"> add </button>
     </div>
 

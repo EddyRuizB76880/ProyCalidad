@@ -223,6 +223,8 @@ namespace EmprendeUCR_WebApplication
             services.AddScoped<HasSuppliesService>();
             services.AddScoped<Has_StatusService>();
             services.AddScoped<OrderService>();
+            services.AddScoped<StatusService>();
+            services.AddScoped<Personalized_StatusService>();
             //services.AddScoped<ServiceService>();
 
 
