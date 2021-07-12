@@ -1,0 +1,119 @@
+﻿@page "/ServiceView"
+@page "/ServiceView/{CodeId}"
+@using EmprendeUCR_WebApplication.Data.Services
+@using EmprendeUCR_WebApplication.Data.Entities
+@using EmprendeUCR_WebApplication.Data.Services.Categories
+@using System.IO
+@using BlazorInputFile
+@using Syncfusion.Blazor.TreeGrid;
+@inject NavigationManager NavigationManager
+@inject Product_ServiceService Product_ServiceService
+@inject ServiceService ServiceService
+@inject CategoryService CategoryService
+@inject Service_PhotosService Service_PhotosService
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
+<body>
+
+    <div class="">
+        <!--Displays the header-->
+        <section class=" w-100 gap-lg-2">
+            <div class="grid2 gap-3">
+                <div class=" border-1 shadow  bg-silver">
+                    <div class="form-group w-70">
+                        <label for="Name" class="control-label m-lg-2">Nombre:</label>
+                        <label for="Name" class="control-label">@_service.Service_Name</label>
+                    </div><br />
+                    <div class="form-group w-30">
+                        <label for="Price" class="control-label m-lg-2">Categoria:</label>
+                        <label for="Price" class="control-label ">@CategoryService.getCategory(_service.Category_ID).Title</label>
+                    </div>
+                    <div class="form-group w-70">
+                        <label for="Service_Description" class="control-label m-lg-2">Descripción:</label>
+                        <textarea readonly="readonly" rows="3" form="Service_Description" class="form-control m-lg-2">@_service.Service_Description</textarea>
+
+                    </div><br />
+                    <div class="form-group w-30">
+                        <label for="Price" class="control-label m-lg-2">Precio por hora(CRC):</label>
+                        <label for="Price" class="control-label ">@_service.Price_per_hour</label>
+                    </div>
+
+
+                </div>
+                @*
+                    <EmprendeUCR_WebApplication.Pages.Service_Service.Service.ServiceStatusInput />
+                *@
+            </div> <br /> <br />
+
+            <div>
+                <div class="wrapper w-90">
+                    @foreach (var prodPhoto in photosDisplay)
+                    {
+                        <div class="one">
+                            <label class="" for="addPhoto1">
+                                @if (prodPhoto != null)
+                                {
+                                    <img src="@Service_PhotosService.convertServiceImageDisplay(prodPhoto.Photos)" width="200" class=" img-card mt-2" />
+                                }
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+
+
+
+
+
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                <label class="form-check-label" for="flexSwitchCheckDefault">Disponibilidad</label>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <input type="button" class="btn btn-primary" value="Regresar" />
+
+
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+</body>
+
+@functions {
+    [Parameter]
+    public string CodeId { get; set; }
+}
+
+@code {
+
+    Service _service = new Service();
+    Service_Photos _servPhoto = new Service_Photos();
+    IList<Service_Photos> photosDisplay;
+
+    public void c(string CodeId)
+    {
+        loadService(CodeId);
+    }
+
+    public void loadService(string CodeId)
+    {
+        _service = ServiceService.GetService(CodeId);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        loadService(CodeId);
+        loadPhotos(int.Parse(CodeId));
+    }
+
+    public void loadPhotos(int CodeId)
+    {
+        photosDisplay = Service_PhotosService.loadPhotosByID(CodeId);
+    }
+}

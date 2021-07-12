@@ -6,6 +6,7 @@
 @inject CategoryService CategoryService
 @inject ServiceService ServiceService
 @using Syncfusion.Blazor.TreeGrid;
+@inject NavigationManager NavManager
 @inject Product_ServiceService Product_ServiceService
 @inject Service_PhotosService Service_PhotosService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
@@ -16,7 +17,6 @@
 }
 else
 {
-
     <head>
         <link rel="stylesheet" href="~/css/EmprendeUCR-template.css" />
     </head>
@@ -24,6 +24,10 @@ else
     <body>
         <header>
             <div class="icon-m display-2"> Mis Servicios</div>
+            <div class="flex-buscar">
+                <input @bind="@inputValue" @onkeyup="@EnterKey" class="form-control mr-sm-2 w-25 mb-2" type="search" placeholder="Buscar servicios" aria-label="Search" />
+                <button @onclick="buscar" class="btn btn-primary mb-2" type="submit">Buscar</button>
+            </div>
         </header>
 
         <section class="w-70  float_right ">
@@ -35,7 +39,8 @@ else
                     {
                         var prodServ = _productsServices.First(p => p.Code_ID == serv.Code_ID);
                         var servPhoto = photosDisplay.FirstOrDefault(p => p.Code_ID == serv.Code_ID);
-                        <div class="item data border-2 border-blue shadow">
+
+                        <div class="item data border-1 border-blue content-center" @onclick="()=>Prueba(serv.Code_ID.ToString())">
                             <div class=" content-center">
                                 @if (servPhoto != null)
                                 {
@@ -48,7 +53,6 @@ else
                                 <div class="item_price">₡@serv.Price_per_hour</div>
                                 <div class="item_category"> @CategoryService.getCategory(serv.Category_ID).Title</div>
                             </div>
-
                         </div>
                     }
                 }
@@ -72,7 +76,6 @@ else
                             <TreeGridColumn Field="Description" HeaderText="Descripción" Width="160"></TreeGridColumn>
                         </TreeGridColumns>
                     </SfTreeGrid>
-
                 }
             </div>
 
@@ -153,7 +156,6 @@ else
         _productsServices = await Product_ServiceService.GetProductsServicesEntrepreneurAsync(email);
     }
 
-
     public async Task loadServicesByCategory(string email, int category_id)
     {
         _services = await ServiceService.GetServicesByCategoryAsync(email, category_id);
@@ -169,8 +171,6 @@ else
     }
 
     //SelectionHandler
-
-
 
     public async Task SelectionHandler(Syncfusion.Blazor.Grids.RowSelectEventArgs<Category> args)
     {
@@ -195,6 +195,57 @@ else
             await loadCategories();
         }
         firstClick = false;
+    }
+
+    //puede rescibir parametro
+    void Prueba(string CodeId)
+    {
+        NavManager.NavigateTo("/ServiceView" + "/" + CodeId);
+    }
+
+    //metodos buscar productos
+    public void EnterKey(KeyboardEventArgs e)
+    {
+        int emptyCharacters = 0;
+
+        if ((e.Code == "Enter" || e.Code == "NumpadEnter") && !string.IsNullOrEmpty(inputValue))
+        {
+            for (int i = 0; i < inputValue.Length; i++)
+            {
+                if (inputValue.ElementAt(i).Equals(' '))
+                {
+                    emptyCharacters++;
+                }
+            }
+
+            if (emptyCharacters != inputValue.Length)
+            {
+                //NavigationManager.NavigateTo($"/ProductsSearch/{inputValue}", true);
+            }
+        }
+    }
+
+    private string inputValue;
+    private void buscar()
+    {
+        int emptyCharacters = 0;
+
+        if (!string.IsNullOrEmpty(inputValue))
+        {
+            for (int i = 0; i < inputValue.Length; i++)
+            {
+                if (inputValue.ElementAt(i).Equals(' '))
+                {
+                    emptyCharacters++;
+                }
+            }
+
+            if (emptyCharacters != inputValue.Length)
+            {
+                // NavigationManager.NavigateTo($"/ServicesSearch/{inputValue}", true);
+            }
+        }
+
     }
 
 }

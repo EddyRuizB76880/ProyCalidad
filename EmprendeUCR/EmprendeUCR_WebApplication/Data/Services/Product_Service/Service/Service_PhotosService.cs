@@ -29,6 +29,12 @@ namespace EmprendeUCR_WebApplication.Data.Services
         {
             return _context.Service_Photos.ToList();
         }
+
+        public List<Service_Photos> loadPhotosByID(int Code_ID)
+        {
+            return _context.Service_Photos.Where(p => p.Code_ID == Code_ID).ToList();
+        }
+
         public string convertServiceImageDisplay(byte[] image)
         {
             if (image != null)
