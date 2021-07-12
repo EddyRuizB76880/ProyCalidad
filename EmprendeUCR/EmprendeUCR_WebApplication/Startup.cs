@@ -90,7 +90,6 @@ namespace EmprendeUCR_WebApplication
             services.AddScoped<ServiceService>();
             services.AddScoped<Product_PhotosService>();
             services.AddScoped<Service_PhotosService>();
-            //services.AddScoped<ServiceService>();
 
 
             services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
