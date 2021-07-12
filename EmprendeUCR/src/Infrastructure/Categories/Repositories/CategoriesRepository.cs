@@ -23,7 +23,7 @@ namespace EmprendeUCR.Infrastructure.Categories.Repositories
             .Select(c => new Category(c.Title, c.Description, c.ParentId))
             .ToListAsync();
         }   
-        public async Task<Category?> GetByIdAsync(int Id)
+        public async Task<Category> GetByIdAsync(int Id)
         {
             return await _dbContext.Categories
             .FirstOrDefaultAsync(t => t.Id == Id);

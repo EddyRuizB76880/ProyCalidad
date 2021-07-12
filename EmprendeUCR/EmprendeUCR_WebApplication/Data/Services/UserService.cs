@@ -72,7 +72,5 @@ namespace EmprendeUCR_WebApplication.Data.Services
         {
             return (await _context.User.FindAsync(email));
         }
-
-
     }
 }

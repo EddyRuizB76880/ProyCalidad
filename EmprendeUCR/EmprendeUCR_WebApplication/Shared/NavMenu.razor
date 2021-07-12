@@ -81,10 +81,8 @@
             else
             {
                 @* If the user has not logged in, then display the log in button *@
-                <a href="/registro" class="color-silver mx-5 a-white">
-                    Registrarse
-                </a>
-                <button @onclick="logear" class="bg-white border-none p-2">Iniciar Sesion</button>
+                <button @onclick="registro" class="btn btn-secondary boton"> Registrarse</button>
+                <button @onclick="logear" class="btn btn-primary boton"> Iniciar Sesión</button>
             }
         </div>
     </div>
@@ -110,7 +108,7 @@
     private int myType;
     private bool showNotificationsComponent = false;
     private bool _isLoading = true;
-    private string photo = "/images/images.png";
+    private string photo = "";
     private string inputValue;
     private IList<Product> _product;
     private bool control = false;
@@ -150,7 +148,13 @@
 
         if (myEmail != null)
         {
-            try { photo = "data:image;base64," + System.Convert.ToBase64String(UserServicePandemic.GetUserByEmail(myEmail).Photo); } catch { }
+            try {
+                photo = "data:image;base64," + System.Convert.ToBase64String(UserServicePandemic.GetUserByEmail(myEmail).Photo);
+            }
+            catch
+            {
+                photo = "/images/images.png";
+            }
         }
         UpdateParams(myType);
         _isLoading = false;
@@ -194,6 +198,11 @@
     private void logear()
     {
         NavigationManager.NavigateTo("/Login");
+    }
+
+    private void registro()
+    {
+        NavigationManager.NavigateTo("/registro");
     }
 
     private void goProfile()

@@ -80,7 +80,7 @@ namespace EmprendeUCR_WebApplication.Data.Services
         {
             Is_Offer offer = await _context.Is_Offer.FirstOrDefaultAsync(c => c.Offer_ID.Equals(Is_Offer_Id));
 
-            return null;
+            return offer;
         }
 
 
@@ -109,8 +109,14 @@ namespace EmprendeUCR_WebApplication.Data.Services
         {
             return _context.Service.FirstOrDefault(service => String.Equals(service.Code_ID, is_offer.Code_ID));
         }
+        
 
+        public Is_Offer GetIs_Offer(int Is_Offer_Id)
+        {
+            Is_Offer offer = _context.Is_Offer.FirstOrDefault(c => c.Offer_ID.Equals(Is_Offer_Id));
 
+            return offer;
+        }
     }
 
 }
