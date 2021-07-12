@@ -109,7 +109,7 @@ namespace EmprendeUCR_WebApplication.Data.Services
         {
             return _context.Service.FirstOrDefault(service => String.Equals(service.Code_ID, is_offer.Code_ID));
         }
-        */
+        
 
         public Is_Offer GetIs_Offer(int Is_Offer_Id)
         {
