@@ -46,6 +46,8 @@ namespace EmprendeUCR_WebApplication.Data.Contexts
         public DbSet<Shopping_Cart_Has> Shopping_Cart_Has { get; set; }
         public DbSet<Product_Photos> Product_Photos { get; set; }
         public DbSet<Service_Photos> Service_Photos { get; set; }
+        public DbSet<HasSupplies> HasSupplies { get; set; }
+        public DbSet<Has_Status> HasStatus { get; set; }
         public DbSet<Report> Report { get; set; }  
 
         public DbSet<Phones> Phones { get; set; }
