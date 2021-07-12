@@ -16,11 +16,8 @@
 }
 else
 {
-
     <head>
         <link rel="stylesheet" href="~/css/EmprendeUCR-template.css" />
-
-
     </head>
 
     <body>
@@ -43,7 +40,6 @@ else
                         var prodPhoto = photosDisplay.FirstOrDefault(p => p.Code_ID == prod.Code_ID);
 
                         <div class="item data border-1 border-blue content-center" @onclick="()=>Prueba(prod.Code_ID.ToString())">
-
                             <div class="content-center ">
                                 @if (prodPhoto != null)
                                 {
@@ -56,8 +52,6 @@ else
                                 <div class="item_price">₡@prod.Price</div>
                                 <div class="item_Category">@CategoryService.getCategory(prod.Category_ID).Title </div>
                             </div>
-
-
                         </div>
                     }
                 }
@@ -81,7 +75,6 @@ else
                             <TreeGridColumn Field="Description" HeaderText="Descripción" Width="160"></TreeGridColumn>
                         </TreeGridColumns>
                     </SfTreeGrid>
-
                 }
             </div>
 
@@ -103,12 +96,10 @@ else
     SfTreeGrid<Category> TreeGrid { get; set; }
     private Category selectedCategory;
     string selectedEmail;
-    //string email1;
     bool firstClick = true;
 
     public async Task loadAllProducts(string email)
     {
-
         _my_categories.Clear();
         selectedEmail = email;
         await loadProducts(email);
@@ -164,7 +155,6 @@ else
         _productsServices = await Product_ServiceService.GetProductsServicesEntrepreneurAsync(email);
     }
 
-
     public async Task loadProductsByCategory(string email, int category_id)
     {
         _products = await ProductService.GetProductsByCategoryAsync(email, category_id);
@@ -209,8 +199,8 @@ else
     //puede rescibir parametro
     void Prueba(string CodeId)
     {
-     
         NavManager.NavigateTo("/ViewProduct" + "/" + CodeId);
+    }
 
     //metodos buscar productos
     public void EnterKey(KeyboardEventArgs e)

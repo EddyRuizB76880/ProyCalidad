@@ -17,11 +17,7 @@
     <div class="">
         <!--Displays the header-->
         <section class=" w-100 gap-lg-2">
-
-
-           
             <div class="grid2 gap-3">
-
                 <div class=" border-1 shadow  bg-silver">
                     <div class="form-group w-70">
                         <label for="Name" class="control-label m-lg-2">Nombre:</label>
@@ -43,64 +39,27 @@
 
 
                 </div>
-               
+
                 <EmprendeUCR_WebApplication.Pages.Product_Service.Product.ProductStatusInput />
 
             </div> <br /> <br />
-            
+
             <div>
                 <div class="wrapper w-90">
-
-                    @*display photo one*@
-                    <div class="one">
-
-                        <label class="" for="addPhoto1">
-                            <span class="d-flex align-items-center justify-content-center img-card btn btn-secondary material-icons-outlined">add_photo_alternate</span>
-                        </label>
-                    </div>
-
-                    <div class="one">
-
-                        <label class="" for="addPhoto1">
-                            <span class="d-flex align-items-center justify-content-center img-card btn btn-secondary material-icons-outlined">add_photo_alternate</span>
-                        </label>
-                    </div>
-
-                    <div class="one">
-
-                        <label class="" for="addPhoto1">
-                            <span class="d-flex align-items-center justify-content-center img-card btn btn-secondary material-icons-outlined">add_photo_alternate</span>
-                        </label>
-                    </div>
-
-                    <div class="one">
-
-                        <label class="" for="addPhoto1">
-                            <span class="d-flex align-items-center justify-content-center img-card btn btn-secondary material-icons-outlined">add_photo_alternate</span>
-                        </label>
-                    </div>
-
-
-                    <div class="one">
-
-                        <label class="" for="addPhoto1">
-                            <span class="d-flex align-items-center justify-content-center img-card btn btn-secondary material-icons-outlined">add_photo_alternate</span>
-                        </label>
-                    </div>
-
-                    <div class="one">
-
-                        <label class="" for="addPhoto1">
-                            <span class="d-flex align-items-center justify-content-center img-card btn btn-secondary material-icons-outlined">add_photo_alternate</span>
-                        </label>
-                    </div>
-
-
-
-
+                    @foreach (var prodPhoto in photosDisplay)
+                    {
+                        <div class="one">
+                            <label class="" for="addPhoto1">
+                                @if (prodPhoto != null)
+                                {
+                                    <img src="@Product_PhotosService.convertImageDisplay(prodPhoto.Photos)" width="200" class=" img-card mt-2" />
+                                }
+                            </label>
+                        </div>
+                    }
                 </div>
             </div>
-           
+
 
 
 
@@ -123,52 +82,37 @@
         </section>
 
     </div>
-
-
-
-
-    <div>
-
-    </div>
-
-
 </body>
 
 @functions {
-
     [Parameter]
-
     public string CodeId { get; set; }
-
-
 }
 
 @code {
 
-
     Product _product = new Product();
+    Product_Photos _prodPhoto = new Product_Photos();
+    IList<Product_Photos> photosDisplay;
 
-
-    public void  c(string CodeId)
+    public void c(string CodeId)
     {
-
-        //selectedProduct = CodeId;
         loadProduct(CodeId);
-
     }
 
-    public void  loadProduct(string CodeId)
+    public void loadProduct(string CodeId)
     {
-        _product =  ProductService.GetProduct(CodeId);
+        _product = ProductService.GetProduct(CodeId);
     }
-
-
-
 
     protected override async Task OnInitializedAsync()
     {
-
         loadProduct(CodeId);
+        loadPhotos(int.Parse(CodeId));
     }
 
+    public void loadPhotos(int CodeId)
+    {
+        photosDisplay = Product_PhotosService.loadPhotosByID(CodeId);
+    }
 }

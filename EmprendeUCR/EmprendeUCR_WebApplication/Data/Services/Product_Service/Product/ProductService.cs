@@ -57,7 +57,7 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return product;
         }
 
-        public  Product GetProduct(string Id)
+        public Product GetProduct(string Id)
         {
             return  _context.Product.FirstOrDefault(c => String.Equals(c.Code_ID.ToString(), Id));
         }
