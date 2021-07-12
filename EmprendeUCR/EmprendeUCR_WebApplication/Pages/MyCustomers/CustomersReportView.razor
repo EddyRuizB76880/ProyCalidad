@@ -13,14 +13,6 @@
 
 
 <body>
-    <span> @cliente.Email </span>
-    <span> @cliente.Name </span>
-    <span> @cliente.F_Last_Name </span>
-    <span> @cliente.S_Last_Name </span>
-    <span> @cliente.Province_Name </span>
-    <span> @cliente.Canton_Name </span>
-    <span> @cliente.District_Name </span>
-
     <table class="table">
         <thead class="bg-blue">
             <tr>
@@ -35,35 +27,36 @@
             </tr>
         </thead>
         <tbody>
+            @foreach (var user in ReportList)
+            {
             <tr>
-                <th scope="row"></th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>mdo</td>
+                <th scope="row">@user.NumOrders</th>
+                <th scope="row">@user.lastOrder</th>
+                <th scope="row">@user.user.Name</th>
+                <th scope="row">@user.user.F_Last_Name</th>
+                <th scope="row">@user.user.S_Last_Name</th>
+                <th scope="row"> @user.user.Province_Name </th>
+                <th scope="row"> @user.user.Canton_Name </th>
+                <th scope="row"> @user.user.District_Name </th>
             </tr>
-            <tr>
-                <th scope="row"></th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>fat</td>
-            </tr>
-            <tr>
-                <th scope="row"></th>
-                <td>Larry</td>
-                <td>the Bird</td>
-                <td>twitter</td>
-            </tr>
+            }
         </tbody>
     </table>
 </body>
 
 @code {
-
+    public class my_User {
+        public User user {get;set;}
+        public int NumOrders {get;set;}
+        public DateTime lastOrder {get;set;}
+    }
     //Email confirmation del emprendedor logeado
     string selectedEmail;
     List<Order> ordersList = new List<Order>();
     User cliente = new User();
     List<Order> NonRepetedCurstomersOrdersLists = new List<Order>();
+    List<User> CustomersList = new List<User>();
+    List<my_User> ReportList = new List<my_User>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -77,10 +70,28 @@
     {
         foreach(var order in ordersList)
         {
-
+            if(ReportList.Where(u => u.user.Email == order.ClientEmail).Count() < 1)
+            {
+                my_User userToAdd = new my_User();
+                userToAdd.user = await UserService.getUser(order.ClientEmail);
+                userToAdd.NumOrders = ordersList.Where(o => o.ClientEmail == order.ClientEmail).Count();
+                userToAdd.lastOrder = FindMostRecentDate(order.ClientEmail);
+                ReportList.Add(userToAdd);
+            }
         }
+    }
 
-
+    private  DateTime FindMostRecentDate(string userEmail)
+    {
+        DateTime DateTimeToReturn = DateTime.MinValue;
+        foreach (var order in ordersList)
+        {
+            if(order.ClientEmail == userEmail && order.DateAndHourCreation > DateTimeToReturn)
+            {
+                DateTimeToReturn = order.DateAndHourCreation;
+            }
+        }
+        return DateTimeToReturn;
     }
 
 }
