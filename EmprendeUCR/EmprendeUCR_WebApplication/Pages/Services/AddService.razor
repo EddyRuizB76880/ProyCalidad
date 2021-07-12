@@ -367,9 +367,10 @@
         int idToInsert = await createProduct_Service();
         serv.Code_ID = idToInsert;
         await createService();
+        await HasSuppliesService.InsertListOfHasSupplie(supplies, idToInsert, selectedCategory.Id, prodServ.Entrepreneur_Email);
         //if no photo is added then add the default picture
         if (photosOne.Photos == null && photosTwo.Photos == null && photosThree.Photos == null
-        && photosFour.Photos == null && photosFive.Photos == null && photosSix.Photos == null)
+    && photosFour.Photos == null && photosFive.Photos == null && photosSix.Photos == null)
         {
             insertDefaultPhoto(img, photosOne);
         }
