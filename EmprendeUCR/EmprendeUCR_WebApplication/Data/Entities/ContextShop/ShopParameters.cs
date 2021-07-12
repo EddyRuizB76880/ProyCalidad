@@ -9,7 +9,7 @@ namespace EmprendeUCR_WebApplication.Data.Entities.ContextShop
     {
         const int maxPageSize = 50;
         public int PageNumber { get; set; } = 1;
-        private int _pageSize = 4;
+        private int _pageSize = 2;
         public int PageSize
         {
             get

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Syncfusion.Blazor.TreeGrid;
 
-namespace EmprendeUCR_WebApplication.Data.Services
+namespace EmprendeUCR_WebApplication.Data.Services.Categories
 {
     public class CategoryService : PageModel
     {
@@ -43,14 +43,22 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return false;
         }
 
+        public bool ValidateDescription(String description)
+        {
+            if (_context.Category.Where(c => c.Description.Equals(description)).Count() == 0)
+            {
+                return true;
+            }
+            return false;
+        }
         /**
         * @brief changes the parent of a category, updates and save the changes
         * @param Title of the actual category and TitleDad of the selected category
         * @return
         */
-        public async Task ChangeParent(String Title, int? ParentId)
+        public async Task ChangeParent(int Id, int? ParentId)
         {
-            Category source = _context.Category.Find(Title);
+            Category source = _context.Category.Find(Id);
             source.ParentId = ParentId;
             _context.Category.Update(source);
             await _context.SaveChangesAsync();
@@ -63,7 +71,7 @@ namespace EmprendeUCR_WebApplication.Data.Services
         */
         public int getParentId(String TitleDad)
         {
-            Category parentCategory = _context.Category.Where(c => c.Title.Equals(TitleDad)).First();
+            Category parentCategory = _context.Category.Where(c => c.ParentId.Equals(TitleDad)).First();
             return parentCategory.Id;
         }
 
@@ -102,18 +110,42 @@ namespace EmprendeUCR_WebApplication.Data.Services
         {
             this.TreeGrid = main;
             var position = args.Target.ID;
-            if (position == "e-dropchild")
+            if (position == " e-dropchild")
             {
                 var CurrentViewData = this.TreeGrid.GetCurrentViewRecords();
                 var TargetCategory = CurrentViewData.ElementAt((int)args.DropIndex);
                 var SourceCategory = CurrentViewData.ElementAt((int)args.FromIndex);
-                await ChangeParent(SourceCategory.Title, TargetCategory.ParentId);
+                await ChangeParent(SourceCategory.Id, TargetCategory.ParentId);
             }
             else
             {
+                Console.WriteLine(position);
                 args.Cancel = true;
             }
         }
+
+        /**
+         * @brief Get categories that have no parent
+         * @param 
+         * @return List of parent categories
+        **/
+        public IList<Category> getParents()
+        {
+            return _context.Category.FromSqlRaw("SELECT * FROM Category WHERE ParentId IS NULL").ToArray();
+        }
+
+        /**
+         * @brief Get categories that have a specific parent
+         * @param Id of the parent
+         * @return List of children of a parent category
+        **/
+        public IList<Category> getChildrenOf(int parentId)
+        {
+            return _context.Category.FromSqlRaw("SELECT * FROM Category WHERE ParentId = " + parentId).ToArray();
+        }
+
+        public string GetTitle(int id){
+            return _context.Category.Find(id).Title;
+        }
     }
 }
-

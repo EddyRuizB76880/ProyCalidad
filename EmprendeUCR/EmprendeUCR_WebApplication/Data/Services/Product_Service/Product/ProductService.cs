@@ -49,7 +49,11 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return true;
         }
 
+        public async Task<IList<Product>> GetProductsByCategoryAsync(string email, int category_id)
+        {
+            return await _context.Product.Where(product => String.Equals(product.Entrepreneur_Email, email) && product.Category_ID == category_id).ToListAsync();
 
+        }
 
         public async Task<Product> GetProductAsync(int Id)
         {
@@ -73,11 +77,7 @@ namespace EmprendeUCR_WebApplication.Data.Services
 
         }
 
-        public async Task<IList<Product>> GetProductsByCategoryAsync(string email,int category_id)
-        {
-            return await _context.Product.Where(product => String.Equals(product.Entrepreneur_Email, email) && product.Category_ID==category_id).ToListAsync();
 
-        }
 
         public async Task<IEnumerable<Product>> GetProducts()
         {
@@ -108,7 +108,39 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return _context.Product.Count();
 
         }
-    }
-            
-    }
 
+        public IList<Product> GetList(string product)
+        {
+            return _context.Product.FromSqlRaw("exec GetProducts \"" + product + "\"").ToArray();
+        }
+
+        public IList<Product> GetListByCategory(int categoryID)
+        {
+            return _context.Product.FromSqlRaw("exec GetProductsByCategory " + categoryID  ).ToArray();
+        }
+        
+        public IList<Product> GetListRestricted(string product,int categoryID)
+        {
+            return _context.Product.FromSqlRaw("exec GetProductsRestricted \"" + product + "\","+  categoryID).ToArray();
+        }
+
+        public IList<Product> GetNewProducts()
+        {
+            return _context.Product.FromSqlRaw("exec getNewProducts").ToArray();
+        }
+        public IList<Product> GetOfferProducts()
+        {
+            return _context.Product.FromSqlRaw("exec getOfferProducts").ToArray();
+        }
+        public IList<Product> GetRecommendedProducts(string userEmail)
+        {
+            return _context.Product.FromSqlRaw("exec getRecommendedProducts \"" + userEmail + "\"").ToArray();
+        }
+
+        public Product GetProduct(int Id)
+        {
+            Product product =  _context.Product.FirstOrDefault(c => c.Code_ID.Equals(Id));
+            return product;
+        }
+    }
+}

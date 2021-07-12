@@ -1,5 +1,22 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager _navManager
 
+@if ((_navManager.Uri.Contains("/Categories")) || (_navManager.Uri.Contains("/admin")) || (_navManager.Uri.Contains("/viewreports")) ||
+  (_navManager.Uri.Contains("/payment_methods")) || _navManager.Uri.Contains("/activeAdministrator")) {
+<div class="sidebar1">
+    <Header />
+</div>
+<div class="sidebar2">
+    <MenuAdmin />
+</div>
+<div class="main2">
+    <div class="content2 px-4">
+        @Body
+    </div>
+</div>
+}
+else
+{
 <div class="page">
     <div class="sidebar">
         <NavMenu />
@@ -11,4 +28,5 @@
         </div>
     </div>
 </div>
+}
 

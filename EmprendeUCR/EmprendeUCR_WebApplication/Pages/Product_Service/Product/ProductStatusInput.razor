@@ -1,33 +1,33 @@
 ﻿@page "/ProductStatusInput"
+@using EmprendeUCR_WebApplication.Data.Entities;
 <div class=" border-1 shadow">
 
 
     <h3 class="bg-blue text-center">Estados</h3>
     <label for="AddStatus" class="control-label m-lg-2 ">Nuevo estado</label>
     <div class="d-flex">
-        <input maxlength="20" @bind="@newStatus.Text" form="AddStatus" class="form-control m-lg-2 w-50  " />
+        <input maxlength="30" @bind="@newStatus.Name" form="AddStatus" class="form-control m-lg-2 w-50  " />
         <button class="material-icons-outlined  bg-blue  text-center m-lg-2  " hidden="@(!isStatusInputValid())" @onclick="()=>onAddStatus()"> add </button>
     </div>
 
     <ul ondragover="event.preventDefault();" style="margin:20px">
         @for (int i = 0; i < statuses.Count; i++)
         {
-            Status item = statuses[i];
+            var item = statuses[i];
+
             if (item != null)
             {
-        <div class="container">
-            <li class="row" draggable="true" style="list-style-type:none;" @key="item.ID" tabindex="1"
-                @ondrop="@(()=> Drop(item))" @ondrag="@(()=> StartDrag(item))">
+                <li class="row" draggable="true" style="list-style-type:none;" @key="item.Name" tabindex="1"
+                    @ondrop="@(()=> Drop(item))" @ondrag="@(()=> StartDrag(item))">
 
-                <span class="col-1">@(i+1). </span> 
-                <span class="col-4">@item.Text</span>
-                <span class="material-icons-outlined valign-center col-1">
-                    drag_indicator
-                </span>
-                <span class="material-icons-outlined valign-center col-1" @onclick="()=>onDeleteStatus(item)">clear</span>
+                    <span class="col-1">@(i+1). </span>
+                    <span class="col-4">@item.Name</span>
+                    <span class="material-icons-outlined valign-center col-1">
+                        drag_indicator
+                    </span>
+                    <span class="material-icons-outlined valign-center col-1" @onclick="()=>onDeleteStatus(item)"> clear </span>
 
-            </li>
-        </div>
+                </li>
             }
             else
             {
@@ -35,87 +35,88 @@
             }
         }
     </ul>
+    <br />
 </div>
 @code
 {
 
-        int currentIndex;
-        Status newStatus = new Status() { ID = "test", Text = "" };
+    int currentIndex;
+    Personalized_Status newStatus = new Personalized_Status() { Name = "" };
 
-        void StartDrag(Status item)
+    [Parameter] public EventCallback<List<Personalized_Status>> OnStatusesUpdated { get; set; }
+    [Parameter] public List<Personalized_Status> statuses { get; set; }
+
+    // Gets called when page first loads.
+    protected override async Task OnInitializedAsync()
+    {
+        if(statuses.Count() < 1)
         {
-            currentIndex = GetIndex(item);
-            Console.WriteLine($"DragStart for {item.ID} index {currentIndex}");
+            statuses.Add(new Personalized_Status() { Name = "Orden recibida" });
+            statuses.Add(new Personalized_Status() { Name = "En preparación" });
+            statuses.Add(new Personalized_Status() { Name = "En camino" });
+            statuses.Add(new Personalized_Status() { Name = "Entregado" });
         }
+    }
 
-        void ClickItem(Status item)
-        {
-            currentIndex = GetIndex(item);
-        }
+    void StartDrag(Personalized_Status item)
+    {
+        currentIndex = GetIndex(item);
+    }
 
-        int GetIndex(Status item)
-        {
-            return statuses.FindIndex(a => a.ID == item.ID);
-        }
+    void ClickItem(Personalized_Status item)
+    {
+        currentIndex = GetIndex(item);
+    }
 
-        void Drop(Status item)
-        {
-            if (item != null)
-            {
-                Console.WriteLine($"Drop item {item.Text} ({item.ID})");
-                var index = GetIndex(item);
-                Console.WriteLine($"Drop index is {index}, move from {currentIndex}");
-                // get current item
-                var current = statuses[currentIndex];
-                // remove game from current index
-                statuses.RemoveAt(currentIndex);
-                statuses.Insert(index, current);
+    int GetIndex(Personalized_Status item)
+    {
+        return statuses.FindIndex(a => a.Name == item.Name);
+    }
 
-                // update current selection
-                currentIndex = index;
-
-                StateHasChanged();
-            }
-            else
-            {
-                Console.WriteLine("Drop - null");
-            }
-        }
-
-        void onDeleteStatus(Status item)
+    void Drop(Personalized_Status item)
+    {
+        if (item != null)
         {
             var index = GetIndex(item);
-            statuses.RemoveAt(index);
-        }
+            // get current item
+            var current = statuses[currentIndex];
+            // remove from current index
+            statuses.RemoveAt(currentIndex);
+            statuses.Insert(index, current);
 
-        void onAddStatus()
-        {
-            if (newStatus.Text != "")
-            {
-                statuses.Add(newStatus);
-                newStatus = new Status() { ID = statuses.Count + "test", Text = "" };
-            }
+            // update current selection
+            currentIndex = index;
+            sendListToParent();
+            StateHasChanged();
         }
+    }
 
-    public class Status
+    void onDeleteStatus(Personalized_Status item)
     {
-        public string ID { get; set; }
-        public string Text { get; set; }
-        public override string ToString()
+        var index = GetIndex(item);
+        statuses.RemoveAt(index);
+        sendListToParent();
+    }
+
+    void onAddStatus()
+    {
+        if (newStatus.Name != "")
         {
-            return Text;
+            statuses.Add(newStatus);
+            newStatus = new Personalized_Status() { Name = "" };
+            sendListToParent();
         }
     }
 
     bool isStatusInputValid()
     {
-        return newStatus.Text != null || newStatus.Text != "";
+        return newStatus.Name != null || newStatus.Name != "";
     }
 
-    List<Status> statuses = new List<Status> {
-    new Status() { ID= "111", Text= "Orden recibida"},
-    new Status() { ID= "222", Text= "En preparación"},
-    new Status() { ID= "333", Text= "En camino"},
-    new Status() { ID= "444", Text= "Entregado"},
-    };
+    void sendListToParent()
+    {
+        OnStatusesUpdated.InvokeAsync(statuses);
+    }
+
+
 }

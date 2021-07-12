@@ -24,6 +24,10 @@ function enabled(id){
 	document.getElementById(id).disabled = false;
 }
 
-function alerta(message) {
+function alerta(message){
 	alert(message);
+}
+
+function setRequired(id){
+	document.getElementById(id).setAttribute("required", "");
 }

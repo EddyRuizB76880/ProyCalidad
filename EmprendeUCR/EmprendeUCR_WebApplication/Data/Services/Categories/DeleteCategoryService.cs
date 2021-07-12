@@ -32,9 +32,15 @@ namespace EmprendeUCR_WebApplication.Data.Services.Categories
          * Public Variables
          * 
          */
-        public String Title = null;
+        public string Title = null;
         public bool RemoveDialogVisible;
         public bool RemoveToolbarItemDisabled;
+        /*
+         * 
+         * Testing
+         * 
+         */
+        public double SelectedIndex;
         public void OpenRemoveCategoryDialog(Category category)
         {
             this.SelectedCategory = category;
@@ -59,14 +65,26 @@ namespace EmprendeUCR_WebApplication.Data.Services.Categories
         {
             this.TreeGrid = main;
             this.RemoveDialogVisible = false;
-            await RemoveCategory(SelectedId);
-            await TreeGrid.DeleteRecord(Title, SelectedCategory);
+            var SelectedIndex = await TreeGrid.GetRowIndexByPrimaryKey(SelectedCategory.Id);
+            await TreeGrid.DeleteRecord("Nombre",SelectedCategory);
+            RemoveCategory(SelectedId);
         }
-        public async Task RemoveCategory(int Id)
+        public void RemoveCategory(int Id)
         {
-            Category CategoryToRemove = await _context.Category.FindAsync(Id);
+           RemoveCategoryRecursive(Id);
+        }
+        public void RemoveCategoryRecursive(int Id)
+        {
+            IList<Category> listChilds =_context.Category.Where(c => c.ParentId.Equals(Id)).ToList();
+            foreach(Category category in listChilds)
+            {
+                 RemoveCategoryRecursive(category.Id);
+            }
+            
+            Category CategoryToRemove =  _context.Category.Find(Id);
             _context.Category.Remove(CategoryToRemove);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
+            TreeGrid.DeleteRecord(Title, SelectedCategory);
         }
     }
 }
