@@ -68,8 +68,7 @@
                                 <label class="control-label">Categoria Selecionada:</label>
                                 @if (selectedCategory != null)
                                 {
-                                    <p>@selectedCategory.Title</p>
-                                    categorieSelected = true;
+                                    <span>@selectedCategory.Title</span>
                                 }
                                 <ValidationMessage For=@(() => prod.Category_ID) />
 
@@ -192,16 +191,7 @@
                             @*Button "Limpiar"*@
                             <input type="button" class="btn btn-primary m-lg-2" @onclick="@Clean" value="Limpiar" />
 
-                            @*if there are no error, shows the button "Guardar"*@
-                            @if (categorieSelected)
-                            {
-                                <input type="submit" form="@MyID" class="btn btn-primary m-lg-2" value="Guardar" />
-                            }
-                            else
-                            {
-                                <input type="submit" form="@MyID" class="btn btn-primary m-lg-2" value="Guardar" disabled />
-
-                            }
+                            <input type="submit" form="@MyID" class="btn btn-primary m-lg-2" value="Guardar" />
                         </div>
                     </div>
                 </div>
@@ -407,13 +397,6 @@
         NavigationManager.NavigateTo("ListProducts");
     }
 
-    //RowDrop
-    private void Rowdrop(Syncfusion.Blazor.Grids.RowDragEventArgs<Category>
-        args)
-    {
-        CategoryService.Rowdrop(args, this.TreeGrid);
-    }
-
     //SelectionHandler row selected
     public async Task SelectionHandler(Syncfusion.Blazor.Grids.RowSelectEventArgs<Category>
         args)
@@ -433,16 +416,18 @@
         args)
     {
         selectedCategory = null;
+        prod.Category_ID = -1;
         categorieSelected = false;
     }
 
+    // Validation errors
     private void HandleValidationRequested(object sender,
     ValidationRequestedEventArgs args)
     {
         messageStore.Clear();
 
         // Custom validation logic
-        if (String.IsNullOrEmpty(prod.Category_ID.ToString()))
+        if (prod.Category_ID < 1)
         {
             messageStore.Add(() => prod.Category_ID, "El producto debe asociarse a una categoria");
         }
@@ -461,7 +446,6 @@
     {
         prodServ.Availability = isAvailabilityChecked ? (byte)1 : (byte)0;
     }
-
 
     void StatusesUpdateHandler(List<Personalized_Status> newList)
     {
