@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,7 +36,7 @@ namespace EmprendeUCR_WebApplication.Data.Services.Categories
          */
         public bool AddDialogVisible;
         public string Title;
-        public string TitleDad;
+        public string ParentID;
         public string Description;
         public bool AddCategoryDisabled;
 
@@ -49,10 +49,6 @@ namespace EmprendeUCR_WebApplication.Data.Services.Categories
         public void OpenAddCategoryDialog(Category category)
         {
             SelectedCategory = category;
-            if (SelectedCategory != null)
-            {
-                TitleDad = SelectedCategory.Title;
-            }
             this.AddDialogVisible = true;
         }
 
@@ -95,6 +91,7 @@ namespace EmprendeUCR_WebApplication.Data.Services.Categories
         * @param args supplies information about a change event that is being raised, so that the new title can be validated as a non existence name 
         * @return
         */
+        /**
         public void ValidateTitleDad(Microsoft.AspNetCore.Components.ChangeEventArgs args)
         {
             TitleDadNotValid = false;
@@ -109,6 +106,7 @@ namespace EmprendeUCR_WebApplication.Data.Services.Categories
             AddCategoryDisabled = TitleNotValid || TitleDadNotValid;
 
         }
+        */
 
         /**
         * @brief Adds a new category to the database and reflects the changes to the site
@@ -124,21 +122,20 @@ namespace EmprendeUCR_WebApplication.Data.Services.Categories
 
             Category.Title = Title;
             Category.Description = Description;
-
-            if (TitleDad != null && TitleDad.Length > 0)
+            Console.WriteLine(ParentID);
+            if (ParentID != null)
             {
-                Category.ParentId = CategoryService.getParentId(TitleDad);
+                Category.ParentId = int.Parse(ParentID);
             }
-
             await InsertCategoryAsync(Category);
-            var TitleDadIndex = TreeGrid.GetRowIndexByPrimaryKey(TitleDad).Result;
-            if (TitleDadIndex < 0)
+            var ParentIDIndex = TreeGrid.GetRowIndexByPrimaryKey(Category.ParentId).Result;
+            if (ParentIDIndex < 0)
             {
                 await this.TreeGrid.AddRecord(Category, 0, RowPosition.Top);
             }
             else
             {
-                await this.TreeGrid.AddRecord(Category, TitleDadIndex, RowPosition.Child);
+                await this.TreeGrid.AddRecord(Category, ParentIDIndex, RowPosition.Child);
             }
             ResetAddCategoryData();
         }
@@ -155,8 +152,9 @@ namespace EmprendeUCR_WebApplication.Data.Services.Categories
             TitleNotValid = true;
             Description = null;
             Title = null;
-            TitleDad = null;
+            ParentID = null;
             AddCategoryDisabled = true;
+            SelectedCategory = null;
         }
 
         /**
@@ -170,5 +168,7 @@ namespace EmprendeUCR_WebApplication.Data.Services.Categories
             await _context.SaveChangesAsync();
             return true;
         }
+
+        //Refresh Interface
     }
 }

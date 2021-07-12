@@ -55,6 +55,7 @@ INSERT ([User_Email], [Presentation])
 VALUES ([User_Email], [Presentation]); 
 
 
+SET IDENTITY_INSERT [Category]  on 
 MERGE INTO Category AS Target
 USING (VALUES
         ('Bebidas', NULL, NULL, 10)
@@ -64,8 +65,10 @@ ON Target.[Id] = Source.[Id]
 WHEN NOT MATCHED BY TARGET THEN 
 INSERT ([Title], [Description], [ParentId], [Id]) 
 VALUES ([Title], [Description], [ParentId], [Id]); 
+SET IDENTITY_INSERT [Category]  off 
 
 
+SET IDENTITY_INSERT [Product_Service]  on 
 MERGE INTO Product_Service AS Target
 USING (VALUES 
         (100, 'juan.valverde@ucr.ac.cr', 20, 10),
@@ -79,7 +82,7 @@ ON Target.[Code_ID] = Source.[Code_ID] AND Target.[Entrepreneur_Email] = Source.
 WHEN NOT MATCHED BY TARGET THEN 
 INSERT ([Code_ID], [Entrepreneur_Email], [Availability], [Category_ID]) 
 VALUES ([Code_ID], [Entrepreneur_Email], [Availability], [Category_ID]); 
-
+SET IDENTITY_INSERT [Product_Service]  off 
 
 MERGE INTO Product AS Target
 USING (VALUES 

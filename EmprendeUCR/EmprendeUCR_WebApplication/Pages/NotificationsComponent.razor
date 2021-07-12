@@ -1,0 +1,57 @@
+﻿@using Syncfusion.Blazor.DropDowns
+
+<div class="position-absolute bg-white border-silver mt-3">
+
+    @* if to select the kind of notification depending on the user type. *@
+    @if (myType == 1)
+    {
+        var notif = NotificationsList[0];
+        <div class="d-flex px-4 py-3 border-silver hover-light-grey">
+            <a href="@notif.link" @onclick="show_notifications" class="">@notif.summary</a>
+        </div>
+    }
+    else if (myType == 2)
+    {
+        var notif = NotificationsList[1];
+        <div class="d-flex px-4 py-3 border-silver hover-light-grey">
+            <a href="@notif.link" @onclick="show_notifications" class="">@notif.summary</a>
+        </div>
+    }
+
+</div>
+
+
+@code {
+
+    // int variable to check what kind of user is logged in.
+    [Parameter]
+    public int myType { get; set; }
+
+    // Class Notification to implement an object notification containing both a summary and a link to it.
+    public class Notifications
+    {
+        public string summary { get; set; }
+        public string link { get; set; }
+    }
+
+    // EventCallBack to call the ShowNotifications method on the NavMenu.
+    [Parameter]
+    public EventCallback<int> ShowNotifications { get; set; }
+
+    // List of notifications to be displayed on the view depending on the user type.
+    private List<Notifications> NotificationsList = new List<Notifications>() {
+        new Notifications(){ summary= "Pedidos enviados", link= "/ClientRequest" },
+        new Notifications(){ summary= "Pedidos recibidos", link= "/OrderAcceptance" },
+    };
+
+    /*
+      Summary: Method to call the ShowNotification method on the navigation menu.
+      Parameters: Method does not recieve parameters
+      Return: Nothing
+      Exceptions: There aren't known exceptions
+    */
+    private async Task show_notifications()
+    {
+        await ShowNotifications.InvokeAsync();
+    }
+}

@@ -11,10 +11,10 @@
 
 <!--Titulo de la pagina-->
 <h3>Mi oferta</h3>
-<body class="border-1 shadow">
+<body class="border-1">
     <div class="grid2 gap-3 ">
         <!--Display de la foto (La primera de el primer producto involucrado, sino la primera del primer servicio involucrado)-->
-        <div class="w-50 content-center">
+        <div class="w-40 content-center">
             <!--Si logro cargar una foto de producto, ensena esa, sino la del servicio-->
             @if (product_foto is not null)
             {
@@ -30,8 +30,8 @@
         </div>
 
         <!--Detalles de la oferta-->
-        <div class=" w-40 border-1 shadow  ">
-            <ul>
+        <div class=" w-50 border-1 shadow">
+            <ul class="m-lg-3">
                 <!-- Saca la descripicon de Offer-->
                 <li scope="row" width="200" valign="middle" align="left"> <b>Descripción:</b> @offer.Offer_Description</li>
                 <!-- Combo o descuento-->
@@ -49,9 +49,9 @@
     </div>
     <div class=" mt-3">
         <!--Display de los productos o servicios involucrados-->
-        <div class=" float-md-start border-1 shadow w-100">
+        <div class=" float-md-start border-1 shadow w-100 ">
             <t scope="auto" width="200" valign="middle" align="left"> <b>Productos o servicios asociados:</b></t>
-            <ul>
+            <ul class="m-lg-3">
                 <!--Display de los productos involucrados en la oferta-->
                 @foreach (var product in _myProducts)
                 {

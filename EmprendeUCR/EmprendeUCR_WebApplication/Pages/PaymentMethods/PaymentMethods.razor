@@ -1,0 +1,96 @@
+﻿@page "/payment_methods"
+@using EmprendeUCR.Domain.PaymentMethods.Entities
+@using EmprendeUCR.Application.PaymentMethods
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Inputs
+@inject IPaymentMethodService PaymentMethodService
+@using Syncfusion.Blazor.DropDowns
+@using System;
+@using System.Collections.ObjectModel;
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+<style>
+    .statustemp {
+        position: relative;
+        height: 19px;
+        border-radius: 5px;
+        text-align: center;
+    }
+
+        .statustemp.e-activecolor {
+            background-color: #ccffcc;
+            width: 62px;
+        }
+
+        .statustemp.e-inactivecolor {
+            background-color: #ffd7cc;
+            width: 88px;
+        }
+
+    td.e-rowcell .statustxt.e-inactivecolor {
+        color: #e60000;
+        position: relative;
+    }
+
+    td.e-rowcell .statustxt.e-activecolor {
+        color: #00cc00;
+        position: relative;
+    }
+</style>
+<div class="container">
+    <h1>Métodos de pago</h1>
+    <SfGrid ID="grid" @ref="grid" DataSource="@_paymentMethods" AllowSelection="false">
+        <GridEditSettings AllowEditing="true"></GridEditSettings>
+        <GridEvents CommandClicked="CommandClickHandler" TValue="PaymentMethod"></GridEvents>
+        <GridColumns>
+            <GridColumn Field=@nameof(PaymentMethod.Name) HeaderText="Nombre" Width="100" IsPrimaryKey="true"></GridColumn>
+            <GridColumn Field=@nameof(PaymentMethod.Status) HeaderText="Estado" Width="150">
+                <Template>
+                    @{
+                        var payment = (context as PaymentMethod);
+                        if (payment.Status == true)
+                        {
+                            <div class="statustemp e-activecolor">
+                                <span class="statustxt e-activecolor">Habilitado</span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="statustemp e-inactivecolor">
+                                <span class="statustxt e-inactivecolor">Deshabilitado</span>
+                            </div>
+                        }
+                    }
+                </Template>
+            </GridColumn>
+            <GridColumn HeaderText="Acción" Width="50">
+                <GridCommandColumns>
+                    <GridCommandColumn Type="CommandButtonType.None" ButtonOption="@(new CommandButtonOptions() {CssClass="e-flat",Content="Cambiar Estado" })">
+
+                    </GridCommandColumn>
+                </GridCommandColumns>
+            </GridColumn>
+        </GridColumns>
+    </SfGrid>
+</div>
+@code {
+    private string state;
+    private bool _isLoading = true;
+    private IEnumerable<PaymentMethod>? _paymentMethods;
+    private SfGrid<PaymentMethod> grid;
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPaymentMethods();
+    }
+    private async Task LoadPaymentMethods()
+    {
+        _paymentMethods = await PaymentMethodService.GetPaymentMethodsAsync();
+    }
+    public async void CommandClickHandler(CommandClickEventArgs<PaymentMethod> args)
+    {
+        var payment = await PaymentMethodService.GetPaymentMethodByIdAsync(args.RowData.Name);
+        await PaymentMethodService.ChangeStatusToPaymentMethodAsync(payment);
+        var index = grid.GetRowIndexByPrimaryKey(payment.Name).Result;
+        await grid.SetRowData(payment.Name, payment);
+    }
+}
