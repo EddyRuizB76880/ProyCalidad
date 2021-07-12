@@ -13,35 +13,44 @@
 
 
 <body>
-    <table class="table">
-        <thead class="bg-blue">
-            <tr>
-                <th scope="col">Cantidad de Compras</th>
-                <th scope="col">Ultima Compra</th>
-                <th scope="col">Nombre</th>
-                <th scope="col">Primer Apellido</th>
-                <th scope="col">Segundo Apellido</th>
-                <th scope="col">Provincia</th>
-                <th scope="col">Cantón</th>
-                <th scope="col">Distrito</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var user in ReportList)
-            {
-            <tr>
-                <th scope="row">@user.NumOrders</th>
-                <th scope="row">@user.lastOrder</th>
-                <th scope="row">@user.user.Name</th>
-                <th scope="row">@user.user.F_Last_Name</th>
-                <th scope="row">@user.user.S_Last_Name</th>
-                <th scope="row"> @user.user.Province_Name </th>
-                <th scope="row"> @user.user.Canton_Name </th>
-                <th scope="row"> @user.user.District_Name </th>
-            </tr>
-            }
-        </tbody>
-    </table>
+    @if (!ListEmpthy)
+    {
+        <table class="table">
+            <thead class="bg-blue">
+                <tr>
+                    <th scope="col">Cantidad de Compras</th>
+                    <th scope="col">Ultima Compra</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Primer Apellido</th>
+                    <th scope="col">Segundo Apellido</th>
+                    <th scope="col">Provincia</th>
+                    <th scope="col">Cantón</th>
+                    <th scope="col">Distrito</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in ReportList)
+                {
+                    <tr>
+                        <th scope="row">@user.NumOrders</th>
+                        <th scope="row">@user.lastOrder</th>
+                        <th scope="row">@user.user.Name</th>
+                        <th scope="row">@user.user.F_Last_Name</th>
+                        <th scope="row">@user.user.S_Last_Name</th>
+                        <th scope="row"> @user.user.Province_Name </th>
+                        <th scope="row"> @user.user.Canton_Name </th>
+                        <th scope="row"> @user.user.District_Name </th>
+                    </tr>
+                }
+
+
+
+            </tbody>
+        </table>
+    }
+    else { 
+        <h2>De momento no tiene clientes, esperamos que tenga clientes pronto :)</h2>
+    }
 </body>
 
 @code {
@@ -51,6 +60,7 @@
         public DateTime lastOrder {get;set;}
     }
     //Email confirmation del emprendedor logeado
+    bool ListEmpthy = false;
     string selectedEmail;
     List<Order> ordersList = new List<Order>();
     User cliente = new User();
@@ -61,9 +71,15 @@
     protected override async Task OnInitializedAsync()
     {
         selectedEmail = await sessionStorage.GetItemAsync<string>("Email");
-        ordersList = await OrderService.GetEntrepreneurOrders(selectedEmail);
-        await ChargeNonRepetedCustomers();
-        cliente = await UserService.getUser(ordersList.ElementAt(0).ClientEmail);
+        ordersList = await OrderService.GetEntrepreneurFinalizedOrders(selectedEmail);
+        if(ordersList.Count == 0)
+        {
+            ListEmpthy = true;
+        }
+        else
+        {
+            await ChargeNonRepetedCustomers();
+        }
     }
 
     private async Task ChargeNonRepetedCustomers()
