@@ -55,6 +55,10 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return service;
         }
 
+        public Service GetService(string Id)
+        {
+            return _context.Service.FirstOrDefault(c => String.Equals(c.Code_ID.ToString(), Id));
+        }
 
         public async Task<List<Service>> GetAllServicesAsync()
         {
