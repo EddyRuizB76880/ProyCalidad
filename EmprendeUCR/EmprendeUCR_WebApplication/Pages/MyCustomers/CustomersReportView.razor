@@ -1,4 +1,26 @@
-﻿<body>
+﻿@using EmprendeUCR_WebApplication.Data.Services
+@using EmprendeUCR_WebApplication.Data.Entities
+@using EmprendeUCR_WebApplication.Application.OrderContext.Implementations
+@using EmprendeUCR_WebApplication.Domain.OrderContext.Entities;
+@inject EntrepreneurService EntrepreneurService
+@inject ProductService ProductService
+@using Syncfusion.Blazor.TreeGrid;
+@inject Product_ServiceService Product_ServiceService
+@inject ClientService Client_Service
+@inject UserServicePandemic UserService
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject OrderService OrderService
+
+
+<body>
+    <span> @cliente.Email </span>
+    <span> @cliente.Name </span>
+    <span> @cliente.F_Last_Name </span>
+    <span> @cliente.S_Last_Name </span>
+    <span> @cliente.Province_Name </span>
+    <span> @cliente.Canton_Name </span>
+    <span> @cliente.District_Name </span>
+
     <table class="table">
         <thead class="bg-blue">
             <tr>
@@ -14,19 +36,19 @@
         </thead>
         <tbody>
             <tr>
-                <th scope="row">1</th>
+                <th scope="row"></th>
                 <td>Mark</td>
                 <td>Otto</td>
                 <td>mdo</td>
             </tr>
             <tr>
-                <th scope="row">2</th>
+                <th scope="row"></th>
                 <td>Jacob</td>
                 <td>Thornton</td>
                 <td>fat</td>
             </tr>
             <tr>
-                <th scope="row">3</th>
+                <th scope="row"></th>
                 <td>Larry</td>
                 <td>the Bird</td>
                 <td>twitter</td>
@@ -36,5 +58,29 @@
 </body>
 
 @code {
+
+    //Email confirmation del emprendedor logeado
+    string selectedEmail;
+    List<Order> ordersList = new List<Order>();
+    User cliente = new User();
+    List<Order> NonRepetedCurstomersOrdersLists = new List<Order>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        selectedEmail = await sessionStorage.GetItemAsync<string>("Email");
+        ordersList = await OrderService.GetEntrepreneurOrders(selectedEmail);
+        await ChargeNonRepetedCustomers();
+        cliente = await UserService.getUser(ordersList.ElementAt(0).ClientEmail);
+    }
+
+    private async Task ChargeNonRepetedCustomers()
+    {
+        foreach(var order in ordersList)
+        {
+
+        }
+
+
+    }
 
 }
