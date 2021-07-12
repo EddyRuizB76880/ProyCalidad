@@ -27,7 +27,7 @@
                 <span>Seleccione una categoria</span>
                 <h2 class="text-center fs-2  bg-blue">Categoria</h2>
                 <SfTreeGrid ID="TreeGrid" @ref="TreeGrid" AllowSorting="true" AllowRowDragAndDrop="true" DataSource="@categories" IdMapping="Id" ParentIdMapping="ParentId" AllowSelection="true" TreeColumnIndex="0">
-                    <TreeGridEvents TValue="Category" RowDropped="Rowdrop" RowDeselected="SelectionHandler2" RowSelected="SelectionHandler"></TreeGridEvents>
+                    <TreeGridEvents TValue="Category"  RowDeselected="SelectionHandler2" RowSelected="SelectionHandler"></TreeGridEvents>
                     <TreeGridSortSettings>
                         <TreeGridSortColumns>
                             <TreeGridSortColumn Field="Title" Direction="Syncfusion.Blazor.Grids.SortDirection.Ascending"></TreeGridSortColumn>
