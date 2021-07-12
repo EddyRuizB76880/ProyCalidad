@@ -21,10 +21,6 @@ namespace EmprendeUCR_WebApplication.Data.Services
             _context = context;
         }
 
-        public async Task<IList<User>> GetAsync() // Enlista Emprendedores
-        {
-            return await _context.User.ToListAsync();
-        }
 
         public void AddUser(User user)
         {
@@ -55,6 +51,13 @@ namespace EmprendeUCR_WebApplication.Data.Services
             }
         }
 
+        public async Task<bool> UpdateAsync(User user)
+        {
+            _context.User.Update(user);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public bool getConfirmEmail(string email) {
             bool confirmado = false;
             User user = _context.User.FirstOrDefault(c => c.Email.Equals(email));
@@ -65,44 +68,9 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return confirmado;
         }
 
-        public async Task<User> getUser(string email)
+        public async Task<User> GetUserByEmailAsync(string email)
         {
-            User _user = new User();
-
-            using (IDbConnection con = new SqlConnection(Global.ConnectionString))
-            {
-                if (con.State == ConnectionState.Closed) con.Open();
-
-                string sSQL = "SELECT * FROM [User] WHERE 1=1 ";
-
-                if (!string.IsNullOrEmpty(email)) sSQL += " AND Email='" + email + "'";
-
-                var oUser = (await con.QueryAsync<User>(sSQL)).ToList();
-
-                if (oUser != null && oUser.Count > 0)
-                {
-
-                    _user = oUser.SingleOrDefault();
-                }
-                else
-                {
-                    return null;
-                }
-
-                return _user;
-            }
-        }
-
-        public IList<User> getPhoto(string email)
-        {
-            return _context.User.FromSqlRaw("SELECT * FROM [User] WHERE [User].Email = " + email).ToArray();
-        }
-
-
-        public User GetUserByEmail(string email)
-        {
-            var a= _context.User.Find(email);
-            return a;
+            return (await _context.User.FindAsync(email));
         }
 
 

@@ -6,10 +6,22 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using EmprendeUCR_WebApplication.Domain.ShoppingCartContext.Entities;
 
+/* This file is used to implement the map of the table knows as
+ * "Shopping_Cart_Has" in the context of the Shopping Cart, the name in this
+ * project was changed to "ShopLine".
+ */
 namespace EmprendeUCR_WebApplication.Infrastructure.ShoppingCartContext.EntityMappings
 {
     public class ProductLineMap : IEntityTypeConfiguration<ShopLine>
     {
+
+        /* Summary: Take the received builder and map with it the different
+         *          attributes of the "Shopping_Cart_Has" table, relating them 
+         *          to the "ShopLine" entity.
+         * Parameters: Receives the builder used to map.
+         * Return: Nothing.
+         * Exceptions: There aren't known exceptions.
+        */
         public void Configure(EntityTypeBuilder<ShopLine> builder)
         {
             builder.HasKey(e => new { e.Email, e.CodeId, e.EntrepreneurEmail, e.CategoryId });
@@ -37,7 +49,7 @@ namespace EmprendeUCR_WebApplication.Infrastructure.ShoppingCartContext.EntityMa
                 .WithMany(d => d.ShoppingCartHas)
                 .HasForeignKey(d => new { d.CodeId, d.EntrepreneurEmail, d.CategoryId });
 
-            builder.Ignore(s => s.quantity);
+            builder.Ignore(s => s.Quantity);
 
         }
     }

@@ -71,5 +71,10 @@ namespace EmprendeUCR_WebApplication.Data.Services
             _context.Entrepreneur.Add(entrepreneur);
             _context.SaveChanges();
         }
+
+        public async Task<Entrepreneur>GetByEmailAsync(string email)
+        {
+            return (await _context.Entrepreneur.FindAsync(email));
+        }
     }
 }

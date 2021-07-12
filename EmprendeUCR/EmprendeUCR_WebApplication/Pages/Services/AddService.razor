@@ -1,5 +1,6 @@
 ﻿@page "/AddService"
 @using EmprendeUCR_WebApplication.Data.Services
+@using EmprendeUCR_WebApplication.Data.Services.Categories
 @using EmprendeUCR_WebApplication.Data.Entities
 @using System.IO
 @using BlazorInputFile
@@ -149,12 +150,12 @@
                         @*if there are not error shows the button "Guardar"*@
                         @if (ready)
                         {
-                            <input type="button" class="btn btn-primary m-lg-2" @onclick="@onCreateService" value="Guardar" />
+                        <input type="button" class="btn btn-primary m-lg-2" @onclick="@onCreateService" value="Guardar" />
                         }
                         else @*if there are errors disables the button "Guardar"*@
                         {
 
-                            <input type="button" class="btn btn-primary m-lg-2" @onclick="@onCreateService" value="Guardar" disabled />
+                        <input type="button" class="btn btn-primary m-lg-2" @onclick="@onCreateService" value="Guardar" disabled />
                         }
                     </div>
                 </div>
@@ -190,7 +191,7 @@
 </body>
 
 @code {
-    //The service to add 
+    //The service to add
     EmprendeUCR_WebApplication.Data.Entities.Service serv = new EmprendeUCR_WebApplication.Data.Entities.Service();
     //The product service to add
     EmprendeUCR_WebApplication.Data.Entities.Product_Service prodServ = new EmprendeUCR_WebApplication.Data.Entities.Product_Service();
@@ -216,7 +217,7 @@
     private Category selectedCategory;
     //Error message if there are errors in the input
     String errorMessage = "";
-    //boolean to control if it's possible save 
+    //boolean to control if it's possible save
     bool ready = false;
 
     // Receives file to insert and product to insert it to.
@@ -259,7 +260,7 @@
         }
     }
 
-    //Return if the photo is loaded or not as a boolean 
+    //Return if the photo is loaded or not as a boolean
     protected bool isPhotoLoaded(Service_Photos photo)
     {
         return photo.Photos != null;
@@ -366,7 +367,7 @@
         serv.Service_Description = null;
     }
 
-    //Return to the List of Services 
+    //Return to the List of Services
     void back()
     {
         NavigationManager.NavigateTo("ListServices");
@@ -390,7 +391,7 @@
 
     }
 
-    //SelectionHandler2 row deselected 
+    //SelectionHandler2 row deselected
     public async Task SelectionHandler2(Syncfusion.Blazor.Grids.RowDeselectEventArgs<Category> args)
     {
 

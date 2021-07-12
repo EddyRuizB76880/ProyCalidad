@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EmprendeUCR_WebApplication.Domain.Core.CoreEntities;
 
 namespace EmprendeUCR_WebApplication.Data.Entities.ContextShop
 {

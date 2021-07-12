@@ -5,7 +5,8 @@ using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
 /* Manfred Carvajal - Luis Rojas
- * mejorar el correo de confirmaciion cuando se registra un usuario por primera vez 
+ * mejorar el correo de confirmaciion cuando se registra un usuario por primera
+ * vez 
  * crear funcionalidad de contraseña olvidada
  */
 
@@ -13,14 +14,19 @@ namespace EmprendeUCR_WebApplication.Data.Services
 {
     public class MailService
     {
+         /*Brief: prints the welcome message and confirmation link in the email
+         * Param: hash mail to uniquely identify it and type user to identify 
+         * the type of account
+         * Returns: string, the message to print in the email
+         */
         public string getMailBody(string hash_mail, int type_user)
         {
             string url = "";
             string result = "";
-            if (type_user == 1) //CREACIÓN DE CLIENTE
+            if (type_user == 1) // CLIENT CREATION
             {
                 Console.WriteLine(type_user);
-                url = Global.DomainName + "RegistrationDataClient?email=" + hash_mail;
+                url = Global.DomainName + "RegistrationData?email=" + hash_mail + "&type=Client";
 
                 result = string.Format(@"<div style='text-align:center;'>
                                     <h1>Bienvenido a EmprendeUCR</h1>
@@ -28,10 +34,10 @@ namespace EmprendeUCR_WebApplication.Data.Services
                                     <a href=" + '"' + url + '"' +
                                    ">Confirmar email</a> </div>", url, hash_mail);
             }
-            if (type_user == 2) //CREACIÓN DE EMPRESARIO
+            if (type_user == 2) // ENTREPENEUR CREATION
             {
                 Console.WriteLine(type_user);
-                url = Global.DomainName + "registrationDataEntrepreneur?email=" + hash_mail;
+                url = Global.DomainName + "registrationData?email=" + hash_mail + "&type=Entrepreneur";
 
                 result = string.Format(@"<div style='text-align:center;'>
                                     <h1>Bienvenido a EmprendeUCR</h1>
@@ -39,10 +45,10 @@ namespace EmprendeUCR_WebApplication.Data.Services
                                     <a href=" + '"' + url + '"' +
                                    ">Confirmar email</a> </div>", url, hash_mail);
             }
-            if (type_user == 3) //CREACIÓN DE ADMINISTRADOR
+            if (type_user == 3) // ADMINISTRATOR CREATION
             {
                 Console.WriteLine(type_user);
-                url = Global.DomainName + "registrationDataAdministrator?email=" + hash_mail;
+                url = Global.DomainName + "registrationData?email=" + hash_mail + "&type=Administrator";
 
                 result = string.Format(@"<div style='text-align:center;'>
                                     <h1>Bienvenido a EmprendeUCR</h1>
@@ -55,7 +61,11 @@ namespace EmprendeUCR_WebApplication.Data.Services
            
         }
 
-
+         /*Brief: prints the new password message and confirmation link in the
+         * email
+         * Param: hash mail to uniquely identify it
+         * Returns: string, the message to print in the email
+         */
         public string getNewPasswordMail(string hash_mail)
         {
             string url = "";
@@ -65,7 +75,8 @@ namespace EmprendeUCR_WebApplication.Data.Services
 
             result = string.Format(@"<div style='text-align:center;'>
                                 <h1>Recuperación de contraseña</h1>
-                                <h3>Haga click sobre el link debajo para cambiar a una nueva contraseña</h3>
+                                <h3>Haga click sobre el link debajo para cambiar a una nueva contraseña.</h3>
+                                <p>Si no ha solicitado un cambio de contraseña omita este correo</p>
                                 <a href=" + '"' + url + '"' +
                                 ">Cambiar contraseña</a> </div>", url, hash_mail);
 
@@ -73,6 +84,11 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return result;
         }
 
+        /*Brief: sends an email when need it
+         * email
+         * Param: mail object
+         * Returns: async, string task
+         */
         public async Task<string> SendMail(Mail mailClass)
         {
             try

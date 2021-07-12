@@ -14,86 +14,91 @@
 @inject EncrypService EncrypService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
-<center><h2>INICIAR SESIÓN</h2></center>
-
-<br>
-<br>
-<br>
-
-<body>
-    <center>
+<!--HTML-->
+<div class="flexDiv">
+    <div class="mainClass">
+        <h1>Iniciar Sesión</h1>
         <EditForm Model="@credentials">
-            <div class="mb-3">
-                <label for="Email" class="form-label">Correo electrónico</label>
-                <InputText style="width: 300px;" type="email" class="form-control" aria-describedby="emailHelp" id="exampleInputEmail1" @bind-Value="credentials.User_Email" />
+
+            <!--Email input-->
+            <div class="marginElements">
+                <label for="Email" class="form-label secondary_title">Correo electrónico:</label>
+                <InputText type="email" class="form-control inputClass" aria-describedby="emailHelp" id="exampleInputEmail1" @bind-Value="credentials.User_Email" />
                 <div id="emailHelp" class="form-text">Nunca compartiremos su información personal</div>
             </div>
-            <div class="mb-3">
-                <label for="Password" class="form-label">Contraseña</label>
-                <InputText style="width: 300px;" type="@pwdType" class="form-control" aria-describedby="emailHelp" id="exampleInputEmail1" @bind-Value="credentials.Password" />
+
+            <!--Password input-->
+            <div class="marginElements">
+                <label for="Password" class="form-label secondary_title">Contraseña:</label>
+                <InputText type="@pwdType" class="form-control inputClass" aria-describedby="emailHelp" id="exampleInputEmail1" @bind-Value="credentials.Password" />
                 <Input type="checkbox" @onclick="@showPassword"> Mostrar Contraseña
                 <div id="emailHelp" class="form-text">Nunca compartiremos su información personal</div>
             </div>
             <br />
 
-            <div class="mb3">
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" @onchange="@(() =>changeType(1))">
-                <label class="form-check-label" for="flexRadioDefault1">
-                    Cliente
-                </label>
+            <!--User type input-->
+            <p class="secondary_title marginElements">Seleccione su perfil:</p>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" @onchange="@(() =>changeType(1))" checked>
+                <label class="form-check-label" for="flexRadioDefault1">Cliente</label>
             </div>
-
-            <div class="mb3">
+            <div class="form-check">
                 <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" @onchange="@(() =>changeType(2))">
-                <label class="form-check-label" for="flexRadioDefault2">
-                    Emprendedor
-                </label>
+                <label class="form-check-label" for="flexRadioDefault2">Emprendedor</label>
             </div>
 
-            <div class="mb3">
+            <div class="form-check">
                 <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" @onchange="@(() =>changeType(3))">
-                <label class="form-check-label" for="flexRadioDefault3">
-                    Administrador
-                </label>
+                <label class="form-check-label" for="flexRadioDefault3">Administrador</label>
             </div>
 
+            <!--Submit button-->
+            <center>
             <button class="btn btn-primary" @onclick="CheckPassword"> Ingresar </button>
-            <button class="link" @onclick="Register"> Quiero registrarme </button>
-            <br /> <br />
+                <a class="link" @onclick="Register"> Registrarme </a>
+            </center>
+            <center>
+                <a class="link forgotPassword" @onclick="ForgotPassword"> ¿Olvidó su contraseña? </a>
+
             <p style="color:#FF0000">
                 @Error_Message
             </p>
-        </EditForm>
+            </center>
 
-        <div class="mb-3">
-            @*<button class="link-secondary" @onclick="Register"> Quiero registrarme </button>
-                <button class="btn btn-primary" @onclick="ForgotPassword"> Olvide mi contraseña </button>*@
+
+        </EditForm>
         </div>
-    </center>
-</body>
+</div>
 
 @code
 {
+
+
+
+    /*Login Atributes*/
     private Credentials credentials = new Credentials();
     private string DBpassword = string.Empty;
     private string pwdType = "password";
     private string text = "Mostrar Contraseña";
     private string Error_Message = string.Empty;
-    private int userType = 0;
+    private int userType = 1;
 
 
-
-
-    public async Task CheckPassword()
+    /*
+    Brief: Check the user credentials.
+    Parameters:
+    Returns:
+    */
+    public async void CheckPassword()
     {
         if (userType == 0)
         {
-            Error_Message = "No selecciono el tipo de usuario";
+            Error_Message = "No seleccionó el tipo de usuario";
         }
         else
         {
-            Error_Message = "";
-            if ((LoginService.VerifyUser(credentials.User_Email, userType) == true))
+            //Error_Message = "";
+            if ((LoginService.VerifyUser(credentials.User_Email, userType)== true))
             {
                 Error_Message = "";
                 if (string.IsNullOrEmpty(credentials.User_Email))
@@ -102,8 +107,8 @@
                 }
                 else
                 {
-                    Error_Message = "";
-                    DBpassword = await CredentialsService.GetPasswordAsync(@credentials.User_Email);
+                    //Error_Message = "";
+                    DBpassword =  await CredentialsService.GetPasswordAsync(@credentials.User_Email);
 
                     if (string.IsNullOrEmpty(DBpassword))
                     {
@@ -126,23 +131,47 @@
                 Error_Message = "El correo ingresado no esta registrado con el tipo de usuario";
             }
         }
+        StateHasChanged();
     }
 
+    /*
+    Brief: Save the user client type.
+    Parameters:
+    Returns:
+    */
     private void changeType(int type)
     {
         userType = type;
     }
 
 
+    /*
+   Brief:This method navigate to the register page
+   Param:N/A
+   Return:N/A
+   */
+
     public void Register()
     {
-        NavigationManager.NavigateTo("/Register");
+        NavigationManager.NavigateTo("/registro");
     }
+
+    /*
+   Brief:This method navigate to the  forgot password page 
+   Param:N/A
+   Return:N/A
+   */
 
     public void ForgotPassword()
     {
         NavigationManager.NavigateTo("/ForgotPassword");
     }
+
+    /*
+   Brief:This method show the user the input tha is in the space of the password 
+   Param:N/A
+   Return:N/A
+   */
 
     public void showPassword()
     {
@@ -158,11 +187,33 @@
         }
     }
 
+    /*
+    Brief: Accept the user login.
+    Parameters:
+    Returns:
+    */
     protected async void acceptLogin()
     {
         await sessionStorage.SetItemAsync("Email", credentials.User_Email);
         await sessionStorage.SetItemAsync("Type", userType);
-        NavigationManager.NavigateTo("/",forceLoad: true);
 
+        string homeRef = "";
+
+        switch (userType)
+        {
+            case 1:
+                homeRef = "/";
+                break;
+            case 2:
+                homeRef = "/HomeEntrepreneaur";
+                break;
+            case 3:
+                homeRef = "/admin";
+                break;
+            default:
+                homeRef = "";
+                break;
+        }
+        NavigationManager.NavigateTo(homeRef,forceLoad:true);
     }
 }

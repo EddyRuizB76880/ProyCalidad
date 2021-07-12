@@ -9,7 +9,7 @@ namespace EmprendeUCR_WebApplication.Data.Entities
 	public class Likes
 	{
 		[Key]
-		public string Client_Email { get; set; }
+		public string Members_Email { get; set; }
 		[Required]
 		public int Category_Id { get; set; }
 	}

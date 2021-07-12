@@ -27,5 +27,19 @@ namespace EmprendeUCR_WebApplication.Data.Services
             _context.Members.Add(members);
             _context.SaveChanges();
         }
+
+        public async Task<Members> GetByEmailAsync(string email)
+        {
+            var a = (await _context.Members.FindAsync(email));
+            return a;
+        }
+
+        public async Task<bool> UpdateAsync(Members member)
+        {
+             _context.Members.Update(member);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
     }
 }
