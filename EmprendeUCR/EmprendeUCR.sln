@@ -19,9 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmprendeUCR.Presentation", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{D9D1C508-ABB7-46FC-8F53-653E919FBA17}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmprendeUCR.UnitTests", "tests\UnitTests\EmprendeUCR.UnitTests.csproj", "{87EE27D5-1418-4FAA-9C56-64EA5F6E6165}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmprendeUCR.UnitTests", "tests\UnitTests\EmprendeUCR.UnitTests.csproj", "{87EE27D5-1418-4FAA-9C56-64EA5F6E6165}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmprendeUCR.IntegrationTests", "tests\IntegrationTests\EmprendeUCR.IntegrationTests.csproj", "{40D51675-CEA2-4D10-86E5-BC46A3293D83}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmprendeUCR.IntegrationTests", "tests\IntegrationTests\EmprendeUCR.IntegrationTests.csproj", "{40D51675-CEA2-4D10-86E5-BC46A3293D83}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
