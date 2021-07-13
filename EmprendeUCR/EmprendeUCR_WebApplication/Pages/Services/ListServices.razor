@@ -25,8 +25,8 @@ else
         <header>
             <div class="icon-m display-2"> Mis Servicios</div>
             <div class="flex-buscar">
-                <input @bind="@inputValue" @onkeyup="@EnterKey" class="form-control mr-sm-2 w-25 mb-2" type="search" placeholder="Buscar servicios" aria-label="Search" />
-                <button @onclick="buscar" class="btn btn-primary mb-2" type="submit">Buscar</button>
+                <input @bind-value="inputvalue" @onkeyup="@loadServicesByTerms" class="form-control mr-sm-2 w-25 mb-2" type="search" placeholder="Buscar productos" aria-label="Search" />
+
             </div>
         </header>
 
@@ -40,7 +40,7 @@ else
                         var prodServ = _productsServices.First(p => p.Code_ID == serv.Code_ID);
                         var servPhoto = photosDisplay.FirstOrDefault(p => p.Code_ID == serv.Code_ID);
 
-                        <div class="item data border-1 border-blue content-center" @onclick="()=>Prueba(serv.Code_ID.ToString())">
+                        <div class="item data border-1 border-blue content-center" @onclick="() => Prueba(serv.Code_ID.ToString())">
                             <div class=" content-center">
                                 @if (servPhoto != null)
                                 {
@@ -55,7 +55,14 @@ else
                             </div>
                         </div>
                     }
+
+
+
                 }
+                else { 
+                
+                     <h2>No hay Servicios </h2>
+                 }
             </div>
         </section>
 
@@ -90,6 +97,7 @@ else
 @code {
     private bool _isLoading = true;
     private IList<EmprendeUCR_WebApplication.Data.Entities.Service> _services;
+    private IList<EmprendeUCR_WebApplication.Data.Entities.Service> _finalservices;
     private IList<EmprendeUCR_WebApplication.Data.Entities.Product_Service> _productsServices;
     private IList<EmprendeUCR_WebApplication.Data.Entities.Category> _categories;
     private IList<EmprendeUCR_WebApplication.Data.Entities.Category> _my_categories = new List<Category>();
@@ -97,6 +105,7 @@ else
     SfTreeGrid<Category> TreeGrid { get; set; }
     private Category selectedCategory;
     string selectedEmail;
+    string inputvalue;
     bool firstClick = true;
 
     public async Task loadAllServices(string email)
@@ -146,9 +155,22 @@ else
         _isLoading = false;
     }
     bool hideError = true;
+
     public async Task loadServices(string email)
     {
         _services = await ServiceService.GetServicesEntrepreneurAsync(email);
+        _finalservices = _services;
+    }
+
+    public void loadServicesByTerms(KeyboardEventArgs key)
+    {
+
+        if (inputvalue != null)
+        {
+
+            _services = _finalservices;
+            _services = _services.Filter(s => s.Service_Name.Contains(inputvalue)).ToList();
+        }
     }
 
     public async Task loadProductsServices(string email)
