@@ -28,7 +28,7 @@
                 <span>Seleccione una categoria</span>
                 <h2 class="text-center fs-2  bg-blue">Categoria</h2>
                 <SfTreeGrid ID="TreeGrid" @ref="TreeGrid" AllowSorting="true" AllowRowDragAndDrop="true" DataSource="@categories" IdMapping="Id" ParentIdMapping="ParentId" AllowSelection="true" TreeColumnIndex="0">
-                    <TreeGridEvents TValue="Category"  RowDeselected="SelectionHandler2" RowSelected="SelectionHandler"></TreeGridEvents>
+                    <TreeGridEvents TValue="Category" RowDeselected="SelectionHandler2" RowSelected="SelectionHandler"></TreeGridEvents>
                     <TreeGridSortSettings>
                         <TreeGridSortColumns>
                             <TreeGridSortColumn Field="Title" Direction="Syncfusion.Blazor.Grids.SortDirection.Ascending"></TreeGridSortColumn>
@@ -218,6 +218,11 @@
     //List of categories
     IList<Category> categories;
 
+    public class myUser
+    {
+        public int myInt { get; set; }
+    }
+
     //Loading
     private bool _isLoading = true;
 
@@ -285,6 +290,7 @@
 
         categories = await CategoryService.GetAsync();
         _isLoading = false;
+        prodServ.Availability = 1;
     }
 
     // Gets called when entrepreneur saves a new product
@@ -353,7 +359,18 @@
         int idToInsert = await createProduct_Service();
         prod.Code_ID = idToInsert;
         await createProduct();
-        await HasSuppliesService.InsertListOfHasSupplie(supplies, idToInsert, selectedCategory.Id, prodServ.Entrepreneur_Email);
+        var has_statuses = new List<Has_Status>();
+        for (int i = 0; i < statuses.Count(); i++)
+        {
+            var has_status = new Has_Status();
+            has_status.Order = i;
+            has_status.Code_ID = idToInsert;
+            has_status.Entrepreneur_Email = prodServ.Entrepreneur_Email;
+            has_status.Category_ID = prodServ.Category_ID;
+            has_status.Name = statuses.ElementAt(i).Name;
+            has_statuses.Add(has_status);
+        }
+        await Has_StatusService.InsertListOfHas_Status(has_statuses);
         /// Save photos on data base
         if (photosOne.Photos == null && photosTwo.Photos == null && photosThree.Photos == null
         && photosFour.Photos == null && photosFive.Photos == null && photosSix.Photos == null)

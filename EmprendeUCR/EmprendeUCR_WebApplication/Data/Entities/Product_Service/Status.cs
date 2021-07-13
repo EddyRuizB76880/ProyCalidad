@@ -9,6 +9,7 @@ namespace EmprendeUCR_WebApplication.Data.Entities
 {
     public class Status
     {
+        [Key]
         public string Name { get; set; }
         public string Previous_State_Name { get; set; }
 

@@ -19,11 +19,11 @@ namespace EmprendeUCR_WebApplication.Data.Services
         }
         public async Task<IList<Has_Status>> GetAsync()    // Enlista estados
         {
-            return await _context.HasStatus.ToListAsync();
+            return await _context.Has_Status.ToListAsync();
         }
         public async Task<bool> InsertHas_StatusAsync(Has_Status status) // Agrega estados
         {
-            await _context.HasStatus.AddAsync(status);
+            await _context.Has_Status.AddAsync(status);
             await _context.SaveChangesAsync();
             return true;
         }
@@ -31,9 +31,29 @@ namespace EmprendeUCR_WebApplication.Data.Services
         {
             try
             {
-                foreach (var offer in Has_Status_List)
+                for (int i = 0; i < Has_Status_List.Count(); i++)
                 {
-                    await InsertHas_StatusAsync(offer);
+                    var has_status = Has_Status_List.ElementAt(i);
+
+                    var statusExists = _context.Status.Exists(pred: s => s.Name == has_status.Name);
+                    if (!statusExists)
+                    {
+                        var status = new Status();
+                        status.Name = has_status.Name;
+                        status.Previous_State_Name = null;
+                        await _context.Status.AddAsync(status);
+                        await _context.SaveChangesAsync();
+                    }
+                    var personalizedStatusExists = _context.Personalized_Status.Exists(s => s.Name == has_status.Name);
+                    if (!personalizedStatusExists)
+                    {
+                        var personalizedStatus = new Personalized_Status();
+                        personalizedStatus.Name = has_status.Name;
+                        await _context.Personalized_Status.AddAsync(personalizedStatus);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    await InsertHas_StatusAsync(has_status);
                 }
                 await _context.SaveChangesAsync();
             }
@@ -46,7 +66,8 @@ namespace EmprendeUCR_WebApplication.Data.Services
         }
         public async Task<List<Has_Status>> GetAllHas_StatusAsync()
         {
-            return await _context.HasStatus.ToListAsync();        // Listado 2
+            
+            return await _context.Has_Status.ToListAsync();        // Listado 2
         }
     }
 }
