@@ -44,6 +44,8 @@ namespace EmprendeUCR_WebApplication.Data.Services
 
             return true;
         }
+
+
         public async Task<List<Personalized_Status>> GetAllStatusAsync()
         {
             return await _context.Personalized_Status.ToListAsync();        // Listado 2

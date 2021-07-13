@@ -40,7 +40,7 @@
                     <label for="Price" class="control-label ">@_product.Price</label>
                 </div><br />
 
-                
+
             </div>
 
 
@@ -95,15 +95,50 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <input type="button" class="btn btn-primary" @onclick="@back" value="Regresar" />
-                        <input type="button" class="btn btn-primary" value="Editar" />
-                        <input type="button" class="btn btn-primary" value="Eliminar" />
+                        <input type="button" class="btn btn-primary" @onclick="@onEdit" value="Editar" />
+                        <input type="button" class="btn btn-primary" @onclick="@onDelete" value="Eliminar" />
 
                     </div>
                 </div>
             </div>
 
+            @if (ShowDialog)
+            {
 
-          
+                <div class="modal fade show d-block" id="exampleModal" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            @if (ShowError)
+                            {
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="titleLabel">Confirmar borrado.</h5>
+                                    <button type="button" class="close" @onclick="@Close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">X</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <span>Este producto no puede ser borrado en este momento.</span>
+                                </div>
+                            }
+
+                            else
+                            {
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="titleLabel">Confirmar borrado.</h5>
+                                    <button type="button" class="close" @onclick="@Close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">X</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <button type="submit" class="btn btn-primary" @onclick="@Close"> Cancelar</button>
+                                    <button type="submit" class="btn btn-primary" @onclick="@DeleteProduct"> Borrar</button>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            }
 
         </section>
 
@@ -123,6 +158,10 @@
     IList<HasSupplies> productSupplies;
     IList<Has_Status> productStatuses;
     IList<Category> supplyCategory = new List<Category>();
+
+    // Whether to show dialog or not
+    Boolean ShowDialog = false;
+    Boolean ShowError = false;
 
     public void c(string CodeId)
     {
@@ -163,10 +202,34 @@
         productStatuses.OrderBy(p => p.Order);
     }
 
-
-
     void back()
     {
         NavigationManager.NavigateTo("ListProducts");
     }
+
+    void onEdit()
+    {
+        NavigationManager.NavigateTo("EditProduct/" + CodeId.ToString());
+    }
+
+    void onDelete()
+    {
+        ShowDialog = true;
+    }
+
+    public void Close()
+    {
+        ShowDialog = false;
+    }
+
+    async Task DeleteProduct()
+    {
+        ShowError = await Product_ServiceService.DeleteProductServiceByIdAsync(int.Parse(CodeId));
+        NavigationManager.NavigateTo("ListProducts");
+        //if (!ShowError)
+        //{
+        //    NavigationManager.NavigateTo("ListProducts");
+        //}
+    }
+
 }

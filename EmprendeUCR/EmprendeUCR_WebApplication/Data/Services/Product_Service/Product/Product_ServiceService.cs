@@ -50,7 +50,23 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return true;
         }
 
-
+        public async Task<bool> DeleteProductServiceByIdAsync(int codeId) // Eliminar productos
+        {
+            try
+            {
+                Product_Service prod = _context.Product_Service.First(p => p.Code_ID == codeId);
+                _context.Product_Service.Remove(prod);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                throw;
+                return false;
+            }
+            
+            
+        }
 
         public async Task<Product_Service> GetProductServiceAsync(int Id)
         {
