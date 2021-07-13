@@ -61,6 +61,10 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return product;
         }
 
+        public Product GetProduct(string Id)
+        {
+            return  _context.Product.FirstOrDefault(c => String.Equals(c.Code_ID.ToString(), Id));
+        }
 
         public async Task<List<Product>> GetAllProductsAsync()
         {
@@ -73,14 +77,17 @@ namespace EmprendeUCR_WebApplication.Data.Services
 
         }
 
+
+
+        public async Task<IEnumerable<Product>> GetProducts()
+        {
+            return await _context.Product.Select(product => new Product { Code_ID = product.Code_ID, Product_Name = product.Product_Name, Price = product.Price }).ToListAsync();
+        }
         public async Task<PagedList<Product>> GetProducts(ShopParameters shopParameters)
         {
             var products = await _context.Product.ToListAsync();
             return PagedList<Product>.ToPagedList(products, shopParameters.PageNumber, shopParameters.PageSize);
-
         }
-
-
         public async Task RemoveProduct(int Id)
         {
             Product ProductToRemove = await _context.Product.FindAsync(Id);
@@ -136,5 +143,4 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return product;
         }
     }
-            
 }

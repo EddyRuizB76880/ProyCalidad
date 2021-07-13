@@ -65,6 +65,15 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return true;
         }
 
+        public async Task<bool> DeleteIs_OfferRelatedToOfferAsync(List<Is_Offer> relatedIsOffers) // Eliminar Ofertas
+        {
+
+           foreach(var is_offer in relatedIsOffers)
+            {
+                await DeleteIs_OfferAsync(is_offer);
+            }
+            return true;
+        }
 
 
         public async Task<Is_Offer> GetIs_OfferAsync(int Is_Offer_Id)
@@ -81,15 +90,26 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return await _context.Is_Offer.ToListAsync();        // Listado 2
         }
 
-
-        /**
-        public async Task<IList<Offer>> GetOfferFromEntrepreneurAsync(string email)
+        public async Task<Product> GetProductRelatedAsync(Is_Offer is_offer)
         {
-
-            return await _context.Offer.Where(c => String.Equals(c.Offer_Id, email)).ToListAsync();
-
+            return await _context.Product.FirstOrDefaultAsync(product => String.Equals(product.Code_ID, is_offer.Code_ID));
         }
-        */
+
+        public async Task<Service> GetServiceRelatedAsync(Is_Offer is_offer)
+        {
+            return await _context.Service.FirstOrDefaultAsync(service => String.Equals(service.Code_ID, is_offer.Code_ID));
+        }
+
+        public Product GetProductRelated(Is_Offer is_offer)
+        {
+            return _context.Product.FirstOrDefault(product => String.Equals(product.Code_ID, is_offer.Code_ID));
+        }
+
+        public Service GetServiceRelated(Is_Offer is_offer)
+        {
+            return _context.Service.FirstOrDefault(service => String.Equals(service.Code_ID, is_offer.Code_ID));
+        }
+        
 
         public Is_Offer GetIs_Offer(int Is_Offer_Id)
         {

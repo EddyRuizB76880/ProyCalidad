@@ -13,6 +13,8 @@ namespace EmprendeUCR_WebApplication.Domain.Repositories
     public interface IOrderRepository : IRepository<Order>
     {
         Task<List<Order>?> GetByIdAsync(string email);
+
+        Task<List<Order>?> GetEntreprenurFinalizedOrders(string email);
         Task<List<Order>?> GetAcceptedOrders(string email);
         Task<List<Order>?> GetClientOrdersAsync(string email);
         List<Tuple<int, Product>> GetProductsAsync(Order order);
