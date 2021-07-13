@@ -1,4 +1,4 @@
-﻿@page "/MyCustomers"
+﻿@page "/Alliances"
 @using EmprendeUCR_WebApplication.Data.Services
 @using EmprendeUCR_WebApplication.Data.Services.Categories
 @using EmprendeUCR_WebApplication.Data.Entities
@@ -21,11 +21,21 @@
     <p>Cargando...</p> }
 else
 {
-    <body>
-        <h3>Mis Alianzas</h3>
-        @*Llamamos al compontente para mostrar la tabla de Clientes del emprendedor*@
-        <EmprendeUCR_WebApplication.Pages.MyCustomers.CustomersReportView />
-    </body>
+
+
+<body>
+    <h3>Mis Alianzas</h3>
+    @foreach (var u in users_list)
+    {
+        <span> @u.entrepreneur.Name</span>
+        @foreach (var c in u.categories)
+        {
+            <span> @c.Title</span>
+        }
+        <span> --------------------------------- </span>
+    }
+
+</body>
 }
 
 
