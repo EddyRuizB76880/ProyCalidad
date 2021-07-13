@@ -1,5 +1,6 @@
 ﻿@page "/MyCustomers"
 @using EmprendeUCR_WebApplication.Data.Services
+@using EmprendeUCR_WebApplication.Data.Services.Categories
 @using EmprendeUCR_WebApplication.Data.Entities
 @using EmprendeUCR_WebApplication.Application.OrderContext.Implementations
 @inject EntrepreneurService EntrepreneurService
@@ -10,6 +11,10 @@
 @inject Product_ServiceService Product_ServiceService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject OrderService OrderService
+@inject UserServicePandemic UserService
+@inject CategoryService CategoryService
+
+
 
 @if (_isLoading)
 {
@@ -45,5 +50,24 @@ else
         _isLoading = false;
         IList<Product_Service> products_services_list = await Product_ServiceService.GetProductsServicesEntrepreneurAsync(selectedEmail);
         has_supplies_list = await HasSuppliesService.GetAllHasSuppliesEntrepreneurAsync(selectedEmail);
+        await ChargeNonRepetedCustomers();
+    }
+
+    private async Task ChargeNonRepetedCustomers()
+    {
+        foreach (var prod in products_services_general_list)
+        {
+            var List = has_supplies_list.FindAll(p => p.Supplie_ID == prod.Category_ID);
+            if (List.Count() > 0)
+            {
+                if (users_list.Where(u => u.entrepreneur.Email == prod.Entrepreneur_Email).Count() < 1 && prod.Entrepreneur_Email != selectedEmail)
+                {
+                    my_User userToAdd = new my_User();
+                    userToAdd.entrepreneur = await UserService.getUser(selectedEmail);
+                    userToAdd.categories.Add(CategoryService.getCategory(prod.Category_ID));
+                }
+
+            }
+        }
     }
 }
