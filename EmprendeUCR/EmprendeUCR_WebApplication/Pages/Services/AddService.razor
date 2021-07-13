@@ -10,7 +10,6 @@
 
 @inject ServiceService serviceService
 @inject NavigationManager NavigationManager
-@inject EntrepreneurService EntrepreneurService
 @inject Product_ServiceService Product_ServiceService
 @inject CategoryService CategoryService
 @inject Service_PhotosService Service_PhotosService
@@ -30,7 +29,7 @@
                 <span>Seleccione una categoria</span>
                 <h2 class="text-center fs-2  bg-blue">Categoria</h2>
                 <SfTreeGrid ID="TreeGrid" @ref="TreeGrid" AllowSorting="true" AllowRowDragAndDrop="true" DataSource="@categories" IdMapping="Id" ParentIdMapping="ParentId" AllowSelection="true" TreeColumnIndex="0">
-                    <TreeGridEvents TValue="Category" RowDropped="Rowdrop" RowDeselected="SelectionHandler2" RowSelected="SelectionHandler"></TreeGridEvents>
+                    <TreeGridEvents TValue="Category" RowDeselected="SelectionHandler2" RowSelected="SelectionHandler"></TreeGridEvents>
                     <TreeGridSortSettings>
                         <TreeGridSortColumns>
                             <TreeGridSortColumn Field="Title" Direction="Syncfusion.Blazor.Grids.SortDirection.Ascending"></TreeGridSortColumn>
@@ -72,7 +71,6 @@
                                 @if (selectedCategory != null)
                                 {
                                     <p>@selectedCategory.Title</p>
-                                    categorieSelected = true;
                                 }
                                 <ValidationMessage For=@(() => serv.Category_ID) />
 
@@ -194,17 +192,8 @@
 
                             @*Button "Limpiar"*@
                             <input type="button" class="btn btn-primary m-lg-2" @onclick="@Clean" value="Limpiar" />
-
-                            @*if there are no error, shows the button "Guardar"*@
-                            @if (categorieSelected)
-                            {
-                                <input type="submit" form="@MyID" class="btn btn-primary m-lg-2" value="Guardar" />
-                            }
-                            else
-                            {
-                                <input type="submit" form="@MyID" class="btn btn-primary m-lg-2" value="Guardar" disabled />
-
-                            }
+                            
+                            <input type="submit" form="@MyID" class="btn btn-primary m-lg-2" value="Guardar"/>
                         </div>
                     </div>
                 </div>
@@ -219,18 +208,29 @@
 @code {
     //The service to add
     EmprendeUCR_WebApplication.Data.Entities.Service serv = new EmprendeUCR_WebApplication.Data.Entities.Service();
-    //The product service to add
     EmprendeUCR_WebApplication.Data.Entities.Product_Service prodServ = new EmprendeUCR_WebApplication.Data.Entities.Product_Service();
+
+    private string MyID = "myid";
+    Image img = Image.FromFile("./wwwroot/images/image.jpg");
 
     //List of categories
     IList<Category> categories;
+
+    public class myUser
+    {
+        public int myInt { get; set; }
+    }
+
     //Loading
     private bool _isLoading = true;
-    //hideError
-    bool hideError = true;
-    private string MyID = "myid";
-    Image img = Image.FromFile("./wwwroot/images/image.jpg");
+
+    // availability
+    bool isAvailabilityChecked = true;
+
+    // stores error messages
+    private EditContext editContext;
     private ValidationMessageStore messageStore;
+
     // The photos that will be assign to the Product
     Service_Photos photosOne = new Service_Photos();
     Service_Photos photosTwo = new Service_Photos();
@@ -239,20 +239,22 @@
     Service_Photos photosFive = new Service_Photos();
     Service_Photos photosSix = new Service_Photos();
 
-    List<Personalized_Status> statuses = new List<Personalized_Status>();
-    List<HasSupplies> supplies = new List<HasSupplies>();
     //TreeGrid of categories
     SfTreeGrid<Category> TreeGrid { get; set; }
+
     //Selected category on the treeGrid
     private Category selectedCategory;
+
     //Error message if there are errors in the input
-    String errorMessage = "";
+    string errorMessage = "";
+
     //boolean to control if it's possible save
     bool ready = false;
-    private EditContext editContext;
     bool categorieSelected = false;
-    // availability
-    bool isAvailabilityChecked = true;
+
+    //Lists
+    List<Personalized_Status> statuses = new List<Personalized_Status>();
+    List<HasSupplies> supplies = new List<HasSupplies>();
 
     // Receives file to insert and product to insert it to.
     public async Task HandleFileSelected(IFileListEntry[] files, Service_Photos photos)
@@ -266,15 +268,27 @@
         }
     }
 
+    public void insertDefaultPhoto(System.Drawing.Image imageIn, Service_Photos photos)
+    {
+        using (var ms = new MemoryStream())
+        {
+            imageIn.Save(ms, imageIn.RawFormat);
+            photosOne.Photos = ms.ToArray();
+        }
+    }
+
     // Gets called when page first loads.
     protected override async Task OnInitializedAsync()
     {
         editContext = new(serv);
         editContext.OnValidationRequested += HandleValidationRequested;
         messageStore = new(editContext);
+
         prodServ.Entrepreneur_Email = await sessionStorage.GetItemAsync<string>("Email");
+
         categories = await CategoryService.GetAsync();
         _isLoading = false;
+        prodServ.Availability = 1;
     }
 
     // Gets called when entrepreneur saves a new product
@@ -282,8 +296,6 @@
     {
         if (String.IsNullOrEmpty(serv.Entrepreneur_Email))
         {
-            // product details are incomplete, show error
-            hideError = false;
             return Task.CompletedTask;
         }
         else
@@ -304,35 +316,12 @@
         photo.Photos = null;
     }
 
-    //Check if it's possible to save
-    private void HandleValidationRequested(object sender,
-         ValidationRequestedEventArgs args)
-    {
-        messageStore.Clear();
-
-        // Custom validation logic
-        if (String.IsNullOrEmpty(serv.Category_ID.ToString()))
-        {
-            messageStore.Add(() => serv.Category_ID, "El servicio debe asociarse a una categoria");
-        }
-        // If the initial date input is greater than the expire date
-        if (String.IsNullOrEmpty(serv.Service_Name))
-        {
-            messageStore.Add(() => serv.Service_Name, "El servicio debe tener un nombre asociado.");
-        }
-        if (serv.Price_per_hour < 0)
-        {
-            messageStore.Add(() => serv.Price_per_hour, "El precio del servicio debe ser mayor o igual a 0.");
-        }
-    }
-
     // Creates parent Product_Service entity
-    protected async Task<int> createProduct_Service()
+    protected async Task<int>
+        createProduct_Service()
     {
         if (String.IsNullOrEmpty(prodServ.Entrepreneur_Email))
         {
-            // productService details are incomplete, show error
-            hideError = false;
             await Task.CompletedTask;
             return 0;
         }
@@ -369,13 +358,24 @@
         serv.Code_ID = idToInsert;
         await createService();
         await HasSuppliesService.InsertListOfHasSupplie(supplies, idToInsert, selectedCategory.Id, prodServ.Entrepreneur_Email);
-        //if no photo is added then add the default picture
+        var has_statuses = new List<Has_Status>();
+        for (int i = 0; i < statuses.Count(); i++)
+        {
+            var has_status = new Has_Status();
+            has_status.Order = i;
+            has_status.Code_ID = idToInsert;
+            has_status.Entrepreneur_Email = prodServ.Entrepreneur_Email;
+            has_status.Category_ID = prodServ.Category_ID;
+            has_status.Name = statuses.ElementAt(i).Name;
+            has_statuses.Add(has_status);
+        }
+        await Has_StatusService.InsertListOfHas_Status(has_statuses);
+        /// Save photos on data base
         if (photosOne.Photos == null && photosTwo.Photos == null && photosThree.Photos == null
-    && photosFour.Photos == null && photosFive.Photos == null && photosSix.Photos == null)
+        && photosFour.Photos == null && photosFive.Photos == null && photosSix.Photos == null)
         {
             insertDefaultPhoto(img, photosOne);
         }
-        /// Save photos on data base
         preparePhoto(photosOne, idToInsert);
         preparePhoto(photosTwo, idToInsert);
         preparePhoto(photosThree, idToInsert);
@@ -386,14 +386,7 @@
 
         NavigationManager.NavigateTo("ListServices");
     }
-    public void insertDefaultPhoto(System.Drawing.Image imageIn, Service_Photos photos)
-    {
-        using (var ms = new MemoryStream())
-        {
-            imageIn.Save(ms, imageIn.RawFormat);
-            photosOne.Photos = ms.ToArray();
-        }
-    }
+
     //Button to cancel and return to List of Services
     void Cancel()
     {
@@ -406,19 +399,18 @@
         serv.Service_Name = null;
         serv.Price_per_hour = 0;
         serv.Service_Description = null;
+        photosOne.Photos = null;
+        photosTwo.Photos = null;
+        photosThree.Photos = null;
+        photosFour.Photos = null;
+        photosFive.Photos = null;
+        photosSix.Photos = null;
     }
 
     //Return to the List of Services
     void back()
     {
         NavigationManager.NavigateTo("ListServices");
-    }
-
-
-    //RowDrop
-    private void Rowdrop(Syncfusion.Blazor.Grids.RowDragEventArgs<Category> args)
-    {
-        CategoryService.Rowdrop(args, this.TreeGrid);
     }
 
     //SelectionHandler row selected
@@ -428,6 +420,7 @@
         if (selectedCategories.Count() > 0)
         {
             selectedCategory = args.Data;
+            serv.Category_ID = selectedCategory.Id;
         }
         categorieSelected = true;
     }
@@ -437,8 +430,32 @@
     {
 
         selectedCategory = null;
+        serv.Category_ID = -1;
         categorieSelected = false;
     }
+
+    //Check if it's possible to save
+    private void HandleValidationRequested(object sender,
+    ValidationRequestedEventArgs args)
+    {
+        messageStore.Clear();
+
+        // Custom validation logic
+        if (serv.Category_ID < 1)
+        {
+            messageStore.Add(() => serv.Category_ID, "El servicio debe asociarse a una categoria");
+        }
+        // If the initial date input is greater than the expire date
+        if (String.IsNullOrEmpty(serv.Service_Name))
+        {
+            messageStore.Add(() => serv.Service_Name, "El servicio debe tener un nombre asociado.");
+        }
+        if (serv.Price_per_hour < 0)
+        {
+            messageStore.Add(() => serv.Price_per_hour, "El precio del servicio debe ser mayor o igual a 0.");
+        }
+    }
+
     private void onChangeAvailability(ChangeEventArgs<bool> args)
     {
         prodServ.Availability = isAvailabilityChecked ? (byte)1 : (byte)0;

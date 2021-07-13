@@ -69,5 +69,10 @@ namespace EmprendeUCR_WebApplication.Data.Services
             
             return await _context.Has_Status.ToListAsync();        // Listado 2
         }
+
+        public List<Has_Status> loadStatusesByID(int Code_ID)
+        {
+            return _context.Has_Status.Where(p => p.Code_ID == Code_ID).ToList();
+        }
     }
 }
