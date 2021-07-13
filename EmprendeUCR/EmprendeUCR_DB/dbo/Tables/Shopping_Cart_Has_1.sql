@@ -12,3 +12,10 @@
 
 
 
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [emailSecondaryIndex]
+    ON [dbo].[Shopping_Cart_Has]([Email] ASC);
+

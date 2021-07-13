@@ -10,10 +10,14 @@ namespace EmprendeUCR_WebApplication.Domain.OrderContext.Entities
     public class Status
     {
         public string Name { get; set; }
-        public Status PreviousStatus { get; set; }
         public string PreviousStateName { get; set; }
 
         // Foreign entities
+        public Status previousStatus { get; set; }
+        public Status posteriorStatus { get; set; }
+        public PersonalizedStatus personalizedStatus { get; set; }
+        public GenericStatus genericStatus { get; set; }
+
         private readonly List<Organized> _organizedList;
         public IReadOnlyCollection<Organized> Organized;
     }

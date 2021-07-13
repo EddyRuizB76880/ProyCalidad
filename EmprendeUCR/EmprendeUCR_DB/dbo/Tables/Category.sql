@@ -9,3 +9,10 @@
 
 
 
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [ix_category_title]
+    ON [dbo].[Category]([Title] ASC, [ParentId] ASC, [Description] ASC);
+

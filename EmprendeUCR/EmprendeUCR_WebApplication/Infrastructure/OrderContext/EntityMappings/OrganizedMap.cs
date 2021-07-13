@@ -34,7 +34,7 @@ namespace EmprendeUCR_WebApplication.Infrastructure.OrderContext.EntityMappings
                 .HasMaxLength(100).HasColumnName("Email");
 
             builder.Property(e => e.Name)
-                .HasMaxLength(20).IsRequired();
+                .HasMaxLength(30).IsRequired();
 
             builder.Property(e => e.DateAndHourCreation).HasColumnName("Date_and_hour_of_creation");
 

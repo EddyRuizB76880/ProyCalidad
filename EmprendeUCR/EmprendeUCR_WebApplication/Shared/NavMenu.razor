@@ -1,13 +1,17 @@
 ﻿@using EmprendeUCR_WebApplication.Data.Services
 @using EmprendeUCR_WebApplication.Data.Entities
 @using EmprendeUCR_WebApplication.Pages
+@using EmprendeUCR_WebApplication.Application.NotificationContext
+@using EmprendeUCR_WebApplication.Domain.NotificationContext
 @inject ProductServicePandemic ProductServicePandemic
 @inject Shopping_Cart_HasService Shopping_Cart_HasService
 @inject Shopping_Cart_Has_Service_Pandemic Shopping_Cart_Has_Service_Pandemic
+@inject INotificationService NotificationService
 @inject NavigationManager NavigationManager
 @inject UserServicePandemic UserServicePandemic
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
-
+@using Newtonsoft.Json;
+@implements IDisposable
 <div class="w-100 navBar">
 
     <div class="head w-100 d-flex flex-row justify-content-between align-items-center px-5">
@@ -29,18 +33,25 @@
                 {
                     <div class="zIndex-primary">
                         @* Update notifications when the user logs in. *@
-                        <button class="color-silver mx-5 a-white btn" @onclick="showNotifications">
+                        <button class="color-silver a-white btn" @onclick="showNotifications">
                             <span class="material-icons icon-l">
                                 notifications
                             </span>
+                            <span class="position-absolute translate-middle badge rounded-pill bg-danger" style="top: 16px">
+                               @UserNotification.notificationQuantity
+                                <span class="visually-hidden">unread messages</span>
+                            </span>
                         </button>
                         @* Update notifications when the user logs in. *@
+
                         @if (showNotificationsComponent)
                         {
-                            <NotificationsComponent myType="@myType"
-                                                    ShowNotifications="showNotifications">
+                            <div>
+                                <NotificationsComponent ShowNotifications="showNotifications">
 
-                            </NotificationsComponent>
+                                </NotificationsComponent>
+                            </div>
+
                         }
 
                     </div>
@@ -48,23 +59,16 @@
                         @* Checks the user type and displays icons according to it. *@
                         @if (myType == 1)
                         {
-                            @if (@amountProductsNotifications == 0)
-                            {
-                                <a Do Nothing class="color-silver mx-5 a-white isDisabled btn" data-toggle="tooltip" data-placement="bottom" title="El carrito se encuentra vacío.">
-                                    <span class="material-icons-outlined icon-l">
-                                        shopping_cart
-                                    </span>@amountProductsNotifications
-                                </a>
-                            }
-                            else
-                            { @* If instead, the shopping cart has items inside, then... *@
-                            <a href="ShoppingCart" class="color-silver mx-5 a-white btn">
+                            <a href="ShoppingCart" class="color-silver a-white btn mx-5  @(amountProductsNotifications == 0 ? "disabled btn" : "")">
                                 <span class="material-icons-outlined icon-l">
                                     shopping_cart
-                                </span>@amountProductsNotifications
-                            </a>
+                                </span>
+                                <span class="position-absolute translate-middle badge rounded-pill bg-danger" style="top: 16px">
+                                    @amountProductsNotifications
+                                    <span class="visually-hidden">unread messages</span>
+                                </span>
 
-                        }
+                            </a>
 
                         }
                     </div>
@@ -93,6 +97,14 @@
             <li class=" "> <a href=@homeRef class="color-grey mx-5 p-2"> HOME </a></li>
             <li class=" "> <a href="/listProducts" class="color-grey mx-5 p-2"> PRODUCTOS </a></li>
             <li class=" "> <a href="/ListServices" class="color-grey mx-5 p-2"> SERVICIOS </a></li>
+            @if (myType == 2)
+            {
+                <li class=" "> <a href="/OrderManagement" class="color-grey mx-5 p-2"> GESTION DE ORDENES </a></li>
+            }
+            else if(myType == 1)
+            {
+                <li class=""> <a href="/ClientRequest" class="color-grey mx-5 p-2"> MIS PEDIDOS </a></li>
+            }
             <li class=" "> <a href="/about" class="color-grey mx-5"> SOBRE NOSOTROS </a></li>
             <li class=" "> <a href="/Offers" class="color-grey mx-5"> OFERTAS </a></li>
         </ul>
@@ -120,6 +132,9 @@
     // the shopping cart. To be used in the HTML section of this file.
     private int amountProductsNotifications;
 
+    // UserNotification class used to store the total amount of notification stored
+    // To be used in the HTML section of this file.
+    private UserNotification UserNotification;
     /*
         Summary: Method to show notifications
         Receives: nothing
@@ -145,6 +160,32 @@
         myType = await sessionStorage.GetItemAsync<int>("Type");
         amountProductsNotifications = Shopping_Cart_Has_Service_Pandemic.GetProductsQuantity(myEmail);
 
+
+        if (myEmail != null)
+        {
+            await GetUserNotification();
+
+            if(UserNotification == null)
+            {
+                UserNotification = new UserNotification(myEmail, myType);
+                string json = JsonConvert.SerializeObject(UserNotification);
+                await sessionStorage.SetItemAsync<string>("UserNotification", json);
+
+            }
+
+        }
+
+        if (UserNotification != null)
+        {
+            NotificationService.GetNotificationsQuantity(UserNotification);
+            NotificationService.EventsSubscriptions(UserNotification);
+            string json = JsonConvert.SerializeObject(UserNotification);
+            await sessionStorage.SetItemAsync<string>("UserNotification", json);
+            UserNotification.OnNotificationChangeds += quantityEvent;
+        }
+
+
+
         if (myEmail != null)
         {
             try {
@@ -157,6 +198,13 @@
         }
         UpdateParams(myType);
         _isLoading = false;
+    }
+
+    public async Task quantityEvent(object sender, NotificationChangeEventArgs e)
+    {
+        NotificationService.GetNotificationsQuantity(UserNotification);
+        this.InvokeAsync(() => this.StateHasChanged());
+
     }
 
     /*
@@ -207,4 +255,23 @@
     {
         NavigationManager.NavigateTo("/Profile");
     }
+
+    private async Task GetUserNotification() {
+        string json = await sessionStorage.GetItemAsync<string>("UserNotification");
+        if(json != "null")
+        {
+            UserNotification = JsonConvert.DeserializeObject<UserNotification>(json);
+        }
+
+    }
+
+    public void Dispose() {
+        if (UserNotification is not null) {
+            NotificationService.Unsubscription(UserNotification);
+            UserNotification.OnNotificationChangeds -= quantityEvent;
+        }
+
+    }
+
+
 }

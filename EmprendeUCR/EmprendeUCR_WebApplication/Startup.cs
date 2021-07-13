@@ -42,6 +42,10 @@ using EmprendeUCR.Domain.LoginContext;
 using EmprendeUCR.Domain.LoginContext.Repositories;
 using EmprendeUCR.Infrastructure.LoginContext.Repositories;
 using EmprendeUCR.Application.LoginContext.Implementations;
+using EmprendeUCR_WebApplication.Application.NotificationContext.Implementations;
+using EmprendeUCR_WebApplication.Application.NotificationContext;
+using EmprendeUCR_WebApplication.Infrastructure.NotificationContext;
+using EmprendeUCR_WebApplication.Infrastructure.NotificationContext.Repositories.Handlers;
 
 using EmprendeUCR.Infrastructure.ProfileContext;
 using EmprendeUCR.Domain.ProfileContext.Repositories;
@@ -149,6 +153,10 @@ namespace EmprendeUCR_WebApplication
             });
 
             ////////////////////////////////
+            services.AddDbContext<NotificationDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
             /*Contexto Pandemic*/
             services.AddDbContext<SqlDbContextPandemic>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             /*Contexto General*/
@@ -236,6 +244,9 @@ namespace EmprendeUCR_WebApplication
 
             services.AddTransient<IOrderRepository, OrderRepository>();
             services.AddTransient<IOrderService, OrderService>();
+
+            services.AddScoped<INotificationRepository, NotificationRepositoryHandler>();
+            services.AddScoped<INotificationService, NotificationService>();
 
         }
 
