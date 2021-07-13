@@ -25,16 +25,8 @@ namespace EmprendeUCR_WebApplication.Data.Contexts
         public DbSet<Entrepreneur> Entrepreneur { get; set; }
         public DbSet<Product_Service> Product_Service { get; set; }
         public DbSet<SinpePaymentMethod> SinpePaymentMethod { get; set; }
-        public DbSet<PaymentMethod> PaymentMethod { get; set; }
         public DbSet<Card> Card { get; set; }
-
         public DbSet<Service> Service { get; set; }
-
-        public DbSet<PaymentInfo> PaymentInfo { get; set; }
-        public DbSet<PhonePaymentInfo> PhonePaymentInfo { get; set; }
-        public DbSet<IBANCardPaymentInfo> IBANCardPaymentInfo { get; set; }
-        public DbSet<IBANSINPEPaymentInfo> IBANSINPEPaymentInfo { get; set; }
-
         public DbSet<Offer> Offer { get; set; }
         public DbSet<Is_Offer> Is_Offer { get; set; }
         public DbSet<ServicePandemic> ServicePandemic { get; set; }

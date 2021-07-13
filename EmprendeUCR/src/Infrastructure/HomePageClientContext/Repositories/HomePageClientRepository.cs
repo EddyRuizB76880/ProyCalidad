@@ -90,5 +90,15 @@ namespace EmprendeUCR.Infrastructure.HomePageClientContext.Repositories
         {
             return _dbContext.Product.FromSqlRaw("exec products_based_last_purchases \"" + email + "\"").ToArray();
         }
+
+        public IList<Is_Offer> GetAllIs_Offer()
+        {
+            return _dbContext.Is_Offer.FromSqlRaw("exec get_unique_offers").ToArray();
+        }
+
+        public IList<Service_Photos> GetAllServicePhotos()
+        {
+            return _dbContext.Service_Photos.ToList();
+        }
     }
 }

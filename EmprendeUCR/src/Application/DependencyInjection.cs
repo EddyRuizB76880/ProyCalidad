@@ -2,8 +2,6 @@
 using EmprendeUCR.Application.PaymentMethods.Implementations;
 using EmprendeUCR.Application.PaymentInfos;
 using EmprendeUCR.Application.PaymentInfos.Implementations;
-using EmprendeUCR.Application.Categories;
-using EmprendeUCR.Application.Categories.Implementations;
 using Microsoft.Extensions.DependencyInjection;
 using EmprendeUCR.Application.LoginContext;
 using EmprendeUCR.Application.LoginContext.Implementations;
@@ -13,9 +11,14 @@ namespace EmprendeUCR.Application
     {
         public static IServiceCollection AddApplicationLayer(this IServiceCollection services)
         {
-            services.AddTransient<IPaymentMethodService, PaymentMethodService>();
-            //services.AddTransient<IIBANCardPaymentInfoService, IBANCardPaymentInfoService>();
-            //services.AddTransient<ICategoryService, CategoryService>();
+            services.AddTransient<ISinpeMovilPaymentMethodService, SinpeMovilPaymentMethodService>();
+            services.AddTransient<ISinpeIbanPaymentMethodService, SinpeIbanPaymentMethodService>();
+            services.AddTransient<ICardPaymentMethodService, CardPaymentMethodService>();
+            services.AddTransient<IHasPaymentInfoService , HasPaymentInfoService>();
+            services.AddTransient<ISinpeMovilPaymentInfoService, SinpeMovilPaymentInfoService>();
+            services.AddTransient<ISinpeIbanPaymentInfoService, SinpeIbanPaymentInfoService>();
+            services.AddTransient<ICardPaymentInfoService, CardPaymentInfoService>();
+            services.AddTransient<IPaymentInfoService, PaymentInfoService>();
             services.AddTransient<ILoginService, LoginService>();
             return services;
         }

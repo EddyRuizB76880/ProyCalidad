@@ -55,7 +55,7 @@
                 </div>
                 <!--Submit button-->
                 <center>
-                    <button type="submit" class="btn btn-primary marginElements">Registrarse</button>
+                    <button type="submit" class="btn btn-primary marginElements">@buttonMessage</button>
 
                     <p style="color:#FF0000">
                         @Error_Message
@@ -74,6 +74,7 @@
     public bool isRegistered = false;
     private int type_user = 1;
     private string Error_Message = "";
+    private string buttonMessage = "Registrarse";
 
     /*
     Brief: Save the user client type.

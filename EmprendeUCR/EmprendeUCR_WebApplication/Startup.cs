@@ -18,7 +18,6 @@ using System.Threading.Tasks;
 using EmprendeUCR_WebApplication.Data.Services.Categories;
 using EmprendeUCR_WebApplication.Data.Services.Reports;
 using Syncfusion.Blazor;
-using EmprendeUCR_WebApplication.Data.Services.PaymentMethods;
 using EmprendeUCR.Application;
 using EmprendeUCR.Infrastructure;
 using Blazored.SessionStorage;
@@ -169,8 +168,6 @@ namespace EmprendeUCR_WebApplication
             services.AddScoped<AddCategoryService>();
             services.AddScoped<DeleteCategoryService>();
             services.AddScoped<EditCategoryService>();
-            services.AddScoped<PaymentMethodService>();
-            services.AddScoped<CardService>();
             services.AddScoped<ProductService>();
             services.AddScoped<EntrepreneurService>();
             services.AddScoped<UserService>();

@@ -10,7 +10,7 @@
 @using EmprendeUCR.Domain.PaymentMethods.Entities
 @using EmprendeUCR.Application.PaymentMethods
 
-@inject IPaymentMethodService PaymentMethodService
+@*@inject IPaymentMethodService PaymentMethodService*@
 
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage;
 @inject NavigationManager NavigationManager
@@ -242,7 +242,7 @@ else
     // IEnumerable with ShopLine objects representing products.
     private IEnumerable<ShopLine> _products;
 
-    private IEnumerable<PaymentMethod>? _paymentMethods;
+    @*private IEnumerable<PaymentMethod>? _paymentMethods;*@
 
     // Shopping page parameters for the pagination.
     private ShopParameters shopParameters = new ShopParameters();

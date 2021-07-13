@@ -104,6 +104,16 @@ namespace EmprendeUCR.Application.HomePageClientContext.Implementations
         {
             return _homePageClientRepository.GetPurchasedProducts(email);
         }
+
+       public  IList<Is_Offer> getIs_Offer()
+        {
+            return _homePageClientRepository.GetAllIs_Offer();
+        }
+
+        public IList<Service_Photos> getServicePhotos()
+        {
+            return _homePageClientRepository.GetAllServicePhotos();
+        }
     }
 }
 

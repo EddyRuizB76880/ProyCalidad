@@ -32,6 +32,10 @@ namespace EmprendeUCR.Infrastructure.HomePageClientContext
         public virtual DbSet<Offer> Offer { get; set; }
         public virtual DbSet<ProductService> ProductService { get; set; }
 
+        public virtual DbSet<Is_Offer> Is_Offer { get; set; }
+
+        public virtual DbSet<Service_Photos> Service_Photos { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -46,6 +50,8 @@ namespace EmprendeUCR.Infrastructure.HomePageClientContext
             modelBuilder.ApplyConfiguration(new ShoppingCartHasMap());
             modelBuilder.ApplyConfiguration(new OfferMap());
             modelBuilder.ApplyConfiguration(new ProductServiceMap());
+            modelBuilder.ApplyConfiguration(new Is_OfferMap());
+            modelBuilder.ApplyConfiguration(new Service_PhotosMap());
 
         }
     }
