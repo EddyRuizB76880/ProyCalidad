@@ -19,6 +19,16 @@ namespace EmprendeUCR.Application.PaymentInfos.Implementations
             await _sinpeMovilPaymentInfoRepository.AddPaymentInfo(sinpeMovilPaymentInfo);
         }
 
+        public Task<SinpeMovilPaymentInfo> GetCardPaymentInfoByPaymentInfoID(int paymentInfoID)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<List<SinpeMovilPaymentInfo>> GetCardPaymentInfosByPaymentInfoIDAsync(List<HasPaymentInfo> list)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public async Task<SinpeMovilPaymentInfo?> GetSinpeMovilPaymentInfoByIdAsync(int phoneNumber)
         {
             return await _sinpeMovilPaymentInfoRepository.GetByIdAsync(phoneNumber);
@@ -27,6 +37,23 @@ namespace EmprendeUCR.Application.PaymentInfos.Implementations
         {
             return await _sinpeMovilPaymentInfoRepository.GetAllAsync();
         }
+        public async Task<SinpeMovilPaymentInfo> GetSinpeMovilPaymentInfoByPaymentInfoID(int paymentInfoID)
+        {
+            return await _sinpeMovilPaymentInfoRepository.GetByPaymentInfoID(paymentInfoID);
+        }
 
+        public async Task<List<SinpeMovilPaymentInfo>> GetSinpeMovilPaymentInfosByPaymentInfoIDAsync(List<HasPaymentInfo> list)
+        {
+            List<SinpeMovilPaymentInfo> asociateSinpeMovil = new();
+            for (int i = 0; i < list.Length(); i++)
+            {
+                var add = await GetSinpeMovilPaymentInfoByPaymentInfoID(list[i].Payment_Info_ID);
+                if (add != null)
+                {
+                    asociateSinpeMovil.Add(add);
+                }
+            }
+            return asociateSinpeMovil;
+        }
     }
 }

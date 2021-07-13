@@ -9,7 +9,8 @@
 @page "/entrepreneur_payment_methods/{emailToRegister}"
 
 @using EmprendeUCR.Application.PaymentInfos;
-@using EmprendeUCR.Application.PaymentMethods;
+@using EmprendeUCR.Domain.PaymentInfos.Entities;
+@inject IHasPaymentInfoService HasPaymentInfoService
 @inject NavigationManager NavigationManager
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @if (_isLoading)
@@ -21,15 +22,15 @@ else
     <div class="grid-container">
         <div class="grid-item">
             <b>SINPE Móvil</b>
-            <EmprendeUCR.Presentation.Pages.PaymentInfos.SinpeMovil.SinpeMovilPaymentInfoEntrepreneur />
+            <EmprendeUCR.Presentation.Pages.PaymentInfos.SinpeMovil.SinpeMovilPaymentInfoEntrepreneur emailToRegister=@emailToRegister list=@list/>
         </div>
         <div class="grid-item">
             <b>SINPE IBAN</b>
-            <EmprendeUCR.Presentation.Pages.PaymentInfos.SinpeIban.SinpeIbanPaymentInfoEntrepreneur />
+            <EmprendeUCR.Presentation.Pages.PaymentInfos.SinpeIban.SinpeIbanPaymentInfoEntrepreneur emailToRegister=@emailToRegister list=@list/>
         </div>
         <div class="grid-item">
             <b>Tarjetas</b>
-            <EmprendeUCR.Presentation.Pages.PaymentInfos.Card.CardPaymentInfoEntrepreneur emailToRegister=@emailToRegister />
+            <EmprendeUCR.Presentation.Pages.PaymentInfos.Card.CardPaymentInfoEntrepreneur emailToRegister=@emailToRegister list=@list/>
         </div>
 
     </div>
@@ -62,6 +63,7 @@ else
     [Parameter]
     public string emailToRegister { get; set; } = string.Empty;
     private string buttonMessage = string.Empty;
+    public List<HasPaymentInfo> list { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -75,7 +77,8 @@ else
             // TODO: Loading
             string Email = await sessionStorage.GetItemAsync<string>("Email");
             int Type = await sessionStorage.GetItemAsync<int>("Type");
-
+            list = await HasPaymentInfoService.getHasPaymentInfoByEmail(Email);
+          
             if (Email == null)
             {
                 NavigationManager.NavigateTo("/Login");
@@ -95,6 +98,6 @@ else
 
     private async void finish()
     {
-        NavigationManager.NavigateTo("/Login?type=Entrepreneur");
+        NavigationManager.NavigateTo("/Login");
     }
 }

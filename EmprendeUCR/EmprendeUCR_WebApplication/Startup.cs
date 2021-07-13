@@ -17,6 +17,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EmprendeUCR_WebApplication.Data.Services.Categories;
 using EmprendeUCR_WebApplication.Data.Services.Reports;
+using EmprendeUCR_WebApplication.Data.Services.Keyword;
 using Syncfusion.Blazor;
 using EmprendeUCR.Application;
 using EmprendeUCR.Infrastructure;
@@ -195,6 +196,11 @@ namespace EmprendeUCR_WebApplication
             services.AddScoped<Shopping_Cart_Has_Service_Pandemic>();
 
             services.AddScoped<Serviceservice>();
+
+            services.AddScoped<KeywordService>();
+            services.AddScoped<AddKeywordService>();
+            services.AddScoped<ShowKeywordService>();
+            services.AddScoped<KeywordServiceService>();
 
             services.AddBlazoredSessionStorage();
 

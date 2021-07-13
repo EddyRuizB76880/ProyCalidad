@@ -57,7 +57,7 @@ namespace EmprendeUCR_WebApplication.Data.Services.Categories
             ResetRemoveCategoryData();
         }
 
-        private void ResetRemoveCategoryData()
+        public void ResetRemoveCategoryData()
         {
             deleteNotValid = false;
             deleted = false;
@@ -79,7 +79,6 @@ namespace EmprendeUCR_WebApplication.Data.Services.Categories
         }
         public void RemoveCategory(int Id)
         {
-            Console.WriteLine("Llega al recursivo");
             RemoveCategoryRecursive(Id);
             
         }
@@ -108,7 +107,7 @@ namespace EmprendeUCR_WebApplication.Data.Services.Categories
                 _context.SaveChanges();
                 TreeGrid.DeleteRecord(Title, SelectedCategory);
             }
-            else
+            if (deleted)
             {
                 deleteNotValid = true;
             }
@@ -118,7 +117,7 @@ namespace EmprendeUCR_WebApplication.Data.Services.Categories
         {
             bool any = true;
             var products = _context.Product_Service.Where(p => p.Category_ID.Equals(categoryId)).ToList().Length();
-            Console.WriteLine("Esta es la cantidad de asociados: ");
+            Console.WriteLine("Productos asociados ");
             Console.WriteLine(products);
             if (products != 0)
             {

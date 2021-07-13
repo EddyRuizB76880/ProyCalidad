@@ -20,9 +20,28 @@ namespace EmprendeUCR.Application.PaymentInfos.Implementations
         {
             return await _sinpeIbanPaymentInfoRepository.GetByIdAsync(accountNumber);
         }
+
         public async Task<IEnumerable<SinpeIbanPaymentInfo>> GetSinpeIbanPaymentInfosAsync()
         {
             return await _sinpeIbanPaymentInfoRepository.GetAllAsync();
+        }
+        public async Task<SinpeIbanPaymentInfo> GetSinpeIbanPaymentInfoByPaymentInfoID(int paymentInfoID)
+        {
+            return await _sinpeIbanPaymentInfoRepository.GetByPaymentInfoID(paymentInfoID);
+        }
+
+        public async Task<List<SinpeIbanPaymentInfo>> GetSinpeIbanPaymentInfosByPaymentInfoIDAsync(List<HasPaymentInfo> list)
+        {
+            List<SinpeIbanPaymentInfo> asociateSinpeIban = new();
+            for (int i = 0; i < list.Length(); i++)
+            {
+                var add = await GetSinpeIbanPaymentInfoByPaymentInfoID(list[i].Payment_Info_ID);
+                if (add != null)
+                {
+                    asociateSinpeIban.Add(add);
+                }
+            }
+            return asociateSinpeIban;
         }
     }
 }

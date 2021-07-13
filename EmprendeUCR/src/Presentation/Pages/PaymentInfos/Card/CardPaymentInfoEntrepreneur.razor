@@ -61,36 +61,29 @@
 @code {
     [Parameter]
     public string emailToRegister { get; set; } = string.Empty;
+    [Parameter]
+    public List<HasPaymentInfo> list { get; set; } = new ();
 
     protected override async Task OnInitializedAsync()
     {
         if (!string.IsNullOrEmpty(emailToRegister))
         {
-            List<HasPaymentInfo> list = await HasPaymentInfoService.getHasPaymentInfoByEmail(emailToRegister);
             _cardPaymentInfoList = await CardPaymentInfoService.GetCardPaymentInfosByPaymentInfoIDAsync(list);
-            CardToolbarItems.Add(new ItemModel()
-            {
-                Text = AddButtonTitle,
-                TooltipText = "Agrega una cuenta IBAN y la asocia a una tarjeta",
-            });
         }
         else
         {
             string Email = await sessionStorage.GetItemAsync<string>("Email");
             if (Email != null)
             {
-                List<HasPaymentInfo> list = await HasPaymentInfoService.getHasPaymentInfoByEmail(Email);
                 _cardPaymentInfoList = await CardPaymentInfoService.GetCardPaymentInfosByPaymentInfoIDAsync(list);
             }
-
+        }
             CardToolbarItems.Add(new ItemModel()
             {
                 Text = AddButtonTitle,
                 TooltipText = "Agrega una cuenta IBAN y la asocia a una tarjeta",
             });
         }
-
-    }
 
     protected async void AddCardIban()
     {

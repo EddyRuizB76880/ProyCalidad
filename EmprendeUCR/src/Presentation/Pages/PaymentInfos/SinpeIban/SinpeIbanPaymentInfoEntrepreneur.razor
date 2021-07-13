@@ -11,6 +11,7 @@
 @inject ISinpeIbanPaymentInfoService SinpeIbanPaymentInfoService
 @inject IPaymentInfoService PaymentInfoService
 @inject ISinpeIbanPaymentMethodService SinpeIbanPaymentMethodService
+@inject IHasPaymentInfoService HasPaymentInfoService
 @inherits SinpeIbanPaymentInfoEntrepreneurBase
 
 <SfGrid ID="SinpeIbanGrid" @ref="SinpeIbanPaymentInfoGrid" AllowSorting="true" DataSource="@_sinpeIbanPaymentInfoList" Toolbar="SinpeIbanToolbarItems">
@@ -55,17 +56,30 @@
 </SfDialog>
 
 @code {
+    [Parameter]
+    public string emailToRegister { get; set; } = string.Empty;
+    [Parameter]
+    public List<HasPaymentInfo> list { get; set; } = new();
+
     protected override async Task OnInitializedAsync()
     {
-
-        _sinpeIbanPaymentInfoList = await SinpeIbanPaymentInfoService.GetSinpeIbanPaymentInfosAsync();
+        if (!string.IsNullOrEmpty(emailToRegister))
+        {
+            _sinpeIbanPaymentInfoList = await SinpeIbanPaymentInfoService.GetSinpeIbanPaymentInfosByPaymentInfoIDAsync(list);
+        }
+        else
+        {
+            string Email = await sessionStorage.GetItemAsync<string>("Email");
+            if (Email != null)
+            {
+                _sinpeIbanPaymentInfoList = await SinpeIbanPaymentInfoService.GetSinpeIbanPaymentInfosByPaymentInfoIDAsync(list);
+            }
+        }
         SinpeIbanToolbarItems.Add(new ItemModel()
         {
             Text = AddButtonTitle,
-            TooltipText = "Agrega un nuevo número de teléfono y lo asocia a un servicio Sinpe IBAN",
-            CssClass = "e-primary"
+            TooltipText = "Agrega una cuenta IBAN y la asocia a una tarjeta",
         });
-
     }
 
     protected async void AddSinpeIban()

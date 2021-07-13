@@ -41,5 +41,10 @@ namespace EmprendeUCR.Infrastructure.PaymentInfos.SinpeIban.Repositories
             await _dbContext.AddAsync(sinpeIbanPaymentInfo);
             await _dbContext.SaveChangesAsync();
         }
+        public async Task<SinpeIbanPaymentInfo?> GetByPaymentInfoID(int id)
+        {
+            return await _dbContext.SinpeIbanPaymentInfo
+            .FirstOrDefaultAsync(p => p.Payment_Info_ID.Equals(id));
+        }
     }
 }

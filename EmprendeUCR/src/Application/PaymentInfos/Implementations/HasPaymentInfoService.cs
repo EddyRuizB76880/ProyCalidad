@@ -18,7 +18,7 @@ namespace EmprendeUCR.Application.PaymentInfos.Implementations
         public async Task<List<HasPaymentInfo>?> getHasPaymentInfoByEmail(string entrepreneurEmail)
         {
            var list = await _hasPaymentInfoRepository.GetAllAsync();
-           var entrepreneurHas =  list.Where(h=>h.Entrepreneur_Email.Equals(entrepreneurEmail));
+           var entrepreneurHas = list.Where(h=>h.Entrepreneur_Email.Equals(entrepreneurEmail));
             if (entrepreneurHas == null)
             {
                 return null;

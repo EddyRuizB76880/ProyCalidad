@@ -10,6 +10,9 @@
 @inject ISinpeMovilPaymentInfoService SinpeMovilPaymentInfoService
 @inject IPaymentInfoService PaymentInfoService
 @inject ISinpeMovilPaymentMethodService SinpeMovilPaymentMethodService
+@inject IHasPaymentInfoService HasPaymentInfoService
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
 @inherits SinpeMovilPaymentInfoEntrepreneurBase
 
 <SfGrid ID="SinpeMovilGrid" @ref="SinpeMovilPaymentInfoGrid" AllowSorting="true" DataSource="@_sinpeMovilPaymentInfoList" Toolbar="SinpeMovilToolbarItems">
@@ -54,14 +57,29 @@
 </SfDialog>
 
 @code {
+    [Parameter]
+    public string emailToRegister { get; set; } = string.Empty;
+    [Parameter]
+    public List<HasPaymentInfo> list { get; set; } = new();
+
     protected override async Task OnInitializedAsync()
     {
-        _sinpeMovilPaymentInfoList = await SinpeMovilPaymentInfoService.GetSinpeMovilPaymentInfosAsync();
+        if (!string.IsNullOrEmpty(emailToRegister))
+        {
+            _sinpeMovilPaymentInfoList = await SinpeMovilPaymentInfoService.GetSinpeMovilPaymentInfosByPaymentInfoIDAsync(list);
+        }
+        else
+        {
+            string Email = await sessionStorage.GetItemAsync<string>("Email");
+            if (Email != null)
+            {
+                _sinpeMovilPaymentInfoList = await SinpeMovilPaymentInfoService.GetSinpeMovilPaymentInfosByPaymentInfoIDAsync(list);
+            }
+        }
         SinpeMovilToolbarItems.Add(new ItemModel()
         {
             Text = AddButtonTitle,
-            TooltipText = "Agrega un nuevo número de teléfono y lo asocia a un servicio Sinpe móvil",
-            CssClass = "e-primary"
+            TooltipText = "Agrega una cuenta IBAN y la asocia a una tarjeta",
         });
     }
 

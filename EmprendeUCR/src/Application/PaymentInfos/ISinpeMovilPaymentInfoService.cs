@@ -8,5 +8,7 @@ namespace EmprendeUCR.Application.PaymentInfos
         public Task<SinpeMovilPaymentInfo?> GetSinpeMovilPaymentInfoByIdAsync(int phoneNumber);
         public Task<IEnumerable<SinpeMovilPaymentInfo>> GetSinpeMovilPaymentInfosAsync();
         public Task AddPaymentInfoAsync(SinpeMovilPaymentInfo sinpeMovilPaymentMethod);
+        public Task<List<SinpeMovilPaymentInfo>?> GetSinpeMovilPaymentInfosByPaymentInfoIDAsync(List<HasPaymentInfo> list);
+        public Task<SinpeMovilPaymentInfo?> GetSinpeMovilPaymentInfoByPaymentInfoID(int paymentInfoID);
     }
 }

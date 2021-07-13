@@ -1,16 +1,29 @@
 ﻿@page "/AddProduct"
 @using EmprendeUCR_WebApplication.Data.Services
 @using EmprendeUCR_WebApplication.Data.Services.Categories
+@using EmprendeUCR_WebApplication.Data.Services.Keyword
 @using EmprendeUCR_WebApplication.Data.Entities
+@using EmprendeUCR_WebApplication.Data.Entities.Keyword
 @using System.IO
 @using BlazorInputFile
-@using Syncfusion.Blazor.TreeGrid;
+@using Syncfusion.Blazor.TreeGrid
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Data
 @inject ProductService  productService
 @inject NavigationManager NavigationManager
 @inject Product_ServiceService Product_ServiceService
 @inject CategoryService CategoryService
 @inject Product_PhotosService Product_PhotosService
+@inject KeywordService keyWord
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
+    <style>
+        .drops {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            margin-left: 10px;
+        }
+    </style>
 
 <h2>Agregar producto</h2>
 <hr />
@@ -35,12 +48,44 @@
                         <label for="Price" class="control-label m-lg-2">Precio(CRC)</label>
                         <input form="Price" type="number" class="form-control m-lg-2" @bind="@prod.Price" />
                     </div>
+                    <div class="w-70">
+                        <label for="Keyword" class="control-label m-lg-2">Palabras clave</label>
+                        <div class="drops">
+                            <SfComboBox TItem="Keywords" TValue="String" DataSource="_keys" Placeholder="Palabra Clave" Query="@Query" AllowFiltering=true @bind-Value="@key1">
+                                <ComboBoxFieldSettings Text="Title" Value="Title">
+                                </ComboBoxFieldSettings>
+                            </SfComboBox>
+                        </div>
+                        <div class="drops">
+                            <SfComboBox TItem="Keywords" TValue="String" DataSource="_keys" Placeholder="Palabra Clave" Query="@Query" AllowFiltering=true @bind-Value="@key2">
+                                <ComboBoxFieldSettings Text="Title" Value="Title">
+                                </ComboBoxFieldSettings>
+                            </SfComboBox>
+                        </div>
+                        <div class="drops">
+                            <SfComboBox TItem="Keywords" TValue="String" DataSource="_keys" Placeholder="Palabra Clave" Query="@Query" AllowFiltering=true @bind-Value="@key3">
+                                <ComboBoxFieldSettings Text="Title" Value="Title">
+                                </ComboBoxFieldSettings>
+                            </SfComboBox>
+                        </div>
+                        <div class="drops">
+                            <SfComboBox TItem="Keywords" TValue="String" DataSource="_keys" Placeholder="Palabra Clave" Query="@Query" AllowFiltering=true @bind-Value="@key4">
+                                <ComboBoxFieldSettings Text="Title" Value="Title">
+                                </ComboBoxFieldSettings>
+                            </SfComboBox>
+                        </div>
+                        <div class="drops">
+                            <SfComboBox TItem="Keywords" TValue="String" DataSource="_keys" Placeholder="Palabra Clave" Query="@Query" AllowFiltering=true @bind-Value="@key5">
+                                <ComboBoxFieldSettings Text="Title" Value="Title">
+                                </ComboBoxFieldSettings>
+                            </SfComboBox>
+                        </div>
+                    </div>
                 </div>
 
                 <EmprendeUCR_WebApplication.Pages.Product_Service.Product.ProductStatusInput />
 
             </div> <br /> <br />
-
             <!--Display the option to the user to upload the photo and assign it to the product (the 6 of them)-->
             <div class=" ">
                 <div class="wrapper w-90">
@@ -171,11 +216,18 @@
 
 
 
-@code {
-    EmprendeUCR_WebApplication.Data.Entities.Product prod = new EmprendeUCR_WebApplication.Data.Entities.Product();
+@code { EmprendeUCR_WebApplication.Data.Entities.Product prod = new EmprendeUCR_WebApplication.Data.Entities.Product();
     EmprendeUCR_WebApplication.Data.Entities.Product_Service prodServ = new EmprendeUCR_WebApplication.Data.Entities.Product_Service();
+    String key1 = "";
+    String key2 = "";
+    String key3 = "";
+    String key4 = "";
+    String key5 = "";
 
     IList<Category> categories;
+    private IList<Keywords> _keys;
+    private Query Query = new Query();
+
     private bool _isLoading = true;
     bool hideError = true;
 
@@ -211,6 +263,7 @@
     {
         prodServ.Entrepreneur_Email = await sessionStorage.GetItemAsync<string>("Email");
         categories = await CategoryService.GetAsync();
+        _keys = await keyWord.GetAsync();
         _isLoading = false;
     }
 
@@ -290,6 +343,21 @@
         preparePhoto(photosSix, idToInsert);
         /// End of save photos on database
 
+        await keyWord.InsertKeyword(key1);
+        await keyWord.InsertKeyword(key2);
+        await keyWord.InsertKeyword(key3);
+        await keyWord.InsertKeyword(key4);
+        await keyWord.InsertKeyword(key5);
+
+        keyWord.addToList(key1);
+        keyWord.addToList(key2);
+        keyWord.addToList(key3);
+        keyWord.addToList(key4);
+        keyWord.addToList(key5);
+
+        await keyWord.addKeyWordToProduct(idToInsert,prod.Entrepreneur_Email,prod.Category_ID);
+
+
         NavigationManager.NavigateTo("ListProducts");
     }
 
@@ -333,6 +401,4 @@
             selectedCategory = selectedCategories.First();
         }
 
-    }
-
-}
+    } }

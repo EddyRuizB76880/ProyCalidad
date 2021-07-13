@@ -1,17 +1,30 @@
 ﻿@page "/AddService"
 @using EmprendeUCR_WebApplication.Data.Services
 @using EmprendeUCR_WebApplication.Data.Services.Categories
+@using EmprendeUCR_WebApplication.Data.Services.Keyword
 @using EmprendeUCR_WebApplication.Data.Entities
+@using EmprendeUCR_WebApplication.Data.Entities.Keyword
 @using System.IO
 @using BlazorInputFile
 @using Syncfusion.Blazor.TreeGrid
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Data
 @inject ServiceService serviceService
 @inject NavigationManager NavigationManager
 @inject EntrepreneurService EntrepreneurService
 @inject Product_ServiceService Product_ServiceService
 @inject CategoryService CategoryService
 @inject Service_PhotosService Service_PhotosService
+@inject KeywordServiceService keywordService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
+    <style>
+        .drops {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            margin-left: 10px;
+        }
+    </style>
 
 <h2>Agregar servicio</h2>
 <hr />
@@ -35,6 +48,39 @@
                     <div class="form-group w-20">
                         <label for="Price" class="control-label">Precio por hora(CRC)</label>
                         <input form="Price" type="number" class="form-control" @bind="@serv.Price_per_hour" />
+                    </div>
+                    <div class="w-70">
+                        <label for="Keyword" class="control-label m-lg-2">Palabras clave</label>
+                        <div class="drops">
+                            <SfComboBox TItem="Keywords" TValue="String" DataSource="_keys" Placeholder="Palabra Clave" Query="@Query" AllowFiltering=true @bind-Value="@key1">
+                                <ComboBoxFieldSettings Text="Title" Value="Title">
+                                </ComboBoxFieldSettings>
+                            </SfComboBox>
+                        </div>
+                        <div class="drops">
+                            <SfComboBox TItem="Keywords" TValue="String" DataSource="_keys" Placeholder="Palabra Clave" Query="@Query" AllowFiltering=true @bind-Value="@key2">
+                                <ComboBoxFieldSettings Text="Title" Value="Title">
+                                </ComboBoxFieldSettings>
+                            </SfComboBox>
+                        </div>
+                        <div class="drops">
+                            <SfComboBox TItem="Keywords" TValue="String" DataSource="_keys" Placeholder="Palabra Clave" Query="@Query" AllowFiltering=true @bind-Value="@key3">
+                                <ComboBoxFieldSettings Text="Title" Value="Title">
+                                </ComboBoxFieldSettings>
+                            </SfComboBox>
+                        </div>
+                        <div class="drops">
+                            <SfComboBox TItem="Keywords" TValue="String" DataSource="_keys" Placeholder="Palabra Clave" Query="@Query" AllowFiltering=true @bind-Value="@key4">
+                                <ComboBoxFieldSettings Text="Title" Value="Title">
+                                </ComboBoxFieldSettings>
+                            </SfComboBox>
+                        </div>
+                        <div class="drops">
+                            <SfComboBox TItem="Keywords" TValue="String" DataSource="_keys" Placeholder="Palabra Clave" Query="@Query" AllowFiltering=true @bind-Value="@key5">
+                                <ComboBoxFieldSettings Text="Title" Value="Title">
+                                </ComboBoxFieldSettings>
+                            </SfComboBox>
+                        </div>
                     </div>
                 </div>
 
@@ -170,10 +216,17 @@
 
 </body>
 
-@code {
-    EmprendeUCR_WebApplication.Data.Entities.Service serv = new EmprendeUCR_WebApplication.Data.Entities.Service();
+@code { EmprendeUCR_WebApplication.Data.Entities.Service serv = new EmprendeUCR_WebApplication.Data.Entities.Service();
     EmprendeUCR_WebApplication.Data.Entities.Product_Service prodServ = new EmprendeUCR_WebApplication.Data.Entities.Product_Service();
 
+    String key1 = "";
+    String key2 = "";
+    String key3 = "";
+    String key4 = "";
+    String key5 = "";
+
+    private IList<Keywords> _keys;
+    private Query Query = new Query();
     IList<Entrepreneur> entrepreneurs;
     IList<Category> categories;
     private bool _isLoading = true;
@@ -212,6 +265,7 @@
         prodServ.Entrepreneur_Email = await sessionStorage.GetItemAsync<string>("Email");
         entrepreneurs = await EntrepreneurService.GetAsync();
         categories = await CategoryService.GetAsync();
+        _keys = await keywordService.GetAsync();
         _isLoading = false;
     }
 
@@ -290,6 +344,20 @@
         preparePhoto(photosFive, idToInsert);
         preparePhoto(photosSix, idToInsert);
         /// End of save photos on database
+        /// 
+        await keywordService.InsertKeywordService(key1);
+        await keywordService.InsertKeywordService(key2);
+        await keywordService.InsertKeywordService(key3);
+        await keywordService.InsertKeywordService(key4);
+        await keywordService.InsertKeywordService(key5);
+
+        keywordService.addToListService(key1);
+        keywordService.addToListService(key2);
+        keywordService.addToListService(key3);
+        keywordService.addToListService(key4);
+        keywordService.addToListService(key5);
+
+        await keywordService.addKeyWordToService(idToInsert, serv.Entrepreneur_Email, serv.Category_ID);
 
         NavigationManager.NavigateTo("ListServices");
     }
@@ -344,6 +412,4 @@
         {
             selectedCategory = selectedCategories.First();
         }
-    }
-
-}
+    } }
