@@ -107,7 +107,7 @@ namespace EmprendeUCR_WebApplication.Infrastructure.OrderContext.Repositories
         public async Task<List<Order>> GetEntreprenurFinalizedOrders(string email)
         {
             List<Order> orders = await _dbContext.Orders
-           .Where(order => order.EntrepreneurEmail == email && order.State == "Finalizado")
+           .Where(order => order.EntrepreneurEmail == email && order.State == "Terminado")
            .Include(order => order.Organized)
                 .ThenInclude(Organized => Organized.productService)
             .Include(order => order.Organized)
