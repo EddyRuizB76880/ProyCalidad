@@ -25,15 +25,23 @@ else
 
 <body>
     <h3>Mis Alianzas</h3>
-    @foreach (var u in users_list)
+
+    @if (users_list.Count() > 0)
     {
-        <span> @u.entrepreneur.Name</span>
-        @foreach (var c in u.categories)
+        @foreach (var u in users_list)
         {
-            <span> @c.Title</span>
+            <span> @u.entrepreneur.Name @u.entrepreneur.F_Last_Name vende </span>
+            @foreach (var c in u.categories)
+            {
+                <span> @c.Title</span>
+            }
+            <br />
         }
-        <span> --------------------------------- </span>
-    }
+    } else
+                {
+                    <span>No hay sugerencias por el momento. :)</span>
+                }
+
 
 </body>
 }
@@ -54,11 +62,13 @@ else
 
 
     private bool _isLoading = true;
+
+
     protected override async Task OnInitializedAsync()
     {
         selectedEmail = await sessionStorage.GetItemAsync<string>("Email");
         _isLoading = false;
-        IList<Product_Service> products_services_list = await Product_ServiceService.GetProductsServicesEntrepreneurAsync(selectedEmail);
+        products_services_general_list = await Product_ServiceService.GetAllProductsServicesAsync();
         has_supplies_list = await HasSuppliesService.GetAllHasSuppliesEntrepreneurAsync(selectedEmail);
         await ChargeNonRepetedCustomers();
     }
@@ -67,15 +77,18 @@ else
     {
         foreach (var prod in products_services_general_list)
         {
-            var List = has_supplies_list.FindAll(p => p.Supplie_ID == prod.Category_ID);
+            var List = has_supplies_list.FindAll(s => s.Supplie_ID == prod.Category_ID);
             if (List.Count() > 0)
             {
-                if ((users_list.Where(u => u.entrepreneur.Email == prod.Entrepreneur_Email).Count() < 1 ) &&
-                        (prod.Entrepreneur_Email != selectedEmail))
+                var userAlreadyExists = users_list.FindAll(u => u.entrepreneur.Email == prod.Entrepreneur_Email).Count() > 0;
+                if (!userAlreadyExists && prod.Entrepreneur_Email != selectedEmail)
+
                 {
                     my_User userToAdd = new my_User();
-                    userToAdd.entrepreneur = await UserService.getUser(selectedEmail);
-                    userToAdd.categories.Add(CategoryService.getCategory(prod.Category_ID));
+                    userToAdd.categories = new List<Category>();
+                    userToAdd.entrepreneur = await UserService.getUser(prod.Entrepreneur_Email);
+                    var cat = CategoryService.getCategory(prod.Category_ID);
+                    userToAdd.categories.Add(cat);
                     users_list.Add(userToAdd);
                 }
 
