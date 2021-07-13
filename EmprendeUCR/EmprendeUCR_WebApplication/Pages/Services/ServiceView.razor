@@ -20,33 +20,56 @@
     <div class="">
         <!--Displays the header-->
         <section class=" w-100 gap-lg-2">
-            <div class="grid2 gap-3">
-                <div class=" border-1 shadow  bg-silver">
-                    <div class="form-group w-70">
-                        <label for="Name" class="control-label m-lg-2">Nombre:</label>
-                        <label for="Name" class="control-label">@_service.Service_Name</label>
-                    </div><br />
-                    <div class="form-group w-30">
-                        <label for="Price" class="control-label m-lg-2">Categoria:</label>
-                        <label for="Price" class="control-label ">@CategoryService.getCategory(_service.Category_ID).Title</label>
-                    </div>
-                    <div class="form-group w-70">
-                        <label for="Service_Description" class="control-label m-lg-2">Descripción:</label>
-                        <textarea readonly="readonly" rows="3" form="Service_Description" class="form-control m-lg-2">@_service.Service_Description</textarea>
 
-                    </div><br />
-                    <div class="form-group w-30">
-                        <label for="Price" class="control-label m-lg-2">Precio por hora(CRC):</label>
-                        <label for="Price" class="control-label ">@_service.Price_per_hour</label>
-                    </div>
+            <div class=" border-1 shadow  bg-silver w-90">
+                <div class="form-group w-70">
+                    <label for="Name" class="control-label m-lg-2">Nombre:</label>
+                    <label for="Name" class="control-label">@_service.Service_Name</label>
+                </div><br />
+                <div class="form-group w-30">
+                    <label for="Price" class="control-label m-lg-2">Categoria:</label>
+                    <label for="Price" class="control-label ">@CategoryService.getCategory(_service.Category_ID).Title</label>
+                </div>
+                <div class="form-group w-70">
+                    <label for="Service_Description" class="control-label m-lg-2">Descripción:</label>
+                    <textarea readonly="readonly" rows="3" form="Service_Description" class="form-control m-lg-2">@_service.Service_Description</textarea>
 
-
+                </div><br />
+                <div class="form-group w-30">
+                    <label for="Price" class="control-label m-lg-2">Precio por hora(CRC):</label>
+                    <label for="Price" class="control-label ">@_service.Price_per_hour</label>
                 </div>
 
-            </div> <br /> <br />
+
+            </div>
+
+            <div class=" border-1 shadow  bg-silver mt-3 w-90">
+                <h2 class="bg-blue text-center">Estados asociados</h2>
+                @foreach (var prodStatus in serviceStatuses.OrderBy(p => p.Order))
+                {
+                    <span class="m-lg-2">
+                        @prodStatus.Name
+                        <br />
+                    </span>
+                }
+            </div>
+
+
+
+            <div class=" border-1 shadow  bg-silver  mt-3 w-90">
+                <h2 class="bg-blue text-center">Insumos</h2>
+                @foreach (var category in supplyCategory)
+                {
+
+                    <span class="m-lg-2">
+                        @category.Title
+                        <br />
+                    </span>
+                }
+            </div>
 
             <div>
-                <div class="wrapper w-90">
+                <div class="wrapper mt-3">
                     @foreach (var prodPhoto in photosDisplay)
                     {
                         <div class="one">
@@ -60,35 +83,12 @@
                     }
                 </div>
             </div>
+>
 
-            <div>
-                @foreach (var category in supplyCategory)
-                {
-
-                    <span>
-                        @category.Title
-                        <br />
-                    </span>
-                }
-            </div>
-
-            @foreach (var prodStatus in serviceStatuses.OrderBy(p => p.Order))
-            {
-                <span>
-                    @prodStatus.Name
-                    <br />
-                </span>
-            }
-
-            <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                <label class="form-check-label" for="flexSwitchCheckDefault">Disponibilidad</label>
-            </div>
-
-            <div class="row">
+            <div class="row  mt-3">
                 <div class="col-md-4">
                     <div class="form-group">
-                        <input type="button" class="btn btn-primary" value="Regresar" />
+                        <input type="button" class="btn btn-primary"  @onclick="@back" value="Regresar" />
 
 
                     </div>
@@ -151,5 +151,10 @@
     {
         serviceStatuses = Has_StatusService.loadStatusesByID(CodeId);
         serviceStatuses.OrderBy(p => p.Order);
+    }
+
+    void back()
+    {
+        NavigationManager.NavigateTo("ListService");
     }
 }
