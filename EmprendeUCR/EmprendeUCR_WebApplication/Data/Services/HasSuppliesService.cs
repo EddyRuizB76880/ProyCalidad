@@ -54,5 +54,10 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return await _context.HasSupplies.ToListAsync();        // Listado 2
         }
 
+        public async Task<List<HasSupplies>> GetAllHasSuppliesEntrepreneurAsync(string entrepreneurEmail)
+        {
+            return await _context.HasSupplies.Where(h => h.Entrepreneur_Email == entrepreneurEmail).ToListAsync();  
+        }
+
     }
 }
