@@ -15,40 +15,45 @@
 <body>
     @if (!ListEmpthy)
     {
-        <table class="table">
-            <thead class="bg-blue">
-                <tr>
-                    <th scope="col">Cantidad de Compras</th>
-                    <th scope="col">Ultima Compra</th>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Primer Apellido</th>
-                    <th scope="col">Segundo Apellido</th>
-                    <th scope="col">Provincia</th>
-                    <th scope="col">Cantón</th>
-                    <th scope="col">Distrito</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var user in ReportList)
-                {
+        <input @bind-value="inputValue" @onkeyup="@loadProductsByTerms" class="form-control mr-sm-2 w-25 mb-2" type="text" placeholder="Buscar en Clientes" aria-label="Search" />
+        @if (ReportList.Count() > 0)
+        {
+            <table class="table">
+                <thead class="bg-blue">
                     <tr>
-                        <th scope="row">@user.NumOrders</th>
-                        <th scope="row">@user.lastOrder</th>
-                        <th scope="row">@user.user.Name</th>
-                        <th scope="row">@user.user.F_Last_Name</th>
-                        <th scope="row">@user.user.S_Last_Name</th>
-                        <th scope="row"> @user.user.Province_Name </th>
-                        <th scope="row"> @user.user.Canton_Name </th>
-                        <th scope="row"> @user.user.District_Name </th>
+                        <th scope="col">Cantidad de Compras</th>
+                        <th scope="col">Ultima Compra</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Primer Apellido</th>
+                        <th scope="col">Segundo Apellido</th>
+                        <th scope="col">Provincia</th>
+                        <th scope="col">Cantón</th>
+                        <th scope="col">Distrito</th>
                     </tr>
-                }
-
-
-
-            </tbody>
-        </table>
-    }
-    else { 
+                </thead>
+                <tbody>
+                    @foreach (var user in ReportList.OrderByDescending(r => r.NumOrders))
+                    {
+                        <tr>
+                            <th scope="row">@user.NumOrders</th>
+                            <th scope="row">@user.lastOrder</th>
+                            <th scope="row">@user.user.Name</th>
+                            <th scope="row">@user.user.F_Last_Name</th>
+                            <th scope="row">@user.user.S_Last_Name</th>
+                            <th scope="row"> @user.user.Province_Name </th>
+                            <th scope="row"> @user.user.Canton_Name </th>
+                            <th scope="row"> @user.user.District_Name </th>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+         }else
+            {
+                <h2>No hay clientes relacionados a "@inputValue"</h2>
+            }
+        }
+    else
+    {
         <h2>De momento no tiene clientes, esperamos que tenga clientes pronto :)</h2>
     }
 </body>
@@ -63,10 +68,11 @@
     bool ListEmpthy = false;
     string selectedEmail;
     List<Order> ordersList = new List<Order>();
-    User cliente = new User();
     List<Order> NonRepetedCurstomersOrdersLists = new List<Order>();
     List<User> CustomersList = new List<User>();
     List<my_User> ReportList = new List<my_User>();
+    private List<my_User> constReport= new List<my_User>();
+    private string inputValue;
 
     protected override async Task OnInitializedAsync()
     {
@@ -95,6 +101,7 @@
                 ReportList.Add(userToAdd);
             }
         }
+        constReport = ReportList;
     }
 
     private  DateTime FindMostRecentDate(string userEmail)
@@ -110,4 +117,19 @@
         return DateTimeToReturn;
     }
 
+    public void loadProductsByTerms(KeyboardEventArgs key)
+    {
+        ReportList = constReport;
+        if (inputValue != null)
+        {
+            ReportList = ReportList.Filter(r => r.user.Name.Contains(inputValue) ||
+                r.user.F_Last_Name.Contains(inputValue) ||
+                r.user.S_Last_Name.Contains(inputValue) ||
+                r.user.Province_Name.Contains(inputValue) ||
+                r.user.District_Name.Contains(inputValue) ||
+                r.user.Canton_Name.Contains(inputValue)).ToList();
+        }
+    }
+
 }
+
