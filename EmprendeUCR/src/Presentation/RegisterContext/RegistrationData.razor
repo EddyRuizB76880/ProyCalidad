@@ -215,7 +215,8 @@ else
                             @if (typeOfUser == "Entrepreneur")
                             {
                                 <label class="secondary_title">Presentación</label>
-                                <InputTextArea class="form-control inputsClass" @bind-Value="newEntrepreneur.Presentation" maxlength="210" rows="3"></InputTextArea>
+                                <InputTextArea class="form-control inputsClass" @bind-Value="newEntrepreneur.Presentation" maxlength="210" rows="3" required></InputTextArea>
+                                <ValidationMessage For="@(()=> newEntrepreneur.Presentation)"> </ValidationMessage>
                             }
                         </div>
                     </div>
@@ -225,7 +226,7 @@ else
 
         <!--Submit button, execute de registrations button-->
         <center>
-            <button type="submit" class="btn btn-primary marginButton">Registrarse</button>
+            <button type="submit" class="btn btn-primary marginButton">@buttonMessage</button>
         </center>
     </EditForm>
 }
@@ -234,6 +235,7 @@ else
     /*Registration data Atributes*/
     //Global
     private bool _isLoading = true;
+    private string buttonMessage = "Registrarse";
     //Entities
     private User newUser = new User();
     private Members newMembers = new Members();
@@ -314,6 +316,7 @@ else
         }
         if (!error)
         {
+            if(typeOfUser == "Entrepreneur") { buttonMessage = "Continuar"; }
             _province = await RegisterService.listProvinces();
             _canton = await RegisterService.listCantons();
             _district = await RegisterService.listDistricts();
@@ -475,7 +478,9 @@ else
             }
             else
             {
-                NavigationManager.NavigateTo("/Login?type=" + typeOfUser);
+                if(typeOfUser == "Entrepreneur") { NavigationManager.NavigateTo("/entrepreneur_payment_methods/" + _email.Email); }
+                else { NavigationManager.NavigateTo("/Login?type=" + typeOfUser);}
+
             }
         }
         else

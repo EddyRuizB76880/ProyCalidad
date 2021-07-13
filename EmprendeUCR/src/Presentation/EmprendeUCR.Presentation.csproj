@@ -3,6 +3,13 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="PaymentMethods\**" />
+    <Content Remove="PaymentMethods\**" />
+    <EmbeddedResource Remove="PaymentMethods\**" />
+    <None Remove="PaymentMethods\**" />
+  </ItemGroup>
   
   <ItemGroup>
     <SupportedPlatform Include="browser" />

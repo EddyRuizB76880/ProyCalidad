@@ -17,8 +17,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using EmprendeUCR_WebApplication.Data.Services.Categories;
 using EmprendeUCR_WebApplication.Data.Services.Reports;
+using EmprendeUCR_WebApplication.Data.Services.Keyword;
 using Syncfusion.Blazor;
-using EmprendeUCR_WebApplication.Data.Services.PaymentMethods;
 using EmprendeUCR.Application;
 using EmprendeUCR.Infrastructure;
 using Blazored.SessionStorage;
@@ -42,6 +42,10 @@ using EmprendeUCR.Domain.LoginContext;
 using EmprendeUCR.Domain.LoginContext.Repositories;
 using EmprendeUCR.Infrastructure.LoginContext.Repositories;
 using EmprendeUCR.Application.LoginContext.Implementations;
+using EmprendeUCR_WebApplication.Application.NotificationContext.Implementations;
+using EmprendeUCR_WebApplication.Application.NotificationContext;
+using EmprendeUCR_WebApplication.Infrastructure.NotificationContext;
+using EmprendeUCR_WebApplication.Infrastructure.NotificationContext.Repositories.Handlers;
 
 using EmprendeUCR.Infrastructure.ProfileContext;
 using EmprendeUCR.Domain.ProfileContext.Repositories;
@@ -149,6 +153,10 @@ namespace EmprendeUCR_WebApplication
             });
 
             ////////////////////////////////
+            services.AddDbContext<NotificationDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
             /*Contexto Pandemic*/
             services.AddDbContext<SqlDbContextPandemic>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             /*Contexto General*/
@@ -161,8 +169,6 @@ namespace EmprendeUCR_WebApplication
             services.AddScoped<AddCategoryService>();
             services.AddScoped<DeleteCategoryService>();
             services.AddScoped<EditCategoryService>();
-            services.AddScoped<PaymentMethodService>();
-            services.AddScoped<CardService>();
             services.AddScoped<ProductService>();
             services.AddScoped<EntrepreneurService>();
             services.AddScoped<UserService>();
@@ -190,6 +196,11 @@ namespace EmprendeUCR_WebApplication
             services.AddScoped<Shopping_Cart_Has_Service_Pandemic>();
 
             services.AddScoped<Serviceservice>();
+
+            services.AddScoped<KeywordService>();
+            services.AddScoped<AddKeywordService>();
+            services.AddScoped<ShowKeywordService>();
+            services.AddScoped<KeywordServiceService>();
 
             services.AddBlazoredSessionStorage();
 
@@ -242,6 +253,9 @@ namespace EmprendeUCR_WebApplication
 
             services.AddTransient<IOrderRepository, OrderRepository>();
             services.AddTransient<IOrderService, OrderService>();
+
+            services.AddScoped<INotificationRepository, NotificationRepositoryHandler>();
+            services.AddScoped<INotificationService, NotificationService>();
 
         }
 

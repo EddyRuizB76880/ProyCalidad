@@ -40,12 +40,36 @@ namespace EmprendeUCR_WebApplication.Infrastructure.OrderContext.Repositories
         {
 
             List<Order> orders = await _dbContext.Orders
-               .Where(order => order.EntrepreneurEmail == email && order.State == "Pendiente")
+               .Where(order => order.EntrepreneurEmail == email && order.State == "Pendiente de revision")
                .Include(order => order.Organized)
                     .ThenInclude(Organized => Organized.productService)
                 .Include(order => order.Organized)
                     .ThenInclude(Organized => Organized.status)
                .ToListAsync();
+
+            return orders;
+        }
+
+        /* Summary: Retrieves all the accepted orders, of a specific 
+         *          entrepreneur.
+         * Parameters: Receives the entrepreneur's email.
+         * Return: A list of orders.
+         * Exceptions: There aren't known exceptions.
+        */
+        public async Task<List<Order>> GetAcceptedOrders(string email)
+        {
+
+            List<Order> orders = await _dbContext.Orders
+               .Where(order => order.EntrepreneurEmail == email && order.State != "Pendiente de revision" && order.State != "Rechazado")
+               .OrderBy(order => order.State)
+               .Include(order => order.genericStatus)
+               .Include(order => order.Organized)
+                    .ThenInclude(Organized => Organized.productService)
+                .Include(order => order.Organized)
+                    .ThenInclude(Organized => Organized.status)
+               .ToListAsync();
+
+            orders = new Order().SortEntrepreneurOrders(orders);
 
             return orders;
         }
@@ -59,13 +83,17 @@ namespace EmprendeUCR_WebApplication.Infrastructure.OrderContext.Repositories
         public async Task<List<Order>> GetClientOrdersAsync(string email)
         {
             List<Order> orders = await _dbContext.Orders
-               .Where(order => order.ClientEmail == email && (order.State == "Rechazado" || order.State == "Aceptado"))
+               .Where(order => order.ClientEmail == email)
+               .OrderBy(order => order.State)
                .Include(order => order.Organized)
                     .ThenInclude(Organized => Organized.productService)
                 .Include(order => order.Organized)
                     .ThenInclude(Organized => Organized.status)
                .ToListAsync();
 
+            orders = new Order().SortClientOrders(orders);
+
+            _dbContext.Database.ExecuteSqlRaw("exec ChangeViewToTrue @p0", parameters : new[] { email } );
             return orders;
         }
 
@@ -74,15 +102,69 @@ namespace EmprendeUCR_WebApplication.Infrastructure.OrderContext.Repositories
          * Return: A list of tuples with the products and their quantity.
          * Exceptions: There aren't known exceptions.
         */
-        public async Task<List<Tuple<int, Product>>> GetProductsAsync(Order order)
+        public List<Tuple<int, Product>> GetProductsAsync(Order order)
         {
-            List<Tuple<int, Product>> products = await _dbContext.Products
+            List<Tuple<int, Product>> products = _dbContext.Products
+                .Include(product => product.ProductHasStatus)
                 .Include(product => product.Organized)
-                .Where(product => product.Organized.Any(o => o.DateAndHourCreation == order.DateAndHourCreation && o.Email == order.ClientEmail))
-                .Select(product => new Tuple<int,Product>(product.Organized.FirstOrDefault().Quantity, product))
-                .ToListAsync();
+                .Where(product => product.Organized.Any(o => o.DateAndHourCreation == order.DateAndHourCreation &&
+                       o.Email == order.ClientEmail && o.CodeId == product.CodeId && o.CategoryId == product.CategoryId &&
+                       o.EntrepreneurEmail == product.EntrepreneurEmail))
+                .Select(product => new Tuple<int,Product>
+                                (product.Organized.Where(o => o.DateAndHourCreation == order.DateAndHourCreation &&
+                                 o.Email == order.ClientEmail && o.CodeId == product.CodeId && o.CategoryId == product.CategoryId &&
+                                 o.EntrepreneurEmail == product.EntrepreneurEmail).FirstOrDefault().Quantity, product))
+                .ToList();
 
             return products;
+        }
+
+        /*
+          Summary: Method to get the statuses of the orders in the right order.
+          Parameters: Nothing.
+          Return: Returns a list of string with the statuses.
+          Exceptions: There aren't known exceptions
+        */
+        public async Task<List<Status>> GetOrderStatuses()
+        {
+            List<Status> statuses = await _dbContext.Statuses
+                .Where(status => status.Name == "Terminado")
+                .ToListAsync();
+
+            Status currentStatus;
+            while(statuses.First().Name != "Aceptado")
+            {
+                currentStatus = (await _dbContext.Statuses
+                    .Where(status => status.Name == statuses.First().PreviousStateName)
+                    .ToListAsync()).First();
+
+                statuses.Insert(0, currentStatus);
+            }
+            return statuses;
+        }
+
+        /*
+          Summary: Fill a list of statuses with the personalized statuses of
+                   a specific product.
+          Parameters: Recieves a Product Object and a List of Status Objects.
+          Return: Nothing.
+          Exceptions: There aren't known exceptions
+        */
+        public Task SetProductStatuses(Product product, List<Status> statusesList)
+        {
+            List<Status> statuses = _dbContext.Statuses
+                .Include(status => status.personalizedStatus)
+                    .ThenInclude(personalizedStatus => personalizedStatus.ProductHasStatus)
+                .Where(status => status.personalizedStatus.ProductHasStatus.Any(productStatus => 
+                               productStatus.CodeId == product.CodeId &&
+                               productStatus.CategoryId == product.CategoryId &&
+                               productStatus.EntrepreneurEmail == product.EntrepreneurEmail))
+                .ToList();
+
+            int index = statusesList.FindIndex(status => status.Name == "En progreso");
+            statusesList.InsertRange(index+1, statuses);
+
+            return Task.CompletedTask;
         }
 
         /* Summary: Update a specific order.
@@ -93,8 +175,37 @@ namespace EmprendeUCR_WebApplication.Infrastructure.OrderContext.Repositories
         public async Task orderUpdate(Order OrderToUpdate)
         {
              _dbContext.Update(OrderToUpdate);
-
             await _dbContext.SaveEntitiesAsync();
+        }
+
+        public string defineColor(string status)
+        {
+            string color = "";
+            if (status == "Aceptado")
+            {
+                color = "softGreen";
+            }
+            else if (status == "Rechazado")
+            {
+                color = "red";
+            }
+            else if (status == "Listo para entrega")
+            {
+                color = "medIntenseGreen";
+            }
+            else if (status == "Pendiente de revision")
+            {
+                color = "yellow";
+            }
+            else if (status == "Terminado")
+            {
+                color = "finishedGreen";
+            }
+            else
+            {
+                color = "lightMediumGreen";
+            }
+            return color;
         }
 
 

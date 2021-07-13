@@ -28,13 +28,17 @@ namespace EmprendeUCR_WebApplication.Infrastructure.OrderContext.EntityMappings
             builder.ToTable("Status");
 
             builder.Property(e => e.Name)
-                .HasMaxLength(20);
+                .HasMaxLength(30)
+                .HasColumnName("Name");
 
             builder.Property(e => e.PreviousStateName)
-                .HasMaxLength(20);
+                .HasMaxLength(30)
+                .HasColumnName("Previous_State_Name");
 
-            builder.Ignore(e => e.PreviousStatus);
-            builder.Ignore(e => e.PreviousStateName);
+            builder.HasOne(e => e.previousStatus)
+                .WithOne(s => s.posteriorStatus)
+                .HasForeignKey<Status>(e => new { e.PreviousStateName });
+
         }
     }
 }

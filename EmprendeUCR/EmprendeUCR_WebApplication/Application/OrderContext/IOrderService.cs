@@ -12,9 +12,15 @@ namespace EmprendeUCR_WebApplication.Application.OrderContext
     {
         // Interface declaration methods for the OrderService 
         Task <List<Order>> GetEntrepreneurOrders(string email);
+        Task <List<Order>> GetEntrepreneurAcceptedOrders(string email);
         Task <List<Order>> GetClientOrders(string email);
-        Task <List<Tuple<int, Product>>> GetProducts(Order order);
+        List<Tuple<int, Product>> GetProducts(Order order);
+        Task <List<Status>> GetOrderStatuses();
+        Task SetProductStatuses(Product product, List<Status> statusesList);
         Task <string> getEntrepreneurName(string email);
-        Task<List<Order>> sendAnswer(DateTime dateAndHourCreation, string email, bool answer,List<Order> orderToUpdate);
+        Task <List<Order>> sendAnswer(DateTime dateAndHourCreation, string email, bool answer,List<Order> orderToUpdate);
+        Task updateOrderStatus(Order order,string newStatus);
+        Task updateProductStatus(Order currentOrder, string productStatus, Product productToUpdate);
+        public string getStatusColor(string status);
     }
 }

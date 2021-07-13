@@ -56,10 +56,14 @@ namespace EmprendeUCR_WebApplication.Data.Services.Categories
         * @param Title of the actual category and TitleDad of the selected category
         * @return
         */
-        public async Task ChangeParent(int Id, int? ParentId)
+        public async Task ChangeParent(int Id, int ParentId)
         {
-            Category source = _context.Category.Find(Id);
+            Category source = await _context.Category.FindAsync(Id);
             source.ParentId = ParentId;
+            if (ParentId == -1)
+            {
+                source.ParentId = null;
+            }
             _context.Category.Update(source);
             await _context.SaveChangesAsync();
         }
@@ -115,13 +119,30 @@ namespace EmprendeUCR_WebApplication.Data.Services.Categories
                 var CurrentViewData = this.TreeGrid.GetCurrentViewRecords();
                 var TargetCategory = CurrentViewData.ElementAt((int)args.DropIndex);
                 var SourceCategory = CurrentViewData.ElementAt((int)args.FromIndex);
-                await ChangeParent(SourceCategory.Id, TargetCategory.ParentId);
+                await ChangeParent(SourceCategory.Id, TargetCategory.Id);
             }
             else
             {
-                Console.WriteLine(position);
-                args.Cancel = true;
+                if (position == " e-droptop")
+                {
+                    var CurrentViewData = this.TreeGrid.GetCurrentViewRecords();
+                    var SourceCategory = CurrentViewData.ElementAt((int)args.FromIndex);
+                    await ChangeParent(SourceCategory.Id, -1);
+                }
+                else
+                {
+                    args.Cancel = true;
+                }
             }
+        }
+        public string GetTitleById(int? id)
+        {
+            string title = "";
+            if (id!= null)
+            {
+                title =_context.Category.Find(id).Title;
+            }
+            return title;
         }
 
         /**

@@ -1,13 +1,17 @@
 ﻿@page "/AddService"
 @using EmprendeUCR_WebApplication.Data.Services
 @using EmprendeUCR_WebApplication.Data.Services.Categories
+@using EmprendeUCR_WebApplication.Data.Services.Keyword
 @using EmprendeUCR_WebApplication.Data.Entities
+@using EmprendeUCR_WebApplication.Data.Entities.Keyword
 @using System.IO
 @using BlazorInputFile
 @using Syncfusion.Blazor.TreeGrid
 @using System.Drawing
 @using Syncfusion.Blazor.Buttons
 
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Data
 @inject ServiceService serviceService
 @inject NavigationManager NavigationManager
 @inject Product_ServiceService Product_ServiceService
@@ -15,7 +19,16 @@
 @inject Service_PhotosService Service_PhotosService
 @inject HasSuppliesService HasSuppliesService
 @inject Has_StatusService Has_StatusService
+@inject KeywordServiceService keywordService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
+    <style>
+        .drops {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            margin-left: 10px;
+        }
+    </style>
 
 <h2>Agregar servicio</h2>
 <hr />
@@ -49,6 +62,52 @@
         <section class=" w-70 float_right gap-lg-5 ">
             <div class=" w-70">
                 <div class=" border-1 shadow  bg-silver">
+                    <div class="form-group w-70">
+                        <label for="Name" class="control-label">Nombre</label>
+                        <input form="Name" class="form-control" @bind="@serv.Service_Name" />
+                    </div><br />
+                    <div class="form-group w-70">
+                        <label for="Product_Description" class="control-label">Descripción</label>
+                        <textarea rows="3" form="Product_Description" class="form-control" @bind="@serv.Service_Description" />
+                    </div><br />
+                    <div class="form-group w-20">
+                        <label for="Price" class="control-label">Precio por hora(CRC)</label>
+                        <input form="Price" type="number" class="form-control" @bind="@serv.Price_per_hour" />
+                    </div>
+                    <div class="w-70">
+                        <label for="Keyword" class="control-label m-lg-2">Palabras clave</label>
+                        <div class="drops">
+                            <SfComboBox TItem="Keywords" TValue="String" DataSource="_keys" Placeholder="Palabra Clave" Query="@Query" AllowFiltering=true @bind-Value="@key1">
+                                <ComboBoxFieldSettings Text="Title" Value="Title">
+                                </ComboBoxFieldSettings>
+                            </SfComboBox>
+                        </div>
+                        <div class="drops">
+                            <SfComboBox TItem="Keywords" TValue="String" DataSource="_keys" Placeholder="Palabra Clave" Query="@Query" AllowFiltering=true @bind-Value="@key2">
+                                <ComboBoxFieldSettings Text="Title" Value="Title">
+                                </ComboBoxFieldSettings>
+                            </SfComboBox>
+                        </div>
+                        <div class="drops">
+                            <SfComboBox TItem="Keywords" TValue="String" DataSource="_keys" Placeholder="Palabra Clave" Query="@Query" AllowFiltering=true @bind-Value="@key3">
+                                <ComboBoxFieldSettings Text="Title" Value="Title">
+                                </ComboBoxFieldSettings>
+                            </SfComboBox>
+                        </div>
+                        <div class="drops">
+                            <SfComboBox TItem="Keywords" TValue="String" DataSource="_keys" Placeholder="Palabra Clave" Query="@Query" AllowFiltering=true @bind-Value="@key4">
+                                <ComboBoxFieldSettings Text="Title" Value="Title">
+                                </ComboBoxFieldSettings>
+                            </SfComboBox>
+                        </div>
+                        <div class="drops">
+                            <SfComboBox TItem="Keywords" TValue="String" DataSource="_keys" Placeholder="Palabra Clave" Query="@Query" AllowFiltering=true @bind-Value="@key5">
+                                <ComboBoxFieldSettings Text="Title" Value="Title">
+                                </ComboBoxFieldSettings>
+                            </SfComboBox>
+                        </div>
+                    </div>
+                </div>
                     <div class="m-lg-4">
                         <br />
                         @*Input for name of the product*@
@@ -197,12 +256,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
         </section>
-
-    </div>
-
-
+        </div>
 </body>
 
 @code {
@@ -214,6 +269,15 @@
     Image img = Image.FromFile("./wwwroot/images/image.jpg");
 
     //List of categories
+    String key1 = "";
+    String key2 = "";
+    String key3 = "";
+    String key4 = "";
+    String key5 = "";
+
+    private IList<Keywords> _keys;
+    private Query Query = new Query();
+    IList<Entrepreneur> entrepreneurs;
     IList<Category> categories;
 
     public class myUser
@@ -287,6 +351,7 @@
         prodServ.Entrepreneur_Email = await sessionStorage.GetItemAsync<string>("Email");
 
         categories = await CategoryService.GetAsync();
+        _keys = await keywordService.GetAsync();
         _isLoading = false;
         prodServ.Availability = 1;
     }
@@ -383,6 +448,20 @@
         preparePhoto(photosFive, idToInsert);
         preparePhoto(photosSix, idToInsert);
         /// End of save photos on database
+        /// 
+        await keywordService.InsertKeywordService(key1);
+        await keywordService.InsertKeywordService(key2);
+        await keywordService.InsertKeywordService(key3);
+        await keywordService.InsertKeywordService(key4);
+        await keywordService.InsertKeywordService(key5);
+
+        keywordService.addToListService(key1);
+        keywordService.addToListService(key2);
+        keywordService.addToListService(key3);
+        keywordService.addToListService(key4);
+        keywordService.addToListService(key5);
+
+        await keywordService.addKeyWordToService(idToInsert, serv.Entrepreneur_Email, serv.Category_ID);
 
         NavigationManager.NavigateTo("ListServices");
     }
@@ -456,7 +535,7 @@
         }
     }
 
-    private void onChangeAvailability(ChangeEventArgs<bool> args)
+    private void onChangeAvailability(Syncfusion.Blazor.Buttons.ChangeEventArgs<bool> args)
     {
         prodServ.Availability = isAvailabilityChecked ? (byte)1 : (byte)0;
     }

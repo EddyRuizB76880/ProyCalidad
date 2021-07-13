@@ -111,7 +111,7 @@ namespace EmprendeUCR_WebApplication.Infrastructure.Core
 
             string ClientEmail = shop.Email;
             string EntrepreneurEmail = shop.ShopLines.FirstOrDefault().EntrepreneurEmail;
-            string status = "Pendiente";
+            string status = "Pendiente de revision";
             List<Organized> listShopLine = new List<Organized>();
             Order order = new Order(DateAndHourCreation, ClientEmail, Details, DeliveryDate,
                   EntrepreneurEmail, status);

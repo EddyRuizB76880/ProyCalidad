@@ -21,5 +21,9 @@ namespace EmprendeUCR.Domain.HomePageClientContext.Repositories
         Task<List<Offer>> GetOffers();
         Task<List<ProductService>> GetAllProducts();
         IList<Product> GetPurchasedProducts(string email);
+
+        IList<Is_Offer> GetAllIs_Offer();
+
+        IList<Service_Photos>  GetAllServicePhotos();
     }
 }

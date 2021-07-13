@@ -42,7 +42,7 @@ namespace EmprendeUCR_WebApplication.Domain.OrderContext.Entities
          * Return: Nothing.
          * Exceptions: There aren't known exceptions.
         */
-        public void  ChangeStatus(string newStatus){
+        public void ChangeStatus(string newStatus){
             Name = newStatus;
         } 
 

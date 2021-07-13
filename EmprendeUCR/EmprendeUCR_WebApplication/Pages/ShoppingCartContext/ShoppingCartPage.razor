@@ -2,9 +2,16 @@
 
 @using EmprendeUCR_WebApplication.Application.ShoppingCartContext
 @using EmprendeUCR_WebApplication.Domain.ShoppingCartContext.Entities
+@*@using EmprendeUCR_WebApplication.Data.Entities*@
 @using EmprendeUCR_WebApplication.Domain.Core.CoreEntities
 @using EmprendeUCR_WebApplication.Data.Entities.ContextShop
 @inject IShoppingCartService ShoppingCartService;
+
+@using EmprendeUCR.Domain.PaymentMethods.Entities
+@using EmprendeUCR.Application.PaymentMethods
+
+@*@inject IPaymentMethodService PaymentMethodService*@
+
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage;
 @inject NavigationManager NavigationManager
 @* Display "Cargando"" message while shopping cart is still loading. *@
@@ -57,7 +64,13 @@ else
             @* Shows the payment method and the future functionality to change it *@
             <div class="d-flex flex-column align-items-center">
                 <p class="fs-3">Metodo de pago</p>
-                <button class="border-none bg-white fs-6">Cambiar metodo de pago</button>
+                <select class="form-select" aria-label="Default select example">
+                    <option selected>Seleccione Metodo de Pago</option>
+@*                    @foreach (var paymentMethod in _paymentMethods)
+                    {
+                        <option value="1">@paymentMethod.Name</option>
+                    }*@
+                </select>
             </div>
 
             @* Sets the special requirements field *@
@@ -86,8 +99,8 @@ else
             </div>
 
             @*
-        This block prevents the creation of an order with an invalid delivey date
-        , like a date that has already passed.
+                This block prevents the creation of an order with an invalid delivey date
+                , like a date that has already passed.
             *@
             @if (date <= currentDate || date == null)
             {
@@ -193,12 +206,12 @@ else
                 <div class="modal-body fs-5">
                     Su pedido se ha enviado
                 </div>
-                    @* When the request is sent, the user is taken back to the home page. *@
-                    <button class="btn btn-primary w-50 m-auto mb-3" data-bs-target="#exampleModalToggle"
-                            data-bs-toggle="modal" data-bs-dismiss="modal"
-                            @onclick="() => backToHome()">
-                        Volver al inicio
-                    </button>
+                @* When the request is sent, the user is taken back to the home page. *@
+                <button class="btn btn-primary w-50 m-auto mb-3" data-bs-target="#exampleModalToggle"
+                        data-bs-toggle="modal" data-bs-dismiss="modal"
+                        @onclick="() => backToHome()">
+                    Volver al inicio
+                </button>
 
 
             </div>
@@ -229,6 +242,8 @@ else
     // IEnumerable with ShopLine objects representing products.
     private IEnumerable<ShopLine> _products;
 
+    @*private IEnumerable<PaymentMethod>? _paymentMethods;*@
+
     // Shopping page parameters for the pagination.
     private ShopParameters shopParameters = new ShopParameters();
 
@@ -246,7 +261,7 @@ else
 
     /*
       Summary: Method to increase the count of a certain product in the shopping cart. To be invoked in the HTML section of this file.
-      Parameters: Method recieves ShopLine object 
+      Parameters: Method recieves ShopLine object
       Return: Nothing
       Exceptions: There aren't known exceptions
     */
@@ -258,7 +273,7 @@ else
 
     /*
       Summary: This method updates the total price amount of the shopping cart page.
-      Parameters: Method does not recieve parameters. 
+      Parameters: Method does not recieve parameters.
       Return: Nothing
       Exceptions: There aren't known exceptions
     */
@@ -273,7 +288,7 @@ else
 
     /*
       Summary: This method deletes a product from a given shopLine
-      Parameters: This method recieves an Object ShopLine 
+      Parameters: This method recieves an Object ShopLine
       Return: Nothing
       Exceptions: There aren't known exceptions
     */
@@ -282,13 +297,18 @@ else
         await ShoppingCartService.DeleteLineFromShoppingCart(this.shopping, shopLine);
         shopping = await ShoppingCartService.GetByIdAsync(userEmail);
         _products = await ShoppingCartService.GetProducts(shopParameters, userEmail);
+        updateTotalAmount();
+        if (shopping.ShopLines.Count() == 0)
+        {
+            backToHome();
+        }
         StateHasChanged();
     }
 
     /*
       Summary: Overridden method from Blazor that is invoked when the page is loaded.
       Method fetchs the userEmail and the shopping cart from given userEmail. It also handles the pagination.
-      Parameters: This method recieves an Object ShopLine 
+      Parameters: This method recieves an Object ShopLine
       Return: Nothing
       Exceptions: There aren't known exceptions
     */
@@ -299,6 +319,7 @@ else
         var pagingResponse = await ShoppingCartService.GetProducts(shopParameters, userEmail);
         _products = pagingResponse;
         pagingData = pagingResponse.pagingData;
+        //_paymentMethods = await PaymentMethodService.GetPaymentMethodsAsync();
         _isLoading = false;
         updateTotalAmount();
         quantityPerProduct = new int[shopping.ShopLines.Count()];
@@ -347,7 +368,7 @@ else
       Return: Nothing
       Exceptions: There aren't known exceptions
     */
-    private void  backToHome()
+    private void backToHome()
     {
         NavigationManager.NavigateTo("/");
     }

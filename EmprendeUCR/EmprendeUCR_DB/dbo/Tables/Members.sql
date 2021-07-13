@@ -7,3 +7,10 @@
     PRIMARY KEY CLUSTERED ([User_Email] ASC),
     CONSTRAINT [FK_Members_User] FOREIGN KEY ([User_Email]) REFERENCES [dbo].[User] ([Email]) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [IDX_Members]
+    ON [dbo].[Members]([User_Email] ASC, [Score] ASC, [Lat] ASC, [Long] ASC, [Direction] ASC);
+

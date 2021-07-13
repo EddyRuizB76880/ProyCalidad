@@ -24,5 +24,10 @@ namespace EmprendeUCR.Application.HomePageClientContext
         Task<List<Offer>> GetAllOffersAsync();
         Task<List<ProductService>> GetAllProductsServicesAsync();
         IList<Product> listPurchasedProducts(string email);
+
+        IList<Is_Offer> getIs_Offer();
+        IList<Service_Photos> getServicePhotos();
+
+
     }
 }

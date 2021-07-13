@@ -210,11 +210,11 @@ else
       Return: Nothing
       Exceptions: There aren't known exceptions
     */
-    private async Task getProducts(Order order)
+    private void getProducts(Order order)
     {
         totalAmount = 0;
         currentOrder = order;
-        _products = await OrderService.GetProducts(order);
+        _products = OrderService.GetProducts(order);
         setTotalAmount(_products);
         StateHasChanged();
     }
