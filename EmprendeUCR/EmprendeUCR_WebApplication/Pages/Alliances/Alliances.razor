@@ -70,11 +70,13 @@ else
             var List = has_supplies_list.FindAll(p => p.Supplie_ID == prod.Category_ID);
             if (List.Count() > 0)
             {
-                if (users_list.Where(u => u.entrepreneur.Email == prod.Entrepreneur_Email).Count() < 1 && prod.Entrepreneur_Email != selectedEmail)
+                if ((users_list.Where(u => u.entrepreneur.Email == prod.Entrepreneur_Email).Count() < 1 ) &&
+                        (prod.Entrepreneur_Email != selectedEmail))
                 {
                     my_User userToAdd = new my_User();
                     userToAdd.entrepreneur = await UserService.getUser(selectedEmail);
                     userToAdd.categories.Add(CategoryService.getCategory(prod.Category_ID));
+                    users_list.Add(userToAdd);
                 }
 
             }
