@@ -1,0 +1,98 @@
+﻿@page "/Alliances"
+@using EmprendeUCR_WebApplication.Data.Services
+@using EmprendeUCR_WebApplication.Data.Services.Categories
+@using EmprendeUCR_WebApplication.Data.Entities
+@using EmprendeUCR_WebApplication.Application.OrderContext.Implementations
+@inject EntrepreneurService EntrepreneurService
+@inject ProductService ProductService
+@inject HasSuppliesService HasSuppliesService
+@inject Product_ServiceService Product_ServiceService
+@using Syncfusion.Blazor.TreeGrid;
+@inject Product_ServiceService Product_ServiceService
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject OrderService OrderService
+@inject UserServicePandemic UserService
+@inject CategoryService CategoryService
+
+
+
+@if (_isLoading)
+{
+    <p>Cargando...</p> }
+else
+{
+
+
+<body>
+    <h3>Mis Alianzas</h3>
+
+    @if (users_list.Count() > 0)
+    {
+        @foreach (var u in users_list)
+        {
+            <span> @u.entrepreneur.Name @u.entrepreneur.F_Last_Name vende </span>
+            @foreach (var c in u.categories)
+            {
+                <span> @c.Title</span>
+            }
+            <br />
+        }
+    } else
+                {
+                    <span>No hay sugerencias por el momento. :)</span>
+                }
+
+
+</body>
+}
+
+
+
+@code {
+    IList<Product_Service> products_services_general_list = new List<Product_Service>();
+    List<my_User> users_list = new List<my_User>();
+    List<HasSupplies> has_supplies_list = new List<HasSupplies>();
+    string selectedEmail;
+
+    public class my_User
+    {
+        public User entrepreneur { get; set; }
+        public IList<Category> categories { get; set; }
+    }
+
+
+    private bool _isLoading = true;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        selectedEmail = await sessionStorage.GetItemAsync<string>("Email");
+        _isLoading = false;
+        products_services_general_list = await Product_ServiceService.GetAllProductsServicesAsync();
+        has_supplies_list = await HasSuppliesService.GetAllHasSuppliesEntrepreneurAsync(selectedEmail);
+        await ChargeNonRepetedCustomers();
+    }
+
+    private async Task ChargeNonRepetedCustomers()
+    {
+        foreach (var prod in products_services_general_list)
+        {
+            var List = has_supplies_list.FindAll(s => s.Supplie_ID == prod.Category_ID);
+            if (List.Count() > 0)
+            {
+                var userAlreadyExists = users_list.FindAll(u => u.entrepreneur.Email == prod.Entrepreneur_Email).Count() > 0;
+                if (!userAlreadyExists && prod.Entrepreneur_Email != selectedEmail)
+
+                {
+                    my_User userToAdd = new my_User();
+                    userToAdd.categories = new List<Category>();
+                    userToAdd.entrepreneur = await UserService.getUser(prod.Entrepreneur_Email);
+                    var cat = CategoryService.getCategory(prod.Category_ID);
+                    userToAdd.categories.Add(cat);
+                    users_list.Add(userToAdd);
+                }
+
+            }
+        }
+    }
+}
