@@ -16,6 +16,7 @@
 @inject HasSuppliesService HasSuppliesService
 @inject Has_StatusService Has_StatusService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
 <h2>Agregar producto</h2>
 <hr />
 <body>
@@ -204,10 +205,7 @@
 
 </body>
 
-
-
 @code {
-
     // The product service to add
     EmprendeUCR_WebApplication.Data.Entities.Product prod = new EmprendeUCR_WebApplication.Data.Entities.Product();
     EmprendeUCR_WebApplication.Data.Entities.Product_Service prodServ = new EmprendeUCR_WebApplication.Data.Entities.Product_Service();
@@ -278,6 +276,7 @@
             photosOne.Photos = ms.ToArray();
         }
     }
+
     // Gets called when page first loads.
     protected override async Task OnInitializedAsync()
     {
@@ -285,8 +284,7 @@
         editContext.OnValidationRequested += HandleValidationRequested;
         messageStore = new(editContext);
 
-        prodServ.Entrepreneur_Email = await sessionStorage.GetItemAsync<string>
-            ("Email");
+        prodServ.Entrepreneur_Email = await sessionStorage.GetItemAsync<string>("Email");
 
         categories = await CategoryService.GetAsync();
         _isLoading = false;
@@ -387,7 +385,6 @@
         /// End of save photos on database
 
         NavigationManager.NavigateTo("ListProducts");
-
     }
 
     //Button to cancel and return to List of Products
@@ -417,8 +414,7 @@
     }
 
     //SelectionHandler row selected
-    public async Task SelectionHandler(Syncfusion.Blazor.Grids.RowSelectEventArgs<Category>
-        args)
+    public async Task SelectionHandler(Syncfusion.Blazor.Grids.RowSelectEventArgs<Category> args)
     {
         var selectedCategories = await this.TreeGrid.GetSelectedRecords();
         if (selectedCategories.Count() > 0)
@@ -427,7 +423,6 @@
             prod.Category_ID = selectedCategory.Id;
         }
         categorieSelected = true;
-
     }
 
     //SelectionHandler2 row deselected

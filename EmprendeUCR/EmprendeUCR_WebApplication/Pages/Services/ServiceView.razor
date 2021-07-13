@@ -11,6 +11,8 @@
 @inject ServiceService ServiceService
 @inject CategoryService CategoryService
 @inject Service_PhotosService Service_PhotosService
+@inject HasSuppliesService HasSuppliesService
+@inject Has_StatusService Has_StatusService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 <body>
@@ -40,9 +42,7 @@
 
 
                 </div>
-                @*
-                    <EmprendeUCR_WebApplication.Pages.Service_Service.Service.ServiceStatusInput />
-                *@
+
             </div> <br /> <br />
 
             <div>
@@ -61,9 +61,24 @@
                 </div>
             </div>
 
+            <div>
+                @foreach (var category in supplyCategory)
+                {
 
+                    <span>
+                        @category.Title
+                        <br />
+                    </span>
+                }
+            </div>
 
-
+            @foreach (var prodStatus in serviceStatuses.OrderBy(p => p.Order))
+            {
+                <span>
+                    @prodStatus.Name
+                    <br />
+                </span>
+            }
 
             <div class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
@@ -95,6 +110,9 @@
     Service _service = new Service();
     Service_Photos _servPhoto = new Service_Photos();
     IList<Service_Photos> photosDisplay;
+    IList<HasSupplies> serviceSupplies;
+    IList<Has_Status> serviceStatuses;
+    IList<Category> supplyCategory = new List<Category>();
 
     public void c(string CodeId)
     {
@@ -110,10 +128,28 @@
     {
         loadService(CodeId);
         loadPhotos(int.Parse(CodeId));
+        loadSupplies(int.Parse(CodeId));
+        loadStatuses(int.Parse(CodeId));
     }
 
     public void loadPhotos(int CodeId)
     {
         photosDisplay = Service_PhotosService.loadPhotosByID(CodeId);
+    }
+
+    public void loadSupplies(int CodeId)
+    {
+        serviceSupplies = HasSuppliesService.loadSuppliesByID(CodeId);
+        foreach (var supply in serviceSupplies)
+        {
+            var category = CategoryService.getCategory(supply.Supplie_ID);
+            supplyCategory.Add(category);
+        }
+    }
+
+    public void loadStatuses(int CodeId)
+    {
+        serviceStatuses = Has_StatusService.loadStatusesByID(CodeId);
+        serviceStatuses.OrderBy(p => p.Order);
     }
 }
