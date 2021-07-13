@@ -2,6 +2,7 @@
 
 @using EmprendeUCR.Domain.Core.CoreEntities
 @using EmprendeUCR.Application.ProfileContext
+@using Blazored.FluentValidation
 
 @inject IProfileService profileService
 @inject NavigationManager NavigationManager
@@ -17,6 +18,7 @@
 
     <div class="flex-container">
         <EditForm Model="@myUser" OnValidSubmit="@save">
+            <FluentValidationValidator />
             <div class="principal">
 
                 <div class="principalObject">
@@ -34,30 +36,35 @@
                             <div class="marginElements">
                                 <label for="inputName" class="form-label secondary_title">Nombre:</label>
                                 <InputText type="text" @bind-Value="@myUser.Name" class="form-control inputsClass" id="staticEmail" placeholder="@myUser.Name" required />
+                                <ValidationMessage For="@(()=> myUser.Name)"> </ValidationMessage>
                             </div>
 
                             <!--First last name-->
                             <div class="marginElements">
                                 <label for="inputFLastName" class="form-label secondary_title">Primer apellido</label>
                                 <InputText type="text" @bind-Value="@myUser.F_Last_Name" class="form-control inputsClass" id="staticEmail" placeholder="@myUser.F_Last_Name" required />
+                                <ValidationMessage For="@(()=> myUser.F_Last_Name)"> </ValidationMessage>
                             </div>
 
                             <!--Second last name-->
                             <div class="marginElements">
                                 <label for="inputSLastName" class="form-label secondary_title">Segundo apellido</label>
                                 <InputText type="text" @bind-Value="@myUser.S_Last_Name" class="form-control inputsClass" id="staticEmail" placeholder="@myUser.S_Last_Name" required />
+                                <ValidationMessage For="@(()=> myUser.S_Last_Name)"> </ValidationMessage>
                             </div>
 
                             <!--Phone-->
                             <div class="marginElements">
                                 <label for="inputPhone" class="form-label secondary_title">Teléfono</label>
                                 <InputText type="text" @bind-Value="@userPhone.Phone_Number" class="form-control inputsClass" id="staticEmail" placeholder="@userPhone.Phone_Number" required maxlength="8" />
+                                <ValidationMessage For="@(()=> userPhone.Phone_Number)"> </ValidationMessage>
                             </div>
 
                             <!--Birth date-->
                             <div class="marginElements">
                                 <label for="inputBDate" class="control-label secondary_title">Fecha de nacimiento:</label>
-                                <InputDate type="date" @bind-Value="@myUser.Birth_Date" class="form-control inputsClass" id="staticEmail" placeholder="@myUser.Birth_Date" />
+                                <InputDate type="date" @bind-Value="@myUser.Birth_Date" class="form-control inputsClass" id="staticEmail" placeholder="@myUser.Birth_Date"/>
+                                <ValidationMessage For="@(()=> myUser.Birth_Date)"> </ValidationMessage>
                             </div>
 
                             <!--Image-->
@@ -132,7 +139,8 @@
                                 <!--Exact address-->
                                 <div class="marginElements">
                                     <label class="secondary_title">Dirección exacta: </label>
-                                    <InputTextArea type="text" @bind-Value="myMember.Direction" class="form-control inputsClass" id="staticEmail" placeholder="@myMember.Direction" maxlength="200" rows="3" />
+                                    <InputTextArea type="text" @bind-Value="myMember.Direction" class="form-control inputsClass" id="staticEmail" placeholder="@myMember.Direction" maxlength="200" rows="3" required />
+                                    <ValidationMessage For="@(()=> myMember.Direction)"> </ValidationMessage>
                                 </div>
                             }
 
@@ -249,13 +257,14 @@
                                     </div>
                                 }
 
-                                <!--Presentation Only for entrepreneur users-->
-                                @if (myEntrepreneur != null)
-                                {
-                                    <label class="secondary_title">Presentación</label>
-                                    <InputTextArea type="text" @bind-Value="myEntrepreneur.Presentation" class="form-control inputsClass" id="staticEmail" placeholder="@myEntrepreneur.Presentation" maxlength="200" rows="3" />
-                                }
-                            </div>
+                            <!--Presentation Only for entrepreneur users-->
+                            @if (myEntrepreneur != null)
+                            {
+                                <label class="secondary_title">Presentación</label>
+                                <InputTextArea type="text" @bind-Value="myEntrepreneur.Presentation" class="form-control inputsClass" id="staticEmail" placeholder="@myEntrepreneur.Presentation" maxlength="200" rows="3" required />
+                                <ValidationMessage For="@(()=> myEntrepreneur.Presentation)"> </ValidationMessage>
+                            }
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -368,7 +377,7 @@ else
                 int selections = -1; // Sin categorías favoritas
                 foreach (var category in categories)
                 {
-                    selections = await JsRuntime.InvokeAsync<int>("getSelectedValues", "box_"+category.Id.ToString());
+                    selections = await JsRuntime.InvokeAsync<int>("getSelectedValues", "box_" + category.Id.ToString());
                     if (selections != -1)
                     {
                         Likes l = new Likes

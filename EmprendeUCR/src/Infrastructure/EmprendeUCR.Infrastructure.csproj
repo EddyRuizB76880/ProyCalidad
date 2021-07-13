@@ -1,4 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <Compile Remove="RegisterContext\EntityMappings\**" />
+    <EmbeddedResource Remove="RegisterContext\EntityMappings\**" />
+    <None Remove="RegisterContext\EntityMappings\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="RegisterContext\EntityMappings\**" />

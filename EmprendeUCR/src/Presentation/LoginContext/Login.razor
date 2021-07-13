@@ -282,7 +282,7 @@
     {
         await sessionStorage.SetItemAsync("Email", email);
         await sessionStorage.SetItemAsync("Type", userType);
-
+        await sessionStorage.SetItemAsync<string>("UserNotification","null");
         string homeRef = "";
 
         switch (userType)
@@ -291,7 +291,7 @@
                 homeRef = "/";
                 break;
             case 2:
-                homeRef = "/HomeEntrepreneaur";
+                homeRef = "/HomeEntrepreneur";
                 break;
             case 3:
                 homeRef = "/admin";

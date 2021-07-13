@@ -42,12 +42,16 @@ namespace EmprendeUCR_WebApplication.Infrastructure.OrderContext.EntityMappings
                 .HasMaxLength(100);
 
             builder.Property(e => e.State)
-                .HasMaxLength(20)
+                .HasMaxLength(30)
                 .HasColumnName("State");
 
             builder.HasMany(d => d.Organized)
                 .WithOne(p => p.order).IsRequired();
-           
+
+            builder.HasOne(e => e.genericStatus)
+                .WithMany(s => s.Order)
+                .HasForeignKey(e => new { e.State });
+
         }
     }
 }

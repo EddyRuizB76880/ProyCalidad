@@ -15,8 +15,12 @@ namespace EmprendeUCR_WebApplication.Domain.Repositories
         Task<List<Order>?> GetByIdAsync(string email);
 
         Task<List<Order>?> GetEntreprenurFinalizedOrders(string email);
+        Task<List<Order>?> GetAcceptedOrders(string email);
         Task<List<Order>?> GetClientOrdersAsync(string email);
-        Task<List<Tuple<int, Product>>> GetProductsAsync(Order order);
+        List<Tuple<int, Product>> GetProductsAsync(Order order);
+        Task<List<Status>> GetOrderStatuses();
+        Task SetProductStatuses(Product product, List<Status> statusesList);
         Task orderUpdate(Order orderToUpdate);
+        string defineColor(string status);
     }
 }

@@ -31,17 +31,23 @@ namespace EmprendeUCR_WebApplication.Infrastructure.OrderContext
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<Organized> Organizeds { get; set; }
         public virtual DbSet<Status> Statuses { get; set; }
+        public virtual DbSet<GenericStatus> GenericStatuses { get; set; }
+        public virtual DbSet<PersonalizedStatus> PersonalizedStatuses { get; set; }
+        public virtual DbSet<ProductHasStatus> ProductHasStatuses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.ApplyConfiguration(new ProductMap());
             modelBuilder.ApplyConfiguration(new ProductServiceMap());
+            modelBuilder.ApplyConfiguration(new ProductMap());
             modelBuilder.ApplyConfiguration(new ServiceMap());
             modelBuilder.ApplyConfiguration(new OrderMap());
             modelBuilder.ApplyConfiguration(new OrganizedMap());
             modelBuilder.ApplyConfiguration(new StatusMap());
+            modelBuilder.ApplyConfiguration(new GenericStatusMap());
+            modelBuilder.ApplyConfiguration(new PersonalizedStatusMap());
+            modelBuilder.ApplyConfiguration(new ProductHasStatusMap());
         }
     }
 }
