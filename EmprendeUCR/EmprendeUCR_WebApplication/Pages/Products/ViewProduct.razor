@@ -11,6 +11,8 @@
 @inject ProductService ProductService
 @inject CategoryService CategoryService
 @inject Product_PhotosService Product_PhotosService
+@inject HasSuppliesService HasSuppliesService
+@inject Has_StatusService Has_StatusService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 <body>
@@ -59,9 +61,24 @@
                 </div>
             </div>
 
+            <div>
+                @foreach (var category in supplyCategory)
+                {
 
+                    <span>
+                        @category.Title
+                        <br />
+                    </span>
+                }
+            </div>
 
-
+            @foreach (var prodStatus in productStatuses.OrderBy(p => p.Order))
+            {
+                <span>
+                    @prodStatus.Name
+                    <br />
+                </span>
+            }
 
             <div class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
@@ -93,6 +110,9 @@
     Product _product = new Product();
     Product_Photos _prodPhoto = new Product_Photos();
     IList<Product_Photos> photosDisplay;
+    IList<HasSupplies> productSupplies;
+    IList<Has_Status> productStatuses;
+    IList<Category> supplyCategory = new List<Category>();
 
     public void c(string CodeId)
     {
@@ -108,10 +128,28 @@
     {
         loadProduct(CodeId);
         loadPhotos(int.Parse(CodeId));
+        loadSupplies(int.Parse(CodeId));
+        loadStatuses(int.Parse(CodeId));
     }
 
     public void loadPhotos(int CodeId)
     {
         photosDisplay = Product_PhotosService.loadPhotosByID(CodeId);
+    }
+
+    public void loadSupplies(int CodeId)
+    {
+        productSupplies = HasSuppliesService.loadSuppliesByID(CodeId);
+        foreach (var supply in productSupplies)
+        {
+            var category = CategoryService.getCategory(supply.Supplie_ID);
+            supplyCategory.Add(category);
+        }
+    }
+
+    public void loadStatuses(int CodeId)
+    {
+        productStatuses = Has_StatusService.loadStatusesByID(CodeId);
+        productStatuses.OrderBy(p => p.Order);
     }
 }

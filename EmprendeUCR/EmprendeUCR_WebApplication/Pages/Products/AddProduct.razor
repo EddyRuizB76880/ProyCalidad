@@ -359,6 +359,7 @@
         int idToInsert = await createProduct_Service();
         prod.Code_ID = idToInsert;
         await createProduct();
+        await HasSuppliesService.InsertListOfHasSupplie(supplies, idToInsert, selectedCategory.Id, prodServ.Entrepreneur_Email);
         var has_statuses = new List<Has_Status>();
         for (int i = 0; i < statuses.Count(); i++)
         {
