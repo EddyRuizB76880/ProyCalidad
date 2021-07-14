@@ -2,8 +2,8 @@
 using System.IO;
 using System.Linq;
 using EmprendeUCR_WebApplication.Infrastructure;
+using EmprendeUCR_WebApplication.Infrastructure.NotificationContext;
 using EmprendeUCR_WebApplication.Infrastructure.OrderContext;
-using EmprendeUCR_WebApplication.Infrastructure.ShoppingCartContext;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.SqlClient;
@@ -15,7 +15,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EmprendeUCR.IntegrationTests.EmprendeUCR
 {
-    public class EmprendeUCRWebApplicationFactory<TStartup>
+    public class EmprendeUCRNotificationContextFactory<TStartup>
         : WebApplicationFactory<TStartup> where TStartup : class
     {
         private IConfiguration? _configuration;
@@ -24,7 +24,7 @@ namespace EmprendeUCR.IntegrationTests.EmprendeUCR
         {
             if (dbContext is null || _configuration is null) throw new Exception("Error in config.");
 
-            var seedScriptName = _configuration["SeedDataScript"];
+            var seedScriptName = _configuration["SeedNotificationScript"];
             var sql = File.ReadAllText(seedScriptName);
             var connection = new SqlConnection(dbContext.Database.GetConnectionString());
             connection.Open();
@@ -54,7 +54,7 @@ namespace EmprendeUCR.IntegrationTests.EmprendeUCR
             builder.ConfigureServices(services =>
             {
             var dbContextOptionsDescriptor = services.SingleOrDefault(
-                d => d.ServiceType == typeof(DbContextOptions<OrderDbContext>));
+                d => d.ServiceType == typeof(DbContextOptions<NotificationDbContext>));
 
             if (dbContextOptionsDescriptor != null)
                 services.Remove(dbContextOptionsDescriptor);
@@ -62,7 +62,7 @@ namespace EmprendeUCR.IntegrationTests.EmprendeUCR
             var sp = services.BuildServiceProvider();
             var configuration = sp.GetRequiredService<IConfiguration>();
 
-            services.AddDbContext<OrderDbContext>(
+            services.AddDbContext<NotificationDbContext>(
                 options =>
                 {
 
@@ -74,9 +74,8 @@ namespace EmprendeUCR.IntegrationTests.EmprendeUCR
             using (var scope = sp.CreateScope())
             {
                 var scopedServices = scope.ServiceProvider;
-                var db = scopedServices.GetRequiredService<OrderDbContext>();
-                var scdb = scopedServices.GetRequiredService<ShoppingCartDbContext2>();
-                var logger = scopedServices.GetRequiredService<ILogger<ShoppingFactory<TStartup>>>();
+                var db = scopedServices.GetRequiredService<NotificationDbContext>();
+                var logger = scopedServices.GetRequiredService<ILogger<EmprendeUCRWebApplicationFactory<TStartup>>>();
 
                 _configuration = configuration;
 

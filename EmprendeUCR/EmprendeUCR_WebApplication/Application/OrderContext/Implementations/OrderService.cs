@@ -11,21 +11,14 @@ namespace EmprendeUCR_WebApplication.Application.OrderContext.Implementations
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
-
+        /*
+          Summary: Constructor.
+          Parameters:IOrderRepository orderRepository.
+          Exceptions: There aren't known exceptions
+        */
         public OrderService(IOrderRepository orderRepository)
         {
             _orderRepository = orderRepository;
-        }
-
-        /*
-          Summary: Method to get the orders of an entrepreneur related to an email.
-          Parameters: Method gets string email related to an user.
-          Return: An order asociated to an email
-          Exceptions: There aren't known exceptions
-        */
-        public async Task<string> GetEntrepreneurName(string email)
-        {
-            throw new NotImplementedException();
         }
 
         /*
@@ -40,18 +33,6 @@ namespace EmprendeUCR_WebApplication.Application.OrderContext.Implementations
         }
 
         /*
-           Summary: Method to get the orders of an entrepreneur related to an email.
-           Parameters: Method gets string email related to an user.
-           Return: An order asociated to an email
-           Exceptions: There aren't known exceptions
-         */
-        public async Task<List<Order>> GetEntrepreneurFinalizedOrders(string email)
-        {
-            return await _orderRepository.GetEntreprenurFinalizedOrders(email);
-        }
-
-        /*
-          Summary: Method to get the finalized orders of a client related to an email.
           Summary: Method to get the accepted orders of an entrepreneur related
                    to an email.
           Parameters: Method gets string email related to an user.
@@ -61,6 +42,17 @@ namespace EmprendeUCR_WebApplication.Application.OrderContext.Implementations
         public async Task<List<Order>> GetEntrepreneurAcceptedOrders(string email)
         {
             return await _orderRepository.GetAcceptedOrders(email);
+        }
+
+        /*
+           Summary: Method to get the finalized orders of a client related to an email.
+           Parameters: Method gets string email related to an user.
+           Return: An order asociated to an email
+           Exceptions: There aren't known exceptions
+         */
+        public async Task<List<Order>> GetEntrepreneurFinalizedOrders(string email)
+        {
+            return await _orderRepository.GetEntreprenurFinalizedOrders(email);
         }
 
         /*
@@ -94,8 +86,13 @@ namespace EmprendeUCR_WebApplication.Application.OrderContext.Implementations
         public async Task<List<Status>> GetOrderStatuses()
         {
             return await _orderRepository.GetOrderStatuses();
-        }        
-        
+        }
+        /*
+         Summary: get the color set for a state 
+         Parameters: status
+         Return: string with the color set for the state 
+         Exceptions: There aren't known exceptions
+       */
         public string getStatusColor(string status)
         {
             return _orderRepository.defineColor(status);
@@ -139,12 +136,24 @@ namespace EmprendeUCR_WebApplication.Application.OrderContext.Implementations
         {
             throw new NotImplementedException();
         }
-
+        /*
+          Summary: update the status of an order.
+          Parameters: order to update
+                      the new status for the order
+          Return: Nothing
+          Exceptions: There aren't known exceptions
+        */
         public async Task updateOrderStatus(Order order,string newStatus) {
             order.ChangerOrderStatus(newStatus);
             await _orderRepository.orderUpdate(order);
-        }        
-        
+        }
+        /*
+          Summary: update the status of an order.
+          Parameters: Order to update
+                      The new status for the order
+          Return: Nothing
+          Exceptions: There aren't known exceptions
+        */
         public async Task updateProductStatus(Order currentOrder, string productStatus, Product productToUpdate) {
             currentOrder.changeProductStatus(productStatus, productToUpdate.CodeId, productToUpdate.EntrepreneurEmail , productToUpdate.CategoryId);
             await _orderRepository.orderUpdate(currentOrder);

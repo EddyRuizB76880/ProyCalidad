@@ -115,6 +115,12 @@ namespace EmprendeUCR_WebApplication.Domain.OrderContext.Entities
             product.ChangeStatus(productStatus);
         }
 
+        public List<Order> filterOrders(List<Order> ordersToFilter, string status)
+        {
+            return ordersToFilter.Where(item => item.State == status).ToList();   
+        }
+
+
         // Foreign entities
         private readonly List<Organized> _organizedList;
         public IReadOnlyCollection<Organized> Organized;

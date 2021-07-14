@@ -57,7 +57,12 @@ namespace EmprendeUCR_WebApplication.Infrastructure.NotificationContext.Reposito
             // Begin to listen changes
             sqlTableDependency.Start();
         }
-
+        /*
+          Summary: check all notifications for the client logged and saves it in UserNotifications. 
+          Parameters: UserNotification
+          Return: Nothing
+          Exceptions: There aren't known exceptions
+        */
         public void GetNotifications(UserNotification UserNotification)
         {
             List<Notification> list =
@@ -70,14 +75,24 @@ namespace EmprendeUCR_WebApplication.Infrastructure.NotificationContext.Reposito
                 Next.GetNotifications(UserNotification);
             }
         }
-
+        /*
+          Summary: check the count of all notifications for the client logged and saves it in UserNotifications. 
+          Parameters: UserNotification
+          Return: Nothing
+          Exceptions: There aren't known exceptions
+        */
         public void GetNotificationsQuantity(UserNotification UserNotification)
         {
             UserNotification.notificationQuantity += _dbContext.OrderNotificationClients.
                        Where(e => e.ClientEmail == UserNotification.Email && (e.State == "Rechazado" || e.State == "Aceptado"))
                        .Count();
         }
-
+        /*
+          Summary: check the count of all notifications for the client logged and saves it in UserNotifications. 
+          Parameters: UserNotification
+          Return: Nothing
+          Exceptions: There aren't known exceptions
+        */
         private void OrderClientChange(object sender, RecordChangedEventArgs<OrderNotificationClient> e)
         {
             var changedEntity = e.Entity;
@@ -93,7 +108,12 @@ namespace EmprendeUCR_WebApplication.Infrastructure.NotificationContext.Reposito
                 }
             }
         }
-
+        /*
+          Summary: unsubscribe UserNotifications to not hear more updates from the database.
+          Parameters: UserNotification
+          Return: Nothing
+          Exceptions: There aren't known exceptions
+        */
         public void Unsubscription(UserNotification UserNotification)
         {
             this.onEventNotification -= UserNotification.QuantityEvent;

@@ -1,12 +1,10 @@
 ﻿use DB_Test;
-
 delete from [Order];
-
-select * from Client
 MERGE INTO [User] AS Target
 USING (VALUES 
         ('juan.valverde@ucr.ac.cr','Juan','Valverde','Campos', NULL, NULL, NULL, NULL, NULL),
-        ('saguilar1999@hotmail.com','Silvia','Aguilar','Guerrero', NULL, NULL, NULL, NULL, NULL)
+        ('saguilar1999@hotmail.com','Silvia','Aguilar','Guerrero', NULL, NULL, NULL, NULL, NULL),
+        ('juan@hotmail.com','Juan','Valverde','Campos', NULL, NULL, NULL, NULL, NULL)
 )
 AS Source ([Email], [Name], [F_Last_Name], [S_Last_Name], [Birth_Date], [Province_Name], [Canton_Name], [District_Name], [Email_Confirmation]) 
 ON Target.[Email] = Source.[Email] 
@@ -17,7 +15,8 @@ VALUES ([Email], [Name], [F_Last_Name], [S_Last_Name], [Birth_Date], [Province_N
 
 MERGE INTO Members AS Target
 USING (VALUES
-        ('juan.valverde@ucr.ac.cr', 0, NULL, NULL)
+        ('juan.valverde@ucr.ac.cr', 0, NULL, NULL),
+        ('juan@hotmail.com', 0, NULL, NULL)
 )
 AS Source ([User_Email], [Score], [Lat], [Long]) 
 ON Target.[User_Email] = Source.[User_Email] 
@@ -28,7 +27,8 @@ VALUES ([User_Email], [Score], [Lat], [Long]);
 
 MERGE INTO Client AS Target
 USING (VALUES
-        ('juan.valverde@ucr.ac.cr')
+        ('juan.valverde@ucr.ac.cr'),
+        ('juan@hotmail.com')
 )
 AS Source ([User_Email]) 
 ON Target.[User_Email] = Source.[User_Email] 
@@ -176,6 +176,7 @@ MERGE INTO [Order] AS Target
 USING (VALUES
         ('2021-06-10 17:15:23.000','juan.valverde@ucr.ac.cr', '2021-07-30' , 'saguilar1999@hotmail.com', 'Pendiente de revision'),
         ('2021-08-10 17:15:23.000','juan.valverde@ucr.ac.cr', '2021-07-30' , 'saguilar1999@hotmail.com', 'Pendiente de revision'),
+        ('2021-08-10 17:15:23.000','juan@hotmail.com', '2021-07-30' , 'saguilar1999@hotmail.com', 'Pendiente de revision'),
         ('2021-09-10 17:15:23.000','juan.valverde@ucr.ac.cr', '2021-07-30' , 'saguilar1999@hotmail.com', 'Aceptado'),
         ('2021-10-10 17:15:23.000','juan.valverde@ucr.ac.cr', '2021-07-30' , 'saguilar1999@hotmail.com', 'Aceptado'),
         ('2021-11-10 17:15:23.000','juan.valverde@ucr.ac.cr', '2021-07-30' , 'saguilar1999@hotmail.com', 'Aceptado')
@@ -186,3 +187,12 @@ ON Target.[Date_and_hour_of_creation] = Source.[Date_and_hour_of_creation] AND T
 WHEN NOT MATCHED BY TARGET THEN 
 INSERT ([Date_and_hour_of_creation], [Client_Email], [Delivery_date], [Entrepreneur_Email], [State]) 
 VALUES ([Date_and_hour_of_creation], [Client_Email], [Delivery_date], [Entrepreneur_Email], [State]);
+
+--select * from [Order];
+
+ SELECT COUNT(*)
+      FROM [OrderNotificationEntrepeneurs] AS [o]
+      WHERE ([o].[Entrepreneur_Email] = 'saguilar1999@hotmail.com') AND ([o].[State] = N'Pendiente de revision')
+       SELECT [o].[Date_and_hour_of_creation], [o].[Client_Email], [o].[Entrepreneur_Email], [o].[State], [o].[Date_and_hour_of_State_Changed], [o].[Name]
+      FROM [OrderNotificationEntrepeneurs] AS [o]
+      WHERE ([o].[Entrepreneur_Email] = 'saguilar1999@hotmail.com') AND ([o].[State] = N'Pendiente de revision')

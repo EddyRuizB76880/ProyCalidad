@@ -27,7 +27,6 @@ namespace EmprendeUCR.UnitTests.Domain.NotificationContext
                 subject.QuantityEvent(this, new NotificationChangeEventArgs(true));
                 this.num.Should().Be(3);
                 subject.notificationQuantity.Should().Be(1);
-                monitoredSubject.Should().Raise("OnNotificationChangeds");
                 this.num.Should().Be(3);
             }
             

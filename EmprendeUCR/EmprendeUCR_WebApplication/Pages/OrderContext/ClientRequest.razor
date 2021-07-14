@@ -18,7 +18,7 @@
 }
 else
 {
-    <div class="mt-5 order-acceptance w-100 h-100 d-flex justify-content-around m-auto">
+    <div class="mt-5 order-acceptance w-100 h-100 m-auto d-flex flex-column align-items-center justify-content-start">
 
         <div class="w-70 lista-items h-100 bg-white d-flex flex-column align-items-center" id="Orders">
 
@@ -291,7 +291,7 @@ else
         }
         else
         {
-            filtered = _orders.Where(item => item.State == e.Value.ToString()).ToList();
+            filtered = filtered = new Order().filterOrders( _orders , e.Value.ToString());
         }
         StateHasChanged();
     }

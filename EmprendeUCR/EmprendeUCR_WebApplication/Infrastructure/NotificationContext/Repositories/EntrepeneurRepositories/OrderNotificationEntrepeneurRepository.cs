@@ -56,7 +56,12 @@ namespace EmprendeUCR_WebApplication.Infrastructure.NotificationContext.Reposito
             // Begin to listen changes
             sqlTableDependency.Start();
         }
-
+        /*
+          Summary: check all notifications for the entrepreneur logged and saves it in UserNotifications. 
+          Parameters: UserNotification
+          Return: Nothing
+          Exceptions: There aren't known exceptions
+        */
         public void GetNotifications(UserNotification UserNotification)
         {
             List<Notification> list =
@@ -69,7 +74,12 @@ namespace EmprendeUCR_WebApplication.Infrastructure.NotificationContext.Reposito
                 Next.GetNotifications(UserNotification);
             }
         }
-
+        /*
+          Summary: check the count of all notifications for the entrepreneur logged and saves it in UserNotifications. 
+          Parameters: UserNotification
+          Return: Nothing
+          Exceptions: There aren't known exceptions
+        */
         public void GetNotificationsQuantity(UserNotification UserNotification)
         {
             UserNotification.notificationQuantity = UserNotification.notificationQuantity + _dbContext.OrderNotificationEntrepeneurs.
@@ -81,6 +91,12 @@ namespace EmprendeUCR_WebApplication.Infrastructure.NotificationContext.Reposito
             }
             
         }
+        /*
+          Summary: check the count of all notifications for the client logged and saves it in UserNotifications. 
+          Parameters: UserNotification
+          Return: Nothing
+          Exceptions: There aren't known exceptions
+        */
         private void OrderEntrepeneurChange(object sender, RecordChangedEventArgs<OrderNotificationEntrepeneur> e)
         {
             var changedEntity = e.Entity;

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using EmprendeUCR_WebApplication.Infrastructure;
-using EmprendeUCR_WebApplication.Infrastructure.OrderContext;
 using EmprendeUCR_WebApplication.Infrastructure.ShoppingCartContext;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -15,7 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EmprendeUCR.IntegrationTests.EmprendeUCR
 {
-    public class EmprendeUCRWebApplicationFactory<TStartup>
+    public class ShoppingFactory<TStartup>
         : WebApplicationFactory<TStartup> where TStartup : class
     {
         private IConfiguration? _configuration;
@@ -54,7 +52,7 @@ namespace EmprendeUCR.IntegrationTests.EmprendeUCR
             builder.ConfigureServices(services =>
             {
             var dbContextOptionsDescriptor = services.SingleOrDefault(
-                d => d.ServiceType == typeof(DbContextOptions<OrderDbContext>));
+                d => d.ServiceType == typeof(DbContextOptions<ShoppingCartDbContext2>));
 
             if (dbContextOptionsDescriptor != null)
                 services.Remove(dbContextOptionsDescriptor);
@@ -62,7 +60,7 @@ namespace EmprendeUCR.IntegrationTests.EmprendeUCR
             var sp = services.BuildServiceProvider();
             var configuration = sp.GetRequiredService<IConfiguration>();
 
-            services.AddDbContext<OrderDbContext>(
+            services.AddDbContext<ShoppingCartDbContext2>(
                 options =>
                 {
 
@@ -74,8 +72,8 @@ namespace EmprendeUCR.IntegrationTests.EmprendeUCR
             using (var scope = sp.CreateScope())
             {
                 var scopedServices = scope.ServiceProvider;
-                var db = scopedServices.GetRequiredService<OrderDbContext>();
-                var scdb = scopedServices.GetRequiredService<ShoppingCartDbContext2>();
+                var db = scopedServices.GetRequiredService<ShoppingCartDbContext2>();
+
                 var logger = scopedServices.GetRequiredService<ILogger<ShoppingFactory<TStartup>>>();
 
                 _configuration = configuration;
