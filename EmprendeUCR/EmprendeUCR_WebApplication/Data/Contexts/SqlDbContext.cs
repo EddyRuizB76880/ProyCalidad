@@ -27,9 +27,16 @@ namespace EmprendeUCR_WebApplication.Data.Contexts
         public DbSet<Product_Service> Product_Service { get; set; }
         public DbSet<SinpePaymentMethod> SinpePaymentMethod { get; set; }
         public DbSet<Card> Card { get; set; }
-        public DbSet<Service> Service { get; set; }
+
+
+/*        public DbSet<PaymentInfo> PaymentInfo { get; set; }
+        public DbSet<PhonePaymentInfo> PhonePaymentInfo { get; set; }
+        public DbSet<IBANCardPaymentInfo> IBANCardPaymentInfo { get; set; }
+        public DbSet<IBANSINPEPaymentInfo> IBANSINPEPaymentInfo { get; set; }*/
+
         public DbSet<Offer> Offer { get; set; }
         public DbSet<Is_Offer> Is_Offer { get; set; }
+        public DbSet<Service> Service { get; set; }
         public DbSet<ServicePandemic> ServicePandemic { get; set; }
         public DbSet<Likes> Likes { get; set; }
         public DbSet<Client> Client { get; set; }
@@ -39,7 +46,11 @@ namespace EmprendeUCR_WebApplication.Data.Contexts
         public DbSet<Shopping_Cart_Has> Shopping_Cart_Has { get; set; }
         public DbSet<Product_Photos> Product_Photos { get; set; }
         public DbSet<Service_Photos> Service_Photos { get; set; }
-        public DbSet<Report> Report { get; set; }
+        public DbSet<HasSupplies> HasSupplies { get; set; }
+        public DbSet<Has_Status> Has_Status { get; set; }
+        public DbSet<Status> Status { get; set; }
+        public DbSet<Personalized_Status> Personalized_Status { get; set; }
+        public DbSet<Report> Report { get; set; }  
         public DbSet<Keywords> Keyword { get; set; }
         public DbSet<Has_Keyword> Has_Keyword { get; set; }
         public DbSet<Has_Keyword_Service> Has_Keyword_Service { get; set; }

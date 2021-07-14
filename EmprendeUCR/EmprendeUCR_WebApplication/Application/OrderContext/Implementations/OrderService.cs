@@ -40,6 +40,18 @@ namespace EmprendeUCR_WebApplication.Application.OrderContext.Implementations
         }
 
         /*
+           Summary: Method to get the orders of an entrepreneur related to an email.
+           Parameters: Method gets string email related to an user.
+           Return: An order asociated to an email
+           Exceptions: There aren't known exceptions
+         */
+        public async Task<List<Order>> GetEntrepreneurFinalizedOrders(string email)
+        {
+            return await _orderRepository.GetEntreprenurFinalizedOrders(email);
+        }
+
+        /*
+          Summary: Method to get the finalized orders of a client related to an email.
           Summary: Method to get the accepted orders of an entrepreneur related
                    to an email.
           Parameters: Method gets string email related to an user.
@@ -54,7 +66,7 @@ namespace EmprendeUCR_WebApplication.Application.OrderContext.Implementations
         /*
           Summary: Method to get the orders of a client related to an email.
           Parameters: Method gets string email related to an user.
-          Return: Returns a list of orders related to an email
+          Return: Returns a list of finalized orders related to an email
           Exceptions: There aren't known exceptions
         */
         public async Task<List<Order>> GetClientOrders(string email)

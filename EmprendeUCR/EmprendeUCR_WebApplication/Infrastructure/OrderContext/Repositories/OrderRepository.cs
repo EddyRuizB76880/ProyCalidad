@@ -207,5 +207,25 @@ namespace EmprendeUCR_WebApplication.Infrastructure.OrderContext.Repositories
             }
             return color;
         }
+
+
+        /* Summary: Retrieves all the orders, of a specific entrepreneur, that
+         * are in the state of "Finalizado".
+         * Parameters: Receives the entrepreneur's email.
+         * Return: A list of orders.
+         * Exceptions: There aren't known exceptions.
+        */
+        public async Task<List<Order>> GetEntreprenurFinalizedOrders(string email)
+        {
+            List<Order> orders = await _dbContext.Orders
+           .Where(order => order.EntrepreneurEmail == email && order.State == "Terminado")
+           .Include(order => order.Organized)
+                .ThenInclude(Organized => Organized.productService)
+            .Include(order => order.Organized)
+                .ThenInclude(Organized => Organized.status)
+           .ToListAsync();
+
+            return orders;
+        }
     }
 }

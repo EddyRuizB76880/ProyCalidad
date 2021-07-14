@@ -387,10 +387,32 @@ input[type="number"]::-webkit-inner-spin-button {
     margin: 0;
 }
 
+.valign-center {
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+}
+
+.align-left {
+    float: left;
+    margin-left: 10px;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+}
+
+.align-right {
+    float: right;
+    margin-left: 10px;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+}
+
 .hover-light-grey:hover {
     background: var(--light-grey);
 }
 
-.zIndex-primary{
+.zIndex-primary {
     z-index: 100;
 }

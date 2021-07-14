@@ -1,4 +1,6 @@
-﻿@page "/AddOffer"
+﻿@page "/EditOffer"
+@page "/EditOffer/{Offer_ID}"
+
 @using EmprendeUCR_WebApplication.Data.Services
 @using EmprendeUCR_WebApplication.Data.Entities
 @using System
@@ -11,7 +13,7 @@
 @inject Is_OfferService Is_OfferService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
-<h3>Crear Oferta</h3>
+<h3>Editar Oferta</h3>
 <body>
 
     <!-- Mis productos -->
@@ -158,14 +160,14 @@
                         <div class="form-group">
                             <label for="Initial_Date" class="control-label">Fecha de inicio de oferta</label>
                             <ValidationMessage For=@(() => offer.Initial_Date) />
-                            <input type="date" min="@DateTime.Now" class="form-control w-20" @bind="@initialDateInput" required />
+                            <input type="date" min="@DateTime.Today" class="form-control w-20" @bind="@initialDateInput" required />
                         </div>
 
                         <!--Form to let the user choose the expire date for the offer (by default will be todays date)-->
                         <div class="col px-mb-3">
                             <label for="Expire_Date" class="control-label">Fecha de fin de oferta</label>
                             <ValidationMessage For=@(() => offer.Expire_Date) />
-                            <input type="date" min="@DateTime.Now" class="form-control w-20" @bind="@expireDateInput" required />
+                            <input type="date" min="@DateTime.Today" class="form-control w-20" @bind="@expireDateInput" required />
                         </div>
 
                         <!--Form to let the user choose the description of the offer-->
@@ -188,7 +190,7 @@
                         </div>
 
                         <!--Check if the data provided by the user is ok, if yes then displays the button to save the offer-->
-                        <input type="submit" class="btn btn-primary" value="Guardar oferta" />
+                        <input type="submit" class="btn btn-primary" value="Guardar cambios" />
 
 
                     </div>
@@ -200,6 +202,10 @@
         <h4 id="error" hidden="@hideError">Informacion incompleta.</h4>
     </div>
 </body>
+@functions{
+    [Parameter]
+    public string Offer_ID { get; set; }
+}
 
 @code
 {
@@ -228,10 +234,10 @@
     // The sum of the total price of the products and services added to the offer
     int totalPriceFromListedProductsAndServicesInOffer = 0;
     // The initial date of the offer (by default: today)
-    System.DateTime FirstinitialDateInput = DateTime.Now;
-    System.DateTime initialDateInput = DateTime.Now;
+    System.DateTime FirstinitialDateInput = DateTime.Today;
+    System.DateTime initialDateInput = DateTime.Today;
     // The expire date of the offer (by default: today)
-    System.DateTime expireDateInput = DateTime.Now;
+    System.DateTime expireDateInput = DateTime.Today;
     // Stores the email of the user logged
     String userLogged = "";
 
@@ -241,10 +247,10 @@
         editContext = new(offer);
         editContext.OnValidationRequested += HandleValidationRequested;
         messageStore = new(editContext);
-
-        entrepreneurs = await EntrepreneurService.GetAsync();
+        offer = await OfferService.GetOfferAsync(Int32.Parse( Offer_ID));
         userLogged = await sessionStorage.GetItemAsync<string>("Email");
         await loadAllProducts(userLogged);
+        loadAddedProductsAndServices(offer);
     }
 
     private void HandleValidationRequested(object sender,
@@ -362,15 +368,16 @@
     {
         offer.Initial_Date = initialDateInput;
         offer.Expire_Date = expireDateInput;
-
-        int idToInsert = await OfferService.InsertOfferAsync(offer);
+        await OfferService.UpdateOfferAsync(offer);
+        List<Is_Offer> oldIs_offers = OfferService.GetAllIs_OfferRelatedToOfferNOTAsync(offer);
+        await Is_OfferService.DeleteIs_OfferRelatedToOfferAsync(oldIs_offers);
         IList<Is_Offer> Is_offerList = new List<Is_Offer>();
         int aux_cont = 0;
         // Make is_offer products
         foreach (var product in _addedProducts)
         {
             Is_Offer is_offer_toInsert = new Is_Offer();
-            is_offer_toInsert.Offer_ID = idToInsert;
+            is_offer_toInsert.Offer_ID = offer.Offer_ID;
             is_offer_toInsert.Code_ID = product.Code_ID;
             is_offer_toInsert.Category_ID = product.Category_ID;
             is_offer_toInsert.User_Email = product.Entrepreneur_Email;
@@ -382,7 +389,7 @@
         foreach (var service in _addedServices)
         {
             Is_Offer is_offer_toInsert = new Is_Offer();
-            is_offer_toInsert.Offer_ID = idToInsert;
+            is_offer_toInsert.Offer_ID = offer.Offer_ID;
             is_offer_toInsert.Code_ID = service.Code_ID;
             is_offer_toInsert.Category_ID = service.Category_ID;
             is_offer_toInsert.User_Email = service.Entrepreneur_Email;
@@ -465,4 +472,29 @@
         _productsServices = await Product_ServiceService.GetProductsServicesEntrepreneurAsync(email);
     }
 
+    public void loadAddedProductsAndServices(Offer offer)
+    {
+        var is_OffersFromTheOffer = OfferService.GetAllIs_OfferRelatedToOfferNOTAsync(offer);
+        foreach (var is_offer in is_OffersFromTheOffer)
+        {
+            Product product = Is_OfferService.GetProductRelated(is_offer);
+            if (product is not null)
+            {
+                for (int amount = 0; amount < is_offer.Amount; amount++)
+                {
+                    _addedProducts.Add(product);
+                }
+
+            }
+            else
+            {
+                Service service = Is_OfferService.GetServiceRelated(is_offer);
+                for (int amount = 0; amount < is_offer.Amount; amount++)
+                {
+                    _addedServices.Add(service);
+                }
+            }
+        }
+    }
 }
+
