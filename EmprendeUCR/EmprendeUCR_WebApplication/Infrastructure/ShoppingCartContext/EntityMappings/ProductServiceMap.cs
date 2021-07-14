@@ -43,6 +43,7 @@ namespace EmprendeUCR_WebApplication.Infrastructure.ShoppingCartContext.EntityMa
             builder.HasIndex(t => new { t.CodeId, t.EntrepreneurEmail, t.CategoryId })
                 .IsUnique();
 
+            builder.Ignore(e => e.ProductHasStatus);
         }
     }
 }

@@ -29,6 +29,12 @@ namespace EmprendeUCR_WebApplication.Data.Services
         {
             return _context.Product_Photos.ToList();
         }
+
+        public List<Product_Photos> loadPhotosByID(int Code_ID)
+        { 
+            return _context.Product_Photos.Where(p => p.Code_ID == Code_ID).ToList();
+        }
+
         public string convertImageDisplay(byte[] image)
         {
             if (image != null)
@@ -40,6 +46,10 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return "";
         }
         
+        public Product_Photos loadProductPhoto(int productID)
+        {
+            return _context.Product_Photos.FirstOrDefault(photo => String.Equals(photo.Code_ID, productID));
+        }
 
     }
 }

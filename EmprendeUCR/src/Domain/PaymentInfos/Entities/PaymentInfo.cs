@@ -1,12 +1,24 @@
-﻿using EmprendeUCR.Domain.Core.Entities;
-using EmprendeUCR.Domain.Core.ValueObjects;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace EmprendeUCR.Domain.PaymentInfos.Entities
 {
-    public class PaymentInfo
+    public partial class PaymentInfo
     {
-        public int ID { get; }
+        [Key]
+        public int ID { get; private set; }
 
+        public PaymentInfo(int id)
+        {
+            ID = id; 
+        }
+        public PaymentInfo()
+        {
+            ID = 0;
+        }
+
+        private readonly List<HasPaymentInfo> _hasPaymentInfoList;
+        public IReadOnlyCollection<HasPaymentInfo> HasPaymentInfoList;
     }
 }
 

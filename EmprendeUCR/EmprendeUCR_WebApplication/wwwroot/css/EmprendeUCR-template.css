@@ -52,6 +52,36 @@ ul, p, span {
     color: red;
 }
 
+/* Style rules for font's yellow color. */
+.ft-red {
+    color: yellow;
+}
+
+/* Style rules for font's soft green color. */
+.ft-softGreen {
+    color: GreenYellow;
+}
+
+/* Style rules for font's medium intense green color. */
+.ft-medIntenseGreen {
+    color: DarkGreen;
+}
+
+/* Style rules for font's intense green color. */
+.ft-intenseGreen {
+    color: Green;
+}
+
+/* Style rules for font's intense green color. */
+.ft-lightMediumGreen {
+    color: LightGreen;
+}
+
+/* Style rules for font's intense green color. */
+.ft-finishedGreen {
+    color: OliveDrab;
+}
+
 /* Style rules for background's blue color. */
 .bg-blue {
     background: var(--blue-color);
@@ -229,10 +259,13 @@ ul, p, span {
 }
 
 /* Style rule for object's width. The higher the px number, the wider */
+.width-300 {
+    width: 300px;
+}
+/* Style rule for object's width. The higher the px number, the wider */
 .width-400 {
     width: 400px;
 }
-
 /* Style rule for object's width. The higher the px number, the wider */
 .height-650 {
     height: 650px;
@@ -354,10 +387,32 @@ input[type="number"]::-webkit-inner-spin-button {
     margin: 0;
 }
 
+.valign-center {
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+}
+
+.align-left {
+    float: left;
+    margin-left: 10px;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+}
+
+.align-right {
+    float: right;
+    margin-left: 10px;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+}
+
 .hover-light-grey:hover {
     background: var(--light-grey);
 }
 
-.zIndex-primary{
+.zIndex-primary {
     z-index: 100;
 }

@@ -1,4 +1,5 @@
-<Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="@true">
+@using EmprendeUCR.Presentation.Pages.PaymentInfos.Card
+<Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="@true" AdditionalAssemblies="new[] {typeof(CardPaymentInfoEntrepreneur).Assembly}">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
     </Found>

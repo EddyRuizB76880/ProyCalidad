@@ -12,17 +12,29 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Content Remove="Pages\ProductsSearch2.razor" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Pages\ProductsSearch2.razor.css" />
+	  <None Remove="seed_Notification.sql" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
+		<PackageReference Include="Blazored.FluentValidation" Version="2.0.1" />
 		<PackageReference Include="Blazored.SessionStorage" Version="2.1.0" />
 		<PackageReference Include="BlazorInputFile" Version="0.2.0" />
 		<PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
 		<PackageReference Include="Blazored.SessionStorage" Version="2.1.0" />
 		<PackageReference Include="BlazorInputFile" Version="0.2.0" />
 		<PackageReference Include="BlazorMaterialIcons" Version="0.0.1" />
+		<PackageReference Include="bootstrap" Version="5.0.2" />
 		<PackageReference Include="CSharpFunctionalExtensions" Version="2.16.0" />
 		<PackageReference Include="Dapper" Version="2.0.90" />
 		<PackageReference Include="LanguageExt.Core" Version="3.4.15" />
 		<PackageReference Include="Dapper" Version="2.0.90" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.DataAnnotations.Validation" Version="3.2.0-preview2.20160.5" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.6" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.6" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.6">
@@ -49,6 +61,7 @@
 	<ItemGroup>
 		<PackageReference Include="EntityFramework" Version="6.4.4" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.7" />
+		<PackageReference Include="SqlTableDependency" Version="8.5.8" />
 		<PackageReference Include="Syncfusion.Blazor.Cards" Version="19.1.0.69" />
 		<PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
 	</ItemGroup>
@@ -63,8 +76,10 @@
 	<ItemGroup>
 		<PackageReference Include="EASendMail" Version="7.7.0.9" />
 		<PackageReference Include="MailKit" Version="2.13.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.7" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.7">
+		<PackageReference Include="MailSystem.Net-trunk" Version="2.1.41" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.6" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.6" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.6">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
@@ -76,7 +91,6 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Syncfusion.Blazor.TreeGrid" Version="19.1.0.69" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -95,6 +109,16 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0-preview.5.21301.5" />
   </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="Infrastructure\NotificationContext\Repositories\AdminRepositories\" />
+  </ItemGroup>
+
+	<ItemGroup>
+      <Content Include="*.sql" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
 
 </Project>

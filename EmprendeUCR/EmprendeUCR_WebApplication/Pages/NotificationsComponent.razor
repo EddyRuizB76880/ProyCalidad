@@ -1,21 +1,25 @@
 ﻿@using Syncfusion.Blazor.DropDowns
-
-<div class="position-absolute bg-white border-silver mt-3">
-
-    @* if to select the kind of notification depending on the user type. *@
-    @if (myType == 1)
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@using EmprendeUCR_WebApplication.Application.NotificationContext
+@using EmprendeUCR_WebApplication.Domain.Core.CoreEntities
+@using EmprendeUCR_WebApplication.Domain.NotificationContext;
+@using EmprendeUCR_WebApplication.Data.Entities.ContextShop
+@inject INotificationService NotificationService;
+@using Newtonsoft.Json;
+@inject NavigationManager NavigationManager;
+<div class="position-absolute bg-white border-silver mt-3" style="right: 100px">
+    @if (componentLoaded)
     {
-        var notif = NotificationsList[0];
-        <div class="d-flex px-4 py-3 border-silver hover-light-grey">
-            <a href="@notif.link" @onclick="show_notifications" class="">@notif.summary</a>
-        </div>
-    }
-    else if (myType == 2)
-    {
-        var notif = NotificationsList[1];
-        <div class="d-flex px-4 py-3 border-silver hover-light-grey">
-            <a href="@notif.link" @onclick="show_notifications" class="">@notif.summary</a>
-        </div>
+        @foreach (var notification in user.Notifications)
+        {
+            <div class="d-flex px-4 py-3 border-silver hover-light-grey width-300 d-flex justify-content-sm-between align-items-center">
+                <a @onclick="()=>show_notifications(notification)" class="fs-6 overflow-auto user-select-auto">@notification.ToString()</a>
+                <span class="material-icons text-@notification.color fs-5">
+                    circle
+                </span>
+            </div>
+        }
+
     }
 
 </div>
@@ -23,35 +27,38 @@
 
 @code {
 
-    // int variable to check what kind of user is logged in.
-    [Parameter]
-    public int myType { get; set; }
 
-    // Class Notification to implement an object notification containing both a summary and a link to it.
-    public class Notifications
-    {
-        public string summary { get; set; }
-        public string link { get; set; }
-    }
+    private bool componentLoaded = false;
+    int myType;
+    string color = "danger";
+    private UserNotification user;
 
     // EventCallBack to call the ShowNotifications method on the NavMenu.
     [Parameter]
     public EventCallback<int> ShowNotifications { get; set; }
 
-    // List of notifications to be displayed on the view depending on the user type.
-    private List<Notifications> NotificationsList = new List<Notifications>() {
-        new Notifications(){ summary= "Pedidos enviados", link= "/ClientRequest" },
-        new Notifications(){ summary= "Pedidos recibidos", link= "/OrderAcceptance" },
-    };
 
     /*
       Summary: Method to call the ShowNotification method on the navigation menu.
+     alerts the nav menu to hide the notifications component 
       Parameters: Method does not recieve parameters
       Return: Nothing
       Exceptions: There aren't known exceptions
     */
-    private async Task show_notifications()
+    private async Task show_notifications(Notification notification)
     {
         await ShowNotifications.InvokeAsync();
+        NavigationManager.NavigateTo(notification.url, forceLoad: true);
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        string json = await sessionStorage.GetItemAsync<string>("UserNotification");
+        user = JsonConvert.DeserializeObject<UserNotification>(json);
+        NotificationService.GetNotifications(user);
+        componentLoaded = true;
+
+        StateHasChanged();
     }
 }

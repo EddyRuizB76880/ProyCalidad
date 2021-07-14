@@ -17,8 +17,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using EmprendeUCR_WebApplication.Data.Services.Categories;
 using EmprendeUCR_WebApplication.Data.Services.Reports;
+using EmprendeUCR_WebApplication.Data.Services.Keyword;
 using Syncfusion.Blazor;
-using EmprendeUCR_WebApplication.Data.Services.PaymentMethods;
 using EmprendeUCR.Application;
 using EmprendeUCR.Infrastructure;
 using Blazored.SessionStorage;
@@ -36,9 +36,33 @@ using EmprendeUCR_WebApplication.Application.OrderContext;
 using EmprendeUCR_WebApplication.Infrastructure.OrderContext;
 using EmprendeUCR_WebApplication.Infrastructure.OrderContext.Repositories;
 
+using EmprendeUCR.Application.LoginContext;
+using EmprendeUCR.Infrastructure.LoginContext;
+using EmprendeUCR.Domain.LoginContext;
+using EmprendeUCR.Domain.LoginContext.Repositories;
+using EmprendeUCR.Infrastructure.LoginContext.Repositories;
+using EmprendeUCR.Application.LoginContext.Implementations;
+using EmprendeUCR_WebApplication.Application.NotificationContext.Implementations;
+using EmprendeUCR_WebApplication.Application.NotificationContext;
+using EmprendeUCR_WebApplication.Infrastructure.NotificationContext;
+using EmprendeUCR_WebApplication.Infrastructure.NotificationContext.Repositories.Handlers;
 
+using EmprendeUCR.Infrastructure.ProfileContext;
+using EmprendeUCR.Domain.ProfileContext.Repositories;
+using EmprendeUCR.Infrastructure.ProfileContext.Repositories;
 
-
+using EmprendeUCR.Domain.HomePageClientContext.Repositories;
+using EmprendeUCR.Infrastructure.HomePageClientContext;
+using EmprendeUCR.Infrastructure.HomePageClientContext.Repositories;
+using EmprendeUCR.Domain.RegisterContext.Repositories;
+using EmprendeUCR.Infrastructure.RegisterContext.Repositories;
+using EmprendeUCR.Infrastructure.RegisterContext;
+using EmprendeUCR.Domain.ProductsSearchClientContext.Repositories;
+using EmprendeUCR.Infrastructure.ProductsSearchClientContext.Repositories;
+using EmprendeUCR.Infrastructure.ProductsSearchClientContext;
+using EmprendeUCR.Domain.ConfirmAdminContext.Repositories;
+using EmprendeUCR.Infrastructure.ConfirmAdminContext.Repositories;
+using EmprendeUCR.Infrastructure.ConfirmAdminContext;
 
 namespace EmprendeUCR_WebApplication
 {
@@ -58,18 +82,81 @@ namespace EmprendeUCR_WebApplication
             services.AddDbContext<ShoppingCartDbContext2>(options =>
             {
                 options.UseSqlServer((Configuration.GetConnectionString("DefaultConnection")));
+                options.EnableSensitiveDataLogging();
             });
               
             services.AddDbContext<SqlServerDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                options.EnableSensitiveDataLogging();
             });
 
             services.AddDbContext<OrderDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                options.EnableSensitiveDataLogging();
             });
 
+
+
+            ////////////CLEAN ARCHITECTURE PANDEMIC PLAN
+            ///REPOSITORIES AND SERVICES
+
+            services.AddTransient<EmprendeUCR.Application.LoginContext.ILoginService, EmprendeUCR.Application.LoginContext.Implementations.LoginService>();
+            services.AddTransient<ILoginRepository, LoginRepository>();
+
+            services.AddTransient<EmprendeUCR.Application.HomePageClientContext.IHomePageClientService, EmprendeUCR.Application.HomePageClientContext.Implementations.HomePageClientService>();
+            services.AddTransient<IHomePageClientRepository, HomePageClientRepository>();
+
+            services.AddTransient<EmprendeUCR.Application.RegisterContext.IRegisterService, EmprendeUCR.Application.RegisterContext.Implementations.RegisterService>();
+            services.AddTransient<IRegisterRepository, RegisterRepository>();
+
+            services.AddTransient<EmprendeUCR.Application.ProductsSearchClientContext.IProductsSearchClientService, EmprendeUCR.Application.ProductsSearchClientContext.Implementations.ProductsSearchClientService>();
+            services.AddTransient<IProductsSearchClientRepository, ProductsSearchClientRepository>();
+
+            services.AddTransient<EmprendeUCR.Application.ProfileContext.IProfileService, EmprendeUCR.Application.ProfileContext.Implementations.ProfileService>();
+            services.AddTransient<IProfileRepository, ProfileRepository>();
+
+            services.AddTransient<EmprendeUCR.Application.ConfirmAdminContext.IConfirmAdminService, EmprendeUCR.Application.ConfirmAdminContext.Implementations.ConfirmAdminService>();
+            services.AddTransient<IConfirmAdminRepository, ConfirmAdminRepository>();
+
+            ///////////////DBCONTEXT PANDEMIC PLAN
+
+            services.AddDbContext<LoginDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            services.AddDbContext<ConfirmAdminDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            services.AddDbContext<HomePageClientDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            services.AddDbContext<RegisterDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            services.AddDbContext<ProductsSearchClientDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            services.AddDbContext<ProfileDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            ////////////////////////////////
+            services.AddDbContext<NotificationDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
             /*Contexto Pandemic*/
             services.AddDbContext<SqlDbContextPandemic>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             /*Contexto General*/
@@ -82,8 +169,6 @@ namespace EmprendeUCR_WebApplication
             services.AddScoped<AddCategoryService>();
             services.AddScoped<DeleteCategoryService>();
             services.AddScoped<EditCategoryService>();
-            services.AddScoped<PaymentMethodService>();
-            services.AddScoped<CardService>();
             services.AddScoped<ProductService>();
             services.AddScoped<EntrepreneurService>();
             services.AddScoped<UserService>();
@@ -101,7 +186,7 @@ namespace EmprendeUCR_WebApplication
             services.AddScoped<Email_ConfirmationService>();
             services.AddScoped<AdministratorService>();
             services.AddScoped<EncrypService>();
-            services.AddScoped<LoginService>();
+            //services.AddScoped<LoginService>();
             services.AddBlazoredSessionStorage();
             services.AddScoped<PhonesService>();
             services.AddScoped<Shopping_CartService>();
@@ -111,6 +196,11 @@ namespace EmprendeUCR_WebApplication
             services.AddScoped<Shopping_Cart_Has_Service_Pandemic>();
 
             services.AddScoped<Serviceservice>();
+
+            services.AddScoped<KeywordService>();
+            services.AddScoped<AddKeywordService>();
+            services.AddScoped<ShowKeywordService>();
+            services.AddScoped<KeywordServiceService>();
 
             services.AddBlazoredSessionStorage();
 
@@ -130,7 +220,7 @@ namespace EmprendeUCR_WebApplication
             services.AddScoped<Email_ConfirmationService>();
             services.AddScoped<AdministratorService>();
             services.AddScoped<EncrypService>();
-            services.AddScoped<LoginService>();
+            //services.AddScoped<LoginServiceA>();
             services.AddBlazoredSessionStorage();
 
             Global.ConnectionString = Configuration.GetConnectionString("SqlConnection");
@@ -141,7 +231,13 @@ namespace EmprendeUCR_WebApplication
             services.AddScoped<ServiceService>();
             services.AddScoped<Product_PhotosService>();
             services.AddScoped<Service_PhotosService>();
+            services.AddScoped<HasSuppliesService>();
+            services.AddScoped<Has_StatusService>();
+            services.AddScoped<OrderService>();
+            services.AddScoped<StatusService>();
+            services.AddScoped<Personalized_StatusService>();
             //services.AddScoped<ServiceService>();
+
 
 
             services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
@@ -157,6 +253,9 @@ namespace EmprendeUCR_WebApplication
 
             services.AddTransient<IOrderRepository, OrderRepository>();
             services.AddTransient<IOrderService, OrderService>();
+
+            services.AddScoped<INotificationRepository, NotificationRepositoryHandler>();
+            services.AddScoped<INotificationService, NotificationService>();
 
         }
 

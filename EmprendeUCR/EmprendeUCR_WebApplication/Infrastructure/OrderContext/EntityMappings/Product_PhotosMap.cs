@@ -50,8 +50,6 @@ namespace EmprendeUCR_WebApplication.Infrastructure.OrderContext.EntityMappings
             builder.HasOne(e => e.product)
                    .WithMany(c => c.Product_Photos)
                    .HasForeignKey(e => new { e.Code_ID, e.Entrepreneur_Email, e.Category_ID });
-
         }
-
     }
 }

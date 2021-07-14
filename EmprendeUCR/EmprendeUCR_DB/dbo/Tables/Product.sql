@@ -13,3 +13,21 @@
 
 
 
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [ix_productos_emprendedor_por_categoria]
+    ON [dbo].[Product]([Category_ID] ASC)
+    INCLUDE([Entrepreneur_Email]);
+
+
+GO
+CREATE NONCLUSTERED INDEX [ix_product_price]
+    ON [dbo].[Product]([Price] ASC, [Product_Name] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [index_Product_Name]
+    ON [dbo].[Product]([Product_Name] ASC);
+

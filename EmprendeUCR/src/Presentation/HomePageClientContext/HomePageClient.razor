@@ -1,0 +1,871 @@
+﻿@page "/"
+@using EmprendeUCR.Domain.Core.CoreEntities
+@using EmprendeUCR.Domain.RegisterContext.Entities
+@using EmprendeUCR.Application.RegisterContext
+@using Microsoft.AspNetCore.WebUtilities
+@using Syncfusion.Blazor.TreeGrid;
+@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.Inputs
+@using EmprendeUCR.Application.HomePageClientContext
+
+@inject IHomePageClientService HomePageClientService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
+
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
+@if (_isLoading)
+{
+    <h3>Cargando...</h3>
+}
+else
+{
+    <div class="padre">
+
+        <div class="izquierdo">
+
+            <div class="flex-buscar">
+                <input @bind="@inputValue" @onkeyup="@EnterKey" class="form-control mr-sm-2" type="search" placeholder="Buscar productos" aria-label="Search" />
+                <button @onclick="buscar" class="btn btn-primary" type="submit">Buscar</button>
+            </div>
+
+            <SfToolbar ID="ToolBar">
+                <ToolbarItems>
+                    <ToolbarItem OnClick="@TreeGrid.ExpandAll" Text="Expandir" TooltipText="Muestra todas categorías"></ToolbarItem>
+                    <ToolbarItem OnClick="@TreeGrid.CollapseAll" Text="Colapsar" TooltipText="Oculta todas las subcategorías"></ToolbarItem>
+                </ToolbarItems>
+            </SfToolbar>
+            <SfTreeGrid ID="TreeGrid" @ref="TreeGrid" AllowSorting="true" AllowRowDragAndDrop="false" DataSource="@_categories" IdMapping="Id" ParentIdMapping="ParentId" AllowSelection="true" TreeColumnIndex="0" EnableCollapseAll="true">
+                <TreeGridEvents TValue="Category" RowDropped="Rowdrop" RowSelected="SelectionHandler"></TreeGridEvents>
+                <TreeGridSortSettings>
+                    <TreeGridSortColumns>
+                        <TreeGridSortColumn Field="Title" Direction="Syncfusion.Blazor.Grids.SortDirection.Ascending"></TreeGridSortColumn>
+                    </TreeGridSortColumns>
+                </TreeGridSortSettings>
+                <TreeGridColumns>
+                    <TreeGridColumn Field="Title" HeaderText="Nombre" Width="100"></TreeGridColumn>
+                </TreeGridColumns>
+            </SfTreeGrid>
+        </div>
+
+        <div class="derecho">
+
+            <h5 class="title">Ofertas</h5>
+            <div class="container my-3">
+                <div id="carousel1" class="carousel slide carousel-dark text-center" data-bs-ride="carousel">
+                    <div class="carousel-inner py-4">
+
+                        @if (_offers.Count() > 0)
+                        {
+                            int productsSize = _offers2.Count();
+
+                            for (int i = 0; i < productsSize; i++)
+                            {
+                                if (i == 0)
+                                {
+                                    <div class="carousel-item active">
+                                        <div class="container">
+                                            <div class="row">
+                                                @for (int j = i; j < i + 3; j++)
+                                                {
+                                                    @if (j < productsSize)
+                                                    {
+                                                        if (_offers2[j].Expire_Date > DateTime.Now)
+                                                        {
+
+
+
+                                                <div class="card border-blue">
+                                                    @if (_isOffer2.Count() > 0)
+                                                    {
+                                                        @if (photosDisplay.FirstOrDefault(p => p.Code_ID == _isOffer2[j].Code_ID) != null)
+                                                        {
+                                                            <img class="imageProduct" src="@HomePageClientService.convertImageDisplay(photosDisplay.FirstOrDefault(p => p.Code_ID == _isOffer2[j].Code_ID).Photos)" />
+
+                                                        }
+                                                        else if (servicePhotos.FirstOrDefault(p => p.Code_ID == _isOffer2[j].Code_ID) != null)
+                                                        {
+                                                            <img class="imageProduct" src="@HomePageClientService.convertImageDisplay(servicePhotos.FirstOrDefault(p => p.Code_ID == _isOffer2[j].Code_ID).Photos)" />
+                                                            
+                                                        }
+                                                        else
+                                                        {
+                                                            <img class="imageProduct" src="/images/notfound.png" />
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <img class="imageProduct" src="/images/notfound.png" />
+                                                    }
+                                                    <pre class="pre">  ₡@_offers2[j].Discount</pre>
+                                                    <p class="card-text">@_offers2[j].Offer_Description</p>
+
+
+                                                    @*
+        @if (@log)
+        {
+            <button class="btn btn-primary botonCompra" @onclick="() => addInCart(n, m, o)">Añadir al carrito</button>
+        }
+        else
+        {
+            <button class="btn btn-primary botonCompra" @onclick="() => addInCart(n, m, o)" disabled>Añadir al carrito</button>
+        }
+                                                    *@
+                                                    <button class="btn btn-primary botonCompra" disabled>Añadir al carrito</button>
+                                                </div>
+                                                            } 
+                                                        }
+                                                    }
+                                                    @{i += 2;}
+                                                </div>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="carousel-item">
+                                        <div class="container">
+                                            <div class="row">
+                                                @for (int j = i; j < i + 3; j++)
+                                                {
+                               
+                                                    @if (j < productsSize)
+                                                    {
+                                                     if (_offers2[j].Expire_Date > DateTime.Now) {
+                                                <div class="card border-blue">
+                                                    @if (_isOffer2.Count() > 0)
+                                                    {
+
+                                                        @if (photosDisplay.FirstOrDefault(p => p.Code_ID == _isOffer2[j].Code_ID) != null)
+                                                        {
+                                                            <img class="imageProduct" src="@HomePageClientService.convertImageDisplay(photosDisplay.FirstOrDefault(p => p.Code_ID == _isOffer2[j].Code_ID).Photos)" />
+                                                        }
+                                                        else if (servicePhotos.FirstOrDefault(p => p.Code_ID == _isOffer2[j].Code_ID) != null)
+                                                        {
+                                                            <img class="imageProduct" src="@HomePageClientService.convertImageDisplay(servicePhotos.FirstOrDefault(p => p.Code_ID == _isOffer2[j].Code_ID).Photos)" />
+                                                            <img class="imageProduct" src="/images/notfound.png" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <img class="imageProduct" src="/images/notfound.png" />
+                                                        }
+
+                                                        }
+                                                    else
+                                                    {
+                                                        <img class="imageProduct" src="/images/notfound.png" />
+
+                                                    }
+                                                    <pre class="pre">  ₡@_offers2[j].Discount</pre>
+                                                    <p class="card-text">@_offers2[j].Offer_Description</p>
+
+
+                                                    @*
+        @if (@log)
+        {
+            <button class="btn btn-primary botonCompra" @onclick="() => addInCart(n, m, o)">Añadir al carrito</button>
+        }
+        else
+        {
+            <button class="btn btn-primary botonCompra" @onclick="() => addInCart(n, m, o)" disabled>Añadir al carrito</button>
+        }
+                                                    *@
+                                                    <button class="btn btn-primary botonCompra" disabled>Añadir al carrito</button>
+                                                </div>
+                                                            }
+                                                        }
+                                                    }
+                                                @{i += 2;}
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        }
+
+                    </div>
+
+                    <div class="d-flex justify-content-center mb-4">
+                        <button class="carousel-control-prev position-relative" type="button" data-bs-target="#carousel1" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next position-relative" type="button" data-bs-target="#carousel1" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <hr>
+
+            <h5 class="title">Productos Recomendados</h5>
+
+            <div class="container my-5">
+                <div id="carousel2" class="carousel slide carousel-dark text-center" data-bs-ride="carousel">
+                    <div class="carousel-inner py-4">
+
+                        @if (_recommendedProducts.Count() > 0)
+                        {
+                            int productsSize = _recommendedProducts.Count();
+
+                            for (int i = 0; i < productsSize; i++)
+                            {
+                                if (i == 0)
+                                {
+                                    <div class="carousel-item active">
+                                        <div class="container">
+                                            <div class="row">
+
+                                                @for (int j = i; j < i + 3; j++)
+                                                {
+                                                    @if (j < productsSize)
+                                                    {
+                                                <div class="card border-blue">
+                                                    @if (photosDisplay.FirstOrDefault(p => p.Code_ID == _recommendedProducts[j].Code_ID) != null)
+                                                    {
+                                                        <img class="imageProduct" src="@HomePageClientService.convertImageDisplay(photosDisplay.FirstOrDefault(p => p.Code_ID == _recommendedProducts[j].Code_ID).Photos)" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <img class="imageProduct" src="/images/notfound.png" />
+                                                    }
+                                                    <p>@_recommendedProducts[j].Product_Name</p>
+                                                    <p>₡@_recommendedProducts[j].Price</p>
+                                                    <p>@_recommendedProducts[j].Product_Description</p>
+                                                   
+                                                    @{ bool stock = true;}
+
+                                                    @foreach (var aviability in _productService)
+                                                    {
+                                                        if (_newProducts[j].Code_ID == aviability.Code_ID)
+                                                        {
+                                                            if (aviability.Availability > 0)
+                                                            {
+                                                                <p>Disponible</p>
+                                                                
+                                                            }
+                                                            else {
+                                                                <p>No Disponible</p>
+                                                                stock = false;
+                                                            }
+
+
+                                                        }
+                                                    }
+
+                                                    @{int n = _recommendedProducts[j].Code_ID;
+                                                        int m = _recommendedProducts[j].Category_ID;
+                                                        string o = _recommendedProducts[j].Entrepreneur_Email;
+                                                    }
+                                                    @if (@log && stock)
+                                                    {
+                                                        <button class="btn btn-primary botonCompra" @onclick="() => addInCart(n, m, o)">Añadir al carrito</button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button class="btn btn-primary botonCompra" @onclick="() => addInCart(n, m, o)" disabled>Añadir al carrito</button>
+                                                    }
+                                                </div>
+                                                    }
+                                                }
+                                                @{i += 2;}
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="carousel-item">
+                                        <div class="container">
+                                            <div class="row">
+
+                                                @for (int j = i; j < i + 3; j++)
+                                                {
+                                                    @if (j < productsSize)
+                                                    {
+                                                <div class="card border-blue">
+                                                    @if (photosDisplay.FirstOrDefault(p => p.Code_ID == _recommendedProducts[j].Code_ID) != null)
+                                                    {
+                                                        <img class="imageProduct" src="@HomePageClientService.convertImageDisplay(photosDisplay.FirstOrDefault(p => p.Code_ID == _recommendedProducts[j].Code_ID).Photos)" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <img class="imageProduct" src="/images/notfound.png" />
+                                                    }
+                                                    <p>@_recommendedProducts[j].Product_Name</p>
+                                                    <p>₡@_recommendedProducts[j].Price</p>
+                                                    <p>@_recommendedProducts[j].Product_Description</p>
+                                                    @{ bool stock = true;}
+                                                    @foreach (var aviability in _productService)
+                                                    {
+                                                        if (_newProducts[j].Code_ID == aviability.Code_ID)
+                                                        {
+                                                            if (aviability.Availability > 0)
+                                                            {
+                                                                <p>Disponible</p>
+
+                                                            }
+                                                            else
+                                                            {
+                                                                <p>No Disponible</p>
+                                                                stock = false;
+                                                            }
+                                                        }
+                                                    }
+
+                                                    @{int n = _recommendedProducts[j].Code_ID;
+                                                        int m = _recommendedProducts[j].Category_ID;
+                                                        string o = _recommendedProducts[j].Entrepreneur_Email;
+                                                    }
+                                                    @if (@log && stock)
+                                                    {
+                                                        <button class="btn btn-primary botonCompra" @onclick="() => addInCart(n, m, o)">Añadir al carrito</button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button class="btn btn-primary botonCompra" @onclick="() => addInCart(n, m, o)" disabled>Añadir al carrito</button>
+                                                    }
+                                                </div>
+                                                    }
+                                                }
+                                                @{i += 2;}
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        }
+
+                    </div>
+
+                    <div class="d-flex justify-content-center mb-4">
+                        <button class="carousel-control-prev position-relative" type="button" data-bs-target="#carousel2" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next position-relative" type="button" data-bs-target="#carousel2" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <hr>
+
+            <h5 class="title">Novedades</h5>
+
+            <div class="container my-5">
+                <div id="carousel3" class="carousel slide carousel-dark text-center" data-bs-ride="carousel">
+                    <div class="carousel-inner py-4">
+
+                        @if (_newProducts.Count() > 0)
+                        {
+                            int productsSize = _newProducts.Count();
+
+                            for (int i = 0; i < productsSize; i++)
+                            {
+                                if (i == 0)
+                                {
+                                    <div class="carousel-item active">
+                                        <div class="container">
+                                            <div class="row">
+
+                                                @for (int j = i; j < i + 3; j++)
+                                                {
+                                                <div class="card border-blue">
+                                                    @if (photosDisplay.FirstOrDefault(p => p.Code_ID == _newProducts[j].Code_ID) != null)
+                                                    {
+                                                        <img class="imageProduct" src="@HomePageClientService.convertImageDisplay(photosDisplay.FirstOrDefault(p => p.Code_ID == _newProducts[j].Code_ID).Photos)" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <img class="imageProduct" src="/images/notfound.png" />
+                                                    }
+                                                    <p>@_newProducts[j].Product_Name</p>
+                                                    <p>₡@_newProducts[j].Price</p>
+                                                    <p>@_newProducts[j].Product_Description</p>
+                                                    @{ bool stock = true;}
+                                                    @foreach (var aviability in _productService)
+                                                    {
+                                                        if (_newProducts[j].Code_ID == aviability.Code_ID)
+                                                        {
+                                                            if (aviability.Availability > 0)
+                                                            {
+                                                                <p>Disponible</p>
+
+                                                            }
+                                                            else
+                                                            {
+                                                                <p>No Disponible</p>
+                                                                stock = false;
+                                                            }
+                                                        }
+                                                    }
+
+                                                    @{int n = _newProducts[j].Code_ID;
+                                                        int m = _newProducts[j].Category_ID;
+                                                        string o = _newProducts[j].Entrepreneur_Email;
+                                                    }
+                                                    @if (@log && stock)
+                                                    {
+                                                        <button class="btn btn-primary botonCompra" @onclick="() => addInCart(n, m, o)">Añadir al carrito</button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button class="btn btn-primary botonCompra" @onclick="() => addInCart(n, m, o)" disabled>Añadir al carrito</button>
+                                                    }
+                                                </div>
+                                                }
+                                                @{i += 2;}
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="carousel-item">
+                                        <div class="container">
+                                            <div class="row">
+
+                                                @for (int j = i; j < i + 3; j++)
+                                                {
+                                                    @if (j < productsSize)
+                                                    {
+                                                <div class="card border-blue">
+                                                    @if (photosDisplay.FirstOrDefault(p => p.Code_ID == _newProducts[j].Code_ID) != null)
+                                                    {
+                                                        <img class="imageProduct" src="@HomePageClientService.convertImageDisplay(photosDisplay.FirstOrDefault(p => p.Code_ID == _newProducts[j].Code_ID).Photos)" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <img class="imageProduct" src="/images/notfound.png" />
+                                                    }
+                                                    <p>@_newProducts[j].Product_Name</p>
+                                                    <p>₡@_newProducts[j].Price</p>
+                                                    <p class="card-text">@_newProducts[j].Product_Description</p>
+                                                    @{ bool stock = true;}
+                                                    @foreach (var aviability in _productService)
+                                                    {
+                                                        if (_newProducts[j].Code_ID == aviability.Code_ID)
+                                                        {
+
+                                                            if (aviability.Availability > 0)
+                                                            {
+                                                                <p>Disponible</p>
+
+                                                            }
+                                                            else
+                                                            {
+                                                                <p>No Disponible</p>
+                                                                stock = false;
+                                                            }
+                                                        }
+                                                    }
+
+                                                    @{int n = _newProducts[j].Code_ID;
+                                                        int m = _newProducts[j].Category_ID;
+                                                        string o = _newProducts[j].Entrepreneur_Email;
+                                                    }
+                                                    @if (@log && stock)
+                                                    {
+                                                        <button class="btn btn-primary botonCompra" @onclick="() => addInCart(n, m, o)">Añadir al carrito</button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button class="btn btn-primary botonCompra" @onclick="() => addInCart(n, m, o)" disabled>Añadir al carrito</button>
+                                                    }
+                                                </div>
+                                                    }
+                                                }
+                                                @{i += 2;}
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        }
+
+                    </div>
+
+                    <div class="d-flex justify-content-center mb-4">
+                        <button class="carousel-control-prev position-relative" type="button" data-bs-target="#carousel3" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next position-relative" type="button" data-bs-target="#carousel3" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <hr>
+
+            <h5 class="title">Otros usuarios han comprado...</h5>
+
+            <div class="container my-5">
+                <div id="carousel4" class="carousel slide carousel-dark text-center" data-bs-ride="carousel">
+                    <div class="carousel-inner py-4">
+
+                        @if (_purchasedProducts.Count() > 0)
+                        {
+                            int productsSize = _purchasedProducts.Count();
+
+                            for (int i = 0; i < productsSize; i++)
+                            {
+                                if (i == 0)
+                                {
+                                    <div class="carousel-item active">
+                                        <div class="container">
+                                            <div class="row">
+
+                                                @for (int j = i; j < i + 3; j++)
+                                                {
+                                                    @if (j < productsSize)
+                                                    {
+                                                        <div class="card border-blue">
+                                                            @if (photosDisplay.FirstOrDefault(p => p.Code_ID == _purchasedProducts[j].Code_ID) != null)
+                                                            {
+                                                                <img class="imageProduct" src="@HomePageClientService.convertImageDisplay(photosDisplay.FirstOrDefault(p => p.Code_ID == _purchasedProducts[j].Code_ID).Photos)" />
+                                                            }
+                                                            else
+                                                            {
+                                                                <img class="imageProduct" src="/images/notfound.png" />
+                                                            }
+                                                            <p>@_purchasedProducts[j].Product_Name</p>
+                                                            <p>₡@_purchasedProducts[j].Price</p>
+                                                            <p>@_purchasedProducts[j].Product_Description</p>
+                                                            @{ bool stock = true;}
+
+                                                            @foreach (var aviability in _productService)
+                                                            {
+                                                                if (_purchasedProducts[j].Code_ID == aviability.Code_ID)
+                                                                {
+
+                                                                    if (aviability.Availability > 0)
+                                                                    {
+                                                                        <p>Disponible</p>
+
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <p>No Disponible</p>
+                                                                        stock = false;
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            @{int n = _purchasedProducts[j].Code_ID;
+                                                                int m = _purchasedProducts[j].Category_ID;
+                                                                string o = _purchasedProducts[j].Entrepreneur_Email;
+                                                            }
+                                                            @if (@log && stock)
+                                                            {
+                                                                <button class="btn btn-primary botonCompra" @onclick="() => addInCart(n, m, o)">Añadir al carrito</button>
+                                                            }
+                                                            else
+                                                            {
+                                                                <button class="btn btn-primary botonCompra" @onclick="() => addInCart(n, m, o)" disabled>Añadir al carrito</button>
+                                                            }
+
+                                                        </div>
+                                                        }
+                                                     }
+                                                    @{i += 2;}
+                                                </div>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="carousel-item">
+                                        <div class="container">
+                                            <div class="row">
+
+                                                @for (int j = i; j < i + 3; j++)
+                                                {
+                                                    @if (j < productsSize)
+                                                    {
+                                                <div class="card border-blue">
+                                                    @if (photosDisplay.FirstOrDefault(p => p.Code_ID == _purchasedProducts[j].Code_ID) != null)
+                                                    {
+                                                        <img class="imageProduct" src="@HomePageClientService.convertImageDisplay(photosDisplay.FirstOrDefault(p => p.Code_ID == _purchasedProducts[j].Code_ID).Photos)" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <img class="imageProduct" src="/images/notfound.png" />
+                                                    }
+                                                    <p>@_purchasedProducts[j].Product_Name</p>
+                                                    <p>₡@_purchasedProducts[j].Price</p>
+                                                    <p>@_purchasedProducts[j].Product_Description</p>
+                                                    @{ bool stock = true;}
+
+                                                    @foreach (var aviability in _productService)
+                                                    {
+                                                        if (_purchasedProducts[j].Code_ID == aviability.Code_ID)
+                                                        {
+
+                                                            if (aviability.Availability > 0)
+                                                            {
+                                                                <p>Disponible</p>
+
+                                                            }
+                                                            else
+                                                            {
+                                                                <p>No Disponible</p>
+                                                                stock = false;
+                                                            }
+                                                        }
+                                                    }
+
+                                                    @{int n = _purchasedProducts[j].Code_ID;
+                                                        int m = _purchasedProducts[j].Category_ID;
+                                                        string o = _purchasedProducts[j].Entrepreneur_Email;
+                                                    }
+                                                    @if (@log && stock)
+                                                    {
+                                                        <button class="btn btn-primary botonCompra" @onclick="() => addInCart(n, m, o)">Añadir al carrito</button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button class="btn btn-primary botonCompra" @onclick="() => addInCart(n, m, o)" disabled>Añadir al carrito</button>
+                                                    }
+
+                                                </div>
+                                                    }
+                                                }
+                                                @{i += 2;}
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        }
+
+                    </div>
+
+                    <div class="d-flex justify-content-center mb-4">
+                        <button class="carousel-control-prev position-relative" type="button" data-bs-target="#carousel4" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next position-relative" type="button" data-bs-target="#carousel4" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+
+@code{
+    //Private Variables
+    private IList<Product> _offerProducts;
+    private IList<Product> _recommendedProducts;
+    private IList<Product> _newProducts;
+    IList<ProductPhotos> photosDisplay;
+
+    IList<Service_Photos> servicePhotos;
+
+    private SfTreeGrid<Category> TreeGrid { get; set; }
+    private IList<Category> _categories;
+    private Category SelectedCategory;
+    private string inputValue;
+    private IList<Offer> _offers = new List<Offer>();
+    private IList<Offer> _offers2 = new List<Offer>();
+    private IList<ProductService> _productService;
+    private IList<Is_Offer> _isOffer = new List<Is_Offer>();
+    private IList<Is_Offer> _isOffer2 = new List<Is_Offer>();
+
+    private IList<Product> _purchasedProducts;
+
+    private bool log = false;
+
+    string email;
+
+    bool _isLoading = true;
+
+    //On Initialized
+    protected override async Task OnInitializedAsync()
+    {
+        email = await sessionStorage.GetItemAsync<string>("Email");
+        if (email == null)
+        {
+            email = "noEmail";
+        }
+        else
+        {
+            log = true;
+        }
+
+        _offerProducts = HomePageClientService.listAllNewOffer();
+        _recommendedProducts = HomePageClientService.listAllNewRecomendedProducts(email);
+        _newProducts = HomePageClientService.listAllNewProducts();
+
+        _purchasedProducts = HomePageClientService.listPurchasedProducts(email);
+
+        photosDisplay = HomePageClientService.listAllProductsPhotos();
+        _offers = await HomePageClientService.GetAllOffersAsync();
+
+        _categories = await HomePageClientService.getAllCategoriesAsync();
+        _productService = await HomePageClientService.GetAllProductsServicesAsync();
+        _isOffer = HomePageClientService.getIs_Offer();
+        servicePhotos = HomePageClientService.getServicePhotos();
+
+        _isLoading = false;
+
+
+        for (int i = 0; i < _offers.Count(); i++)
+        {
+
+            if (_offers[i].Expire_Date > DateTime.Now)
+            {
+                _offers2.Add(_offers[i]);
+
+            }
+
+        }
+
+        for(int m = 0; m < _offers2.Count(); m++)
+        {
+            Console.WriteLine(_offers2[m].Offer_Description);
+        }
+
+
+        /*
+        for (int j = 0; j < _offers2.Count(); j++)
+        {
+            if (_isOffer.FirstOrDefault(p => p.Offer_ID == _offers2[j].Offer_ID) != null)
+            {
+                _isOffer2.Add(_isOffer.FirstOrDefault(p => p.Offer_ID == _offers2[j].Offer_ID));
+            }
+
+
+        }
+        */
+
+
+        for (int j = 0; j < _offers2.Count(); j++)
+        {
+            for(int k =0;k < _isOffer.Count(); k++)
+            {
+                if (_offers2[j].Offer_ID == _isOffer[k].Offer_ID)
+                {
+                    _isOffer2.Add(_isOffer[k]);
+
+                }
+            }
+
+
+        }
+
+
+    }
+
+    //RowDrop
+    private void Rowdrop(Syncfusion.Blazor.Grids.RowDragEventArgs<Category> args)
+    {
+        HomePageClientService.Rowdrop(args, this.TreeGrid);
+    }
+
+    //SelectionHandler
+    public async Task SelectionHandler(Syncfusion.Blazor.Grids.RowSelectEventArgs<Category> args)
+    {
+        var SelectedCategories = await this.TreeGrid.GetSelectedRecords();
+        if (SelectedCategories.Count() == 0)
+        {
+            SelectedCategory = null;
+        }
+        else
+        {
+            SelectedCategory = SelectedCategories.First();
+            if (HomePageClientService.verifyChildCategory(SelectedCategory.Id))
+            {
+                string categorySearch = "_categoryID = " + SelectedCategory.Id;
+                NavigationManager.NavigateTo($"/ProductsSearch/{categorySearch}", true);
+            }
+        }
+    }
+
+
+    private void buscar()
+    {
+        int emptyCharacters = 0;
+
+        if (!string.IsNullOrEmpty(inputValue))
+        {
+            for (int i = 0; i < inputValue.Length; i++)
+            {
+                if (inputValue.ElementAt(i).Equals(' '))
+                {
+                    emptyCharacters++;
+                }
+            }
+
+            if (emptyCharacters != inputValue.Length)
+            {
+                NavigationManager.NavigateTo($"/ProductsSearch/{inputValue}", true);
+            }
+        }
+
+    }
+
+    public void EnterKey(KeyboardEventArgs e)
+    {
+        int emptyCharacters = 0;
+
+        if ((e.Code == "Enter" || e.Code == "NumpadEnter") && !string.IsNullOrEmpty(inputValue))
+        {
+            for (int i = 0; i < inputValue.Length; i++)
+            {
+                if (inputValue.ElementAt(i).Equals(' '))
+                {
+                    emptyCharacters++;
+                }
+            }
+
+            if (emptyCharacters != inputValue.Length)
+            {
+                NavigationManager.NavigateTo($"/ProductsSearch/{inputValue}", true);
+            }
+        }
+    }
+
+    private async Task addInCart(int productID, int categoryID, string entrepreneurEmail)
+    {
+        bool productExist = await HomePageClientService.searchProductById(email, productID);
+        if (productExist == false)
+        {
+            ShoppingCartHas product = new ShoppingCartHas
+            {
+                Email = email,
+                Code_ID = productID,
+                Entrepreneur_Email = entrepreneurEmail,
+                Category_ID = categoryID
+            };
+
+            await HomePageClientService.addProductShoppingCart(product);
+
+            await JsRuntime.InvokeVoidAsync("alerta", "PRODUCTO AGREGADO AL CARRITO");
+
+        }
+        else
+        {
+            await JsRuntime.InvokeVoidAsync("alerta", "Producto ya se encuentra en el carrito");
+        }
+
+    }
+
+}

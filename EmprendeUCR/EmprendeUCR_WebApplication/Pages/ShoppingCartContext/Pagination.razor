@@ -50,7 +50,7 @@
     private void CreatePaginationLinks()
     {
         _links = new List<PagingLink>();
-        _links.Add(new PagingLink(pagingData.CurrentPage - 1, pagingData.HasPrevious, "Previous"));
+        _links.Add(new PagingLink(pagingData.CurrentPage - 1, pagingData.HasPrevious, "Anterior"));
         for (int i = 1; i <= pagingData.TotalPages; i++)
         {
             if (i >= pagingData.CurrentPage - Spread && i <= pagingData.CurrentPage + Spread)
@@ -58,7 +58,7 @@
                 _links.Add(new PagingLink(i, true, i.ToString()) { Active = pagingData.CurrentPage == i });
             }
         }
-        _links.Add(new PagingLink(pagingData.CurrentPage + 1, pagingData.HasNext, "Next"));
+        _links.Add(new PagingLink(pagingData.CurrentPage + 1, pagingData.HasNext, "Siguiente"));
     }
 
     /*
