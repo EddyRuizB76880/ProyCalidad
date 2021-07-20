@@ -11,8 +11,11 @@ namespace EmprendeUCR.UnitTests.Domain
         public void testTypeOffer()
         {
 
-            // Actividad asignada 6
-            // Se mockean algunos productos y objetos de ofertas, y se prueban algunos metodos sobre esta clase
+            /*
+              PIIB12021-467 on PIIB12021-343 Modify offers with the allies
+              Driver: Rafael Porras
+              Copilot: Andres Chaves
+            */
 
             // test products
             Product product1 = new();
@@ -62,6 +65,32 @@ namespace EmprendeUCR.UnitTests.Domain
 
             Assert.True(offer1.isTypeOfferCombo(relatedIs_Offers));
             Assert.False(offer2.isTypeOfferCombo(relatedIs_Offers2));
+        }
+        /*
+         PIIB12021-467 on PIIB12021-343 Modify offers with the allies
+         Driver: Rafael Porras
+         Copilot: Andres Chaves
+         */
+        [Fact]
+        public void testOffersDates()
+        {
+            // test offers
+            Offer offer1 = new();
+            offer1.Initial_Date = DateTime.Today;
+            offer1.Expire_Date = DateTime.Parse("2998-06-25");
+            // Initial date <= expire date
+            Offer offer2 = new();
+            offer2.Initial_Date = DateTime.Now;
+            offer2.Expire_Date = DateTime.Parse("2998-06-25");
+            // expire date > Today
+            Offer offer3 = new();
+            offer3.Initial_Date = DateTime.Today;
+            offer3.Expire_Date = DateTime.Parse("1998-06-25");
+
+            Assert.True(offer1.isValidDate(offer1));
+            Assert.True(offer2.isValidDate(offer2));
+            Assert.False(offer3.isValidDate(offer2));
+
         }
     }
 }
