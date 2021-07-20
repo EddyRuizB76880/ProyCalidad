@@ -17,5 +17,12 @@ namespace EmprendeUCR_WebApplication.Data.Entities
         public string Offer_Description { get; set; }
         [Required]
         public int Discount { get; set; }
+
+        public bool isTypeOfferCombo(List<Is_Offer> relatedIs_Offers)
+        {
+            // True = Combo
+            // False = descuento
+            return relatedIs_Offers.Count > 1;
+        }
     }
 }
