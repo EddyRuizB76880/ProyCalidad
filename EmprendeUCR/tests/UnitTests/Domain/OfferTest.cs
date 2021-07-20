@@ -92,5 +92,37 @@ namespace EmprendeUCR.UnitTests.Domain
             Assert.False(offer3.isValidDate(offer2));
 
         }
+        [Fact]
+
+        public void testOffersDiscount()
+        {
+            // Discount must be greater than 0
+            Offer offer1 = new();
+            List<Product> productsRelated1 = new List<Product>();
+            List<Service> servicesRelated1 = new List<Service>();
+            offer1.Discount = 3;
+            Assert.False(offer1.isValidDiscount(offer1, productsRelated1, servicesRelated1));
+
+            // Sum must be less than discount
+            Product product1 = new();
+            Product product2 = new();
+            Product product3 = new();
+            product1.Code_ID = 1;
+            product1.Product_Name = "Cafe";
+            product1.Price = 800;
+            productsRelated1.Add(product1);
+            product2.Code_ID = 2;
+            product2.Product_Name = "Queque";
+            product2.Price = 500;
+            productsRelated1.Add(product2);
+            product3.Code_ID = 3;
+            product3.Product_Name = "Empanada";
+            product3.Price = 700;
+            productsRelated1.Add(product3);
+
+            Offer offer2 = new();
+            offer2.Discount = 2100;
+            Assert.False(offer2.isValidDiscount(offer2, productsRelated1, servicesRelated1));
+        }
     }
 }
