@@ -13,7 +13,11 @@
 
 <h3>Crear Oferta</h3>
 <body>
-
+    <!--Mostrar Productos y servicios de aliados-->
+    <div class="form-check form-switch m-lg-3">
+        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" unchecked @onchange="@displayAlliesProductsAndServices">
+        <label class="form-check-label" for="flexSwitchCheckDefault">Mostrar productos y servicios de aliados </label>
+    </div>
     <!-- Mis productos -->
 
     <section class="w-25 float_left border-1 shadow">
@@ -80,6 +84,72 @@
             </tbody>
         </table>
 
+
+        @if (showAlliesProductAndServices)
+        {
+            <h4 class="bg-blue text-center "> Productos de aliados </h4>
+            <table class="m-lg-2">
+                <thead>
+                    <!--Colmun names tag (Nombre, Precio)-->
+                    <tr>
+                        <th width="200" valign="middle" align="center">Nombre</th>
+                        <th width="150" valign="middle" align="center">Precio</th>
+                    </tr>
+                </thead>
+                <!--If there are services related to the current entrepreneur, display them to the user-->
+                <tbody>
+                    @if (_products?.Count > 0)
+                    {
+                        @foreach (var currentProduct in _products)
+                        {
+                            <tr>
+                                <!--Product name value-->
+                                <td width="200" valign="middle" align="left">@currentProduct.Product_Name</td>
+                                <!--Product price value-->
+                                <td width="150" valign="middle" align="left">@currentProduct.Price</td>
+                                <!--Add to the current offer button-->
+                                <td>
+                                    <button class="w-150 btn-primary m-2 material-icons align-right" type="button" @onclick="() => addProductToOffer(currentProduct.Code_ID)">add</button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table><br />
+
+
+            <!-- Mis servicios-->
+
+            <h4 class="bg-blue text-center"> Servicios de aliados </h4>
+            <table class="m-lg-2">
+                <!--Colmun names tag (Nombre, Precio por hora)-->
+                <thead>
+                    <tr>
+                        <th width="200" valign="middle" align="center">Nombre</th>
+                        <th width="100" valign="middle" align="center">Precio por hora</th>
+                    </tr>
+                </thead>
+                <!--If there are services related to the current entrepreneur, display them to the user-->
+                <tbody>
+                    @if (_service?.Count > 0)
+                    {
+                        @foreach (var currentService in _service)
+                        {
+                            <tr>
+                                <!--Service name value-->
+                                <td width="200" valign="middle" align="left">@currentService.Service_Name</td>
+                                <!--Service Price per hour value-->
+                                <td width="150" valign="middle" align="left">@currentService.Price_per_hour</td>
+                                <!--Add to the current offer button-->
+                                <td>
+                                    <button class="w-150 btn-primary m-2 material-icons align-right " type="button" @onclick="() => addServiceToOffer(currentService.Code_ID)">add</button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        }
         <div class="row">
             <div class="form-group">
                 <input type="button" class="btn btn-primary text-center m-2" @onclick="@Cancel" value="Volver" />
@@ -225,6 +295,8 @@
     bool hideError = true;
     // Variable used to display or not the confirmation button
     bool showConfirmation = false;
+    // Variable used to display or not the product or services of the allies
+    bool showAlliesProductAndServices = false;
     // The sum of the total price of the products and services added to the offer
     int totalPriceFromListedProductsAndServicesInOffer = 0;
     // The initial date of the offer (by default: today)
@@ -235,6 +307,11 @@
     // Stores the email of the user logged
     String userLogged = "";
 
+    // Method to altern the signal to show or not de product and services form the allies
+    public void displayAlliesProductsAndServices()
+    {
+        showAlliesProductAndServices = !showAlliesProductAndServices;
+    }
 
     protected override async Task OnInitializedAsync()
     {
