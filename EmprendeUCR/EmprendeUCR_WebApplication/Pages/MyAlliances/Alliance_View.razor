@@ -77,7 +77,7 @@ else
                             <!--Acciones de solicitud-->
                             <th scope="row">
                                 <!--Rechazar alianza-->
-                                <button type="button" class="btn btn-danger material-icons-outlined " @onclick="() => deleteAlliance(pendingAlliance)">delete</button>
+                                <button type="button" class="btn btn-danger material-icons-outlined " @onclick="() => deleteAlliance(pendingAlliance, myPendingAlliances)">delete</button>
                                 <!--Si es una solicitud de otro emprendedor, despliega la opcion de aceptar la alianza-->
                                 @if (pendingAlliance.User_Email != userLogged)
                                 {
@@ -103,7 +103,7 @@ else
                             <!-- Estado de solicitud -->
                             <td scope="row" width="200" valign="middle" align="left">Aceptado</td>
                             <!--Borrar alianza-->
-                            <th scope="row"> <button type="button" class="btn btn-danger material-icons-outlined " @onclick="() => deleteAlliance(acceptedAlliances)">delete</button> </th>
+                            <th scope="row"> <button type="button" class="btn btn-danger material-icons-outlined " @onclick="() => deleteAlliance(acceptedAlliances, myAcceptedAlliances)">delete</button> </th>
                         </tr>
                     }
                 }
@@ -123,7 +123,7 @@ else
                             <!-- Estado de solicitud -->
                             <td scope="row" width="200" valign="middle" align="left">Rechazado</td>
                             <!--Borrar alianza-->
-                            <th scope="row"> <button type="button" class="btn btn-danger material-icons-outlined " @onclick="() => deleteAlliance(rejectedAlliance)">delete</button> </th>
+                            <th scope="row"> <button type="button" class="btn btn-danger material-icons-outlined " @onclick="() => deleteAlliance(rejectedAlliance, myRejectedAlliances)">delete</button> </th>
                         </tr>
                     }
                 }
@@ -194,8 +194,9 @@ else
         displayMyRejectedAlliances = !displayMyRejectedAlliances;
     }
 
-    public void deleteAlliance(Alliance alliance)
+    public void deleteAlliance(Alliance alliance, List<Alliance> list)
     {
+        list.Remove(alliance);
         allianceService.delete_Alliace(alliance);
     }
 
