@@ -10,6 +10,7 @@
 @inject UserServicePandemic UserService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject OrderService OrderService
+@inject NavigationManager NavManager
 
 
 <body>
@@ -34,12 +35,12 @@
                 <tbody>
                     @foreach (var user in ReportList.OrderByDescending(r => r.NumOrders))
                     {
-                        <tr>
-                            <th scope="row">@user.NumOrders</th>
-                            <th scope="row">@user.lastOrder</th>
-                            <th scope="row">@user.user.Name</th>
-                            <th scope="row">@user.user.F_Last_Name</th>
-                            <th scope="row">@user.user.S_Last_Name</th>
+                        <tr class='hover-light-grey' @onclick="() => LinktoPage(backPage, user.user.Email.ToString())">
+                            <th scope="row"> @user.NumOrders</th>
+                            <th scope="row"> @user.lastOrder</th>
+                            <th scope="row"> @user.user.Name</th>
+                            <th scope="row"> @user.user.F_Last_Name</th>
+                            <th scope="row"> @user.user.S_Last_Name</th>
                             <th scope="row"> @user.user.Province_Name </th>
                             <th scope="row"> @user.user.Canton_Name </th>
                             <th scope="row"> @user.user.District_Name </th>
@@ -47,11 +48,12 @@
                     }
                 </tbody>
             </table>
-         }else
-            {
-                <h2>No hay clientes relacionados a "@inputValue"</h2>
-            }
         }
+        else
+        {
+            <h2>No hay clientes relacionados a "@inputValue"</h2>
+        }
+    }
     else
     {
         <h2>De momento no tiene clientes, esperamos que tenga clientes pronto :)</h2>
@@ -59,26 +61,28 @@
 </body>
 
 @code {
-    public class my_User {
-        public User user {get;set;}
-        public int NumOrders {get;set;}
-        public DateTime lastOrder {get;set;}
+    public class my_User
+    {
+        public User user { get; set; }
+        public int NumOrders { get; set; }
+        public DateTime lastOrder { get; set; }
     }
     //Email confirmation del emprendedor logeado
     bool ListEmpthy = false;
     string selectedEmail;
+    string backPage = "/MyCustomers";
     List<Order> ordersList = new List<Order>();
     List<Order> NonRepetedCurstomersOrdersLists = new List<Order>();
     List<User> CustomersList = new List<User>();
     List<my_User> ReportList = new List<my_User>();
-    private List<my_User> constReport= new List<my_User>();
+    private List<my_User> constReport = new List<my_User>();
     private string inputValue;
 
     protected override async Task OnInitializedAsync()
     {
         selectedEmail = await sessionStorage.GetItemAsync<string>("Email");
         ordersList = await OrderService.GetEntrepreneurFinalizedOrders(selectedEmail);
-        if(ordersList.Count == 0)
+        if (ordersList.Count == 0)
         {
             ListEmpthy = true;
         }
@@ -90,9 +94,9 @@
 
     private async Task ChargeNonRepetedCustomers()
     {
-        foreach(var order in ordersList)
+        foreach (var order in ordersList)
         {
-            if(ReportList.Where(u => u.user.Email == order.ClientEmail).Count() < 1)
+            if (ReportList.Where(u => u.user.Email == order.ClientEmail).Count() < 1)
             {
                 my_User userToAdd = new my_User();
                 userToAdd.user = await UserService.getUser(order.ClientEmail);
@@ -104,12 +108,12 @@
         constReport = ReportList;
     }
 
-    private  DateTime FindMostRecentDate(string userEmail)
+    private DateTime FindMostRecentDate(string userEmail)
     {
         DateTime DateTimeToReturn = DateTime.MinValue;
         foreach (var order in ordersList)
         {
-            if(order.ClientEmail == userEmail && order.DateAndHourCreation > DateTimeToReturn)
+            if (order.ClientEmail == userEmail && order.DateAndHourCreation > DateTimeToReturn)
             {
                 DateTimeToReturn = order.DateAndHourCreation;
             }
@@ -131,5 +135,9 @@
         }
     }
 
+    void LinktoPage(string backPage, string userEmail)
+    {
+        NavManager.NavigateTo(backPage + "/ViewClient" + "/" + userEmail);
+    }
 }
 
