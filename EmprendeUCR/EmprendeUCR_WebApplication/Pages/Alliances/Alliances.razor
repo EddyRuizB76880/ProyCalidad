@@ -31,16 +31,18 @@ else
         @foreach (var u in users_list)
         {
             <span> @u.entrepreneur.Name @u.entrepreneur.F_Last_Name vende </span>
+         
             @foreach (var c in u.categories)
             {
                 <span> @c.Title</span>
             }
             <br />
         }
-    } else
-                {
-                    <span>No hay sugerencias por el momento. :)</span>
-                }
+    }
+    else
+    {
+        <span>No hay sugerencias por el momento. :)</span>
+    }
 
 
 </body>
