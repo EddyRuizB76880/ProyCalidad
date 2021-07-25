@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using EmprendeUCR_WebApplication.Data;
 using EmprendeUCR_WebApplication.Data.Entities.ContextShop;
 
-namespace EmprendeUCR_WebApplication.Data.Services.Alliance_Service
+namespace EmprendeUCR_WebApplication.Data.Services
 {
     
     public class Alliance_Service: PageModel
@@ -17,9 +17,7 @@ namespace EmprendeUCR_WebApplication.Data.Services.Alliance_Service
 
 
         public Alliance_Service(EmprendeUCR_WebApplication.Data.Contexts.SqlServerDbContext context) {
-
             _context = context;
-
         }
 
 
@@ -39,23 +37,20 @@ namespace EmprendeUCR_WebApplication.Data.Services.Alliance_Service
             return true;
         }
 
-
-
         public void delete_Alliace(Alliance alliance) {
-
             _context.Alliance.Remove(alliance);
             _context.SaveChanges();
-
         }
 
+        public List<Alliance> getAlliancesByEntrepreneurEmail(string email)
+        {
+            return _context.Alliance.Where(otherEntrepreneur => String.Equals(otherEntrepreneur.User_Email, email) || String.Equals(otherEntrepreneur.Ally_User_Email, email)).ToList();
+        }
 
-
-
+        public List<Alliance> getAlliancesByEntrepreneurEmailAndStatus(string email, int status)
+        {
+            return _context.Alliance.Where(otherEntrepreneur => (String.Equals(otherEntrepreneur.User_Email, email) || String.Equals(otherEntrepreneur.Ally_User_Email, email)) && otherEntrepreneur.Alliance_Status == status).ToList();
+        }
 
     }
-
-
-
-
-
 }
