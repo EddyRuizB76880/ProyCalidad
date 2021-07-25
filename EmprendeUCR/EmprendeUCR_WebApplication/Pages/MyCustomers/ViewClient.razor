@@ -10,33 +10,38 @@
 
 @if (!_isLoading)
 {
-    <nav class=" mt-3 navbar navbar-light bg-light">
-        <h3>@myUser.Name @myUser.S_Last_Name</h3>
-    </nav>
+<nav class=" mt-3 navbar navbar-light bg-light">
+    <h3>@myUser.Name @myUser.S_Last_Name</h3>
+</nav>
 
     <div class="flex-container">
         <EditForm Model="@myUser">
-            <div class="principal">
+            <div class="principal row">
+                <!--Image-->
+                <div class="marginElements">
+                    <div class="flexElementsColumns">
+                        @if (myUser.Photo != null)
+                        {
+                            <img src=@imgRef class="userImage" />
+                        }
+                        else
+                        {
+                            <img src="/images/images.png" class="userImage" />
+                        }
+                        <br>
+                        <br>
+                        <br>
 
-                <div class="principalObject">
+                    </div>
+                </div>
+
+                <div class="col-lg-1"> </div>
+
+                <div class="principalObject col-lg-3 ">
 
                     <div class="flexDivEnd">
 
                         <div class="objects">
-
-                            <!--Image-->
-                            <div class="marginElements">
-                                <div class="flexElementsColumns">
-                                    @if (myUser.Photo != null)
-                                    {
-                                        <img src=@imgRef class="userImage" />
-                                    }
-                                    else
-                                    {
-                                        <img src="/images/images.png" class="userImage" />
-                                    }
-                                </div>
-                            </div>
 
                             <!--Email-->
                             <div class="marginElements">
@@ -77,15 +82,13 @@
                     </div>
                 </div>
 
-                <div class="principalObject">
+                <div class="col-lg-1"> </div>
+
+                <div class="principalObject col-lg-3">
                     <div class="flexDivStart">
                         <div class="objects">
                             <!--Address-->
                             <!--Province, Canton and District-->
-                            <div class="marginElements">
-                                <label class="control-label secondary_title">Dirección:</label>
-                            </div>
-
                             <div class="marginElements flexElementsColumns">
                                 <label for="Province" class="secondary_title">Provincia: </label>
                                 <InputText type="text" @bind-Value="@myUser.Province_Name" class="form-control inputsClass" id="staticEmail" placeholder="@myUser.Province_Name" readonly />
@@ -156,11 +159,14 @@
                     </div>
                 </div>
 
+                <div class="col-lg-1"> </div>
+
             </div>
         </EditForm>
     </div>
 
     <div class="futherButtons">
+        <br>
         <button class="btn btn-primary" style="margin-right: 10px" @onclick="goBack"> Volver </button>
     </div>
 
