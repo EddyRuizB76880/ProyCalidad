@@ -65,7 +65,7 @@ else
                 {
                     @foreach (var pendingAlliance in myPendingAlliances)
                     {
-                        <tr class ='hover-light-grey'>
+                        <tr class ='hover-light-grey' @onclick="() => viewEntrepreneurProfile(pendingAlliance.User_Email != userLogged? pendingAlliance.User_Email : pendingAlliance.Ally_User_Email)">
                             <!-- Nombre del emprendedor -->
                             <td scope="row" width="200" valign="middle" align="left">@(pendingAlliance.User_Email != userLogged? pendingAlliance.User_Email : pendingAlliance.Ally_User_Email)</td>
                             <!-- Categorias -->
@@ -93,7 +93,7 @@ else
                 {
                     @foreach (var acceptedAlliances in myAcceptedAlliances)
                     {
-                        <tr class ='hover-light-grey'>
+                        <tr class ='hover-light-grey' @onclick="() => viewEntrepreneurProfile(acceptedAlliances.User_Email != userLogged? acceptedAlliances.User_Email : acceptedAlliances.Ally_User_Email)">
                             <!-- Nombre del emprendedor -->
                             <td scope="row" width="200" valign="middle" align="left">@(acceptedAlliances.User_Email != userLogged? acceptedAlliances.User_Email : acceptedAlliances.Ally_User_Email)</td>
                             <!-- Categorias -->
@@ -113,7 +113,7 @@ else
                 {
                     @foreach (var rejectedAlliance in myRejectedAlliances)
                     {
-                        <tr class ='hover-light-grey'>
+                        <tr class ='hover-light-grey' @onclick="() => viewEntrepreneurProfile(rejectedAlliance.User_Email != userLogged? rejectedAlliance.User_Email : rejectedAlliance.Ally_User_Email)">
                             <!-- Nombre del emprendedor -->
                             <td scope="row" width="200" valign="middle" align="left">@(rejectedAlliance.User_Email != userLogged? rejectedAlliance.User_Email : rejectedAlliance.Ally_User_Email)</td>
                             <!-- Categorias -->
@@ -209,6 +209,11 @@ else
         // Erase it from the pending list
         myPendingAlliances.Remove(alliance);
 
+    }
+
+    public void viewEntrepreneurProfile(string entrepreneurEmail)
+    {
+        NavManager.NavigateTo("/My_Alliance/ViewClient/" + entrepreneurEmail);
     }
 }
 
