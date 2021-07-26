@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentValidation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -20,6 +21,21 @@ namespace EmprendeUCR_WebApplication.Data.Entities
         [Required]
         public int Price { get; set; }
 
+    }
+    public class CreateValidatorProduct : AbstractValidator<Product>
+    {
+        public CreateValidatorProduct()
+        {
+            // check presentation format
+            RuleFor(x => x.Product_Name)
+                .NotEmpty().W("El nombre del product no puede estar vacio");
+            RuleFor(x => x.Price)
+               .LessThanOrEqualTo(0).WithMessage("El precio debe ser mayor a 0");
+            RuleFor(x => x.Price)
+               .NotEmpty().WithMessage("El precio no puede estar vacio");
+            RuleFor(x => x.Category_ID)
+                .NotEmpty().WithMessage("Debe seleccionar una categoria");
+        }
     }
 }
 
