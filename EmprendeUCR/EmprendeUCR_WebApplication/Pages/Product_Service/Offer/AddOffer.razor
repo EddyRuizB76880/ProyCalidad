@@ -9,6 +9,7 @@
 @inject Product_ServiceService Product_ServiceService
 @inject OfferService OfferService
 @inject Is_OfferService Is_OfferService
+@inject Alliance_Service allianceService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 <h3>Crear Oferta</h3>
@@ -43,7 +44,7 @@
                             <td width="150" valign="middle" align="left">@currentProduct.Price</td>
                             <!--Add to the current offer button-->
                             <td>
-                                <button class="w-150 btn-primary m-2 material-icons align-right" type="button" @onclick="() => addProductToOffer(currentProduct.Code_ID)">add</button>
+                                <button class="w-150 btn-primary m-2 material-icons align-right" type="button" @onclick="() => addProductToOffer(currentProduct.Code_ID, true)">add</button>
                             </td>
                         </tr>
                     }
@@ -76,7 +77,7 @@
                             <td width="150" valign="middle" align="left">@currentService.Price_per_hour</td>
                             <!--Add to the current offer button-->
                             <td>
-                                <button class="w-150 btn-primary m-2 material-icons align-right " type="button" @onclick="() => addServiceToOffer(currentService.Code_ID)">add</button>
+                                <button class="w-150 btn-primary m-2 material-icons align-right " type="button" @onclick="() => addServiceToOffer(currentService.Code_ID, true)">add</button>
                             </td>
                         </tr>
                     }
@@ -84,9 +85,10 @@
             </tbody>
         </table>
 
-
+        <!--Aliados-->
         @if (showAlliesProductAndServices)
         {
+            <!--Productos-->
             <h4 class="bg-blue text-center "> Productos de aliados </h4>
             <table class="m-lg-2">
                 <thead>
@@ -100,7 +102,7 @@
                 <tbody>
                     @if (_products?.Count > 0)
                     {
-                        @foreach (var currentProduct in _products)
+                        @foreach (var currentProduct in alliedProducts)
                         {
                             <tr>
                                 <!--Product name value-->
@@ -109,7 +111,7 @@
                                 <td width="150" valign="middle" align="left">@currentProduct.Price</td>
                                 <!--Add to the current offer button-->
                                 <td>
-                                    <button class="w-150 btn-primary m-2 material-icons align-right" type="button" @onclick="() => addProductToOffer(currentProduct.Code_ID)">add</button>
+                                    <button class="w-150 btn-primary m-2 material-icons align-right" type="button" @onclick="() => addProductToOffer(currentProduct.Code_ID, false)">add</button>
                                 </td>
                             </tr>
                         }
@@ -117,9 +119,7 @@
                 </tbody>
             </table><br />
 
-
             <!-- Mis servicios-->
-
             <h4 class="bg-blue text-center"> Servicios de aliados </h4>
             <table class="m-lg-2">
                 <!--Colmun names tag (Nombre, Precio por hora)-->
@@ -133,7 +133,7 @@
                 <tbody>
                     @if (_service?.Count > 0)
                     {
-                        @foreach (var currentService in _service)
+                        @foreach (var currentService in alliedServices)
                         {
                             <tr>
                                 <!--Service name value-->
@@ -142,7 +142,7 @@
                                 <td width="150" valign="middle" align="left">@currentService.Price_per_hour</td>
                                 <!--Add to the current offer button-->
                                 <td>
-                                    <button class="w-150 btn-primary m-2 material-icons align-right " type="button" @onclick="() => addServiceToOffer(currentService.Code_ID)">add</button>
+                                    <button class="w-150 btn-primary m-2 material-icons align-right " type="button" @onclick="() => addServiceToOffer(currentService.Code_ID, false)">add</button>
                                 </td>
                             </tr>
                         }
@@ -156,9 +156,8 @@
             </div>
         </div>
     </section>
-
+    <!-- Productos en la oferta -->
     <aside class="float_right  w-70 gap-lg-2">
-        <!-- Productos en la oferta -->
         <div class="row border-2 shadow">
             <h4 class="bg-blue text-center">Productos o servicios en la oferta</h4>
             <!--Product and services in the offer display-->
@@ -278,14 +277,16 @@
 
     // The offer that will be store in the DB
     Offer offer = new Offer();
-    // A list with the productServices items where the ID's will be taken
-    IList<Product_Service> _productsServices;
     // A list with the Entrepreneurs (used to filter the products/services) -> this (simulates) must be the logged user
     IList<Entrepreneur> entrepreneurs;
     // A list with all the products from the logged Entrepreneur
     IList<Product> _products;
     // A list with all the services from the logged Entrepreneur
     IList<Service> _service;
+    // Allied products
+    IList<Product> alliedProducts = new List<Product>();
+    // Allied services
+    IList<Service> alliedServices = new List<Service>();
     // A list with the added products in the current offer
     IList<Product> _addedProducts = new List<Product>();
     // A list with the added services in the current offer
@@ -321,7 +322,8 @@
 
         entrepreneurs = await EntrepreneurService.GetAsync();
         userLogged = await sessionStorage.GetItemAsync<string>("Email");
-        await loadAllProducts(userLogged);
+
+        await loadAllProducts(userLogged, allianceService.getAlliancesByEntrepreneurEmailAndStatus(userLogged,1));
     }
 
     private void HandleValidationRequested(object sender,
@@ -355,10 +357,10 @@
     }
 
     // Add the product with the same id to the current offer
-    public void addProductToOffer(int productId)
+    public void addProductToOffer(int productId, bool myItem)
     {
         // Find the product with the same product_id
-        Product productFound = _products.First(product => product.Code_ID == productId);
+        Product productFound = myItem? _products.First(product => product.Code_ID == productId): alliedProducts.First(product => product.Code_ID == productId);
         // If found, then added to the added products
         if (productFound is not null)
         {
@@ -385,10 +387,10 @@
     }
 
     // Add the service with the same id to the current offer
-    public void addServiceToOffer(int serviceId)
+    public void addServiceToOffer(int serviceId, bool myItem)
     {
         // Find the service with the same serviceId
-        Service serviceFound = _service.First(service => service.Code_ID == serviceId);
+        Service serviceFound =myItem? _service.First(service => service.Code_ID == serviceId) : alliedServices.First(service => service.Code_ID == serviceId);
         // If found, then added to the added services
         if (serviceFound is not null)
         {
@@ -517,11 +519,17 @@
     }
 
     // Load all the products, services, and productService related to the email
-    public async Task loadAllProducts(String email)
+    public async Task loadAllProducts(String email, IList<Alliance> alliances)
     {
+        List<String> alliedEmails = new List<String>();
+        // Get the other allies emails
+        foreach (var allie in alliances)
+        {
+            alliedEmails.Add(allie.Ally_User_Email != email ? allie.Ally_User_Email : allie.User_Email);
+        }
+        loadAlliedProductsAndServices(alliedEmails);
         await loadProducts(email);
         await loadService(email);
-        await loadProductsServices(email);
     }
 
     // Load the products related to the given entrepreneur email
@@ -530,16 +538,30 @@
         _products = await ProductService.GetProductsEntrepreneurAsync(email);
     }
 
+    public void loadAlliedProductsAndServices(List<String> emails)
+    {
+        // Load allies
+        foreach (var allie in emails)
+        {
+            var allieProducts = ProductService.GetProductsEntrepreneur(allie);
+            // For each allies product, addit to the alliesProducts
+            foreach(var allieProduct in allieProducts)
+            {
+                alliedProducts.Add(allieProduct);
+            }
+            // Add each service to the list
+            var allieServices = ServiceService.GetServicesEntrepreneur(allie);
+            foreach(var allieService in allieServices)
+            {
+                alliedServices.Add(allieService);
+            }
+        }
+    }
+
     // Load the service related to the given entrepreneur email
     public async Task loadService(String email)
     {
         _service = await ServiceService.GetServicesEntrepreneurAsync(email);
-    }
-
-    // Load the productServices related to the given entrepreneur email
-    public async Task loadProductsServices(String email)
-    {
-        _productsServices = await Product_ServiceService.GetProductsServicesEntrepreneurAsync(email);
     }
 
 }
