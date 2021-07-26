@@ -71,6 +71,12 @@ namespace EmprendeUCR_WebApplication.Data.Services
 
         }
 
+        public IList<Service> GetServicesEntrepreneur(string email)
+        {
+            return _context.Service.Where(c => String.Equals(c.Entrepreneur_Email, email)).ToList();
+
+        }
+
         public async Task<IList<Service>> GetServicesByCategoryAsync(string email, int category_id)
         {
             return await _context.Service.Where(service => String.Equals(service.Entrepreneur_Email, email) && service.Category_ID == category_id).ToListAsync();

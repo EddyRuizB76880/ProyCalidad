@@ -3,6 +3,8 @@
 @using EmprendeUCR_WebApplication.Data.Services.Categories
 @using EmprendeUCR_WebApplication.Data.Entities
 @using EmprendeUCR_WebApplication.Application.OrderContext.Implementations
+@using System;
+@inject NavigationManager NavigationManager
 @inject EntrepreneurService EntrepreneurService
 @inject ProductService ProductService
 @inject HasSuppliesService HasSuppliesService
@@ -22,28 +24,54 @@
 else
 {
 
-
-<body>
-    <h3>Mis Alianzas</h3>
-
-    @if (users_list.Count() > 0)
-    {
-        @foreach (var u in users_list)
-        {
-            <span> @u.entrepreneur.Name @u.entrepreneur.F_Last_Name vende </span>
-            @foreach (var c in u.categories)
-            {
-                <span> @c.Title</span>
-            }
-            <br />
-        }
-    } else
+    <body>
+        <h3>Sugerencias de alianzas</h3>
+        <!--Sugerencias de alianzas -->
+        <table class=" table">
+            <!--Table Headers-->
+            <thead class=" bg-blue">
+                <tr>
+                    <!--Emprendedor header-->
+                    <th scope="col" width="200" valign="middle" align="center"> Emprendedor </th>
+                    <!--Vende header-->
+                    <th scope="col" width="200" valign="middle" align="center"> Vende </th>
+                    <!--Acciones header-->
+                    <th scope="col" width="200" valign="middle" align="center"> Acciones </th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Despliega los usuarios sugeridos-->
+                @if (users_list.Count() > 0)
                 {
-                    <span>No hay sugerencias por el momento. :)</span>
+
+                    @foreach (var user in users_list)
+                    {
+                        <tr>
+                            <!-- Entrepreneur name-->
+                            <td scope="row" width="200" valign="middle" align="left">@user.entrepreneur.Name @user.entrepreneur.F_Last_Name</td>
+                            <!-- Categoria-->
+                            @foreach (var categorie in user.categories)
+                            {
+                                <td scope="row" width="200" valign="middle" align="left">@categorie.Title</td>
+                            }
+                        <div @onclick="() => sendRequest()">
+                            <!-- Enviar solicitud-->
+                            <input type="button" class="btn btn-primary btn-space" @onclick="@sendRequest" value="Enviar solicitud" />
+                            </div>
+
+                        </tr>
+                    }
                 }
-
-
-</body>
+                else
+                {
+                    <!-- If there is no suggestions, display no suggest message-->
+                    <tr>No hay sugerencias por el momento. :)</tr>
+                }
+            </tbody>
+        </table>
+        <!-- Return to my alliances page-->
+        <input type="button" class="btn btn-primary btn-space" @onclick="@Cancel" value="Volver" />
+    </body>
 }
 
 
@@ -95,4 +123,12 @@ else
             }
         }
     }
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("My_Alliance");
+    }
+
+    public void sendRequest()
+    {       }
 }

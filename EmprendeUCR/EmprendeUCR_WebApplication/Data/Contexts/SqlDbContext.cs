@@ -56,6 +56,7 @@ namespace EmprendeUCR_WebApplication.Data.Contexts
         public DbSet<Has_Keyword_Service> Has_Keyword_Service { get; set; }
         public DbSet<Phones> Phones { get; set; }
         public DbSet<Shopping_Cart> Shopping_Cart { get; set; }
+        public DbSet<Alliance> Alliance { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Tells entity framework this entity has a composite key.
