@@ -214,10 +214,14 @@
                 </tbody>
             </table>
 
-
+            @if(myProductsAndServicesCount == 0 && alliedProductsAndServicesCount > 0)
+            {
+                showConfirmation = false;
+                <p> Por favor agregar al menos un producto o servicio propio :)</p>
+            }
             <!--If there are products or services in the current offer, displays the confirmation button so that the user can proceed to-->
             <!--fill the offer details-->
-            @if ((_addedProducts?.Count > 0 || _addedServices?.Count > 0) && !showConfirmation)
+            @if ((_addedProducts?.Count > 0 || _addedServices?.Count > 0) && !showConfirmation && !(myProductsAndServicesCount == 0 && alliedProductsAndServicesCount > 0))
             {
                 <input type="button" class="btn btn-primary w-30" @onclick="@confirmOffer" value="Confirmar" />
             }
@@ -301,6 +305,10 @@
     IList<Product> _addedProducts = new List<Product>();
     // A list with the added services in the current offer
     IList<Service> _addedServices = new List<Service>();
+    // my products or services in offer count
+    int myProductsAndServicesCount = 0;
+    // allied products or services in offer count
+    int alliedProductsAndServicesCount = 0;
 
     // Variable that hides the infomration error
     bool hideError = true;
@@ -368,7 +376,16 @@
     public void addProductToOffer(int productId, bool myItem)
     {
         // Find the product with the same product_id
-        Product productFound = myItem ? _products.First(product => product.Code_ID == productId) : alliedProducts.First(product => product.Code_ID == productId);
+        Product productFound;
+        if (myItem)
+        {
+            productFound = _products.First(product => product.Code_ID == productId);
+            myProductsAndServicesCount++;
+        } else
+        {
+            productFound = alliedProducts.First(product => product.Code_ID == productId);
+            alliedProductsAndServicesCount++;
+        }
         // If found, then added to the added products
         if (productFound is not null)
         {
@@ -388,6 +405,14 @@
         // Find the product with the same product_id var productFoundInMyProducts =_products.Find(product => product.Code_ID == productId);
 
         var productFoundInMyProducts = _products.Find(product => product.Code_ID == productId);
+        if (productFoundInMyProducts)
+        {
+            myProductsAndServicesCount--;
+        }
+        else
+        {
+            alliedProductsAndServicesCount--;
+        }
         Product productFound = productFoundInMyProducts ? _products.First(product => product.Code_ID == productId) : alliedProducts.First(product => product.Code_ID == productId);
         // Remove the product found from the added products
         if (productFound is not null)
@@ -400,7 +425,17 @@
     public void addServiceToOffer(int serviceId, bool myItem)
     {
         // Find the service with the same serviceId
-        Service serviceFound = myItem ? _service.First(service => service.Code_ID == serviceId) : alliedServices.First(service => service.Code_ID == serviceId);
+        Service serviceFound;
+        if (myItem)
+        {
+            serviceFound = _service.First(service => service.Code_ID == serviceId);
+            myProductsAndServicesCount++;
+        }
+        else
+        {
+            serviceFound = alliedServices.First(service => service.Code_ID == serviceId);
+            alliedProductsAndServicesCount++;
+        }
         // If found, then added to the added services
         if (serviceFound is not null)
         {
@@ -420,6 +455,14 @@
         showConfirmation = false;
         // Find the service with the same serviceId
         var serviceFoundInMyProducts = _service.Find(service => service.Code_ID == serviceId);
+        if (serviceFoundInMyProducts)
+        {
+            myProductsAndServicesCount--;
+        }
+        else
+        {
+            alliedProductsAndServicesCount--;
+        }
         Service serviceFound = serviceFoundInMyProducts ? _service.First(service => service.Code_ID == serviceId) : alliedServices.First(service => service.Code_ID == serviceId);
         // Remove the service found from the added services
         if (serviceFound is not null)
@@ -592,6 +635,13 @@
                 for (int amount = 0; amount < is_offer.Amount; amount++)
                 {
                     _addedProducts.Add(product);
+                    if (_products.Find(search => search.Code_ID == product.Code_ID))
+                    {
+                        myProductsAndServicesCount++;
+                    } else
+                    {
+                        alliedProductsAndServicesCount++;
+                    }
                 }
 
             }
@@ -601,6 +651,14 @@
                 for (int amount = 0; amount < is_offer.Amount; amount++)
                 {
                     _addedServices.Add(service);
+                    if (_service.Find(search => search.Code_ID == service.Code_ID))
+                    {
+                        myProductsAndServicesCount++;
+                    }
+                    else
+                    {
+                        alliedProductsAndServicesCount++;
+                    }
                 }
             }
         }
