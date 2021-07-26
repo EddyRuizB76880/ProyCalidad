@@ -326,8 +326,7 @@
         await loadAllProducts(userLogged, allianceService.getAlliancesByEntrepreneurEmailAndStatus(userLogged,1));
     }
 
-    private void HandleValidationRequested(object sender,
-        ValidationRequestedEventArgs args)
+    private void HandleValidationRequested(object sender, ValidationRequestedEventArgs args)
     {
         messageStore.Clear();
 
@@ -378,7 +377,8 @@
         // Update the show confirmation button signal
         showConfirmation = false;
         // Find the product with the same product_id
-        Product productFound = _products.First(product => product.Code_ID == productId);
+        var productFoundInMyProducts =_products.Find(product => product.Code_ID == productId);
+        Product productFound = productFoundInMyProducts? _products.First(product => product.Code_ID == productId) : alliedProducts.First(product => product.Code_ID == productId);
         // Remove the product found from the added products
         if (productFound is not null)
         {
@@ -409,7 +409,8 @@
         // update the show confirmation offer
         showConfirmation = false;
         // Find the service with the same serviceId
-        Service serviceFound = _service.First(service => service.Code_ID == serviceId);
+        var serviceFoundInMyProducts = _service.Find(service => service.Code_ID == serviceId);
+        Service serviceFound = serviceFoundInMyProducts ? _service.First(service => service.Code_ID == serviceId) : alliedServices.First(service => service.Code_ID == serviceId);
         // Remove the service found from the added services
         if (serviceFound is not null)
         {
