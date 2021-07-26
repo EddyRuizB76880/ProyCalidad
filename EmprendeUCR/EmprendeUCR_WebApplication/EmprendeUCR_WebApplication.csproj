@@ -5,13 +5,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Data\Services\NewFolder\**" />
-	  <Content Remove="Data\Services\NewFolder\**" />
-	  <EmbeddedResource Remove="Data\Services\NewFolder\**" />
-	  <None Remove="Data\Services\NewFolder\**" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Content Remove="Pages\ProductsSearch2.razor" />
 	</ItemGroup>
 

@@ -165,6 +165,7 @@ namespace EmprendeUCR_WebApplication
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSyncfusionBlazor();
+            services.AddScoped<Alliance_Service>();
             services.AddScoped<CategoryService>();
             services.AddScoped<AddCategoryService>();
             services.AddScoped<DeleteCategoryService>();
