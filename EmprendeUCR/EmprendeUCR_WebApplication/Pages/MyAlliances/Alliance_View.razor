@@ -71,9 +71,9 @@ else
                     @foreach (var pendingAlliance in myPendingAlliances)
                     {
 
-                    <tr class='hover-light-grey' @onclick="() => viewEntrepreneurProfile(pendingAlliance.User_Email != userLogged ? pendingAlliance.User_Email : pendingAlliance.Ally_User_Email)">
+                    <tr class='hover-light-grey'>
                     <!-- Nombre del emprendedor -->
-                    <td scope="row" width="200" valign="middle" align="left">@(pendingAlliance.User_Email != userLogged ? pendingAlliance.User_Email : pendingAlliance.Ally_User_Email)</td>
+                    <td scope="row" width="200" valign="middle" align="left"  @onclick="() => viewEntrepreneurProfile(pendingAlliance.User_Email != userLogged ? pendingAlliance.User_Email : pendingAlliance.Ally_User_Email)">@(pendingAlliance.User_Email != userLogged ? pendingAlliance.User_Email : pendingAlliance.Ally_User_Email)</td>
                     <!-- Categorias -->
 
                     <!-- Estado de solicitud -->
@@ -101,9 +101,9 @@ else
 
 
 
-                        <tr class='hover-light-grey' @onclick="() => viewEntrepreneurProfile(acceptedAlliances.User_Email != userLogged ? acceptedAlliances.User_Email : acceptedAlliances.Ally_User_Email)">
+                        <tr class='hover-light-grey'>
                             <!-- Nombre del emprendedor -->
-                            <td scope="row" width="200" valign="middle" align="left">@(acceptedAlliances.User_Email != userLogged ? acceptedAlliances.User_Email : acceptedAlliances.Ally_User_Email)</td>
+                            <td scope="row" width="200" valign="middle" align="left"  @onclick="() => viewEntrepreneurProfile(acceptedAlliances.User_Email != userLogged ? acceptedAlliances.User_Email : acceptedAlliances.Ally_User_Email)">@(acceptedAlliances.User_Email != userLogged ? acceptedAlliances.User_Email : acceptedAlliances.Ally_User_Email)</td>
                             <!-- Categorias -->
                             <!-- Estado de solicitud -->
                             <td scope="row" width="200" valign="middle" align="left">Aceptado</td>
@@ -119,9 +119,9 @@ else
                 {
                     @foreach (var rejectedAlliance in myRejectedAlliances)
                     {
-                        <tr class='hover-light-grey' @onclick="() => viewEntrepreneurProfile(rejectedAlliance.User_Email != userLogged ? rejectedAlliance.User_Email : rejectedAlliance.Ally_User_Email)">
+                        <tr class='hover-light-grey'>
                             <!-- Nombre del emprendedor -->
-                            <td scope="row" width="200" valign="middle" align="left">@(rejectedAlliance.User_Email != userLogged ? rejectedAlliance.User_Email : rejectedAlliance.Ally_User_Email)</td>
+                            <td scope="row" width="200" valign="middle" align="left" @onclick="() => viewEntrepreneurProfile(rejectedAlliance.User_Email != userLogged ? rejectedAlliance.User_Email : rejectedAlliance.Ally_User_Email)">@(rejectedAlliance.User_Email != userLogged ? rejectedAlliance.User_Email : rejectedAlliance.Ally_User_Email)</td>
                             <!-- Categorias -->
                             <!-- Estado de solicitud -->
                             <td scope="row" width="200" valign="middle" align="left">Rechazado</td>
@@ -296,11 +296,6 @@ else
             }
         }
     }
-
-
-
-
-
 
 
     public void showOfferErrorPopUp()
