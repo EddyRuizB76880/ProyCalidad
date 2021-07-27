@@ -28,7 +28,7 @@ namespace EmprendeUCR_WebApplication.Data.Entities
         {
             // check presentation format
             RuleFor(x => x.Product_Name)
-                .NotEmpty().W("El nombre del product no puede estar vacio");
+                .NotEmpty().WithMessage("El nombre del product no puede estar vacio");
             RuleFor(x => x.Price)
                .LessThanOrEqualTo(0).WithMessage("El precio debe ser mayor a 0");
             RuleFor(x => x.Price)
