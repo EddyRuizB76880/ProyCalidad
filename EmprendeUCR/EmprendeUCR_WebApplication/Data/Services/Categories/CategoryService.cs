@@ -89,11 +89,41 @@ namespace EmprendeUCR_WebApplication.Data.Services.Categories
             return _context.Category.Find(Id);
         }
 
-         /**
-        * @brief Verifies if the selected category is a child
-        * @param Id of category
-        * @return false if is not child, true if it is
-        */
+        public async Task<IList<Product>> GetProductsByCategoryAsync(string email, int category_id)
+        {
+            return await _context.Product.Where(product => String.Equals(product.Entrepreneur_Email, email) && product.Category_ID == category_id).ToListAsync();
+
+        }
+
+
+        public async Task<IList<Category>> getAllCategoryBySupplies(List<Product> product, List<HasSupplies> my_supplies) {
+
+            List<Category> categories = new List<Category>();
+            foreach (var prod in product) {
+                bool valid_Product = my_supplies.FindAll(c => c.Supplie_ID == prod.Category_ID).Count() > 0;
+                if (valid_Product) {
+                    var cat = getCategory(prod.Category_ID);
+                
+                    if (!categories.Contains(cat)) {
+                        categories.Add(cat);
+                    }
+                
+                    
+                } 
+
+             
+            }
+
+            return categories;
+
+
+        }
+
+        /**
+       * @brief Verifies if the selected category is a child
+       * @param Id of category
+       * @return false if is not child, true if it is
+       */
         public bool isChildNode(int Id)
         {
             bool isChild = false;
