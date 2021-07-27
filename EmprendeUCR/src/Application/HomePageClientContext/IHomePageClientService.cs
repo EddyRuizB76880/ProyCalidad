@@ -27,6 +27,8 @@ namespace EmprendeUCR.Application.HomePageClientContext
 
         IList<Is_Offer> getIs_Offer();
         IList<Service_Photos> getServicePhotos();
+        Task<Is_Offer> GetIs_OfferAsync(int Is_Offer_Id);
+        List<Is_Offer> GetAllIs_OfferRelatedToOfferNOTAsync(Offer offer);
 
 
     }

@@ -32,6 +32,10 @@ namespace EmprendeUCR_WebApplication.Infrastructure.OrderContext.EntityMappings
 
             builder.Property(e => e.DeliveryDate).HasColumnName("Delivery_date");
 
+            builder.Property(e => e.DeliveryAddress)
+                .HasMaxLength(1000)
+                .HasColumnName("Delivery_Address");
+
             builder.Property(e => e.EntrepreneurEmail)
                 .HasMaxLength(100).HasColumnName("Entrepreneur_Email");
 
@@ -44,6 +48,10 @@ namespace EmprendeUCR_WebApplication.Infrastructure.OrderContext.EntityMappings
             builder.Property(e => e.State)
                 .HasMaxLength(30)
                 .HasColumnName("State");
+
+            builder.Property(e => e.PaymentName)
+                .HasMaxLength(30)
+                .HasColumnName("Payment_Name");
 
             builder.HasMany(d => d.Organized)
                 .WithOne(p => p.order).IsRequired();

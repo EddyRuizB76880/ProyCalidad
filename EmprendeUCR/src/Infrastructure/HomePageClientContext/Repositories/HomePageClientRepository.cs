@@ -100,5 +100,15 @@ namespace EmprendeUCR.Infrastructure.HomePageClientContext.Repositories
         {
             return _dbContext.Service_Photos.ToList();
         }
+        public async Task<Is_Offer> GetIs_OfferAsync(int Is_Offer_Id)
+        {
+            Is_Offer offer = await _dbContext.Is_Offer.FirstOrDefaultAsync(c => c.Offer_ID.Equals(Is_Offer_Id));
+
+            return offer;
+        }
+        public List<Is_Offer> GetAllIs_OfferRelatedToOfferNOTAsync(Offer offer)
+        {
+            return _dbContext.Is_Offer.Where(is_Offer => String.Equals(offer.Offer_ID, is_Offer.Offer_ID)).ToList();
+        }
     }
 }

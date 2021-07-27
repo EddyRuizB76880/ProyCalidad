@@ -120,5 +120,15 @@ namespace EmprendeUCR_WebApplication.Infrastructure.NotificationContext.Reposito
                 sqlTableDependency.Stop();
             }
         }
+
+        public int GetProductsQuantity(UserNotification UserNotification)
+        {
+            int quantity = 0;
+            if (Next is not null)
+            {
+                quantity =  Next.GetProductsQuantity(UserNotification);
+            }
+            return quantity;
+        }
     }
 }

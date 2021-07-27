@@ -109,10 +109,17 @@ namespace EmprendeUCR.Application.HomePageClientContext.Implementations
         {
             return _homePageClientRepository.GetAllIs_Offer();
         }
-
+        public async Task<Is_Offer> GetIs_OfferAsync(int Is_Offer_Id)
+        {
+            return await _homePageClientRepository.GetIs_OfferAsync(Is_Offer_Id);
+        }
         public IList<Service_Photos> getServicePhotos()
         {
             return _homePageClientRepository.GetAllServicePhotos();
+        }
+        public List<Is_Offer> GetAllIs_OfferRelatedToOfferNOTAsync(Offer offer)
+        {
+            return _homePageClientRepository.GetAllIs_OfferRelatedToOfferNOTAsync(offer);
         }
     }
 }

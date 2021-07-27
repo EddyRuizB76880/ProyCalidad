@@ -1,14 +1,20 @@
 @page "/ShoppingCart"
-
 @using EmprendeUCR_WebApplication.Application.ShoppingCartContext
 @using EmprendeUCR_WebApplication.Domain.ShoppingCartContext.Entities
 @*@using EmprendeUCR_WebApplication.Data.Entities*@
+@using EmprendeUCR.Application.PaymentInfos
+@using EmprendeUCR.Domain.PaymentMethods.Entities
+@using EmprendeUCR.Application.PaymentMethods
+@using EmprendeUCR.Domain.PaymentInfos.Entities
 @using EmprendeUCR_WebApplication.Domain.Core.CoreEntities
 @using EmprendeUCR_WebApplication.Data.Entities.ContextShop
 @inject IShoppingCartService ShoppingCartService;
+@inject IHasPaymentInfoService HasPaymentInfoService;
+@inject ICardPaymentInfoService CardPaymentInfoService;
+@inject ISinpeIbanPaymentInfoService SinpeIbanInfoPaymentService;
+@inject ISinpeMovilPaymentInfoService SinpeMovilInfoPaymentService;
 
-@using EmprendeUCR.Domain.PaymentMethods.Entities
-@using EmprendeUCR.Application.PaymentMethods
+
 
 @*@inject IPaymentMethodService PaymentMethodService*@
 
@@ -64,21 +70,42 @@ else
             @* Shows the payment method and the future functionality to change it *@
             <div class="d-flex flex-column align-items-center">
                 <p class="fs-3">Metodo de pago</p>
-                <select class="form-select" aria-label="Default select example">
+                <select @onchange="saveChosenMethod" class="form-select" aria-label="Default select example">
                     <option selected>Seleccione Metodo de Pago</option>
-@*                    @foreach (var paymentMethod in _paymentMethods)
-                    {
-                        <option value="1">@paymentMethod.Name</option>
-                    }*@
+                  @if(_entrepreneurCards != null){  
+                    @foreach (var card in _entrepreneurCards) 
+                    {  <p class="fs-3">Metodo de pago</p>
+                        
+                        <option value=@card.Name_Payment_Method>@card.Name_Payment_Method</option>
+                    }
+                   }
+                   @if(_entrepreneurSinpeIbans != null){  
+                    @foreach (var sinpe_iban in _entrepreneurSinpeIbans)
+                    {  <p class="fs-3">Metodo de pago</p>
+                       ;
+                        <option value=@sinpe_iban.Name_Payment_Method>@sinpe_iban.Name_Payment_Method</option>
+                    }
+                   }
+                   @if(_entrepreneurSinpeMovils != null){  
+                    @foreach (var sinpe_movil in _entrepreneurSinpeMovils)
+                    {  <p class="fs-3">Metodo de pago</p>
+                   
+                        <option value=@sinpe_movil.Name_Payment_Method>@sinpe_movil.Name_Payment_Method</option>
+                    }
+                   }
                 </select>
             </div>
 
             @* Sets the special requirements field *@
             <div class="d-flex flex-column align-items-center my-4 w-90">
                 <p class="fs-6 mb-3">Requerimientos especiales (Máximo 500 caracteres)</p>
-                <textarea @bind="requirements" class="border-blue w-100" id="requirementsField" maxlength="500" rows="4">
+                <textarea @bind="requirements" class="border-blue w-100" id="requirementsField" maxlength="500" rows="4"></textarea>
+            </div>
 
-                        </textarea>
+            @* Sets the delivery address field *@
+            <div class="d-flex flex-column align-items-center my-4 w-90">
+                <p class="fs-6 mb-3">Direccion de entrega (Máximo 300 caracteres)</p>
+                <textarea @bind="deliveryAddress" class="border-blue w-100" id="deliveryAddressField" maxlength="300" rows="3"></textarea>
             </div>
 
             @* Field to set the requested order date *@
@@ -99,8 +126,8 @@ else
             </div>
 
             @*
-                This block prevents the creation of an order with an invalid delivey date
-                , like a date that has already passed.
+            This block prevents the creation of an order with an invalid delivey date
+            , like a date that has already passed.
             *@
             @if (date <= currentDate || date == null)
             {
@@ -142,9 +169,9 @@ else
                         <div class="row mb-2">
                             <div class="col-6 d-flex flex-column align-items-center">
                                 @*
-                                    This line displays the product name,
-                                    retrieved from the Product_Name method
-                                    defined later in this file.
+                        This line displays the product name,
+                        retrieved from the Product_Name method
+                        defined later in this file.
                                 *@
                                 <p class="fs-6">@product.product.ProductName</p>
                             </div>
@@ -160,7 +187,7 @@ else
                                 <p class="fs-6 text-center">
                                     <span> ₡ </span>
                                     @* Gets the total price of the quantity of each product in the cart *@
-                                    @(product.product.Price * @product.Quantity)
+                                    @(product.product.currentPrice * @product.Quantity)
                                 </p>
                             </div>
                         </div>
@@ -172,11 +199,16 @@ else
                         @totalAmount
                     </p>
                 </div>
-                <p class="fs-6 text-center fw-bold">Requerimientos:</p>
 
+                <p class="fs-6 text-center fw-bold">Requerimientos:</p>
                 @* Requirements field *@
                 <div class="w-90 border-grey mb-5 m-auto overflow-auto height-150">
                     <p class="fs-6 text-start text-break">@requirements</p>
+                </div>
+
+                @* Delivery address *@
+                <div class="w-90 mb-5 m-auto overflow-auto">
+                    <p class="fs-6 text-break">Direccion de entrega: @deliveryAddress</p>
                 </div>
 
                 @* Requested date *@
@@ -232,7 +264,10 @@ else
 
     // String with the logged in user email.
     private string userEmail;
-
+        
+    // String with the entrepreneur's email.
+    private string entrepreneurEmail;
+    
     // Loading page variable.
     private bool _isLoading = true;
 
@@ -242,7 +277,18 @@ else
     // IEnumerable with ShopLine objects representing products.
     private IEnumerable<ShopLine> _products;
 
-    @*private IEnumerable<PaymentMethod>? _paymentMethods;*@
+    //A list to store the ids of the entrepreneurs accepted methods
+    //To be used to retrieve Card and SINPE methods.
+    public List<HasPaymentInfo>? _paymentMethodsIds;
+
+    //Cards registered by entrepreneur
+    public List<CardPaymentInfo>? _entrepreneurCards;
+
+    //SinpeIban information owned by entreprenur
+    public List<SinpeIbanPaymentInfo>? _entrepreneurSinpeIbans; 
+
+    // SinpeMovil information owned by entrepreneur
+    public List<SinpeMovilPaymentInfo>? _entrepreneurSinpeMovils; 
 
     // Shopping page parameters for the pagination.
     private ShopParameters shopParameters = new ShopParameters();
@@ -253,8 +299,14 @@ else
     // Integer variable to store the total price that the user has to pay for their order.
     private int totalAmount;
 
+    // String that saves the customer's chosen payment method
+    private string selectedPaymentMethod = "";
+
     // String variable to store the special requirements of a order.
     private string requirements = "";
+
+    // String variable to store the delivery address of a order.
+    private string deliveryAddress = "";
 
     // Array of integers to know how many of each product is currently in the shopping cart.
     private int[] quantityPerProduct;
@@ -282,7 +334,7 @@ else
         totalAmount = 0;
         foreach (var item in shopping.ShopLines)
         {
-            totalAmount += item.product.Price * item.Quantity;
+            totalAmount += item.product.currentPrice * item.Quantity;
         }
     }
 
@@ -305,6 +357,10 @@ else
         StateHasChanged();
     }
 
+    public async Task saveChosenMethod(ChangeEventArgs e) {
+       selectedPaymentMethod = e.Value.ToString();
+    }
+
     /*
       Summary: Overridden method from Blazor that is invoked when the page is loaded.
       Method fetchs the userEmail and the shopping cart from given userEmail. It also handles the pagination.
@@ -312,17 +368,30 @@ else
       Return: Nothing
       Exceptions: There aren't known exceptions
     */
-    protected override async Task OnInitializedAsync()
-    {
+    protected override async Task OnInitializedAsync() {
         userEmail = await sessionStorage.GetItemAsync<string>("Email");
         shopping = await ShoppingCartService.GetByIdAsync(userEmail);
         var pagingResponse = await ShoppingCartService.GetProducts(shopParameters, userEmail);
         _products = pagingResponse;
+        entrepreneurEmail = _products.ElementAt(0).EntrepreneurEmail; //for testing purposes "azviquez93@gmail.com";
         pagingData = pagingResponse.pagingData;
-        //_paymentMethods = await PaymentMethodService.GetPaymentMethodsAsync();
+        await GetAcceptedMethods();
         _isLoading = false;
         updateTotalAmount();
         quantityPerProduct = new int[shopping.ShopLines.Count()];
+    }
+    /*
+      Summary: Async method used to retrieve the accepted payment methods from an entrepreneur.
+      It retrieves each type of accepted payment method from a list of payment methods ids.
+      Parameters: None
+      Return: Asyncronous task
+      Exceptions: There aren't known exceptions
+    */
+    private async Task GetAcceptedMethods() {
+        _paymentMethodsIds = await HasPaymentInfoService.getHasPaymentInfoByEmail(entrepreneurEmail);
+        _entrepreneurCards = await CardPaymentInfoService.GetCardPaymentInfosByPaymentInfoIDAsync(_paymentMethodsIds);
+        _entrepreneurSinpeIbans = await SinpeIbanInfoPaymentService.GetSinpeIbanPaymentInfosByPaymentInfoIDAsync(_paymentMethodsIds);
+        _entrepreneurSinpeMovils = await SinpeMovilInfoPaymentService.GetSinpeMovilPaymentInfosByPaymentInfoIDAsync(_paymentMethodsIds);  
     }
 
     /*
@@ -358,7 +427,16 @@ else
     */
     private async Task sendRequest()
     {
-        await ShoppingCartService.sendRequest(shopping, requirements, (DateTime)date);
+        try
+        {
+            await ShoppingCartService.sendRequest(shopping, requirements, deliveryAddress, 
+                                                (DateTime)date, selectedPaymentMethod);
+        }
+        catch (Exception ex)
+        {
+            Console.Write("Don't change the HTML");
+            StateHasChanged();
+        }
         StateHasChanged();
     }
 
@@ -373,4 +451,4 @@ else
         NavigationManager.NavigateTo("/");
     }
 
-}
+    }

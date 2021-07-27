@@ -37,5 +37,7 @@ namespace EmprendeUCR_WebApplication.Application.NotificationContext
           Exceptions: There aren't known exceptions
         */
         void Unsubscription(UserNotification UserNotification);
+
+        int GetProductsQuantity(UserNotification UserNotification);
     }
 }

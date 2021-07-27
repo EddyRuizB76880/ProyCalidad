@@ -23,6 +23,11 @@ namespace EmprendeUCR_WebApplication.Infrastructure.NotificationContext.Reposito
         private string EmailToListen { set; get; }
         public event newEventNotification onEventNotification;
         SqlTableDependency<OrderNotificationClient> sqlTableDependency;
+
+        public OrderNotificationClientRepository()
+        {
+        }
+
         public OrderNotificationClientRepository(NotificationDbContext unitOfWork, IConfiguration configuration)
         {
             _dbContext = unitOfWork;
@@ -45,18 +50,27 @@ namespace EmprendeUCR_WebApplication.Infrastructure.NotificationContext.Reposito
             ITableDependencyFilter whereCondition = new SqlTableDependencyFilter<OrderNotificationClient>(
             expression,
             mapper);
+
             // Create dependency in Order table with previous where clause
-            sqlTableDependency = new SqlTableDependency<OrderNotificationClient>(_configuration.GetConnectionString("DefaultConnection"), "Order", filter: whereCondition, mapper: mapper);
-            sqlTableDependency.OnChanged += this.OrderClientChange;
-            
+            if (_configuration is not null) {
+                sqlTableDependency = new SqlTableDependency<OrderNotificationClient>(_configuration.GetConnectionString("DefaultConnection"), "Order", filter: whereCondition, mapper: mapper);
+                sqlTableDependency.OnChanged += this.OrderClientChange;
+            }
+
             if (Next is not null) {
                 Next.EventsSubscriptions(UserNotification);
             }
+
             // User subscribed
             this.onEventNotification += UserNotification.QuantityEvent;
+
             // Begin to listen changes
-            sqlTableDependency.Start();
+            if (_configuration is not null)
+            {
+                sqlTableDependency.Start();
+            }
         }
+
         /*
           Summary: check all notifications for the client logged and saves it in UserNotifications. 
           Parameters: UserNotification
@@ -93,18 +107,18 @@ namespace EmprendeUCR_WebApplication.Infrastructure.NotificationContext.Reposito
           Return: Nothing
           Exceptions: There aren't known exceptions
         */
-        private void OrderClientChange(object sender, RecordChangedEventArgs<OrderNotificationClient> e)
+        public void OrderClientChange(object sender, RecordChangedEventArgs<OrderNotificationClient> e)
         {
             var changedEntity = e.Entity;
             if (changedEntity.ClientEmail == (string)EmailToListen && (changedEntity.State == "Aceptado" || changedEntity.State == "Rechazado"))
             {
                 if (changedEntity.view)
                 {
-                    onEventNotification.Invoke(this, new NotificationChangeEventArgs(false));
+                    InvokeEvent(false);
                 }
                 else
                 {
-                    onEventNotification.Invoke(this, new NotificationChangeEventArgs(true));
+                    InvokeEvent(true);
                 }
             }
         }
@@ -121,6 +135,24 @@ namespace EmprendeUCR_WebApplication.Infrastructure.NotificationContext.Reposito
             if (sqlTableDependency is not null) {
                 sqlTableDependency.Stop();
             }          
+        }
+
+        public void InvokeEvent(bool result)
+        {
+            if (onEventNotification is not null)
+            {
+                onEventNotification.Invoke(this, new NotificationChangeEventArgs(result));
+            }
+        }
+
+        public int GetProductsQuantity(UserNotification UserNotification)
+        {
+            int quantity = 0;
+            if (Next is not null)
+            {
+                quantity = Next.GetProductsQuantity(UserNotification);
+            }
+            return quantity;
         }
     }
 }

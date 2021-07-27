@@ -11,14 +11,16 @@ namespace EmprendeUCR_WebApplication.Application.OrderContext.Implementations
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly IOfferRepository _offerRepositoy;
         /*
           Summary: Constructor.
           Parameters:IOrderRepository orderRepository.
           Exceptions: There aren't known exceptions
         */
-        public OrderService(IOrderRepository orderRepository)
+        public OrderService(IOrderRepository orderRepository, IOfferRepository offerRepository )
         {
             _orderRepository = orderRepository;
+            _offerRepositoy = offerRepository;
         }
 
         /*
@@ -74,7 +76,14 @@ namespace EmprendeUCR_WebApplication.Application.OrderContext.Implementations
         */
         public List<Tuple<int, Product>> GetProducts(Order order)
         {
-            return _orderRepository.GetProductsAsync(order);
+            DateTime dateOrder = order.DateAndHourCreation;
+            List<Offer> offers =  _offerRepositoy.getOffersToOrder(dateOrder);
+            var orders = _orderRepository.GetProductsAsync(order);
+            foreach (var product in orders)
+            {
+                product.Item2.getCurrentPrice(offers);
+            }
+            return orders;
         }
 
         /*
@@ -132,9 +141,9 @@ namespace EmprendeUCR_WebApplication.Application.OrderContext.Implementations
           Return: Nothing
           Exceptions: There aren't known exceptions
         */
-        public Task<string> getEntrepreneurName(string email)
+        public async Task<string> getEntrepreneurName(string email)
         {
-            throw new NotImplementedException();
+            return await _orderRepository.GetEntreprenurName(email);
         }
         /*
           Summary: update the status of an order.

@@ -14,21 +14,25 @@ namespace EmprendeUCR_WebApplication.Domain.OrderContext.Entities
         public string ClientEmail { get; set; } 
         public string Details { get; set; }
         public DateTime DeliveryDate { get; set; }
+        public string DeliveryAddress { get; set; }
         public string EntrepreneurEmail { get; set; }
         public string State { get; set; }
+        public string PaymentName { get; set; }
 
         // To use EF
         public Order() { }
         public Order(DateTime dateAndHourCreation, string clientEmail, 
-                string details,DateTime deliveryDate, string entrepreneurEmail,
-                string state)
+                string details, string deliveryAddress, DateTime deliveryDate,
+                string entrepreneurEmail, string state, string paymentName)
         {
             DateAndHourCreation = dateAndHourCreation;
             ClientEmail = clientEmail;
             Details = details;
+            DeliveryAddress = deliveryAddress;
             DeliveryDate = deliveryDate;
             EntrepreneurEmail = entrepreneurEmail;
             State = state;
+            PaymentName = paymentName;
         }
 
         /* Summary: Set the organized list.

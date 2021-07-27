@@ -51,11 +51,17 @@ namespace EmprendeUCR_WebApplication.Application.NotificationContext.Implementat
         {
             _notificationRepository.GetNotificationsQuantity(UserNotification);
         }
+
+        public int GetProductsQuantity(UserNotification UserNotification)
+        {
+            return _notificationRepository.GetProductsQuantity(UserNotification);
+        }
+
         /*
-          Summary: UserNotification is unsubscribed to not listen to the notification table.
-          Parameters: UserNotification
-          Return: Nothing
-          Exceptions: There aren't known exceptions
+         Summary: UserNotification is unsubscribed to not listen to the notification table.
+         Parameters: UserNotification
+         Return: Nothing
+         Exceptions: There aren't known exceptions
         */
         public void Unsubscription(UserNotification UserNotification)
         {

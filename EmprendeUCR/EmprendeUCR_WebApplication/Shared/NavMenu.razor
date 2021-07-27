@@ -33,7 +33,7 @@
                 {
                     <div class="zIndex-primary">
                         @* Update notifications when the user logs in. *@
-                        <button class="color-silver a-white btn" @onclick="showNotifications">
+                        <button class="color-silver a-white btn @(UserNotification.notificationQuantity == 0 ? "disabled btn" : "") "  @onclick="showNotifications" >
                             <span class="material-icons icon-l">
                                 notifications
                             </span>
@@ -162,7 +162,7 @@
     {
         myEmail = await sessionStorage.GetItemAsync<string>("Email");
         myType = await sessionStorage.GetItemAsync<int>("Type");
-        amountProductsNotifications = Shopping_Cart_Has_Service_Pandemic.GetProductsQuantity(myEmail);
+
 
 
         if (myEmail != null)
@@ -183,9 +183,11 @@
         {
             NotificationService.GetNotificationsQuantity(UserNotification);
             NotificationService.EventsSubscriptions(UserNotification);
+            amountProductsNotifications = NotificationService.GetProductsQuantity(UserNotification);
             string json = JsonConvert.SerializeObject(UserNotification);
             await sessionStorage.SetItemAsync<string>("UserNotification", json);
             UserNotification.OnNotificationChangeds += quantityEvent;
+
         }
 
 
@@ -207,6 +209,7 @@
     public async Task quantityEvent(object sender, NotificationChangeEventArgs e)
     {
         NotificationService.GetNotificationsQuantity(UserNotification);
+        amountProductsNotifications = NotificationService.GetProductsQuantity(UserNotification);
         this.InvokeAsync(() => this.StateHasChanged());
 
     }

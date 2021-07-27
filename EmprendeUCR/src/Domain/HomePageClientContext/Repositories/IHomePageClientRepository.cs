@@ -25,5 +25,8 @@ namespace EmprendeUCR.Domain.HomePageClientContext.Repositories
         IList<Is_Offer> GetAllIs_Offer();
 
         IList<Service_Photos>  GetAllServicePhotos();
+        Task<Is_Offer> GetIs_OfferAsync(int Is_Offer_Id);
+        List<Is_Offer> GetAllIs_OfferRelatedToOfferNOTAsync(Offer offer);
+
     }
 }

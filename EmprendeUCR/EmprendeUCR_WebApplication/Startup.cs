@@ -63,6 +63,12 @@ using EmprendeUCR.Infrastructure.ProductsSearchClientContext;
 using EmprendeUCR.Domain.ConfirmAdminContext.Repositories;
 using EmprendeUCR.Infrastructure.ConfirmAdminContext.Repositories;
 using EmprendeUCR.Infrastructure.ConfirmAdminContext;
+using EmprendeUCR_WebApplication.Application.BillContext;
+using EmprendeUCR_WebApplication.Application.BillContext.Implementations;
+using EmprendeUCR_WebApplication.Infrastructure.BillContext.Implementations;
+using EmprendeUCR_WebApplication.Infrastructure.BillContext;
+using EmprendeUCR_WebApplication.Infrastructure.Core.OfferContext.Repositories;
+using EmprendeUCR_WebApplication.Infrastructure.Core.OfferContext;
 
 namespace EmprendeUCR_WebApplication
 {
@@ -96,6 +102,7 @@ namespace EmprendeUCR_WebApplication
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
                 options.EnableSensitiveDataLogging();
             });
+            services.AddDbContext<OfferDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
 
 
@@ -239,7 +246,7 @@ namespace EmprendeUCR_WebApplication
             //services.AddScoped<ServiceService>();
 
 
-
+            services.AddScoped<IOfferRepository, OfferRepository>();
             services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
 
             services.AddTransient<IShoppingCartService, ShoppingCartService>();
@@ -256,6 +263,9 @@ namespace EmprendeUCR_WebApplication
 
             services.AddScoped<INotificationRepository, NotificationRepositoryHandler>();
             services.AddScoped<INotificationService, NotificationService>();
+
+            services.AddScoped<IBillService, BillService>();
+            services.AddScoped<IPdfCreation, PdfCreation>();
 
         }
 

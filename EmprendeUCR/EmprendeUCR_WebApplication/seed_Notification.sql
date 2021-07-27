@@ -4,7 +4,7 @@ MERGE INTO [User] AS Target
 USING (VALUES 
         ('juan.valverde@ucr.ac.cr','Juan','Valverde','Campos', NULL, NULL, NULL, NULL, NULL),
         ('saguilar1999@hotmail.com','Silvia','Aguilar','Guerrero', NULL, NULL, NULL, NULL, NULL),
-        ('juan@hotmail.com','Juan','Valverde','Campos', NULL, NULL, NULL, NULL, NULL)
+        ('juan@hotmail.com','Josue','Valverde','Campos', NULL, NULL, NULL, NULL, NULL)
 )
 AS Source ([Email], [Name], [F_Last_Name], [S_Last_Name], [Birth_Date], [Province_Name], [Canton_Name], [District_Name], [Email_Confirmation]) 
 ON Target.[Email] = Source.[Email] 

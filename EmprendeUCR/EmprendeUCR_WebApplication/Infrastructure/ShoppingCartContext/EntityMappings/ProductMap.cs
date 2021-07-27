@@ -41,6 +41,7 @@ namespace EmprendeUCR_WebApplication.Infrastructure.ShoppingCartContext.EntityMa
             builder.HasMany(e => e.Product_Photos)
                    .WithOne(c => c.product!)
                    .HasForeignKey(e => new { e.Code_ID, e.Entrepreneur_Email , e.Category_ID });
+            builder.Ignore(p => p.currentPrice);
         }
     }
 }
