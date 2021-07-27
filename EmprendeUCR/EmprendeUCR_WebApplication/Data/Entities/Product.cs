@@ -30,7 +30,7 @@ namespace EmprendeUCR_WebApplication.Data.Entities
             RuleFor(x => x.Product_Name)
                 .NotEmpty().WithMessage("El nombre del product no puede estar vacio");
             RuleFor(x => x.Price)
-               .LessThanOrEqualTo(0).WithMessage("El precio debe ser mayor a 0");
+               .GreaterThan(0).WithMessage("El precio debe ser mayor a 0");
             RuleFor(x => x.Price)
                .NotEmpty().WithMessage("El precio no puede estar vacio");
             RuleFor(x => x.Category_ID)
