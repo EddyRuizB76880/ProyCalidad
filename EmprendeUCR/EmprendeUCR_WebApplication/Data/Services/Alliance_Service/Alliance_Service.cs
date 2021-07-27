@@ -47,6 +47,7 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return _context.Alliance.Where(otherEntrepreneur => String.Equals(otherEntrepreneur.User_Email, email) || String.Equals(otherEntrepreneur.Ally_User_Email, email)).ToList();
         }
 
+
         public List<Alliance> getAlliancesByEntrepreneurEmailAndStatus(string email, int status)
         {
             return _context.Alliance.Where(otherEntrepreneur => (String.Equals(otherEntrepreneur.User_Email, email) || String.Equals(otherEntrepreneur.Ally_User_Email, email)) && otherEntrepreneur.Alliance_Status == status).ToList();

@@ -75,7 +75,7 @@
                                 <!--Obtiene la foto del primer servicio incolucrado en la oferta-->
                                 var service_foto = Service_PhotosService.loadServicePhoto(getServiceIDFromOffer(offer));
                                 <!--Hace que todo el cuadro sea clickeable, si se hace click redirige al usuario a la vista de la oferta-->
-                                <tr @onclick="() => viewOffer(offer)">
+                                <tr class ='hover-light-grey' @onclick="() => viewOffer(offer)">
                                     <!--Display de la foto asignada para la oferta-->
                                     @if (product_foto != null)
                                     {
@@ -131,7 +131,7 @@
                                 <!--Obtiene la foto del primer servicio incolucrado en la oferta-->
                                 var service_foto = Service_PhotosService.loadServicePhoto(getServiceIDFromOffer(offer));
                                 <!--Hace que todo el cuadro sea clickeable, si se hace click redirige al usuario a la vista de la oferta-->
-                                <tr @onclick="() => viewOffer(offer)">
+                                <tr class ='hover-light-grey' @onclick="() => viewOffer(offer)">
                                     <!--Display photo-->
                                     @if (product_foto != null)
                                     {

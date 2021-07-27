@@ -53,7 +53,7 @@ namespace EmprendeUCR_WebApplication.Data.Services
 
         public async Task<Offer> GetOfferAsync(int Offer_Id)
         {
-            
+
             Offer offer = await _context.Offer.FirstOrDefaultAsync(o => o.Offer_ID.Equals(Offer_Id));
             return offer;
 
@@ -62,7 +62,7 @@ namespace EmprendeUCR_WebApplication.Data.Services
 
         public async Task<List<Offer>> GetAllOffersAsync()
         {
-           
+
             return await _context.Offer.ToListAsync();        // Listado 2
         }
 
@@ -86,12 +86,50 @@ namespace EmprendeUCR_WebApplication.Data.Services
             {
                 var relatedOffer = _context.Offer.FirstOrDefault(c => String.Equals(c.Offer_ID, is_offer.Offer_ID));
                 var alreadyAdded = relatedOffers.FirstOrDefault(c => String.Equals(c.Offer_ID, relatedOffer.Offer_ID));
-                if(alreadyAdded is null)
+                if (alreadyAdded is null)
                 {
                     relatedOffers.Add(relatedOffer);
                 }
             }
             return relatedOffers;
+        }
+
+        public bool hasCommonOffers(string firstEntrepreneur, string secondEntrepreneur)
+        {
+            bool hasCommonOffers = false;
+            // Get entrepreneurs offers
+            List<Offer> firstEntrepreneurOffers = GetOfferFromEntrepreneur(firstEntrepreneur);
+            List<Offer> secondEntrepreneurOffers = GetOfferFromEntrepreneur(secondEntrepreneur);
+            List<Is_Offer> is_OffersIntoOffer = new List<Is_Offer>();
+            // Check first entrepreneur offers
+            foreach (var offer in firstEntrepreneurOffers)
+            {
+                is_OffersIntoOffer = GetAllIs_OfferRelatedToOfferNOTAsync(offer);
+                foreach (var is_offer in is_OffersIntoOffer)
+                {
+                    hasCommonOffers = is_offer.User_Email == secondEntrepreneur;
+                    // If my offer has the secondEntrepreneur email associated to a product in the offer
+                    if (hasCommonOffers)
+                    {
+                        return true;
+                    }
+                }
+            }
+            // Check second  entrepreneur offers
+            foreach (var offer in secondEntrepreneurOffers)
+            {
+                is_OffersIntoOffer = GetAllIs_OfferRelatedToOfferNOTAsync(offer);
+                foreach (var is_offer in is_OffersIntoOffer)
+                {
+                    hasCommonOffers = is_offer.User_Email == firstEntrepreneur;
+                    // If my offer has the firstEntrepreneur email associated to a product in the offer
+                    if (hasCommonOffers)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
     }
 
