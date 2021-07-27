@@ -104,7 +104,11 @@ namespace EmprendeUCR_WebApplication.Data.Services
 
         }
 
+        public  IList<Product> GetProductsEntrepreneur(string email)
+        {
+            return _context.Product.Where(c => String.Equals(c.Entrepreneur_Email, email)).ToList();
 
+        }
 
         public async Task<IEnumerable<Product>> GetProducts()
         {

@@ -11,11 +11,16 @@
 @inject Product_ServiceService Product_ServiceService
 @inject OfferService OfferService
 @inject Is_OfferService Is_OfferService
+@inject Alliance_Service allianceService 
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 <h3>Editar Oferta</h3>
 <body>
-
+    <!--Mostrar Productos y servicios de aliados-->
+    <div class="form-check form-switch m-lg-3">
+        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" unchecked @onchange="@displayAlliesProductsAndServices">
+        <label class="form-check-label" for="flexSwitchCheckDefault">Mostrar productos y servicios de aliados </label>
+    </div>
     <!-- Mis productos -->
 
     <section class="w-25 float_left border-1 shadow">
@@ -41,7 +46,7 @@
                             <td width="150" valign="middle" align="left">@currentProduct.Price</td>
                             <!--Add to the current offer button-->
                             <td>
-                                <button class="w-150 btn-primary m-2 material-icons align-right" type="button" @onclick="() => addProductToOffer(currentProduct.Code_ID)">add</button>
+                                <button class="w-150 btn-primary m-2 material-icons align-right" type="button" @onclick="() => addProductToOffer(currentProduct.Code_ID, true)">add</button>
                             </td>
                         </tr>
                     }
@@ -74,7 +79,7 @@
                             <td width="150" valign="middle" align="left">@currentService.Price_per_hour</td>
                             <!--Add to the current offer button-->
                             <td>
-                                <button class="w-150 btn-primary m-2 material-icons align-right " type="button" @onclick="() => addServiceToOffer(currentService.Code_ID)">add</button>
+                                <button class="w-150 btn-primary m-2 material-icons align-right " type="button" @onclick="() => addServiceToOffer(currentService.Code_ID, true)">add</button>
                             </td>
                         </tr>
                     }
@@ -82,6 +87,72 @@
             </tbody>
         </table>
 
+        <!--Aliados-->
+        @if (showAlliesProductAndServices)
+        {
+            <h4 class="bg-blue text-center "> Productos de aliados </h4>
+            <table class="m-lg-2">
+                <thead>
+                    <!--Colmun names tag (Nombre, Precio)-->
+                    <tr>
+                        <th width="200" valign="middle" align="center">Nombre</th>
+                        <th width="150" valign="middle" align="center">Precio</th>
+                    </tr>
+                </thead>
+                <!--If there are services related to the current entrepreneur, display them to the user-->
+                <tbody>
+                    @if (_products?.Count > 0)
+                    {
+                        @foreach (var currentProduct in alliedProducts)
+                        {
+                            <tr>
+                                <!--Product name value-->
+                                <td width="200" valign="middle" align="left">@currentProduct.Product_Name</td>
+                                <!--Product price value-->
+                                <td width="150" valign="middle" align="left">@currentProduct.Price</td>
+                                <!--Add to the current offer button-->
+                                <td>
+                                    <button class="w-150 btn-primary m-2 material-icons align-right" type="button" @onclick="() => addProductToOffer(currentProduct.Code_ID, false)">add</button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table><br />
+
+
+            <!-- Mis servicios-->
+
+            <h4 class="bg-blue text-center"> Servicios de aliados </h4>
+            <table class="m-lg-2">
+                <!--Colmun names tag (Nombre, Precio por hora)-->
+                <thead>
+                    <tr>
+                        <th width="200" valign="middle" align="center">Nombre</th>
+                        <th width="100" valign="middle" align="center">Precio por hora</th>
+                    </tr>
+                </thead>
+                <!--If there are services related to the current entrepreneur, display them to the user-->
+                <tbody>
+                    @if (_service?.Count > 0)
+                    {
+                        @foreach (var currentService in alliedServices)
+                        {
+                            <tr>
+                                <!--Service name value-->
+                                <td width="200" valign="middle" align="left">@currentService.Service_Name</td>
+                                <!--Service Price per hour value-->
+                                <td width="150" valign="middle" align="left">@currentService.Price_per_hour</td>
+                                <!--Add to the current offer button-->
+                                <td>
+                                    <button class="w-150 btn-primary m-2 material-icons align-right " type="button" @onclick="() => addServiceToOffer(currentService.Code_ID, false)">add</button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        }
         <div class="row">
             <div class="form-group">
                 <input type="button" class="btn btn-primary text-center m-2" @onclick="@Cancel" value="Volver" />
@@ -143,10 +214,14 @@
                 </tbody>
             </table>
 
-
+            @if(myProductsAndServicesCount == 0 && alliedProductsAndServicesCount > 0)
+            {
+                showConfirmation = false;
+                <p> Por favor agregar al menos un producto o servicio propio :)</p>
+            }
             <!--If there are products or services in the current offer, displays the confirmation button so that the user can proceed to-->
             <!--fill the offer details-->
-            @if ((_addedProducts?.Count > 0 || _addedServices?.Count > 0) && !showConfirmation)
+            @if ((_addedProducts?.Count > 0 || _addedServices?.Count > 0) && !showConfirmation && !(myProductsAndServicesCount == 0 && alliedProductsAndServicesCount > 0))
             {
                 <input type="button" class="btn btn-primary w-30" @onclick="@confirmOffer" value="Confirmar" />
             }
@@ -222,15 +297,25 @@
     IList<Product> _products;
     // A list with all the services from the logged Entrepreneur
     IList<Service> _service;
+    // Allied products
+    IList<Product> alliedProducts = new List<Product>();
+    // Allied services
+    IList<Service> alliedServices = new List<Service>();
     // A list with the added products in the current offer
     IList<Product> _addedProducts = new List<Product>();
     // A list with the added services in the current offer
     IList<Service> _addedServices = new List<Service>();
+    // my products or services in offer count
+    int myProductsAndServicesCount = 0;
+    // allied products or services in offer count
+    int alliedProductsAndServicesCount = 0;
 
     // Variable that hides the infomration error
     bool hideError = true;
     // Variable used to display or not the confirmation button
     bool showConfirmation = false;
+    // Variable used to display or not the product or services of the allies
+    bool showAlliesProductAndServices = false;
     // The sum of the total price of the products and services added to the offer
     int totalPriceFromListedProductsAndServicesInOffer = 0;
     // The initial date of the offer (by default: today)
@@ -241,6 +326,11 @@
     // Stores the email of the user logged
     String userLogged = "";
 
+    // Method to altern the signal to show or not de product and services form the allies
+    public void displayAlliesProductsAndServices()
+    {
+        showAlliesProductAndServices = !showAlliesProductAndServices;
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -249,12 +339,11 @@
         messageStore = new(editContext);
         offer = await OfferService.GetOfferAsync(Int32.Parse( Offer_ID));
         userLogged = await sessionStorage.GetItemAsync<string>("Email");
-        await loadAllProducts(userLogged);
+        await loadAllProducts(userLogged, allianceService.getAlliancesByEntrepreneurEmailAndStatus(userLogged, 1));
         loadAddedProductsAndServices(offer);
     }
 
-    private void HandleValidationRequested(object sender,
-        ValidationRequestedEventArgs args)
+    private void HandleValidationRequested(object sender,ValidationRequestedEventArgs args)
     {
         messageStore.Clear();
 
@@ -284,10 +373,19 @@
     }
 
     // Add the product with the same id to the current offer
-    public void addProductToOffer(int productId)
+    public void addProductToOffer(int productId, bool myItem)
     {
         // Find the product with the same product_id
-        Product productFound = _products.First(product => product.Code_ID == productId);
+        Product productFound;
+        if (myItem)
+        {
+            productFound = _products.First(product => product.Code_ID == productId);
+            myProductsAndServicesCount++;
+        } else
+        {
+            productFound = alliedProducts.First(product => product.Code_ID == productId);
+            alliedProductsAndServicesCount++;
+        }
         // If found, then added to the added products
         if (productFound is not null)
         {
@@ -304,8 +402,18 @@
         getTotalPriceFromListedProductsInOffer();
         // Update the show confirmation button signal
         showConfirmation = false;
-        // Find the product with the same product_id
-        Product productFound = _products.First(product => product.Code_ID == productId);
+        // Find the product with the same product_id var productFoundInMyProducts =_products.Find(product => product.Code_ID == productId);
+
+        var productFoundInMyProducts = _products.Find(product => product.Code_ID == productId);
+        if (productFoundInMyProducts)
+        {
+            myProductsAndServicesCount--;
+        }
+        else
+        {
+            alliedProductsAndServicesCount--;
+        }
+        Product productFound = productFoundInMyProducts ? _products.First(product => product.Code_ID == productId) : alliedProducts.First(product => product.Code_ID == productId);
         // Remove the product found from the added products
         if (productFound is not null)
         {
@@ -314,10 +422,20 @@
     }
 
     // Add the service with the same id to the current offer
-    public void addServiceToOffer(int serviceId)
+    public void addServiceToOffer(int serviceId, bool myItem)
     {
         // Find the service with the same serviceId
-        Service serviceFound = _service.First(service => service.Code_ID == serviceId);
+        Service serviceFound;
+        if (myItem)
+        {
+            serviceFound = _service.First(service => service.Code_ID == serviceId);
+            myProductsAndServicesCount++;
+        }
+        else
+        {
+            serviceFound = alliedServices.First(service => service.Code_ID == serviceId);
+            alliedProductsAndServicesCount++;
+        }
         // If found, then added to the added services
         if (serviceFound is not null)
         {
@@ -336,7 +454,16 @@
         // update the show confirmation offer
         showConfirmation = false;
         // Find the service with the same serviceId
-        Service serviceFound = _service.First(service => service.Code_ID == serviceId);
+        var serviceFoundInMyProducts = _service.Find(service => service.Code_ID == serviceId);
+        if (serviceFoundInMyProducts)
+        {
+            myProductsAndServicesCount--;
+        }
+        else
+        {
+            alliedProductsAndServicesCount--;
+        }
+        Service serviceFound = serviceFoundInMyProducts ? _service.First(service => service.Code_ID == serviceId) : alliedServices.First(service => service.Code_ID == serviceId);
         // Remove the service found from the added services
         if (serviceFound is not null)
         {
@@ -447,13 +574,38 @@
     }
 
     // Load all the products, services, and productService related to the email
-    public async Task loadAllProducts(String email)
+    public async Task loadAllProducts(String email, IList<Alliance> alliances)
     {
+        List<String> alliedEmails = new List<String>();
+        // Get the other allies emails
+        foreach (var allie in alliances)
+        {
+            alliedEmails.Add(allie.Ally_User_Email != email ? allie.Ally_User_Email : allie.User_Email);
+        }
+        loadAlliedProductsAndServices(alliedEmails);
         await loadProducts(email);
         await loadService(email);
-        await loadProductsServices(email);
     }
 
+    public void loadAlliedProductsAndServices(List<String> emails)
+    {
+        // Load allies
+        foreach (var allie in emails)
+        {
+            var allieProducts = ProductService.GetProductsEntrepreneur(allie);
+            // For each allies product, addit to the alliesProducts
+            foreach (var allieProduct in allieProducts)
+            {
+                alliedProducts.Add(allieProduct);
+            }
+            // Add each service to the list
+            var allieServices = ServiceService.GetServicesEntrepreneur(allie);
+            foreach (var allieService in allieServices)
+            {
+                alliedServices.Add(allieService);
+            }
+        }
+    }
     // Load the products related to the given entrepreneur email
     public async Task loadProducts(String email)
     {
@@ -483,6 +635,13 @@
                 for (int amount = 0; amount < is_offer.Amount; amount++)
                 {
                     _addedProducts.Add(product);
+                    if (_products.Find(search => search.Code_ID == product.Code_ID))
+                    {
+                        myProductsAndServicesCount++;
+                    } else
+                    {
+                        alliedProductsAndServicesCount++;
+                    }
                 }
 
             }
@@ -492,6 +651,14 @@
                 for (int amount = 0; amount < is_offer.Amount; amount++)
                 {
                     _addedServices.Add(service);
+                    if (_service.Find(search => search.Code_ID == service.Code_ID))
+                    {
+                        myProductsAndServicesCount++;
+                    }
+                    else
+                    {
+                        alliedProductsAndServicesCount++;
+                    }
                 }
             }
         }

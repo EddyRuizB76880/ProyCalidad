@@ -10,6 +10,7 @@
 @inject UserServicePandemic UserService
 @inject Alliance_Service allianceService
 @inject OrderService OrderService
+@inject OfferService offerService
 @inject NavigationManager NavManager
 @inject CategoryService CategoryService
 @inject HasSuppliesService HasSuppliesService
@@ -136,6 +137,25 @@ else
                     <p> Seleccione las alianzas que desea desplegar :)</p>
                 }
 
+                @if (showOfferAlertMessage)
+                {
+                    <div class="modal fade show d-block" id="exampleModal" tabindex="-1" role="dialog">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="titleLabel">Error al eliminar la alianza.</h5>
+                                    <button type="button" class="close" @onclick="@showOfferErrorPopUp" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">X</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <span>Existe una o varias ofertas que utiliza productos o servicios de ambos emprendedores, por favor borrarlas. :)</span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                }
             </tbody>
         </table>
 
@@ -179,6 +199,8 @@ else
 
     // Loading page
     bool loadingPage = true;
+    // Show offers alert
+    bool showOfferAlertMessage = false;
 
 
     protected override async Task OnInitializedAsync()
@@ -216,8 +238,22 @@ else
 
     public void deleteAlliance(Alliance alliance, List<Alliance> list)
     {
-        list.Remove(alliance);
-        allianceService.delete_Alliace(alliance);
+        if (!checkIfAllianceHasOffers(alliance))
+        {
+            list.Remove(alliance);
+            allianceService.delete_Alliace(alliance);
+        }
+        else
+        {
+            showOfferErrorPopUp();
+        }
+    }
+
+    public bool checkIfAllianceHasOffers(Alliance alliance)
+    {
+        string allie = alliance.Ally_User_Email != userLogged ? alliance.Ally_User_Email : alliance.User_Email;
+
+        return offerService.hasCommonOffers(userLogged, allie);
     }
 
     public void acceptAlliance(Alliance alliance)
@@ -266,5 +302,10 @@ else
 
 
 
+
+    public void showOfferErrorPopUp()
+    {
+        showOfferAlertMessage = !showOfferAlertMessage;
+    }
 }
 
