@@ -9,6 +9,7 @@
 @inject UserServicePandemic UserService
 @inject Alliance_Service allianceService
 @inject OrderService OrderService
+@inject OfferService offerService
 @inject NavigationManager NavManager
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
@@ -65,9 +66,9 @@ else
                 {
                     @foreach (var pendingAlliance in myPendingAlliances)
                     {
-                        <tr class ='hover-light-grey' @onclick="() => viewEntrepreneurProfile(pendingAlliance.User_Email != userLogged? pendingAlliance.User_Email : pendingAlliance.Ally_User_Email)">
+                        <tr class='hover-light-grey'>
                             <!-- Nombre del emprendedor -->
-                            <td scope="row" width="200" valign="middle" align="left">@(pendingAlliance.User_Email != userLogged? pendingAlliance.User_Email : pendingAlliance.Ally_User_Email)</td>
+                            <td scope="row" width="200" valign="middle" align="left"  @onclick="() => viewEntrepreneurProfile(pendingAlliance.User_Email != userLogged? pendingAlliance.User_Email : pendingAlliance.Ally_User_Email)">@(pendingAlliance.User_Email != userLogged? pendingAlliance.User_Email : pendingAlliance.Ally_User_Email)</td>
                             <!-- Categorias -->
                             <td scope="row" width="200" valign="middle" align="left"> Categoria </td>
                             <!-- Productos -->
@@ -93,9 +94,9 @@ else
                 {
                     @foreach (var acceptedAlliances in myAcceptedAlliances)
                     {
-                        <tr class ='hover-light-grey' @onclick="() => viewEntrepreneurProfile(acceptedAlliances.User_Email != userLogged? acceptedAlliances.User_Email : acceptedAlliances.Ally_User_Email)">
+                        <tr class='hover-light-grey'>
                             <!-- Nombre del emprendedor -->
-                            <td scope="row" width="200" valign="middle" align="left">@(acceptedAlliances.User_Email != userLogged? acceptedAlliances.User_Email : acceptedAlliances.Ally_User_Email)</td>
+                            <td scope="row" width="200" valign="middle" align="left" @onclick="() => viewEntrepreneurProfile(acceptedAlliances.User_Email != userLogged? acceptedAlliances.User_Email : acceptedAlliances.Ally_User_Email)">@(acceptedAlliances.User_Email != userLogged? acceptedAlliances.User_Email : acceptedAlliances.Ally_User_Email)</td>
                             <!-- Categorias -->
                             <td scope="row" width="200" valign="middle" align="left"> Categoria </td>
                             <!-- Productos -->
@@ -113,9 +114,9 @@ else
                 {
                     @foreach (var rejectedAlliance in myRejectedAlliances)
                     {
-                        <tr class ='hover-light-grey' @onclick="() => viewEntrepreneurProfile(rejectedAlliance.User_Email != userLogged? rejectedAlliance.User_Email : rejectedAlliance.Ally_User_Email)">
+                        <tr class='hover-light-grey'>
                             <!-- Nombre del emprendedor -->
-                            <td scope="row" width="200" valign="middle" align="left">@(rejectedAlliance.User_Email != userLogged? rejectedAlliance.User_Email : rejectedAlliance.Ally_User_Email)</td>
+                            <td scope="row" width="200" valign="middle" align="left" @onclick="() => viewEntrepreneurProfile(rejectedAlliance.User_Email != userLogged? rejectedAlliance.User_Email : rejectedAlliance.Ally_User_Email)">@(rejectedAlliance.User_Email != userLogged? rejectedAlliance.User_Email : rejectedAlliance.Ally_User_Email)</td>
                             <!-- Categorias -->
                             <td scope="row" width="200" valign="middle" align="left"> -------- </td>
                             <!-- Productos -->
@@ -129,11 +130,30 @@ else
                 }
 
                 <!--Cuando no hay tipos de alianzas marcados-->
-                @if(!displayMyAcceptedAlliances && !displayMyPendingAlliances && !displayMyRejectedAlliances)
+                @if (!displayMyAcceptedAlliances && !displayMyPendingAlliances && !displayMyRejectedAlliances)
                 {
                     <p> Seleccione las alianzas que desea desplegar :)</p>
                 }
 
+                @if (showOfferAlertMessage)
+                {
+                    <div class="modal fade show d-block" id="exampleModal" tabindex="-1" role="dialog">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="titleLabel">Error al eliminar la alianza.</h5>
+                                    <button type="button" class="close" @onclick="@showOfferErrorPopUp" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">X</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <span>Existe una o varias ofertas que utiliza productos o servicios de ambos emprendedores, por favor borrarlas. :)</span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                }
             </tbody>
         </table>
 
@@ -165,6 +185,8 @@ else
     bool displayMyRejectedAlliances = false;
     // Loading page
     bool loadingPage = true;
+    // Show offers alert
+    bool showOfferAlertMessage = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -196,8 +218,22 @@ else
 
     public void deleteAlliance(Alliance alliance, List<Alliance> list)
     {
-        list.Remove(alliance);
-        allianceService.delete_Alliace(alliance);
+        if (!checkIfAllianceHasOffers(alliance))
+        {
+            list.Remove(alliance);
+            allianceService.delete_Alliace(alliance);
+        }
+        else
+        {
+            showOfferErrorPopUp();
+        }
+    }
+
+    public bool checkIfAllianceHasOffers(Alliance alliance)
+    {
+        string allie = alliance.Ally_User_Email != userLogged ? alliance.Ally_User_Email : alliance.User_Email;
+
+        return offerService.hasCommonOffers(userLogged, allie);
     }
 
     public void acceptAlliance(Alliance alliance)
@@ -214,6 +250,11 @@ else
     public void viewEntrepreneurProfile(string entrepreneurEmail)
     {
         NavManager.NavigateTo("/My_Alliance/ViewClient/" + entrepreneurEmail);
+    }
+
+    public void showOfferErrorPopUp()
+    {
+        showOfferAlertMessage = !showOfferAlertMessage;
     }
 }
 
