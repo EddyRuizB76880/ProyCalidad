@@ -2,6 +2,7 @@
 @using EmprendeUCR_WebApplication.Data.Services
 @using EmprendeUCR_WebApplication.Data.Entities
 @using EmprendeUCR_WebApplication.Application.OrderContext.Implementations
+@using EmprendeUCR_WebApplication.Data.Services.Categories
 @using System
 @inject EntrepreneurService EntrepreneurService
 @inject Product_ServiceService Product_ServiceService
@@ -11,8 +12,13 @@
 @inject OrderService OrderService
 @inject OfferService offerService
 @inject NavigationManager NavManager
+@inject CategoryService CategoryService
+@inject HasSuppliesService HasSuppliesService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
-
+@inject EntrepreneurService EntrepreneurService
+@inject ProductService ProductService
+@inject Product_ServiceService Product_ServiceService
+@inject UserServicePandemic UserService
 
 @if (loadingPage)
 {
@@ -51,42 +57,40 @@ else
                     <!--Emprendedor header-->
                     <th scope="col" width="200" valign="middle" align="center"> Emprendedor </th>
                     <!--Categorías header-->
-                    <th scope="col" width="200" valign="middle" align="center"> Categorías </th>
-                    <!--Productos header-->
-                    <th scope="col" width="200" valign="middle" align="center"> Productos o Servicios </th>
                     <!--Estado de solicitud  header-->
                     <th scope="col" width="200" valign="middle" align="center"> Estado de solicitud </th>
                     <!--Acciones header-->
                     <th scope="col" width="200" valign="middle" align="center"> Acciones </th>
                 </tr>
             </thead>
+
             <tbody>
                 <!--Mis alianzas pendientes-->
                 @if (displayMyPendingAlliances && myPendingAlliances?.Count > 0)
                 {
                     @foreach (var pendingAlliance in myPendingAlliances)
                     {
-                        <tr class='hover-light-grey'>
-                            <!-- Nombre del emprendedor -->
-                            <td scope="row" width="200" valign="middle" align="left"  @onclick="() => viewEntrepreneurProfile(pendingAlliance.User_Email != userLogged? pendingAlliance.User_Email : pendingAlliance.Ally_User_Email)">@(pendingAlliance.User_Email != userLogged? pendingAlliance.User_Email : pendingAlliance.Ally_User_Email)</td>
-                            <!-- Categorias -->
-                            <td scope="row" width="200" valign="middle" align="left"> Categoria </td>
-                            <!-- Productos -->
-                            <td scope="row" width="200" valign="middle" align="left"> Producto </td>
-                            <!-- Estado de solicitud -->
-                            <td scope="row" width="200" valign="middle" align="left">@(pendingAlliance.User_Email == userLogged? "Esperando respuesta" : "Pendiente")</td>
-                            <!--Acciones de solicitud-->
-                            <th scope="row">
-                                <!--Rechazar alianza-->
-                                <button type="button" class="btn btn-danger material-icons-outlined " @onclick="() => deleteAlliance(pendingAlliance, myPendingAlliances)">delete</button>
-                                <!--Si es una solicitud de otro emprendedor, despliega la opcion de aceptar la alianza-->
-                                @if (pendingAlliance.User_Email != userLogged)
-                                {
-                                    <button type="button" class="btn btn-success" @onclick="() => acceptAlliance(pendingAlliance)"> Aceptar</button>
-                                }
-                            </th>
-                        </tr>
+
+                    <tr class='hover-light-grey' @onclick="() => viewEntrepreneurProfile(pendingAlliance.User_Email != userLogged ? pendingAlliance.User_Email : pendingAlliance.Ally_User_Email)">
+                    <!-- Nombre del emprendedor -->
+                    <td scope="row" width="200" valign="middle" align="left">@(pendingAlliance.User_Email != userLogged ? pendingAlliance.User_Email : pendingAlliance.Ally_User_Email)</td>
+                    <!-- Categorias -->
+
+                    <!-- Estado de solicitud -->
+                    <td scope="row" width="200" valign="middle" align="left">@(pendingAlliance.User_Email == userLogged ? "Esperando respuesta" : "Pendiente")</td>
+                    <!--Acciones de solicitud-->
+                    <th scope="row">
+                        <!--Rechazar alianza-->
+                        <button type="button" class="btn btn-danger material-icons-outlined m-lg-2 " @onclick="() => deleteAlliance(pendingAlliance, myPendingAlliances)">delete</button>
+                        <!--Si es una solicitud de otro emprendedor, despliega la opcion de aceptar la alianza-->
+                        @if (pendingAlliance.User_Email != userLogged)
+                        {
+                            <button type="button" class="btn btn-success material-icons-outlined" @onclick="() => acceptAlliance(pendingAlliance)"> done</button>
+                        }
+                    </th>
+                </tr>
                     }
+
                 }
 
                 <!-- Mis alianzas aceptadas-->
@@ -94,19 +98,20 @@ else
                 {
                     @foreach (var acceptedAlliances in myAcceptedAlliances)
                     {
-                        <tr class='hover-light-grey'>
+
+
+
+                        <tr class='hover-light-grey' @onclick="() => viewEntrepreneurProfile(acceptedAlliances.User_Email != userLogged ? acceptedAlliances.User_Email : acceptedAlliances.Ally_User_Email)">
                             <!-- Nombre del emprendedor -->
-                            <td scope="row" width="200" valign="middle" align="left" @onclick="() => viewEntrepreneurProfile(acceptedAlliances.User_Email != userLogged? acceptedAlliances.User_Email : acceptedAlliances.Ally_User_Email)">@(acceptedAlliances.User_Email != userLogged? acceptedAlliances.User_Email : acceptedAlliances.Ally_User_Email)</td>
+                            <td scope="row" width="200" valign="middle" align="left">@(acceptedAlliances.User_Email != userLogged ? acceptedAlliances.User_Email : acceptedAlliances.Ally_User_Email)</td>
                             <!-- Categorias -->
-                            <td scope="row" width="200" valign="middle" align="left"> Categoria </td>
-                            <!-- Productos -->
-                            <td scope="row" width="200" valign="middle" align="left"> Producto </td>
                             <!-- Estado de solicitud -->
                             <td scope="row" width="200" valign="middle" align="left">Aceptado</td>
                             <!--Borrar alianza-->
                             <th scope="row"> <button type="button" class="btn btn-danger material-icons-outlined " @onclick="() => deleteAlliance(acceptedAlliances, myAcceptedAlliances)">delete</button> </th>
                         </tr>
                     }
+
                 }
 
                 <!--Mis alianzas rechazadas-->
@@ -114,13 +119,10 @@ else
                 {
                     @foreach (var rejectedAlliance in myRejectedAlliances)
                     {
-                        <tr class='hover-light-grey'>
+                        <tr class='hover-light-grey' @onclick="() => viewEntrepreneurProfile(rejectedAlliance.User_Email != userLogged ? rejectedAlliance.User_Email : rejectedAlliance.Ally_User_Email)">
                             <!-- Nombre del emprendedor -->
-                            <td scope="row" width="200" valign="middle" align="left" @onclick="() => viewEntrepreneurProfile(rejectedAlliance.User_Email != userLogged? rejectedAlliance.User_Email : rejectedAlliance.Ally_User_Email)">@(rejectedAlliance.User_Email != userLogged? rejectedAlliance.User_Email : rejectedAlliance.Ally_User_Email)</td>
+                            <td scope="row" width="200" valign="middle" align="left">@(rejectedAlliance.User_Email != userLogged ? rejectedAlliance.User_Email : rejectedAlliance.Ally_User_Email)</td>
                             <!-- Categorias -->
-                            <td scope="row" width="200" valign="middle" align="left"> -------- </td>
-                            <!-- Productos -->
-                            <td scope="row" width="200" valign="middle" align="left"> -------- </td>
                             <!-- Estado de solicitud -->
                             <td scope="row" width="200" valign="middle" align="left">Rechazado</td>
                             <!--Borrar alianza-->
@@ -183,10 +185,23 @@ else
     bool displayMyPendingAlliances = true;
     // Display my rejected alliances
     bool displayMyRejectedAlliances = false;
+
+    IList<Product_Service> products_services_general_list = new List<Product_Service>();
+    List<my_User> users_list = new List<my_User>();
+    List<HasSupplies> has_supplies_list = new List<HasSupplies>();
+    string selectedEmail;
+
+    public class my_User
+    {
+        public User entrepreneur { get; set; }
+        public IList<Category> categories { get; set; }
+    }
+
     // Loading page
     bool loadingPage = true;
     // Show offers alert
     bool showOfferAlertMessage = false;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -199,6 +214,11 @@ else
         myRejectedAlliances = allianceService.getAlliancesByEntrepreneurEmailAndStatus(userLogged, 2);
         // Sign to the page that alerts already load all
         loadingPage = false;
+        selectedEmail = await sessionStorage.GetItemAsync<string>("Email");
+        products_services_general_list = await Product_ServiceService.GetAllProductsServicesAsync();
+        has_supplies_list = await HasSuppliesService.GetAllHasSuppliesEntrepreneurAsync(selectedEmail);
+        await ChargeNonRepetedCustomers();
+
     }
 
     public void allowMyAceptedAlliances()
@@ -251,6 +271,37 @@ else
     {
         NavManager.NavigateTo("/My_Alliance/ViewClient/" + entrepreneurEmail);
     }
+
+
+
+    private async Task ChargeNonRepetedCustomers()
+    {
+        foreach (var prod in products_services_general_list)
+        {
+            var List = has_supplies_list.FindAll(s => s.Supplie_ID == prod.Category_ID);
+            if (List.Count() > 0)
+            {
+                var userAlreadyExists = users_list.FindAll(u => u.entrepreneur.Email == prod.Entrepreneur_Email).Count() > 0;
+                if (!userAlreadyExists && prod.Entrepreneur_Email != selectedEmail)
+
+                {
+                    my_User userToAdd = new my_User();
+                    userToAdd.categories = new List<Category>();
+                    userToAdd.entrepreneur = await UserService.getUser(prod.Entrepreneur_Email);
+                    var cat = CategoryService.getCategory(prod.Category_ID);
+                    userToAdd.categories.Add(cat);
+                    users_list.Add(userToAdd);
+                }
+
+            }
+        }
+    }
+
+
+
+
+
+
 
     public void showOfferErrorPopUp()
     {

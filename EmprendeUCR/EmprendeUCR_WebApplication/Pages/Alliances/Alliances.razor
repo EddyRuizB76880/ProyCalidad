@@ -27,7 +27,7 @@ else
     <body>
         <h3>Sugerencias de alianzas</h3>
         <!--Sugerencias de alianzas -->
-        <table class=" table">
+        <table class=" table shadow">
             <!--Table Headers-->
             <thead class=" bg-blue">
                 <tr>
@@ -35,6 +35,8 @@ else
                     <th scope="col" width="200" valign="middle" align="center"> Emprendedor </th>
                     <!--Vende header-->
                     <th scope="col" width="200" valign="middle" align="center"> Vende </th>
+                    <!--Productos que vende r-->
+                    <th scope="col" width="200" valign="middle" align="center"> Productos </th>
                     <!--Acciones header-->
                     <th scope="col" width="200" valign="middle" align="center"> Acciones </th>
                 </tr>
@@ -46,20 +48,52 @@ else
 
                     @foreach (var user in users_list)
                     {
-                        <tr>
-                            <!-- Entrepreneur name-->
-                            <td scope="row" width="200" valign="middle" align="left">@user.entrepreneur.Name @user.entrepreneur.F_Last_Name</td>
-                            <!-- Categoria-->
-                            @foreach (var categorie in user.categories)
-                            {
-                                <td scope="row" width="200" valign="middle" align="left">@categorie.Title</td>
-                            }
-                        <div @onclick="() => sendRequest()">
-                            <!-- Enviar solicitud-->
-                            <input type="button" class="btn btn-primary btn-space" @onclick="@sendRequest" value="Enviar solicitud" />
-                            </div>
+                        @for (int index = 0; index < user.products.Count(); index++) {
 
-                        </tr>
+                            var my_Product = user.products[index];
+                           <tr>
+                               <td>
+                                   <!-- Entrepreneur name-->
+                                   @if (index == 0)
+                                   {
+                                       @user.entrepreneur.Email;
+                                   }
+
+                               </td>
+                                <!-- Categoria-->
+                               <td>
+                                   @if(index<user.categories.Count()){
+
+                                      @user.categories[index].Title;
+                                    }
+
+                               </td>
+
+                               <td>
+
+                                   @if (index < user.products.Count())
+                                   {
+                                   <div @onclick="() => view_Product(my_Product.Code_ID) ">  @my_Product.Product_Name</div>
+                                     
+                                     }
+
+                               </td>
+
+
+                               <td>
+                                   @if (index == 0) { 
+                                   
+                                   <input type="button" class="btn btn-primary btn-space" @onclick="@sendRequest" value="Enviar solicitud" />
+                                    }
+
+                               </td>
+                               
+
+                           </tr>
+                        
+                         }
+
+                      
                     }
                 }
                 else
@@ -67,8 +101,8 @@ else
                     <!-- If there is no suggestions, display no suggest message-->
                     <tr>No hay sugerencias por el momento. :)</tr>
                 }
-            </tbody>
-        </table>
+                </tbody>
+            </table>
         <!-- Return to my alliances page-->
         <input type="button" class="btn btn-primary btn-space" @onclick="@Cancel" value="Volver" />
     </body>
@@ -80,12 +114,15 @@ else
     IList<Product_Service> products_services_general_list = new List<Product_Service>();
     List<my_User> users_list = new List<my_User>();
     List<HasSupplies> has_supplies_list = new List<HasSupplies>();
+
     string selectedEmail;
 
     public class my_User
     {
         public User entrepreneur { get; set; }
         public IList<Category> categories { get; set; }
+
+        public IList <Product> products { get; set; }
     }
 
 
@@ -114,19 +151,30 @@ else
                 {
                     my_User userToAdd = new my_User();
                     userToAdd.categories = new List<Category>();
+                    IList<Product> products_alliance = await ProductService.GetProductsEntrepreneurAsync(prod.Entrepreneur_Email);
+                    userToAdd.categories = await CategoryService.getAllCategoryBySupplies(products_alliance.ToList(), has_supplies_list);
+                    userToAdd.products = await ProductService.getProducts_By_Supplies(products_alliance.ToList(), has_supplies_list);
                     userToAdd.entrepreneur = await UserService.getUser(prod.Entrepreneur_Email);
                     var cat = CategoryService.getCategory(prod.Category_ID);
-                    userToAdd.categories.Add(cat);
                     users_list.Add(userToAdd);
                 }
 
             }
         }
+
+
+
     }
 
     void Cancel()
     {
         NavigationManager.NavigateTo("My_Alliance");
+    }
+
+
+    void view_Product(int prod_Id)
+    {
+        NavigationManager.NavigateTo("/ViewProduct" + "/" + prod_Id);
     }
 
     public void sendRequest()
