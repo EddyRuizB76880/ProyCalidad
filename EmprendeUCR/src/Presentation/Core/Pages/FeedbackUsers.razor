@@ -14,6 +14,11 @@ else
         <h5> @secundaryMessage </h5>
         <h5> @thirdMessage  </h5>
     </div>
+
+    if(message_Type == 9)
+    {
+        redirect();
+    }
 }
 
 
@@ -25,12 +30,20 @@ else
     string thirdMessage = "";
     bool cargando = true;
 
+    string userType;
+
+    System.Timers.Timer timer;
+
     protected override void OnInitialized()
     {
         var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
         if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("type", out var parameter))
         {
             message_Type = Convert.ToInt32(parameter);
+            if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("userType", out var parameter2))
+            {
+                userType = parameter2;
+            }
         }
 
         if (message_Type > 0)
@@ -52,7 +65,8 @@ else
                 /*Error user registration*/
                 case 3:
                     principalMessage = "Error registrando datos del usuario.";
-                    secundaryMessage = "Correo ya ha sido confirmado o no fue encontrado, por favor inicie sesión o recupere la cuenta.";
+                    secundaryMessage = "Verifique su bandeja de entrada por un nuevo correo.";
+                    thirdMessage = "Si realizó el registro de datos con éxito, intente iniciar sesión.";
                     break;
 
                 /*Email Send Success*/
@@ -85,9 +99,30 @@ else
                     secundaryMessage = "Debe esperar a la confirmación de su cuenta.";
                     thirdMessage = "Se le enviará un correo con el resultado de su solicitud.";
                     break;
+                case 9:
+                    principalMessage = "Registro completado.";
+                    secundaryMessage = "Ahora será redirigido al inicio de sesión.";
+                    thirdMessage = "Espere un momento por favor.";
+                    break;
+                case 10:
+                    principalMessage = "El link de recuperar contraseña ha caducado.";
+                    secundaryMessage = "Solicite uno nuevo o intente iniciar sesión.";
+                    break;
             }
         }
         cargando = false;
     }
 
+    public void redirect()
+    {
+        timer = new System.Timers.Timer(5000);
+        timer.Elapsed += navigate;
+        timer.Enabled = true;
+    }
+
+    public void navigate(Object source, System.Timers.ElapsedEventArgs e)
+    {
+        timer.Enabled = false;
+        NavigationManager.NavigateTo("/Login?type=" + userType);
+    }
 }

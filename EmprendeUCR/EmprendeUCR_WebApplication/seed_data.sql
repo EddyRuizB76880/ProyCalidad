@@ -1,9 +1,38 @@
 ﻿use DB_Test;
-select * from Client
+
+delete from [Order];
+delete from [Personalized_Status];
+delete from [Generic_Status];
+delete from [Status];
+delete from [Likes];
+delete from [Shopping_Cart_Has];
+delete from [Shopping_Cart];
+delete from [Product];
+delete from [Product_Service];
+delete from [ActiveAdministrators];
+delete from [Likes];
+delete from [Phones];
+delete from [Email_Confirmation];
+delete from [Credentials];
+delete from [Administrator];
+delete from [Members];
+delete from [Entrepreneur];
+delete from [Client];
+delete from [User];
+
 MERGE INTO [User] AS Target
 USING (VALUES 
         ('juan.valverde@ucr.ac.cr','Juan','Valverde','Campos', NULL, NULL, NULL, NULL, NULL),
-        ('saguilar1999@hotmail.com','Silvia','Aguilar','Guerrero', NULL, NULL, NULL, NULL, NULL)
+        ('saguilar1999@hotmail.com','Silvia','Aguilar','Guerrero', NULL, NULL, NULL, NULL, NULL),
+        ('cuenta.user@gmail.com', 'Cuenta', 'User', 'Test', '1999-07-30', 'Alajuela', 'Alajuela', 'Alajuela', 1),
+        ('update.user@gmail.com', 'Update', 'User', 'Test', '1999-07-30', 'Alajuela', 'Alajuela', 'Alajuela', 1),
+        ('add.member@gmail.com', 'Add', 'Member', 'Test', '1999-07-30', 'Alajuela', 'Alajuela', 'Alajuela', 1),
+        ('add.client@gmail.com', 'Add', 'Client', 'Test', '1999-07-30', 'Alajuela', 'Alajuela', 'Alajuela', 1),
+        ('shop.cart@gmail.com', 'Shop', 'Cart', 'Test', '1999-07-30', 'Alajuela', 'Alajuela', 'Alajuela', 1),
+        ('add.entrepreneur@gmail.com', 'Add', 'Entrepreneur', 'Test', '1999-07-30', 'Alajuela', 'Alajuela', 'Alajuela', 1),
+        ('add.admin@gmail.com', 'Add', 'Admin', 'Test', '1999-07-30', 'Alajuela', 'Alajuela', 'Alajuela', 1),
+        ('cuenta.admin@gmail.com', 'Cuenta', 'Admin', 'Test', '1999-07-30', 'Alajuela', 'Alajuela', 'Alajuela', 1),
+        ('email.confirm@gmail.com', 'Email', 'Confirm', 'Test', '1999-07-30', 'Alajuela', 'Alajuela', 'Alajuela', 1)
 )
 AS Source ([Email], [Name], [F_Last_Name], [S_Last_Name], [Birth_Date], [Province_Name], [Canton_Name], [District_Name], [Email_Confirmation]) 
 ON Target.[Email] = Source.[Email] 
@@ -14,7 +43,10 @@ VALUES ([Email], [Name], [F_Last_Name], [S_Last_Name], [Birth_Date], [Province_N
 
 MERGE INTO Members AS Target
 USING (VALUES
-        ('juan.valverde@ucr.ac.cr', 0, NULL, NULL)
+        ('juan.valverde@ucr.ac.cr', 0, NULL, NULL),
+        ('add.client@gmail.com', 0, 0.0, 0.0),
+        ('shop.cart@gmail.com', 0, 0.0, 0.0),
+        ('add.entrepreneur@gmail.com', 0, 0.0, 0.0)
 )
 AS Source ([User_Email], [Score], [Lat], [Long]) 
 ON Target.[User_Email] = Source.[User_Email] 
@@ -25,7 +57,8 @@ VALUES ([User_Email], [Score], [Lat], [Long]);
 
 MERGE INTO Client AS Target
 USING (VALUES
-        ('juan.valverde@ucr.ac.cr')
+        ('juan.valverde@ucr.ac.cr'),
+        ('shop.cart@gmail.com')
 )
 AS Source ([User_Email]) 
 ON Target.[User_Email] = Source.[User_Email] 
@@ -33,6 +66,16 @@ WHEN NOT MATCHED BY TARGET THEN
 INSERT ([User_Email]) 
 VALUES ([User_Email]);
 
+
+MERGE INTO Administrator AS Target
+USING (VALUES
+        ('cuenta.admin@gmail.com')
+)
+AS Source ([User_Email]) 
+ON Target.[User_Email] = Source.[User_Email] 
+WHEN NOT MATCHED BY TARGET THEN 
+INSERT ([User_Email]) 
+VALUES ([User_Email]);
 
 MERGE INTO Entrepreneur AS Target
 USING (VALUES
@@ -44,11 +87,39 @@ WHEN NOT MATCHED BY TARGET THEN
 INSERT ([User_Email], [Presentation]) 
 VALUES ([User_Email], [Presentation]);
 
+MERGE INTO [Credentials] AS Target
+USING (VALUES
+    ('juan.valverde@ucr.ac.cr', 'contraJuan'),
+    ('saguilar1999@hotmail.com', 'contraSilvia')
+)
+AS Source ([User_Email], [Password])
+ON Target.[User_Email] = source.[User_Email]
+WHEN NOT MATCHED BY TARGET THEN
+INSERT ([User_Email], [Password])
+VALUES ([User_Email], [Password]);
+
+MERGE INTO [Email_Confirmation] AS Target
+USING (VALUES
+    ('juan.valverde@ucr.ac.cr', 'hashJuan', '2020-10-10', '2021-10-10'),
+    ('saguilar1999@hotmail.com', 'hashSilvia', '2020-10-10', '2021-10-10')
+)
+AS Source ([Email], [Hash_Code], [Creation_Date], [Expiration_Date])
+ON Target.[Email] = source.[Email]
+WHEN NOT MATCHED BY TARGET THEN
+INSERT ([Email], [Hash_Code], [Creation_Date], [Expiration_Date])
+VALUES ([Email], [Hash_Code], [Creation_Date], [Expiration_Date]);
 
 SET IDENTITY_INSERT [Category]  on 
 MERGE INTO Category AS Target
 USING (VALUES
-        ('Bebidas', NULL, NULL, 10)
+        ('Bebidas', NULL, NULL, 10),
+        ('Electrodomesticos', NULL, NULL, 1),
+        ('Juguetes', NULL, NULL, 2),
+        ('Comidas', NULL, NULL, 3),
+        ('Ropa', NULL, NULL, 4),
+        ('Camisas', NULL, 4, 5),
+        ('Pantalones', NULL, 4, 6),
+        ('Shorts', NULL, 4, 7)
 )
 AS Source ([Title], [Description], [ParentId], [Id]) 
 ON Target.[Id] = Source.[Id] 
@@ -183,3 +254,23 @@ ON Target.[Date_and_hour_of_creation] = Source.[Date_and_hour_of_creation] AND T
 WHEN NOT MATCHED BY TARGET THEN 
 INSERT ([Date_and_hour_of_creation], [Client_Email], [Delivery_date], [Entrepreneur_Email], [State]) 
 VALUES ([Date_and_hour_of_creation], [Client_Email], [Delivery_date], [Entrepreneur_Email], [State]);
+
+MERGE INTO ActiveAdministrators AS TARGET
+USING (VALUES
+       ('cuenta.admin@gmail.com', '2021-06-10 17:15:23.000', 1, 1, 1, '2021-06-13 13:17:40.000')
+)
+AS Source ([Email], Creation_Date, Response, Confirm, Active, Response_Date)
+ON Target.[Email] = Source.[Email]
+WHEN NOT MATCHED BY TARGET THEN
+INSERT ([Email], Creation_Date, Response, Confirm, Active, Response_Date)
+VALUES ([Email], Creation_Date, Response, Confirm, Active, Response_Date);
+
+MERGE INTO [Email_Confirmation] AS TARGET
+USING (VALUES
+    ('email.confirm@gmail.com', 'asdkljaljfha', '2021-07-20', '2021-09-10')
+)
+AS Source ([Email], [Hash_Code], [Creation_Date], [Expiration_Date])
+ON TARGET.[Email] = Source.[Email]
+WHEN NOT MATCHED BY TARGET THEN
+INSERT ([Email], [Hash_Code], [Creation_Date], [Expiration_Date])
+VALUES ([Email], [Hash_Code], [Creation_Date], [Expiration_Date]);

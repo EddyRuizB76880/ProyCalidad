@@ -4,7 +4,7 @@ using EmprendeUCR.Domain.Core.CoreEntities;
 
 namespace EmprendeUCR.Infrastructure.Core.EntityMappings
 {
-    class ClientMap : IEntityTypeConfiguration<Client>
+    public class ClientMap : IEntityTypeConfiguration<Client>
     {
         public void Configure(EntityTypeBuilder<Client> builder)
         {
