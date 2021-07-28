@@ -285,6 +285,11 @@ namespace EmprendeUCR_WebApplication.Infrastructure.NotificationContext.Reposito
             throw new NotImplementedException();
         }
 
+        public int GetProductsQuantity(UserNotification UserNotification)
+        {
+            throw new NotImplementedException();
+        }
+
         /* public void OrderEntrepeneurChange(object sender, RecordChangedEventArg
          * 
          * s<OrderNotificationEntrepeneur> e)

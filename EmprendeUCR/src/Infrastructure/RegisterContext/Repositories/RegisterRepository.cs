@@ -208,5 +208,62 @@ namespace EmprendeUCR.Infrastructure.RegisterContext.Repositories
             }
             return Admin;
         }
+
+        public bool verifyUserType(string email, int userType)
+        {
+            bool exists = false;
+            switch (userType)
+            {
+                case 1:
+                    if (_dbContext.Client.Find(email) != null)
+                    {
+                        exists = true;
+                    }
+                    break;
+
+                case 2:
+                    if (_dbContext.Entrepreneur.Find(email) != null)
+                    {
+                        exists = true;
+                    }
+                    break;
+
+                case 3:
+                    if (_dbContext.Administrator.Find(email) != null)
+                    {
+                        exists = true;
+                    }
+                    break;
+            }
+            return exists;
+        }
+
+        public EmailConfirmation getEmailConfirmation(string email) 
+        {
+            return _dbContext.EmailConfirmation.Find(email);
+        }
+
+        public async Task<string> GetPassword(string email)
+        {
+            Credentials credentials = await _dbContext.Credentials.FirstOrDefaultAsync(c => c.User_Email.Equals(email));
+            if (credentials == null)
+            {
+                return "";
+            }
+            else
+            {
+                return credentials.Password.ToString();
+            }
+        }
+
+        public async Task<bool> verifyMembers(string email) 
+        {
+            Members findMember = await _dbContext.Members.FindAsync(email);
+            if (findMember == null) 
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }

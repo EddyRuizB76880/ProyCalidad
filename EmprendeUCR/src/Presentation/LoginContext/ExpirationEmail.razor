@@ -6,9 +6,10 @@
 @inject ILoginService LoginService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @*<center>*@
-<h2>El correo de confirmación ha vencido</h2>
-<h4>Si desea un nuevo link de confirmación presione el botón</h4>
-
+<center>
+    <h2>El correo de confirmación ha vencido</h2>
+    <h4>Si desea un nuevo link de confirmación presione el botón</h4>
+</center>
 <center>
     <button type="submit" class="btn btn-primary" @onclick="@reeviarCorreo">Reenviar correo confirmación</button>
 </center>

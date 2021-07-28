@@ -284,9 +284,9 @@ else
         if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("email", out var parameter))
         {
             hash_correo = parameter;
-            if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("type", out var type))
+            if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("type", out var parameter2))
             {
-                typeOfUser = type;
+                typeOfUser = parameter2;
             }
         }
 
@@ -469,6 +469,14 @@ else
                     Active = false,
                     Response_Date = DateTime.MinValue,
                 };
+
+                Phones p = new Phones
+                {
+                    User_Email = _email.Email,
+                    Phone_Number = newPhone.Phone_Number,
+                };
+
+                await RegisterService.insertNewPhone(p);
                 await RegisterService.addNewActiveAdministrator(activeAdmin);
                 await RegisterService.insertNewAdministrator(a);
             }
@@ -478,9 +486,10 @@ else
             }
             else
             {
-                if(typeOfUser == "Entrepreneur") { NavigationManager.NavigateTo("/entrepreneur_payment_methods/" + _email.Email); }
-                else { NavigationManager.NavigateTo("/Login?type=" + typeOfUser);}
-
+                //if(typeOfUser == "Entrepreneur") { NavigationManager.NavigateTo("/entrepreneur_payment_methods/" + _email.Email); }
+                if (typeOfUser == "Entrepreneur") { NavigationManager.NavigateTo("/entrepreneur_payment_methods?email=" + _email.Email + "&userType=" + typeOfUser); }
+                //else { NavigationManager.NavigateTo("/Login?type=" + typeOfUser);}
+                else { NavigationManager.NavigateTo("/messagePage?type=9&userType=" + typeOfUser); }
             }
         }
         else

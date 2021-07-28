@@ -170,7 +170,15 @@
                                     {
                                         if (admin.Active)
                                         {
-                                            acceptLogin();
+                                            string BannedMessgae = (await (LoginService.GetBannedMessage(email)));
+                                            if (!String.IsNullOrEmpty(BannedMessgae))
+                                            {
+                                                Error_Message = BannedMessgae;
+                                            }
+                                            else
+                                            {
+                                                acceptLogin();
+                                            }
                                         }
                                         else
                                         {
@@ -195,9 +203,10 @@
                         }
                         else
                         {
-                            if (await (LoginService.CheckBanned(email)))
+                            string BannedMessgae = (await (LoginService.GetBannedMessage(email)));
+                            if ( !String.IsNullOrEmpty(BannedMessgae))
                             {
-                                Error_Message = "Tu cuenta se encuentra baneada";
+                                Error_Message = BannedMessgae;
                             }
                             else
                             {

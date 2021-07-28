@@ -31,10 +31,10 @@ namespace EmprendeUCR_WebApplication.Domain.NotificationContext
         public List<Notification> Notifications { set; get; }
         public bool alreadySubscribed { set; get; }
 
-        internal void orderNotifications()
+        public void orderNotifications()
         {
             if (this.Notifications is not null) {
-                this.Notifications.Sort((p, q) => p.date.CompareTo(q.date));
+                Notifications = Notifications.OrderByDescending(x => x.date).ToList();
             }
         }
 

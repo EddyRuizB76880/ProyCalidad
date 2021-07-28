@@ -37,6 +37,7 @@ namespace EmprendeUCR_WebApplication.Infrastructure.OrderContext.EntityMappings
 
             builder.Ignore(e => e.ShoppingCartHas);
             builder.Ignore(e => e.Product_Photos);
+            builder.Ignore(e => e.currentPrice);
         }
     }
 }

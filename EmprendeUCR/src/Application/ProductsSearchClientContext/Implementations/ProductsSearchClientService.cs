@@ -117,5 +117,15 @@ namespace EmprendeUCR.Application.ProductsSearchClientContext.Implementations
         {
             return _productsSearchClientRepository.getAllServicePhotos();
         }
+
+        public IList<Product> GetProductsByPrice(int searchType)
+        {
+            return _productsSearchClientRepository.GetProductPrice(searchType);
+        }
+
+        public IList<Service> GetServicesByPrice(int searchType)
+        {
+            return _productsSearchClientRepository.GetServiceByPrice(searchType);
+        }
     }
 }

@@ -362,3 +362,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /EmprendeUCR/EmprendeUCR_DB/Security
+/EmprendeUCR/EmprendeUCR_WebApplication/Factura_Orden.pdf

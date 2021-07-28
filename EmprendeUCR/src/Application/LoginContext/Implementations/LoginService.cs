@@ -221,24 +221,33 @@ namespace EmprendeUCR.Application.LoginContext.Implementations
             return await _loginRepository.getActiveAdministrator(email);
         }
 
-        public  async Task<bool> CheckBanned (string email)
+        public async Task<string> GetBannedMessage(string email)
         {
-            bool toReturn = true;
-            
+            string bannedMessage = string.Empty;
             var userBanned = await _loginRepository.CheckBanned(email);
-            
-            if (userBanned == null)
+            if (!(userBanned == null)) // Is banned
             {
-                toReturn = false;
-            }
-            else
-            {
-                if ((DateTime.Now >= userBanned.FinishDate) && (userBanned.Type != true))
+                if (userBanned.Type == 1) // Is total banned
                 {
-                    toReturn = false;
+                    bannedMessage = "Su cuenta se encuentra baneando indefinidamente";
+                }
+                else if (userBanned.FinishDate > DateTime.Now) // Is partial banned
+                {
+                    bannedMessage = "Su cuenta esta baneado temporalemte, faltan:"
+                        + (userBanned.FinishDate - DateTime.Now).Days + "días";
                 }
             }
-            return toReturn;
+            return bannedMessage;
+        }
+
+        public async Task<User> getUserByEmail(string email) 
+        {
+            return await _loginRepository.getUser(email);
+        }
+
+        public Credentials getUserCredentials(string email) 
+        {
+            return _loginRepository.getCredentials(email);
         }
     }
 }

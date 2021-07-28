@@ -10,9 +10,11 @@
 
 @using EmprendeUCR.Application.PaymentInfos;
 @using EmprendeUCR.Domain.PaymentInfos.Entities;
+@using Microsoft.AspNetCore.WebUtilities;
 @inject IHasPaymentInfoService HasPaymentInfoService
 @inject NavigationManager NavigationManager
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
 @if (_isLoading)
 {
     <p>Cargando</p>
@@ -22,15 +24,15 @@ else
     <div class="grid-container">
         <div class="grid-item">
             <b>SINPE Móvil</b>
-            <EmprendeUCR.Presentation.Pages.PaymentInfos.SinpeMovil.SinpeMovilPaymentInfoEntrepreneur emailToRegister=@emailToRegister list=@list/>
+            <EmprendeUCR.Presentation.Pages.PaymentInfos.SinpeMovil.SinpeMovilPaymentInfoEntrepreneur emailToRegister=@emailToRegister list=@list />
         </div>
         <div class="grid-item">
             <b>SINPE IBAN</b>
-            <EmprendeUCR.Presentation.Pages.PaymentInfos.SinpeIban.SinpeIbanPaymentInfoEntrepreneur emailToRegister=@emailToRegister list=@list/>
+            <EmprendeUCR.Presentation.Pages.PaymentInfos.SinpeIban.SinpeIbanPaymentInfoEntrepreneur emailToRegister=@emailToRegister list=@list />
         </div>
         <div class="grid-item">
             <b>Tarjetas</b>
-            <EmprendeUCR.Presentation.Pages.PaymentInfos.Card.CardPaymentInfoEntrepreneur emailToRegister=@emailToRegister list=@list/>
+            <EmprendeUCR.Presentation.Pages.PaymentInfos.Card.CardPaymentInfoEntrepreneur emailToRegister=@emailToRegister list=@list />
         </div>
 
     </div>
@@ -63,10 +65,23 @@ else
     [Parameter]
     public string emailToRegister { get; set; } = string.Empty;
     private string buttonMessage = string.Empty;
+
+    public string typeOfUser = string.Empty;
+
     public List<HasPaymentInfo> list { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("email", out var parameter))
+        {
+            emailToRegister = parameter;
+            if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("userType", out var parameter2))
+            {
+                typeOfUser = parameter2;
+            }
+        }
+
         if (!string.IsNullOrEmpty(emailToRegister))
         {
             buttonMessage = "Finalizar";
@@ -74,11 +89,10 @@ else
         }
         else
         {
-            // TODO: Loading
             string Email = await sessionStorage.GetItemAsync<string>("Email");
             int Type = await sessionStorage.GetItemAsync<int>("Type");
             list = await HasPaymentInfoService.getHasPaymentInfoByEmail(Email);
-          
+
             if (Email == null)
             {
                 NavigationManager.NavigateTo("/Login");
@@ -93,11 +107,10 @@ else
                 _isLoading = false;
             }
         }
-
     }
 
-    private async void finish()
+    private void finish()
     {
-        NavigationManager.NavigateTo("/Login");
+        NavigationManager.NavigateTo("/messagePage?type=9&userType=" + typeOfUser);
     }
 }
