@@ -259,7 +259,7 @@ else
     public void acceptAlliance(Alliance alliance)
     {
         // Change status to accepted
-        alliance.Alliance_Status = 1;
+        allianceService.updateAlliance(alliance, 1);
         // Add it to the accepted alliances list
         myAcceptedAlliances.Add(alliance);
         // Erase it from the pending list
