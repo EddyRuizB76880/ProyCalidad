@@ -8,15 +8,45 @@ namespace EmprendeUCR.UnitTests.Domain
     public class OfferTest
     {
         [Fact]
+        public void tryCreateEmpty()
+        {
+            var newOffer = new Offer();
+            Assert.True(newOffer != null);
+            Assert.True(newOffer.Discount == 0);
+            Assert.True(newOffer.Expire_Date == null);
+            Assert.True(newOffer.Initial_Date == null);
+            Assert.True(newOffer.Offer_Description == null);
+        }
+        [Fact]
+        public void trySetDiscount()
+        {
+            var newOffer = new Offer();
+            newOffer.Discount = 100;
+            Assert.True(newOffer.Discount >= 0);
+            Assert.True(newOffer.Discount != null);
+        }
+        [Fact]
+        public void trySetInitialDate()
+        {
+            var newOffer = new Offer();
+            newOffer.Initial_Date = DateTime.Today;
+            Assert.True(newOffer.Initial_Date != null);
+        }
+        [Fact]
+        public void trySetExpireDate()
+        {
+            var newOffer = new Offer();
+            newOffer.Initial_Date = DateTime.Today;
+            Assert.True(newOffer.Expire_Date != null);
+        }
+        [Fact]
         public void testTypeOffer()
         {
-
             /*
               PIIB12021-467 on PIIB12021-343 Modify offers with the allies
               Driver: Rafael Porras
               Copilot: Andres Chaves
             */
-
             // test products
             Product product1 = new();
             Product product2 = new();
