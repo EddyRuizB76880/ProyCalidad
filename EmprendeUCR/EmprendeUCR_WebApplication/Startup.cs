@@ -131,6 +131,14 @@ namespace EmprendeUCR_WebApplication
             services.AddTransient<EmprendeUCR.Application.ConfirmAdminContext.IConfirmAdminService, EmprendeUCR.Application.ConfirmAdminContext.Implementations.ConfirmAdminService>();
             services.AddTransient<IConfirmAdminRepository, ConfirmAdminRepository>();
 
+            // Clean arquitecture 3DKR
+            services.AddRazorPages();
+            services.AddServerSideBlazor();
+
+            services.AddApplicationLayer();
+            services.AddInfrastructureLayer(
+                Configuration.GetConnectionString("SqlConnection"));
+
             services.AddTransient<EmprendeUCR.Application.PermissionContext.IPermissionService, EmprendeUCR.Application.PermissionContext.Implementations.PermissionService>();
             services.AddTransient<IPermissionRepository, PermissionRepository>();
 

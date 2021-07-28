@@ -13,7 +13,7 @@ namespace EmprendeUCR.Infrastructure.Categories.EntityMappings
             builder.ToTable("Category");
 
             builder.HasKey(c => c.Id);
-
+           
             builder.Property(c => c.Title);
         }
     }
