@@ -27,5 +27,8 @@ namespace EmprendeUCR.Application.ProductsSearchClientContext
         IList<ProductService> GetAllProductsServicesAsync();
 
         IList<Service_Photos> getServicePhotos();
+        IList<Product> GetProductsByPrice(int searchType);
+
+        IList<Service> GetServicesByPrice(int searchType);
     }
 }

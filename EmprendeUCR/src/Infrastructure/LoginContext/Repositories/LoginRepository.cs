@@ -66,39 +66,6 @@ namespace EmprendeUCR.Infrastructure.LoginContext.Repositories
             return await _dbContext.EmailConfirmation.FirstOrDefaultAsync(c => c.Email.Equals(email));
         }
 
-
-        /*        public async Task<bool> verifyClientRecord(string email)
-                {
-                    bool exists = false;
-                    Client _client = await _dbContext.Client.FindAsync(email);
-                    if (_client != null)
-                    {
-                        exists = true;
-                    }
-                    return exists;
-                }
-
-                public async Task<bool> verifyEntrepreneurRecord(string email)
-                {
-                    bool exists = false;
-                    Client _client = await _dbContext.Client.FindAsync(email);
-                    if (_client != null)
-                    {
-                        exists = true;
-                    }
-                    return exists;
-                }
-
-                public async Task<bool> verifyAdministratorRecord(string email)
-                {
-                    bool exists = false;
-                    Entrepreneur _entrepreneur = await _dbContext.Entrepreneur.FindAsync(email);
-                    if (_entrepreneur != null)
-                    {
-                        exists = true;
-                    }
-                    return exists;
-                }*/
         public EmailConfirmation getEmailConfirmation(string hash_code)
         {
             return _dbContext.EmailConfirmation.FirstOrDefault(c => c.Hash_Code.Equals(hash_code));
@@ -137,7 +104,17 @@ namespace EmprendeUCR.Infrastructure.LoginContext.Repositories
 
         public async Task<BannedAcount> CheckBanned(string email)
         {
-            return await _dbContext.BannedAcount.FindAsync(email);
+            return await _dbContext.BannedAcount.FirstOrDefaultAsync(c => c.UserEmail.Equals(email));
+        }
+
+        public async Task<User> getUser(string email) 
+        {
+            return await _dbContext.User.FindAsync(email);
+        }
+
+        public Credentials getCredentials(string email) 
+        {
+            return _dbContext.Credentials.Find(email);
         }
     }
 }

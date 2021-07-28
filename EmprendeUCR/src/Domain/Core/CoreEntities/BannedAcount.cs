@@ -11,7 +11,7 @@ namespace EmprendeUCR.Domain.Core.CoreEntities
         public string UserEmail {get; set;}
         public DateTime BeginDate { get; set; }
         public DateTime FinishDate { get; set; }
-        public bool Type { get; set; }
+        public int Type { get; set; }
 
     }
 }

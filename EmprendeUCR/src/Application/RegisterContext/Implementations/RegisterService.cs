@@ -320,5 +320,23 @@ namespace EmprendeUCR.Application.RegisterContext.Implementations
         {
             return _RegisterRepository.AddMemberLikes(l);
         }
+
+        public bool verifyUserTypes(string email, int userType) 
+        {
+            return _RegisterRepository.verifyUserType(email, userType);
+        }
+        public EmailConfirmation getEmailConfirmationByEmail(string email) 
+        {
+            return _RegisterRepository.getEmailConfirmation(email);
+        }
+        public async Task<string> getUserPassword(string email) 
+        {
+            return await _RegisterRepository.GetPassword(email);
+        }
+
+        public async Task<bool> verifyMembersExistence(string email)
+        {
+            return await _RegisterRepository.verifyMembers(email);
+        }
     }
 }

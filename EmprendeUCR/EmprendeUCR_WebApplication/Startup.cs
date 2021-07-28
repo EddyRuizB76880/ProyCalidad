@@ -63,6 +63,15 @@ using EmprendeUCR.Infrastructure.ProductsSearchClientContext;
 using EmprendeUCR.Domain.ConfirmAdminContext.Repositories;
 using EmprendeUCR.Infrastructure.ConfirmAdminContext.Repositories;
 using EmprendeUCR.Infrastructure.ConfirmAdminContext;
+using EmprendeUCR_WebApplication.Application.BillContext;
+using EmprendeUCR_WebApplication.Application.BillContext.Implementations;
+using EmprendeUCR_WebApplication.Infrastructure.BillContext.Implementations;
+using EmprendeUCR_WebApplication.Infrastructure.BillContext;
+using EmprendeUCR_WebApplication.Infrastructure.Core.OfferContext.Repositories;
+using EmprendeUCR_WebApplication.Infrastructure.Core.OfferContext;
+using EmprendeUCR.Domain.PermissionContext.Repositories;
+using EmprendeUCR.Infrastructure.PermissionContext.Repositories;
+using EmprendeUCR.Infrastructure.PermissionContext;
 
 namespace EmprendeUCR_WebApplication
 {
@@ -96,6 +105,7 @@ namespace EmprendeUCR_WebApplication
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
                 options.EnableSensitiveDataLogging();
             });
+            services.AddDbContext<OfferDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
 
 
@@ -107,6 +117,7 @@ namespace EmprendeUCR_WebApplication
 
             services.AddTransient<EmprendeUCR.Application.HomePageClientContext.IHomePageClientService, EmprendeUCR.Application.HomePageClientContext.Implementations.HomePageClientService>();
             services.AddTransient<IHomePageClientRepository, HomePageClientRepository>();
+            services.AddTransient<IDisplayProductRepository, DisplayProductRepository>();
 
             services.AddTransient<EmprendeUCR.Application.RegisterContext.IRegisterService, EmprendeUCR.Application.RegisterContext.Implementations.RegisterService>();
             services.AddTransient<IRegisterRepository, RegisterRepository>();
@@ -120,9 +131,25 @@ namespace EmprendeUCR_WebApplication
             services.AddTransient<EmprendeUCR.Application.ConfirmAdminContext.IConfirmAdminService, EmprendeUCR.Application.ConfirmAdminContext.Implementations.ConfirmAdminService>();
             services.AddTransient<IConfirmAdminRepository, ConfirmAdminRepository>();
 
+            // Clean arquitecture 3DKR
+            services.AddRazorPages();
+            services.AddServerSideBlazor();
+
+            services.AddApplicationLayer();
+            services.AddInfrastructureLayer(
+                Configuration.GetConnectionString("SqlConnection"));
+
+            services.AddTransient<EmprendeUCR.Application.PermissionContext.IPermissionService, EmprendeUCR.Application.PermissionContext.Implementations.PermissionService>();
+            services.AddTransient<IPermissionRepository, PermissionRepository>();
+
             ///////////////DBCONTEXT PANDEMIC PLAN
 
             services.AddDbContext<LoginDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            services.AddDbContext<DisplayProductDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
@@ -152,6 +179,11 @@ namespace EmprendeUCR_WebApplication
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            services.AddDbContext<PermissionDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
             ////////////////////////////////
             services.AddDbContext<NotificationDbContext>(options =>
             {
@@ -165,6 +197,7 @@ namespace EmprendeUCR_WebApplication
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSyncfusionBlazor();
+            services.AddScoped<Alliance_Service>();
             services.AddScoped<CategoryService>();
             services.AddScoped<AddCategoryService>();
             services.AddScoped<DeleteCategoryService>();
@@ -239,7 +272,7 @@ namespace EmprendeUCR_WebApplication
             //services.AddScoped<ServiceService>();
 
 
-
+            services.AddScoped<IOfferRepository, OfferRepository>();
             services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
 
             services.AddTransient<IShoppingCartService, ShoppingCartService>();
@@ -256,6 +289,9 @@ namespace EmprendeUCR_WebApplication
 
             services.AddScoped<INotificationRepository, NotificationRepositoryHandler>();
             services.AddScoped<INotificationService, NotificationService>();
+
+            services.AddScoped<IBillService, BillService>();
+            services.AddScoped<IPdfCreation, PdfCreation>();
 
         }
 

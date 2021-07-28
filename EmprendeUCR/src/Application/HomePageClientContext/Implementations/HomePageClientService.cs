@@ -13,11 +13,14 @@ namespace EmprendeUCR.Application.HomePageClientContext.Implementations
     public class HomePageClientService : IHomePageClientService
     {
         private readonly IHomePageClientRepository _homePageClientRepository;
+        private readonly IDisplayProductRepository _displayProductRepository;
         SfTreeGrid<Category> TreeGrid;
 
-        public HomePageClientService(IHomePageClientRepository HomePageClientRepository)
+        public HomePageClientService(IHomePageClientRepository HomePageClientRepository, IDisplayProductRepository DisplayProductRepository)
         {
             _homePageClientRepository = HomePageClientRepository;
+            _displayProductRepository = DisplayProductRepository;
+
         }
         public string convertImageDisplay(byte[] image)
         {
@@ -90,7 +93,7 @@ namespace EmprendeUCR.Application.HomePageClientContext.Implementations
             return await _homePageClientRepository.addProduct(shoppingCart);
         }
 
-        public async Task<List<Offer>> GetAllOffersAsync()
+        public async Task<IList<Offer>> GetAllOffersAsync()
         {
             return await _homePageClientRepository.GetOffers();
         }
@@ -109,10 +112,31 @@ namespace EmprendeUCR.Application.HomePageClientContext.Implementations
         {
             return _homePageClientRepository.GetAllIs_Offer();
         }
-
+        public async Task<Is_Offer> GetIs_OfferAsync(int Is_Offer_Id)
+        {
+            return await _homePageClientRepository.GetIs_OfferAsync(Is_Offer_Id);
+        }
         public IList<Service_Photos> getServicePhotos()
         {
             return _homePageClientRepository.GetAllServicePhotos();
+        }
+
+        public string GetEntrepreneurNameByEmail(string email)
+        {
+            User user = _displayProductRepository.GetUserByEmail( email);
+            if(user != null)
+            {
+                return user.Name + " " + user.F_Last_Name + " " + user.S_Last_Name;
+            }
+            else
+            {
+                return string.Empty;
+            }
+            
+        }
+        public List<Is_Offer> GetAllIs_OfferRelatedToOfferNOTAsync(Offer offer)
+        {
+            return _homePageClientRepository.GetAllIs_OfferRelatedToOfferNOTAsync(offer);
         }
     }
 }

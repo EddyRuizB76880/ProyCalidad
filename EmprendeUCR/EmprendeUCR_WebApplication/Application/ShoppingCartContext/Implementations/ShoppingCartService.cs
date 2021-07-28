@@ -11,10 +11,11 @@ namespace EmprendeUCR_WebApplication.Application.ShoppingCartContext.Implementat
     public class ShoppingCartService : IShoppingCartService
     {
         private readonly IShoppingCartRepository _shoppingCartRepository;
-
-        public ShoppingCartService(IShoppingCartRepository shoppingCartRepository)
+        private readonly IOfferRepository _offerRepositoy;
+        public ShoppingCartService(IShoppingCartRepository shoppingCartRepository, IOfferRepository offerRepository )
         {
             _shoppingCartRepository = shoppingCartRepository;
+            _offerRepositoy = offerRepository;
         }
 
         /*
@@ -38,7 +39,13 @@ namespace EmprendeUCR_WebApplication.Application.ShoppingCartContext.Implementat
         */
         public async Task<ShoppingCart?> GetByIdAsync(string email)
         {
-            return await _shoppingCartRepository.GetByIdAsync(email);
+            Task<ShoppingCart?> shopping =  _shoppingCartRepository.GetByIdAsync(email);
+            List<Offer> offers = await _offerRepositoy.getOffersToShop(DateTime.Now.Date);
+            var shop = await shopping;
+            foreach (var shopLine in shop.ShopLines) {
+                shopLine.product.getCurrentPrice(offers);
+            }
+            return shop;
         }
 
         /*
@@ -58,9 +65,11 @@ namespace EmprendeUCR_WebApplication.Application.ShoppingCartContext.Implementat
           Return: Nothing.
           Exceptions: There aren't known exceptions
         */
-        public async Task sendRequest(ShoppingCart shop, string Details, DateTime DeliveryDate)
+        public async Task sendRequest(ShoppingCart shop, string Details, 
+                                        string DeliveryAddress, DateTime DeliveryDate, 
+                                            string selectedPaymentMethod)
         {
-            await _shoppingCartRepository.SendRequest(shop, Details, DeliveryDate);
+            await _shoppingCartRepository.SendRequest(shop, Details, DeliveryAddress, DeliveryDate, selectedPaymentMethod);
             foreach (var shopLine in shop.ShopLines)
             {
                 await _shoppingCartRepository.DeleteLine(shopLine);

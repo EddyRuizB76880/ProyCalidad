@@ -21,18 +21,18 @@ namespace EmprendeUCR.Infrastructure.Core.EntityMappings
              .IsRequired()
              .HasColumnName("Code_ID");
 
-            builder.Property(e => e.Entrepreneur_Email)
-                .IsRequired()
-                .HasMaxLength(100)
-                .HasColumnName("Entrepreneur_Email");
+            //builder.Property(e => e.Entrepreneur_Email)
+            //    .IsRequired()
+            //    .HasMaxLength(100)
+            //    .HasColumnName("Entrepreneur_Email");
 
-            builder.Property(e => e.Availability)
-             .IsRequired()
-             .HasColumnName("Availability");
+            //builder.Property(e => e.Availability)
+            // .IsRequired()
+            // .HasColumnName("Availability");
 
-            builder.Property(e => e.Category_ID)
-             .IsRequired()
-             .HasColumnName("Category_ID");
+            //builder.Property(e => e.Category_ID)
+            // .IsRequired()
+            // .HasColumnName("Category_ID");
 
 
 

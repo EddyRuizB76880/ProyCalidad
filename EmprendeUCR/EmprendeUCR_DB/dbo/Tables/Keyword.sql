@@ -4,7 +4,3 @@
     PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
-
-
-
-

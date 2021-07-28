@@ -22,5 +22,6 @@ namespace EmprendeUCR_WebApplication.Domain.Repositories
         Task SetProductStatuses(Product product, List<Status> statusesList);
         Task orderUpdate(Order orderToUpdate);
         string defineColor(string status);
+        Task<string> GetEntreprenurName(string email);
     }
 }

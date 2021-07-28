@@ -42,5 +42,9 @@ namespace EmprendeUCR.Application.RegisterContext
         Task<bool> addNewActiveAdministrator(ActiveAdministrators activeAdministrator);
         bool AddLikes(Likes l);
         Task<bool> verifyPastAdminRegister(string email);
+        bool verifyUserTypes(string email, int userType);
+        EmailConfirmation getEmailConfirmationByEmail(string email);
+        Task<string> getUserPassword(string email);
+        Task<bool> verifyMembersExistence(string email);
     }
 }
