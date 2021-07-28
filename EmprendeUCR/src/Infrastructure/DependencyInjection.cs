@@ -13,9 +13,15 @@ using EmprendeUCR.Infrastructure.PaymentInfos.Card;
 using EmprendeUCR.Infrastructure.PaymentInfos.Card.Repositories;
 using EmprendeUCR.Infrastructure.PaymentInfos.HasPaymentInfos;
 using EmprendeUCR.Infrastructure.PaymentInfos.HasPaymentInfos.Repositories;
-
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using EmprendeUCR.Domain.EntrepreneurContext.Repositories;
+using Microsoft.EntityFrameworkCore;
+using EmprendeUCR.Infrastructure.Entrepreneurs;
+using EmprendeUCR.Infrastructure.Entrepreneurs.Repositories;
+using EmprendeUCR.Infrastructure.Categories;
+using EmprendeUCR.Domain.Categories.Repositories;
+using EmprendeUCR.Infrastructure.Categories.Repositories;
+
 namespace EmprendeUCR.Infrastructure
 {
     public static class DependencyInjection
@@ -38,6 +44,12 @@ namespace EmprendeUCR.Infrastructure
             services.AddScoped<ICardPaymentInfoRepository, CardPaymentInfoRepository>();
             services.AddDbContext<HasPaymentInfoDbContext>(options => options.UseSqlServer(connectionString));
             services.AddScoped<IHasPaymentInfoRepository, HasPaymentInfoRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddDbContext<CategoriesDbContext>(options => options.UseSqlServer(connectionString));
+            services.AddScoped<ICategoryRepository, CategoriesRepository>();
+            services.AddDbContext<EntrepreneursDbContext>(options => options.UseSqlServer(connectionString));
+            services.AddScoped<IProductServiceRepository, ProductServiceRepository>();
+
             return services;
         }
     }
