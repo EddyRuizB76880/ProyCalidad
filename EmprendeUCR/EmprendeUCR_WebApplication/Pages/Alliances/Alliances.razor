@@ -15,7 +15,8 @@
 @inject OrderService OrderService
 @inject UserServicePandemic UserService
 @inject CategoryService CategoryService
-
+@inject Alliance_Service Alliance_Service
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 
 @if (_isLoading)
@@ -48,52 +49,54 @@ else
 
                     @foreach (var user in users_list)
                     {
-                        @for (int index = 0; index < user.products.Count(); index++) {
+                        @for (int index = 0; index < user.products.Count(); index++)
+                        {
 
                             var my_Product = user.products[index];
-                           <tr>
-                               <td>
-                                   <!-- Entrepreneur name-->
-                                   @if (index == 0)
-                                   {
-                                       @user.entrepreneur.Email;
-                                   }
+                            <tr>
+                                <td>
+                                    <!-- Entrepreneur name-->
+                                    @if (index == 0)
+                                    {
+                                        @user.entrepreneur.Email;
+                                    }
 
-                               </td>
+                                </td>
                                 <!-- Categoria-->
-                               <td>
-                                   @if(index<user.categories.Count()){
+                                <td>
+                                    @if (index < user.categories.Count())
+                                    {
 
-                                      @user.categories[index].Title;
+                                        @user.categories[index].Title;
                                     }
 
-                               </td>
+                                </td>
 
-                               <td>
+                                <td>
 
-                                   @if (index < user.products.Count())
-                                   {
-                                   <div @onclick="() => view_Product(my_Product.Code_ID) ">  @my_Product.Product_Name</div>
-                                     
-                                     }
+                                    @if (index < user.products.Count())
+                                    {
+                                        <div @onclick="() => view_Product(my_Product.Code_ID) ">  @my_Product.Product_Name</div>
 
-                               </td>
-
-
-                               <td>
-                                   @if (index == 0) { 
-                                   
-                                   <input type="button" class="btn btn-primary btn-space" @onclick="@sendRequest" value="Enviar solicitud" />
                                     }
 
-                               </td>
-                               
+                                </td>
 
-                           </tr>
-                        
-                         }
 
-                      
+                                <td>
+                                    @if (index == 0)
+                                    {
+                                        <input type="button" class="btn btn-primary btn-space" @onclick="() =>sendRequest(user)" value="Enviar solicitud" />
+
+                                    }
+                                </td>
+
+
+                            </tr>
+
+                        }
+
+
                     }
                 }
                 else
@@ -101,8 +104,8 @@ else
                     <!-- If there is no suggestions, display no suggest message-->
                     <tr>No hay sugerencias por el momento. :)</tr>
                 }
-                </tbody>
-            </table>
+            </tbody>
+        </table>
         <!-- Return to my alliances page-->
         <input type="button" class="btn btn-primary btn-space" @onclick="@Cancel" value="Volver" />
     </body>
@@ -114,15 +117,15 @@ else
     IList<Product_Service> products_services_general_list = new List<Product_Service>();
     List<my_User> users_list = new List<my_User>();
     List<HasSupplies> has_supplies_list = new List<HasSupplies>();
-
+    Alliance alliance = new Alliance();
     string selectedEmail;
-
+    my_User selectedUser = new my_User();
     public class my_User
     {
         public User entrepreneur { get; set; }
         public IList<Category> categories { get; set; }
 
-        public IList <Product> products { get; set; }
+        public IList<Product> products { get; set; }
     }
 
 
@@ -177,6 +180,11 @@ else
         NavigationManager.NavigateTo("/ViewProduct" + "/" + prod_Id);
     }
 
-    public void sendRequest()
-    {       }
+    public Task sendRequest(my_User user)
+    {
+        alliance.User_Email = selectedEmail;
+        alliance.Ally_User_Email = user.entrepreneur.Email;
+        alliance.Alliance_Status = 0;
+        return Alliance_Service.InsertAllianceServiceAsync(alliance);
+    }
 }
