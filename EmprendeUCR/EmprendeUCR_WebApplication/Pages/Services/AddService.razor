@@ -82,14 +82,18 @@
                             <label for="Product_Description" class="control-label">Descripción</label>
                             <textarea rows="3" form="Product_Description" class="form-control" @bind="@serv.Service_Description" />
                         </div><br />
-                        <div class="form-group w-30">
-                            <label class="control-label">Categoria Selecionada:</label>
-                            @if (selectedCategory != null)
-                            {
-                                <span>@selectedCategory.Title</span>}
-                            <ValidationMessage For=@(() => serv.Category_ID) />
+                              <div class="form-group w-30">
+                                  <label class="control-label">Categoria Selecionada:</label>
+                                  @if (selectedCategory != null)
+                                  {
 
-                        </div><br />
+                                      <span>@selectedCategory.Title</span>}
+                                  else
+                                  {
+                                      <ValidationMessage For=@(() => serv.Category_ID) />
+                                  }
+
+                              </div><br />
                         @*Imput for price of the product*@
                     <div class="form-group w-30">
                         <label for="Price" class="control-label">Precio por hora(CRC)</label>
@@ -337,7 +341,6 @@
     protected override async Task OnInitializedAsync()
     {
         editContext = new(serv);
-        editContext.OnValidationRequested += HandleValidationRequested;
         messageStore = new(editContext);
 
         prodServ.Entrepreneur_Email = await sessionStorage.GetItemAsync<string>("Email");
@@ -494,6 +497,7 @@
             serv.Category_ID = selectedCategory.Id;
         }
         categorieSelected = true;
+        messageStore.Clear();
     }
 
     //SelectionHandler2 row deselected
@@ -503,20 +507,12 @@
         selectedCategory = null;
         serv.Category_ID = -1;
         categorieSelected = false;
-    }
-
-    //Check if it's possible to save
-    private void HandleValidationRequested(object sender,
-    ValidationRequestedEventArgs args)
-    {
-        messageStore.Clear();
-
-        // Custom validation logic
         if (serv.Category_ID < 1)
         {
-            messageStore.Add(() => serv.Category_ID, "El servicio debe asociarse a una categoria");
+            messageStore.Add(() => serv.Category_ID, "Debe seleccionar una categoria");
         }
     }
+
 
     private void onChangeAvailability(Syncfusion.Blazor.Buttons.ChangeEventArgs<bool> args)
     {

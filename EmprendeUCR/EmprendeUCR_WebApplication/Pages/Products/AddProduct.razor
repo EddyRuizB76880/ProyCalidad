@@ -83,10 +83,14 @@
                                   <div class="form-group w-30">
                                       <label class="control-label">Categoria Selecionada:</label>
                                       @if (selectedCategory != null)
-                                        {
-                                      <span>@selectedCategory.Title</span>
-                                        }
-                                      <ValidationMessage For=@(() => prod.Category_ID) ></ValidationMessage>
+                                      {
+
+                                          <span>@selectedCategory.Title</span>
+                                      }
+                                      else
+                                      {
+                                          <ValidationMessage For=@(() => prod.Category_ID) />
+                                      }
 
                                   </div><br />
                             @*Imput for price of the product*@
@@ -335,7 +339,6 @@
     protected override async Task OnInitializedAsync()
     {
         editContext = new(prod);
-        editContext.OnValidationRequested += HandleValidationRequested;
         messageStore = new(editContext);
 
         prodServ.Entrepreneur_Email = await sessionStorage.GetItemAsync<string>("Email");
@@ -493,6 +496,7 @@
             prod.Category_ID = selectedCategory.Id;
         }
         categorieSelected = true;
+        messageStore.Clear();
     }
 
     //SelectionHandler2 row deselected
@@ -502,20 +506,13 @@
         selectedCategory = null;
         prod.Category_ID = -1;
         categorieSelected = false;
-    }
-
-    // Validation errors
-    private void HandleValidationRequested(object sender,
-    ValidationRequestedEventArgs args)
-    {
-        messageStore.Clear();
-
         // Custom validation logic
         if (prod.Category_ID < 1)
         {
-            messageStore.Add(() => prod.Category_ID, "El producto debe asociarse a una categoria");
+            messageStore.Add(() => prod.Category_ID, "Debe seleccionar una categoria");
         }
     }
+
 
     private void onChangeAvailability(Syncfusion.Blazor.Buttons.ChangeEventArgs<bool> args)
     {

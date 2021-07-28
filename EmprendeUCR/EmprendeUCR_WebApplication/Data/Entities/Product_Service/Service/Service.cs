@@ -27,8 +27,6 @@ namespace EmprendeUCR_WebApplication.Data.Entities
                 .NotEmpty().WithMessage("El nombre del servicio no puede estar vacio");
             RuleFor(x => x.Price_per_hour)
                .GreaterThanOrEqualTo(0).WithMessage("El precio debe ser mayor o igual a 0");
-            RuleFor(x => x.Price_per_hour)
-               .NotEmpty().WithMessage("El precio no puede estar vacio");
             RuleFor(x => x.Category_ID)
                 .NotEmpty().WithMessage("Debe seleccionar una categoria");
         }
