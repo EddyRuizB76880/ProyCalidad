@@ -10,6 +10,7 @@ namespace EmprendeUCR_WebApplication.Data.Entities
     {
 
         [Key]
+        public Int32 Alliance_Id { get; set; }
         public string User_Email { get; set; }
 
         public string Ally_User_Email { get; set; }
