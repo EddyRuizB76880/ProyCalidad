@@ -5,6 +5,7 @@ using EmprendeUCR.Domain.Core.Repositories;
 using EmprendeUCR.Domain.PaymentInfos.Entities;
 using EmprendeUCR.Domain.PaymentInfos.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace EmprendeUCR.Infrastructure.PaymentInfos.SinpeIban.Repositories
 {
@@ -24,22 +25,48 @@ namespace EmprendeUCR.Infrastructure.PaymentInfos.SinpeIban.Repositories
         }
         public async Task<SinpeIbanPaymentInfo?> GetByIdAsync(string accountNumber)
         {
-            return await _dbContext.SinpeIbanPaymentInfo
-            .FirstOrDefaultAsync(p => p.Account_Number == accountNumber);
+            bool validationForInjections = false;
+            if (accountNumber.Contains("1=1"))
+            {
+                validationForInjections = true;
+            }
+            else if (accountNumber.Contains("'"))
+            {
+                validationForInjections = true;
+            }
+            else if (accountNumber.Contains("--"))   // because if u use -- it can comment the next part of the query
+            {
+                validationForInjections = true;
+            }
+            if (!validationForInjections)
+            {
+                return await _dbContext.SinpeIbanPaymentInfo.FirstOrDefaultAsync(p => p.Account_Number == accountNumber);
+            }
+            return await _dbContext.SinpeIbanPaymentInfo.FindAsync("No existe");
         }
-        /// <summary>
+            /// <summary>
         /// Saves aggregate and commits changes
         /// </summary>
         public async Task SaveAsync(SinpeIbanPaymentInfo sinpeIbanPaymentInfo)
         {
+
             _dbContext.Update(sinpeIbanPaymentInfo);
             await _dbContext.SaveEntitiesAsync();
         }
 
         public async Task AddPaymentInfo(SinpeIbanPaymentInfo sinpeIbanPaymentInfo)
         {
-            await _dbContext.AddAsync(sinpeIbanPaymentInfo);
-            await _dbContext.SaveChangesAsync();
+            bool validationForInjections = false;
+            validationForInjections = sinpeIbanPaymentInfo.Account_Number.Contains("1=1");
+            if (!validationForInjections)
+            {
+                await _dbContext.AddAsync(sinpeIbanPaymentInfo);
+                await _dbContext.SaveChangesAsync();
+            }
+            else
+            {
+                Console.WriteLine("Numero de cuenta invalido");
+            }
         }
         public async Task<SinpeIbanPaymentInfo?> GetByPaymentInfoID(int id)
         {

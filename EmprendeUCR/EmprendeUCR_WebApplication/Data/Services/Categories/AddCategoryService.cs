@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using EmprendeUCR_WebApplication.Data.Entities;
 using Syncfusion.Blazor.TreeGrid;
+using Syncfusion.Blazor.Grids;
 
 namespace EmprendeUCR_WebApplication.Data.Services.Categories
 {
@@ -26,6 +27,7 @@ namespace EmprendeUCR_WebApplication.Data.Services.Categories
         private readonly Contexts.SqlServerDbContext _context;
         private CategoryService CategoryService;
         private SfTreeGrid<Category> TreeGrid;
+        private SfGrid<Category> Grid;
         private bool TitleDadNotValid;
         private bool TitleNotValid;
         private Category SelectedCategory;
@@ -85,35 +87,6 @@ namespace EmprendeUCR_WebApplication.Data.Services.Categories
             AddCategoryDisabled = TitleNotValid || TitleDadNotValid;
         }
 
-        /**
-        * @brief Validates that the category that a user wants to asign as parent of another category is valid
-        * @details calls the service ValidateTitle(titleDad) to do the verification
-        * @param args supplies information about a change event that is being raised, so that the new title can be validated as a non existence name 
-        * @return
-        */
-        /**
-        public void ValidateTitleDad(Microsoft.AspNetCore.Components.ChangeEventArgs args)
-        {
-            TitleDadNotValid = false;
-            TitleDad = (String)args.Value;
-            if (TitleDad.Length > 0)
-            {
-                if (CategoryService.ValidateTitle(TitleDad) == true)
-                {
-                    TitleDadNotValid = true;
-                }
-            }
-            AddCategoryDisabled = TitleNotValid || TitleDadNotValid;
-
-        }
-        */
-
-        /**
-        * @brief Adds a new category to the database and reflects the changes to the site
-        * @details calls the service InsertCategoryAsync(Category); to add the category, and getParentId(TitleDad) to get its parent, add category only if the category values are valid
-        * @param 
-        * @return 
-        */
         public async void AddCategory(SfTreeGrid<Category> main)
         {
             this.TreeGrid = main;
@@ -137,6 +110,21 @@ namespace EmprendeUCR_WebApplication.Data.Services.Categories
             {
                 await this.TreeGrid.AddRecord(Category, ParentIDIndex, RowPosition.Child);
             }
+            ResetAddCategoryData();
+        }
+        public async void AddCategoryG()
+        {
+            this.AddDialogVisible = false;
+            Category Category = new Category();
+
+            Category.Title = Title;
+            Category.Description = Description;
+            Console.WriteLine(ParentID);
+            if (ParentID != null)
+            {
+                Category.ParentId = int.Parse(ParentID);
+            }
+            await InsertCategoryAsync(Category);
             ResetAddCategoryData();
         }
 

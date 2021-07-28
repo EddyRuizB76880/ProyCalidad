@@ -14,5 +14,7 @@ namespace EmprendeUCR.Domain.LoginContext.Repositories
         bool CredentialsUpdate(Credentials c);
         Task<ActiveAdministrators> getActiveAdministrator(string email);
         Task<BannedAcount> CheckBanned(string email);
+        Task<User> getUser(string email);
+        Credentials getCredentials(string email);
     }
 }

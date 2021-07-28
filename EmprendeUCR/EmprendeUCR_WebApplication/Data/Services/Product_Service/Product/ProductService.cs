@@ -40,6 +40,33 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return true;
         }
 
+  
+        public async Task<IList<Product>> getProducts_By_Supplies(List<Product> product, List<HasSupplies> my_supplies)
+        {
+
+            List<Product> produ = new List<Product>();
+            foreach (var prod in product)
+            {
+                bool valid_Product = my_supplies.FindAll(c => c.Supplie_ID == prod.Category_ID).Count() > 0;
+                if (valid_Product)
+                {
+
+
+                    produ.Add(prod);
+
+
+                }
+
+
+            }
+
+            return produ;
+
+
+        }
+
+
+
 
 
         public async Task<bool> DeleteProductAsync(Product product) // Eliminar productos
@@ -77,7 +104,11 @@ namespace EmprendeUCR_WebApplication.Data.Services
 
         }
 
+        public  IList<Product> GetProductsEntrepreneur(string email)
+        {
+            return _context.Product.Where(c => String.Equals(c.Entrepreneur_Email, email)).ToList();
 
+        }
 
         public async Task<IEnumerable<Product>> GetProducts()
         {
@@ -118,7 +149,9 @@ namespace EmprendeUCR_WebApplication.Data.Services
         {
             return _context.Product.FromSqlRaw("exec GetProductsByCategory " + categoryID  ).ToArray();
         }
-        
+
+
+  
         public IList<Product> GetListRestricted(string product,int categoryID)
         {
             return _context.Product.FromSqlRaw("exec GetProductsRestricted \"" + product + "\","+  categoryID).ToArray();
@@ -141,6 +174,11 @@ namespace EmprendeUCR_WebApplication.Data.Services
         {
             Product product =  _context.Product.FirstOrDefault(c => c.Code_ID.Equals(Id));
             return product;
+        }
+        public Service GetService(int Id)
+        {
+            Service service = _context.Service.FirstOrDefault(c => c.Code_ID.Equals(Id));
+            return service;
         }
     }
 }

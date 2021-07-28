@@ -3,6 +3,8 @@
 @using EmprendeUCR_WebApplication.Data.Services
 @using EmprendeUCR_WebApplication.Data.Entities
 @using EmprendeUCR_WebApplication.Data.Services.Categories
+@using EmprendeUCR_WebApplication.Data.Services.Keyword
+@using EmprendeUCR_WebApplication.Data.Entities.Keyword
 @using System.IO
 @using BlazorInputFile
 @using Syncfusion.Blazor.TreeGrid;
@@ -13,6 +15,8 @@
 @inject Product_PhotosService Product_PhotosService
 @inject HasSuppliesService HasSuppliesService
 @inject Has_StatusService Has_StatusService
+@inject KeywordService keyWord
+@inject HasKeywordService hasKeyword
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 <body>
@@ -20,7 +24,6 @@
     <div class="">
         <!--Displays the header-->
         <section class=" w-100 gap-lg-2">
-
             <div class=" border-1 shadow  bg-silver w-90">
                 <div class="form-group w-70">
                     <label for="Name" class="control-label m-lg-2">Nombre:</label>
@@ -33,61 +36,56 @@
                 <div class="form-group w-70">
                     <label for="Product_Description" class="control-label m-lg-2">Descripción:</label>
                     <textarea readonly="readonly" rows="3" form="Product_Description" class="form-control m-lg-2">@_product.Product_Description</textarea>
-
                 </div><br />
                 <div class="form-group w-30">
                     <label for="Price" class="control-label m-lg-2">Precio(CRC):</label>
                     <label for="Price" class="control-label ">@_product.Price</label>
                 </div><br />
-
-
             </div>
 
-
-
-
+            <div class="border-1 shadow  bg-silver mt-3 w-90">
+                <label for="Keyword" class="control-label m-lg-2">Palabras claves Asociadas:</label>
+                <label for="Keyword" class="control-label ">
+                @foreach (string has in hasKeyword.GetKeywordsByProduct(ProductService.GetProduct(_product.Code_ID)))
+                {
+                    @has.ToString()
+                }
+                @*@hasKeyword.GetKeywordsByProduct(ProductService.GetProduct(_product.Code_ID))*@
+                </label>
+            </div>
 
             <div class=" border-1 shadow  bg-silver mt-3 w-90">
                 <h2 class="bg-blue text-center">Estados asociados</h2>
                 @foreach (var prodStatus in productStatuses.OrderBy(p => p.Order))
                 {
-                    <span class="m-lg-2">
-                        @prodStatus.Name
-                        <br />
-                    </span>
-                }
+        <span class="m-lg-2">
+            @prodStatus.Name
+            <br />
+        </span>}
             </div>
-
-
 
             <div class=" border-1 shadow  bg-silver  mt-3 w-90">
                 <h2 class="bg-blue text-center">Insumos</h2>
                 @foreach (var category in supplyCategory)
                 {
 
-                    <span class="m-lg-2">
-                        @category.Title
-                        <br />
-                    </span>
-                }
+        <span class="m-lg-2">
+            @category.Title
+            <br />
+        </span>}
             </div>
-
-
-
 
             <div>
                 <div class="wrapper mt-3">
                     @foreach (var prodPhoto in photosDisplay)
                     {
-                        <div class="one">
-                            <label for="addPhoto1">
-                                @if (prodPhoto != null)
-                                {
-                                    <img src="@Product_PhotosService.convertImageDisplay(prodPhoto.Photos)" width="200" class=" img-card mt-2" />
-                                }
-                            </label>
-                        </div>
-                    }
+        <div class="one">
+            <label for="addPhoto1">
+                @if (prodPhoto != null)
+                {
+        <img src="@Product_PhotosService.convertImageDisplay(prodPhoto.Photos)" width="200" class=" img-card mt-2" />}
+            </label>
+        </div>}
                 </div>
             </div>
 
@@ -105,54 +103,49 @@
             @if (ShowDialog)
             {
 
-                <div class="modal fade show d-block" id="exampleModal" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            @if (ShowError)
-                            {
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="titleLabel">Confirmar borrado.</h5>
-                                    <button type="button" class="close" @onclick="@Close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">X</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <span>Este producto no puede ser borrado en este momento.</span>
-                                </div>
-                            }
+        <div class="modal fade show d-block" id="exampleModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    @if (ShowError)
+                    {
+        <div class="modal-header">
+            <h5 class="modal-title" id="titleLabel">Confirmar borrado.</h5>
+            <button type="button" class="close" @onclick="@Close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">X</span>
+            </button>
+        </div>
+                            <div class="modal-body">
+                                <span>Este producto no puede ser borrado en este momento.</span>
+                            </div> }
 
-                            else
-                            {
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="titleLabel">Confirmar borrado.</h5>
-                                    <button type="button" class="close" @onclick="@Close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">X</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <button type="submit" class="btn btn-primary" @onclick="@Close"> Cancelar</button>
-                                    <button type="submit" class="btn btn-primary" @onclick="@DeleteProduct"> Borrar</button>
-                                </div>
-                            }
+                        else
+                        {
+        <div class="modal-header">
+            <h5 class="modal-title" id="titleLabel">Confirmar borrado.</h5>
+            <button type="button" class="close" @onclick="@Close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">X</span>
+            </button>
+        </div>
+                            <div class="modal-body">
+                                <button type="submit" class="btn btn-primary" @onclick="@Close"> Cancelar</button>
+                                <button type="submit" class="btn btn-primary" @onclick="@DeleteProduct"> Borrar</button>
+                            </div>}
 
-                        </div>
-                    </div>
                 </div>
-            }
+            </div>
+        </div>}
 
         </section>
 
     </div>
 </body>
 
-@functions {
-    [Parameter]
-    public string CodeId { get; set; }
-}
+@functions { [Parameter]
+    public string CodeId { get; set; } }
 
-@code {
+@code { Product _product = new Product();
+    private IList<Has_Keyword> _keys;
 
-    Product _product = new Product();
     Product_Photos _prodPhoto = new Product_Photos();
     IList<Product_Photos> photosDisplay;
     IList<HasSupplies> productSupplies;
@@ -230,6 +223,4 @@
         //{
         //    NavigationManager.NavigateTo("ListProducts");
         //}
-    }
-
-}
+    } }

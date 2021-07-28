@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using EmprendeUCR.Domain.PaymentMethods.Entities;
 using EmprendeUCR.Domain.PaymentInfos.Entities;
 using EmprendeUCR.Domain.PaymentInfos.Repositories;
 namespace EmprendeUCR.Application.PaymentInfos.Implementations
@@ -27,6 +26,7 @@ namespace EmprendeUCR.Application.PaymentInfos.Implementations
         }
         public async Task<SinpeIbanPaymentInfo> GetSinpeIbanPaymentInfoByPaymentInfoID(int paymentInfoID)
         {
+            string ID=paymentInfoID.ToString();
             return await _sinpeIbanPaymentInfoRepository.GetByPaymentInfoID(paymentInfoID);
         }
 

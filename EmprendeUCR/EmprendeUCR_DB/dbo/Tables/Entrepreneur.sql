@@ -5,5 +5,3 @@
     CONSTRAINT [FK_Entrepreneur_User] FOREIGN KEY ([User_Email]) REFERENCES [dbo].[User] ([Email]) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-
-

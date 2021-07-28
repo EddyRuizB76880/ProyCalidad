@@ -8,7 +8,6 @@
 );
 
 
-
 GO
 CREATE NONCLUSTERED INDEX [index_Email]
     ON [dbo].[Email_Confirmation]([Email] ASC, [Hash_Code] ASC, [Creation_Date] ASC, [Expiration_Date] ASC);

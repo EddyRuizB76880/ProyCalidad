@@ -3,6 +3,8 @@
 @using EmprendeUCR_WebApplication.Data.Services.Categories
 @using EmprendeUCR_WebApplication.Data.Entities
 @using EmprendeUCR_WebApplication.Application.OrderContext.Implementations
+@using System;
+@inject NavigationManager NavigationManager
 @inject EntrepreneurService EntrepreneurService
 @inject ProductService ProductService
 @inject HasSuppliesService HasSuppliesService
@@ -13,7 +15,8 @@
 @inject OrderService OrderService
 @inject UserServicePandemic UserService
 @inject CategoryService CategoryService
-
+@inject Alliance_Service Alliance_Service
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 
 @if (_isLoading)
@@ -22,28 +25,92 @@
 else
 {
 
-
-<body>
-    <h3>Mis Alianzas</h3>
-
-    @if (users_list.Count() > 0)
-    {
-        @foreach (var u in users_list)
-        {
-            <span> @u.entrepreneur.Name @u.entrepreneur.F_Last_Name vende </span>
-            @foreach (var c in u.categories)
-            {
-                <span> @c.Title</span>
-            }
-            <br />
-        }
-    } else
+    <body>
+        <h3>Sugerencias de alianzas</h3>
+        <!--Sugerencias de alianzas -->
+        <table class=" table shadow">
+            <!--Table Headers-->
+            <thead class=" bg-blue">
+                <tr>
+                    <!--Emprendedor header-->
+                    <th scope="col" width="200" valign="middle" align="center"> Emprendedor </th>
+                    <!--Vende header-->
+                    <th scope="col" width="200" valign="middle" align="center"> Vende </th>
+                    <!--Productos que vende r-->
+                    <th scope="col" width="200" valign="middle" align="center"> Productos </th>
+                    <!--Acciones header-->
+                    <th scope="col" width="200" valign="middle" align="center"> Acciones </th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Despliega los usuarios sugeridos-->
+                @if (users_list.Count() > 0)
                 {
-                    <span>No hay sugerencias por el momento. :)</span>
+                    @foreach (var user in users_list)
+                    {
+                        @for (int index = 0; index < user.products.Count(); index++)
+                        {
+                            var my_Product = user.products[index];
+                            <tr>
+                                <td>
+                                    <!-- Entrepreneur name-->
+                                    @if (index == 0)
+                                    {
+                                        @user.entrepreneur.Email;
+                                    }
+                                </td>
+                                <!-- Categoria-->
+                                <td>
+                                    @if (index < user.categories.Count())
+                                    {
+                                        @user.categories[index].Title;
+                                    }
+                                </td>
+                                <td>
+                                    @if (index < user.products.Count())
+                                    {
+                                        <div @onclick="() => view_Product(my_Product.Code_ID) ">  @my_Product.Product_Name</div>
+                                    }
+                                </td>
+                                <td>
+                                    @if (index == 0)
+                                    {
+                                        <input type="button" class="btn btn-primary btn-space" @onclick="() =>sendRequest(user)" value="Enviar solicitud" />
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
                 }
+                else
+                {
+                    <!-- If there is no suggestions, display no suggest message-->
+                    <tr>No hay sugerencias por el momento. :)</tr>
+                }
+            </tbody>
+        </table>
+        @if (showAllianceConfirmation)
+        {
+            <div class="modal fade show d-block" id="exampleModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="titleLabel">Solicitud de alianza enviada</h5>
+                            <button type="button" class="close" @onclick="@showConfirmationPopUp" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">X</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <span>Haz enviado la solicitud correctamente! </span>
+                        </div>
 
-
-</body>
+                    </div>
+                </div>
+            </div>
+        }
+        <!-- Return to my alliances page-->
+        <input type="button" class="btn btn-primary btn-space" @onclick="@Cancel" value="Volver" />
+    </body>
 }
 
 
@@ -52,12 +119,18 @@ else
     IList<Product_Service> products_services_general_list = new List<Product_Service>();
     List<my_User> users_list = new List<my_User>();
     List<HasSupplies> has_supplies_list = new List<HasSupplies>();
+    // My allianecs already established
+    List<Alliance> myAlliances = new List<Alliance>();
     string selectedEmail;
-
+    my_User selectedUser = new my_User();
+    // Send request confirmation
+    bool showAllianceConfirmation = false;
     public class my_User
     {
         public User entrepreneur { get; set; }
         public IList<Category> categories { get; set; }
+
+        public IList<Product> products { get; set; }
     }
 
 
@@ -67,6 +140,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         selectedEmail = await sessionStorage.GetItemAsync<string>("Email");
+        myAlliances = Alliance_Service.getAlliancesByEntrepreneurEmail(selectedEmail);
         _isLoading = false;
         products_services_general_list = await Product_ServiceService.GetAllProductsServicesAsync();
         has_supplies_list = await HasSuppliesService.GetAllHasSuppliesEntrepreneurAsync(selectedEmail);
@@ -81,18 +155,57 @@ else
             if (List.Count() > 0)
             {
                 var userAlreadyExists = users_list.FindAll(u => u.entrepreneur.Email == prod.Entrepreneur_Email).Count() > 0;
-                if (!userAlreadyExists && prod.Entrepreneur_Email != selectedEmail)
-
+                if (!userAlreadyExists && prod.Entrepreneur_Email != selectedEmail && !checkIfAlreadyAllied(prod.Entrepreneur_Email))
                 {
                     my_User userToAdd = new my_User();
                     userToAdd.categories = new List<Category>();
+                    IList<Product> products_alliance = await ProductService.GetProductsEntrepreneurAsync(prod.Entrepreneur_Email);
+                    userToAdd.categories = await CategoryService.getAllCategoryBySupplies(products_alliance.ToList(), has_supplies_list);
+                    userToAdd.products = await ProductService.getProducts_By_Supplies(products_alliance.ToList(), has_supplies_list);
                     userToAdd.entrepreneur = await UserService.getUser(prod.Entrepreneur_Email);
                     var cat = CategoryService.getCategory(prod.Category_ID);
-                    userToAdd.categories.Add(cat);
                     users_list.Add(userToAdd);
                 }
-
             }
         }
+    }
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("My_Alliance");
+    }
+
+
+    void view_Product(int prod_Id)
+    {
+        NavigationManager.NavigateTo("/ViewProduct" + "/" + prod_Id);
+    }
+
+    public Task sendRequest(my_User user)
+    {
+        Alliance alliance = new Alliance();
+        alliance.User_Email = selectedEmail;
+        alliance.Ally_User_Email = user.entrepreneur.Email;
+        alliance.Alliance_Status = 0;
+        users_list.Remove(user);
+        showConfirmationPopUp();
+        return Alliance_Service.InsertAllianceServiceAsync(alliance);
+    }
+
+    public void showConfirmationPopUp()
+    {
+        showAllianceConfirmation = !showAllianceConfirmation;
+    }
+
+    bool checkIfAlreadyAllied(string user)
+    {
+        foreach (var alliance in myAlliances)
+        {
+            if (String.Equals(user, alliance.User_Email) || String.Equals(user, alliance.Ally_User_Email))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

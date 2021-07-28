@@ -1,58 +1,99 @@
 ﻿@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Buttons
 @using EmprendeUCR.Application.PaymentInfos;
-@using EmprendeUCR.Application.PaymentMethods;
 @using EmprendeUCR.Domain.PaymentInfos.Entities;
 @using EmprendeUCR.Domain.PaymentMethods.Entities;
-@using Syncfusion.Blazor.Navigations
 @using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.Inputs
 
 @inject NavigationManager NavigationManager
 @inject ISinpeMovilPaymentInfoService SinpeMovilPaymentInfoService
 @inject IPaymentInfoService PaymentInfoService
-@inject ISinpeMovilPaymentMethodService SinpeMovilPaymentMethodService
 @inject IHasPaymentInfoService HasPaymentInfoService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 @inherits SinpeMovilPaymentInfoEntrepreneurBase
 
-<SfGrid ID="SinpeMovilGrid" @ref="SinpeMovilPaymentInfoGrid" AllowSorting="true" DataSource="@_sinpeMovilPaymentInfoList" Toolbar="SinpeMovilToolbarItems">
-    <GridEditSettings AllowEditing="true" AllowEditOnDblClick="false" AllowDeleting="true"></GridEditSettings>
-    <GridEvents OnToolbarClick="SinpeMovilToolbarClickHandler" CommandClicked="SinpeMovilCommandClicked" TValue="SinpeMovilPaymentInfo"></GridEvents>
-    <GridColumns>
-        <GridColumn Field=@nameof(SinpeMovilPaymentInfo.Phone_Number) HeaderText="Número de teléfono" IsPrimaryKey="true"></GridColumn>
-        <GridColumn HeaderText="Acciones" TextAlign="TextAlign.Left">
-            <GridCommandColumns>
-                <GridCommandColumn Title="Editar" ButtonOption="@(new CommandButtonOptions() { IconCss = " e-icons e-edit", CssClass = "e-flat" })"></GridCommandColumn>
-                <GridCommandColumn Title="Eliminar" ButtonOption="@(new CommandButtonOptions() { IconCss = " e-icons e-delete", CssClass = "e-flat" })"></GridCommandColumn>
-            </GridCommandColumns>
-        </GridColumn>
-    </GridColumns>
-    <GridTemplates>
-        <EmptyRecordTemplate>
-            <span>No existen datos registrados</span>
-        </EmptyRecordTemplate>
-    </GridTemplates>
-</SfGrid>
+<div style="margin: 20px">
+    <div style="display: flex; justify-content: space-between">
+        <b>SINPE Móvil</b>
+        @if (PaymentMethodDisabled)
+        {
+            <label>Estado: Desactivado</label>
+        }
+        else
+        {
+            <label>Estado: Activado</label>
+        }
+        <SfButton OnClick="ShowAddSinpePhoneNumberDialog" Disabled="@PaymentMethodDisabled">Agregar</SfButton>
+    </div>
+    <div style="margin-top: 10px">
+        <SfGrid ID="SinpeMovilGrid" @ref="SinpeMovilPaymentInfoGrid" AllowSelection="false" AllowSorting="true" DataSource="@_sinpeMovilPaymentInfoList">
+            <GridEditSettings AllowEditing="true" AllowEditOnDblClick="false" AllowDeleting="true"></GridEditSettings>
+            <GridEvents CommandClicked="SinpeMovilCommandClicked" TValue="SinpeMovilPaymentInfo"></GridEvents>
+            <GridColumns>
+                <GridColumn Field=@nameof(SinpeMovilPaymentInfo.Phone_Number) HeaderText="Número de teléfono" IsPrimaryKey="true"></GridColumn>
+                <GridColumn TextAlign="TextAlign.Center" Width="125">
+                    <GridCommandColumns>
+                        <GridCommandColumn Title="Eliminar" ButtonOption="@(new CommandButtonOptions() { IconCss = " e-icons e-delete", CssClass = "e-flat", Content = "Eliminar" })"></GridCommandColumn>
+                    </GridCommandColumns>
+                </GridColumn>
+            </GridColumns>
+            <GridTemplates>
+                <EmptyRecordTemplate>
+                    <span>No existen datos registrados</span>
+                </EmptyRecordTemplate>
+            </GridTemplates>
+        </SfGrid>
+    </div>
+</div>
+<style>
+    .e-btn {
+        background: #145DA2;
+        color: #ffffff;
+    }
+    .e-btn:focus {
+        background: #145DA2;
+        color: #ffffff;
+    }
+</style>
 
 <SfDialog ID="addSinpeMovilInfoDialog" IsModal="true" Width="300px" @bind-Visible="@AddSinpePhoneNumberDialogVisible">
     <DialogTemplates>
         <Header>
-            Agregar número de teléfono
+            Agregar SINPE Móvil
         </Header>
+
         <Content>
-            <div id='input-container'>
-                <div class="e-float-input e-input-group">
-                    <input id="number" type="number" @bind="@AddedNumber" required />
-                    <span class="e-float-line"></span>
-                    <label class="e-float-text">Número</label>
-                </div>
+            <div class="control-label">
+                Número de teléfono
             </div>
-            <p></p>
+            <SfMaskedTextBox Mask="0000-0000" @bind-Value="@AddedNumber"></SfMaskedTextBox>
         </Content>
     </DialogTemplates>
     <DialogButtons>
-        <DialogButton Content="Agregar" IsPrimary="true" OnClick="@AddSinpePhoneNumber" />
+        <DialogButton Content="Agregar" IsPrimary="true" OnClick="@AddSinpePhoneNumber" Disabled=@AddDisabled />
         <DialogButton Content="Cancelar" IsPrimary="true" OnClick="@CloseAddSinpePhoneNumberDialog" />
+    </DialogButtons>
+</SfDialog>
+<style>
+    .control-label {
+        padding: 10px 0px 10px 0px;
+    }
+</style>
+
+<SfDialog ID="confirmationDialog" IsModal="true" Width="300px" @bind-Visible="@ConfirmationDialogVisible">
+    <DialogTemplates>
+        <Header>
+            Eliminar información de pago
+        </Header>
+        <Content>
+            Está seguro(a) que desea eliminar la información de pago?
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="Aceptar" IsPrimary="true" OnClick="@RemovePaymentInformation" />
+        <DialogButton Content="Cancelar" IsPrimary="true" OnClick="@CloseConfirmationDialog" />
     </DialogButtons>
 </SfDialog>
 
@@ -61,26 +102,33 @@
     public string emailToRegister { get; set; } = string.Empty;
     [Parameter]
     public List<HasPaymentInfo> list { get; set; } = new();
+    [Parameter]
+    public SinpeMovilPaymentMethod paymentMethod { get; set; } = null;
+    string Email = "";
 
     protected override async Task OnInitializedAsync()
     {
         if (!string.IsNullOrEmpty(emailToRegister))
         {
             _sinpeMovilPaymentInfoList = await SinpeMovilPaymentInfoService.GetSinpeMovilPaymentInfosByPaymentInfoIDAsync(list);
+            Email = emailToRegister;
         }
         else
         {
-            string Email = await sessionStorage.GetItemAsync<string>("Email");
+            Email = await sessionStorage.GetItemAsync<string>("Email");
             if (Email != null)
             {
                 _sinpeMovilPaymentInfoList = await SinpeMovilPaymentInfoService.GetSinpeMovilPaymentInfosByPaymentInfoIDAsync(list);
             }
         }
-        SinpeMovilToolbarItems.Add(new ItemModel()
+        if (paymentMethod == null)
         {
-            Text = AddButtonTitle,
-            TooltipText = "Agrega una cuenta IBAN y la asocia a una tarjeta",
-        });
+            PaymentMethodDisabled = true;
+        }
+        else
+        {
+            PaymentMethodDisabled = !paymentMethod.Status;
+        }
     }
 
     protected async void AddSinpePhoneNumber()
@@ -93,19 +141,46 @@
 
     protected async Task AddSinpeMovilInfoAndClose()
     {
-        PaymentInfo? PaymentInfo = await PaymentInfoService.AddPaymentInfoAsync();
-        if (PaymentInfo != null)
+        SinpeMovilPaymentInfo sinpeMovilPI = await SinpeMovilPaymentInfoService.GetSinpeMovilPaymentInfoByIdAsync(int.Parse(AddedNumber));
+        int PaymentInfoID;
+        if (sinpeMovilPI != null)
         {
-            SinpeMovilPaymentMethod? sinpeMovilPM = await SinpeMovilPaymentMethodService.GetPaymentMethodByIdAsync(SINPE_MOVIL);
-            await SinpeMovilPaymentInfoGrid.AddRecord();
-            if (sinpeMovilPM != null)
+            PaymentInfoID = sinpeMovilPI.Payment_Info_ID;
+            await AddSinpeMovilInfo(PaymentInfoID);
+        }
+
+        else
+        {
+            PaymentInfo? PaymentInfo = await PaymentInfoService.AddPaymentInfoAsync();
+            if (PaymentInfo != null)
             {
-                int PhoneNumber = int.Parse(AddedNumber); // TODO: Hacer la validacion correcta
-                SinpeMovilPaymentInfo sinpeMovilPI = new SinpeMovilPaymentInfo(PhoneNumber, PaymentInfo.ID, sinpeMovilPM.Name);
-                await SinpeMovilPaymentInfoService.AddPaymentInfoAsync(sinpeMovilPI);
-                _sinpeMovilPaymentInfoList = await SinpeMovilPaymentInfoService.GetSinpeMovilPaymentInfosAsync();
-                await SinpeMovilPaymentMethodService.AddPaymentInfoToPaymentMethodAsync(sinpeMovilPM, sinpeMovilPI);
+                PaymentInfoID = PaymentInfo.ID;
+                if (paymentMethod != null)
+                {
+                    sinpeMovilPI = new SinpeMovilPaymentInfo(int.Parse(AddedNumber), PaymentInfoID, paymentMethod.Name);
+                    await SinpeMovilPaymentInfoService.AddPaymentInfoAsync(sinpeMovilPI);
+                    await AddSinpeMovilInfo(PaymentInfoID);
+                }
             }
         }
+    }
+
+    private async Task AddSinpeMovilInfo(int PaymentInfoID)
+    {
+        HasPaymentInfo HasPaymentInfo = new HasPaymentInfo(Email, PaymentInfoID);
+        await HasPaymentInfoService.AddHasPaymentInfoAsync(HasPaymentInfo);
+        list.Add(HasPaymentInfo);
+        _sinpeMovilPaymentInfoList = await SinpeMovilPaymentInfoService.GetSinpeMovilPaymentInfosByPaymentInfoIDAsync(list);
+    }
+
+    protected async Task RemovePaymentInformation()
+    {
+        await PaymentInfoService.RemovePaymentInfoAsync(PaymentInfoIdToRemove);
+        var itemToRemove = list.SingleOrDefault(r => r.Payment_Info_ID == PaymentInfoIdToRemove);
+        if (itemToRemove != null)
+            list.Remove(itemToRemove);
+        _sinpeMovilPaymentInfoList = await SinpeMovilPaymentInfoService.GetSinpeMovilPaymentInfosByPaymentInfoIDAsync(list);
+        CloseConfirmationDialog();
+        StateHasChanged();
     }
 }

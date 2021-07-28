@@ -5,6 +5,7 @@
     [Confirm]       BIT           NULL,
     [Active]        BIT           NULL,
     [Response_Date] DATE          NULL,
-    PRIMARY KEY CLUSTERED ([Email] ASC)
+    PRIMARY KEY CLUSTERED ([Email] ASC),
+    CONSTRAINT [FK_UserAdmin] FOREIGN KEY ([Email]) REFERENCES [dbo].[User] ([Email]) ON DELETE CASCADE ON UPDATE CASCADE
 );
 

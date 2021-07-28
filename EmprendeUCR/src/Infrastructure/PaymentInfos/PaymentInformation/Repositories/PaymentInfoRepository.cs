@@ -42,5 +42,10 @@ namespace EmprendeUCR.Infrastructure.PaymentInfos.PaymentInformation.Repositorie
             await _dbContext.SaveChangesAsync();
             return paymentInfo;
         }
+        public async Task RemovePaymentInfo(int id) {
+            PaymentInfo paymentInfo = await GetByIdAsync(id);
+            _dbContext.Remove(paymentInfo);
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

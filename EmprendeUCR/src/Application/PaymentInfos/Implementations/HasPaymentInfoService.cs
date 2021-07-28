@@ -24,7 +24,10 @@ namespace EmprendeUCR.Application.PaymentInfos.Implementations
                 return null;
             }
             return entrepreneurHas.ToList();
-            
+        }
+        public async Task AddHasPaymentInfoAsync(HasPaymentInfo hasPaymentInfo)
+        {
+            await _hasPaymentInfoRepository.AddHasPaymentInfo(hasPaymentInfo);
         }
     }
 }

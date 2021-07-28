@@ -4,5 +4,3 @@
     CONSTRAINT [FK_dbo.Generic_Status_dbo.Status] FOREIGN KEY ([Name]) REFERENCES [dbo].[Status] ([Name]) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-
-

@@ -89,9 +89,10 @@ namespace EmprendeUCR_WebApplication.Infrastructure.Core
          * Return: Nothing.
          * Exceptions: There aren't known exceptions.
         */
-        public async Task SendRequest(ShoppingCart shop, string Details, DateTime DeliveryDate)
+        public async Task SendRequest(ShoppingCart shop, string Details, string DeliveryAddress, 
+                                                DateTime DeliveryDate, string selectedPaymentMethod)
         {
-            Order order =  await CreateOrder(shop, Details, DeliveryDate);
+            Order order =  await CreateOrder(shop, Details, DeliveryAddress, DeliveryDate, selectedPaymentMethod);
             await _dbContext.SaveEntitiesAsync();
         }
 
@@ -102,7 +103,8 @@ namespace EmprendeUCR_WebApplication.Infrastructure.Core
          * Return: A order.
          * Exceptions: There aren't known exceptions.
         */
-        public async Task<Order> CreateOrder(ShoppingCart shop, string Details, DateTime DeliveryDate)
+        public async Task<Order> CreateOrder(ShoppingCart shop, string Details, 
+                         string DeliveryAddress, DateTime DeliveryDate, string selectedPaymentMethod )
         {
             DateTime DateAndHourCreation = DateTime.Now;
             DateAndHourCreation = new DateTime(
@@ -114,8 +116,8 @@ namespace EmprendeUCR_WebApplication.Infrastructure.Core
             string status = "Pendiente de revision";
             List<Organized> listShopLine = new List<Organized>();
 
-            Order order = new Order(DateAndHourCreation, ClientEmail, Details, DeliveryDate,
-                          EntrepreneurEmail, status);
+            Order order = new Order(DateAndHourCreation, ClientEmail, Details, DeliveryAddress, DeliveryDate,
+                          EntrepreneurEmail, status, selectedPaymentMethod);
             foreach (var organizedLine in shop.ShopLines)
             {
                 int codeId = organizedLine.CodeId;

@@ -29,8 +29,10 @@ namespace EmprendeUCR_WebApplication.Infrastructure.NotificationContext.Reposito
         {
             // Create instances to chain
             INotificationRepository OrderNotification = new OrderNotificationClientRepository(this._dbContext, this._configuration);
+            INotificationRepository shoppingCartNotification = new ShoppingCartNotificationRepository(this._dbContext, this._configuration);
             // Set the chain responsability
             Child = OrderNotification;
+            OrderNotification.Next = shoppingCartNotification;
 
         }
 
@@ -104,6 +106,26 @@ namespace EmprendeUCR_WebApplication.Infrastructure.NotificationContext.Reposito
                     Next.Unsubscription(UserNotification);
                 }
             }
+        }
+
+        public int GetProductsQuantity(UserNotification UserNotification)
+        {
+            int quantity = 0;
+            if (UserNotification.TypeUser == (int)Users.Client)
+            {
+                if (Child is not null)
+                {
+                    quantity = Child.GetProductsQuantity(UserNotification);
+                }
+            }
+            else
+            {
+                if (Next is not null)
+                {
+                    quantity =  Next.GetProductsQuantity(UserNotification);
+                }
+            }
+            return quantity;
         }
     }
 }

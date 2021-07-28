@@ -6,5 +6,3 @@
     CONSTRAINT [FK_User_Email] FOREIGN KEY ([User_Email]) REFERENCES [dbo].[User] ([Email])
 );
 
-
-

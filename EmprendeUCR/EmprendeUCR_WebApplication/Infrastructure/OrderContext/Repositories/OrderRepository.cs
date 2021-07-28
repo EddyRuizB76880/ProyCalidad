@@ -227,5 +227,16 @@ namespace EmprendeUCR_WebApplication.Infrastructure.OrderContext.Repositories
 
             return orders;
         }
+        
+        public async Task<string> GetEntreprenurName(string email)
+        {
+            //string name = await _dbContext.Database.ExecuteSqlRaw("exec ChangeViewToTrue @p0", parameters: new[] { email });
+            //string name = await _dbContext.Database.ExecuteSqlRaw("SELECT dbo.GetUserName (@p0", parameters: new[] { email });
+
+            string retval = _dbContext.Database.ExecuteSqlRaw("SELECT dbo.GetUserName('" + email + "')").ToString();
+
+            return retval;
+        }
+        
     }
 }

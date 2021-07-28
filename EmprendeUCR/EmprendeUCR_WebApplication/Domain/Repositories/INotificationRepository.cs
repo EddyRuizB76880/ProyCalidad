@@ -21,9 +21,10 @@ namespace EmprendeUCR_WebApplication.Domain.Repositories
     {
         INotificationRepository Next { set; get; }
         void EventsSubscriptions(UserNotification UserNotification);
-        void GetNotifications(UserNotification UserNotification);
-        void GetNotificationsQuantity(UserNotification UserNotification);
+        virtual void GetNotifications(UserNotification UserNotification) { }
+        virtual void GetNotificationsQuantity(UserNotification UserNotification) { }
         void Unsubscription(UserNotification UserNotification);
+        int GetProductsQuantity(UserNotification UserNotification);
 
 
         /*Task<UserNotification> GetByIdAsync(string email, int type);

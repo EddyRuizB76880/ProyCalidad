@@ -9,10 +9,16 @@
 @page "/entrepreneur_payment_methods/{emailToRegister}"
 
 @using EmprendeUCR.Application.PaymentInfos;
+@using EmprendeUCR.Application.PaymentMethods;
 @using EmprendeUCR.Domain.PaymentInfos.Entities;
+@using EmprendeUCR.Domain.PaymentMethods.Entities;
 @inject IHasPaymentInfoService HasPaymentInfoService
+@inject ISinpeIbanPaymentMethodService SinpeIbanPaymentMethodService
+@inject ISinpeMovilPaymentMethodService SinpeMovilPaymentMethodService
+@inject ICardPaymentMethodService CardPaymentMethodService
 @inject NavigationManager NavigationManager
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
 @if (_isLoading)
 {
     <p>Cargando</p>
@@ -21,16 +27,13 @@ else
 {
     <div class="grid-container">
         <div class="grid-item">
-            <b>SINPE Móvil</b>
-            <EmprendeUCR.Presentation.Pages.PaymentInfos.SinpeMovil.SinpeMovilPaymentInfoEntrepreneur emailToRegister=@emailToRegister list=@list/>
+            <EmprendeUCR.Presentation.Pages.PaymentInfos.SinpeMovil.SinpeMovilPaymentInfoEntrepreneur emailToRegister=@emailToRegister list=@list paymentMethod=@SinpeMovilPaymentMethod />
         </div>
         <div class="grid-item">
-            <b>SINPE IBAN</b>
-            <EmprendeUCR.Presentation.Pages.PaymentInfos.SinpeIban.SinpeIbanPaymentInfoEntrepreneur emailToRegister=@emailToRegister list=@list/>
+            <EmprendeUCR.Presentation.Pages.PaymentInfos.SinpeIban.SinpeIbanPaymentInfoEntrepreneur emailToRegister=@emailToRegister list=@list paymentMethod=@SinpeIbanPaymentMethod />
         </div>
         <div class="grid-item">
-            <b>Tarjetas</b>
-            <EmprendeUCR.Presentation.Pages.PaymentInfos.Card.CardPaymentInfoEntrepreneur emailToRegister=@emailToRegister list=@list/>
+            <EmprendeUCR.Presentation.Pages.PaymentInfos.Card.CardPaymentInfoEntrepreneur emailToRegister=@emailToRegister list=@list paymentMethods=@CardPaymentMethods />
         </div>
 
     </div>
@@ -64,6 +67,9 @@ else
     public string emailToRegister { get; set; } = string.Empty;
     private string buttonMessage = string.Empty;
     public List<HasPaymentInfo> list { get; set; } = new();
+    private SinpeIbanPaymentMethod? SinpeIbanPaymentMethod = null;
+    private SinpeMovilPaymentMethod? SinpeMovilPaymentMethod = null;
+    private List<CardPaymentMethod>? CardPaymentMethods = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -74,11 +80,18 @@ else
         }
         else
         {
-            // TODO: Loading
             string Email = await sessionStorage.GetItemAsync<string>("Email");
             int Type = await sessionStorage.GetItemAsync<int>("Type");
             list = await HasPaymentInfoService.getHasPaymentInfoByEmail(Email);
-          
+            SinpeIbanPaymentMethod = await SinpeIbanPaymentMethodService.GetPaymentMethodByIdAsync("SINPE");
+            SinpeMovilPaymentMethod = await SinpeMovilPaymentMethodService.GetPaymentMethodByIdAsync("SINPE Movil");
+            CardPaymentMethod visaPM = await CardPaymentMethodService.GetPaymentMethodByIdAsync("Visa");
+            CardPaymentMethods.Insert(0,visaPM);
+            CardPaymentMethod masterCardPM = await CardPaymentMethodService.GetPaymentMethodByIdAsync("Mastercard");
+            CardPaymentMethods.Insert(0,masterCardPM);
+            CardPaymentMethod amexPM = await CardPaymentMethodService.GetPaymentMethodByIdAsync("American Express");
+            CardPaymentMethods.Insert(0,amexPM);
+
             if (Email == null)
             {
                 NavigationManager.NavigateTo("/Login");

@@ -11,6 +11,7 @@
 @using Syncfusion.Blazor.Buttons
 @using Syncfusion.Blazor.DropDowns
 @using Syncfusion.Blazor.Data
+@using Blazored.FluentValidation
 
 @inject ProductService  productService
 @inject NavigationManager NavigationManager
@@ -22,13 +23,13 @@
 @inject Has_StatusService Has_StatusService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
-    <style>
-        .drops {
-            margin-top: 10px;
-            margin-bottom: 10px;
-            margin-left: 10px;
-        }
-    </style>
+<style>
+    .drops {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        margin-left: 10px;
+    }
+</style>
 
 <h2>Agregar producto</h2>
 <hr />
@@ -66,11 +67,11 @@
                         <br />
                         @*Input for name of the product*@
                         <EditForm id="@MyID" EditContext="editContext" OnValidSubmit="@onCreateProduct">
-                            <DataAnnotationsValidator />
+                            <FluentValidationValidator />
                             <div class="form-group w-70">
                                 <label for="Name" class="control-label">Nombre</label>
-                                <input form="Name" class="form-control" @bind="@prod.Product_Name" />
-                                <ValidationMessage class="text-left" For=@(() => prod.Product_Name) />
+                                <InputText type="@prod.Product_Name" form="Name" class="form-control" @bind-Value="@prod.Product_Name" required />
+                                <ValidationMessage For=@(() => prod.Product_Name) ></ValidationMessage>
                             </div><br />
 
 
@@ -79,20 +80,24 @@
                                 <label for="Product_Description" class="control-label">Descripción</label>
                                 <textarea rows="3" form="Product_Description" class="form-control" @bind="@prod.Product_Description" />
                             </div><br />
-                            <div class="form-group w-30">
-                                <label class="control-label">Categoria Selecionada:</label>
-                                @if (selectedCategory != null)
-                                {
-                                    <span>@selectedCategory.Title</span>
-                                }
-                                <ValidationMessage For=@(() => prod.Category_ID) />
+                                  <div class="form-group w-30">
+                                      <label class="control-label">Categoria Selecionada:</label>
+                                      @if (selectedCategory != null)
+                                      {
 
-                            </div><br />
+                                          <span>@selectedCategory.Title</span>
+                                      }
+                                      else
+                                      {
+                                          <ValidationMessage For=@(() => prod.Category_ID) />
+                                      }
+
+                                  </div><br />
                             @*Imput for price of the product*@
                             <div class="form-group w-30">
                                 <label for="Price" class="control-label">Precio(CRC)</label>
-                                <input form="Price" class="form-control" @bind="@prod.Price" />
-                                <ValidationMessage For=@(() => prod.Price) />
+                                <InputNumber form="Price" class="form-control" @bind-Value="@prod.Price" />
+                                <ValidationMessage For=@(() => prod.Price)></ValidationMessage>
 
                             </div><br />
 
@@ -334,7 +339,6 @@
     protected override async Task OnInitializedAsync()
     {
         editContext = new(prod);
-        editContext.OnValidationRequested += HandleValidationRequested;
         messageStore = new(editContext);
 
         prodServ.Entrepreneur_Email = await sessionStorage.GetItemAsync<string>("Email");
@@ -492,6 +496,7 @@
             prod.Category_ID = selectedCategory.Id;
         }
         categorieSelected = true;
+        messageStore.Clear();
     }
 
     //SelectionHandler2 row deselected
@@ -501,29 +506,13 @@
         selectedCategory = null;
         prod.Category_ID = -1;
         categorieSelected = false;
-    }
-
-    // Validation errors
-    private void HandleValidationRequested(object sender,
-    ValidationRequestedEventArgs args)
-    {
-        messageStore.Clear();
-
         // Custom validation logic
         if (prod.Category_ID < 1)
         {
-            messageStore.Add(() => prod.Category_ID, "El producto debe asociarse a una categoria");
-        }
-        // If the initial date input is greater than the expire date
-        if (String.IsNullOrEmpty(prod.Product_Name))
-        {
-            messageStore.Add(() => prod.Product_Name, "El producto debe tener un nombre asociado.");
-        }
-        if (prod.Price <= 0)
-        {
-            messageStore.Add(() => prod.Price, "El precio debe ser mayor a 0.");
+            messageStore.Add(() => prod.Category_ID, "Debe seleccionar una categoria");
         }
     }
+
 
     private void onChangeAvailability(Syncfusion.Blazor.Buttons.ChangeEventArgs<bool> args)
     {

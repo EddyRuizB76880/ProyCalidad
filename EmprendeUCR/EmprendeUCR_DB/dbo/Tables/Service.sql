@@ -10,10 +10,6 @@
 );
 
 
-
-
-
-
 GO
 CREATE NONCLUSTERED INDEX [ix_service_category]
     ON [dbo].[Service]([Category_ID] ASC);

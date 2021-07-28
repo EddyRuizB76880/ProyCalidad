@@ -8,6 +8,6 @@ namespace EmprendeUCR.Domain.PaymentInfos.Repositories
     {
         Task SaveAsync(HasPaymentInfo hasPaymentInfo);
         Task<IEnumerable<HasPaymentInfo>> GetAllAsync();
-        Task AddHasPaymentInfo(int paymentInfoID, string email);
+        Task AddHasPaymentInfo(HasPaymentInfo hasPaymentInfo);
     }
 }

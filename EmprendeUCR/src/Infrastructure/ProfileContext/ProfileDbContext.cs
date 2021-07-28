@@ -9,6 +9,8 @@ using System.Diagnostics;
 using EmprendeUCR.Infrastructure.Core;
 using EmprendeUCR.Domain.Core.CoreEntities;
 using EmprendeUCR.Infrastructure.Core.EntityMappings;
+using EmprendeUCR.Domain.Reports.Entities;
+using EmprendeUCR.Infrastructure.Reports;
 
 namespace EmprendeUCR.Infrastructure.ProfileContext
 {
@@ -36,6 +38,7 @@ namespace EmprendeUCR.Infrastructure.ProfileContext
         public virtual DbSet<Canton> Canton { get; set;}
         public virtual DbSet<District> District { get; set;}
         public virtual DbSet<EmailConfirmation> EmailConfirmation { get; set; }
+        public virtual DbSet<Report> Report { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -52,6 +55,7 @@ namespace EmprendeUCR.Infrastructure.ProfileContext
             modelBuilder.ApplyConfiguration(new CantonMap());
             modelBuilder.ApplyConfiguration(new DistrictMap());
             modelBuilder.ApplyConfiguration(new CategoryMap());
+            modelBuilder.ApplyConfiguration(new ReportMap());
             //modelBuilder.Entity<Category>().ToTable("Category");
             modelBuilder.ApplyConfiguration(new EmailConfirmationMap());
         }

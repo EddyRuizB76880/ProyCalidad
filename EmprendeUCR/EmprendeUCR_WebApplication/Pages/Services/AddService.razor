@@ -9,6 +9,7 @@
 @using Syncfusion.Blazor.TreeGrid
 @using System.Drawing
 @using Syncfusion.Blazor.Buttons
+@using Blazored.FluentValidation
 
 @using Syncfusion.Blazor.DropDowns
 @using Syncfusion.Blazor.Data
@@ -22,15 +23,16 @@
 @inject KeywordServiceService keywordService
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
-    <style>
-        .drops {
-            margin-top: 10px;
-            margin-bottom: 10px;
-            margin-left: 10px;
-        }
-    </style>
 
-<h2>Agregar servicio</h2>
+<style>
+    .drops {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        margin-left: 10px;
+    }
+</style>
+
+<h2>Agregar Servicio</h2>
 <hr />
 <body>
 
@@ -62,17 +64,51 @@
         <section class=" w-70 float_right gap-lg-5 ">
             <div class=" w-70">
                 <div class=" border-1 shadow  bg-silver">
-                    <div class="form-group w-70">
-                        <label for="Name" class="control-label">Nombre</label>
-                        <input form="Name" class="form-control" @bind="@serv.Service_Name" />
-                    </div><br />
-                    <div class="form-group w-70">
-                        <label for="Product_Description" class="control-label">Descripción</label>
-                        <textarea rows="3" form="Product_Description" class="form-control" @bind="@serv.Service_Description" />
-                    </div><br />
-                    <div class="form-group w-20">
+                    <div class="m-lg-4">
+                        <br />
+                        @*Input for name of the product*@
+                    <EditForm id="@MyID" EditContext="editContext" OnValidSubmit="@onCreateService">
+                        <FluentValidationValidator />
+
+                        <div class="form-group w-70">
+                            <label for="Name" class="control-label">Nombre</label>
+                            <InputText type="@serv.Service_Name" form="Name" class="form-control" @bind-Value="@serv.Service_Name" required />
+                            <ValidationMessage class="text-left" For=@(() => serv.Service_Name) />
+                        </div><br />
+
+
+                        @*Imput for description of the product*@
+                        <div class="form-group w-70">
+                            <label for="Product_Description" class="control-label">Descripción</label>
+                            <textarea rows="3" form="Product_Description" class="form-control" @bind="@serv.Service_Description" />
+                        </div><br />
+                              <div class="form-group w-30">
+                                  <label class="control-label">Categoria Selecionada:</label>
+                                  @if (selectedCategory != null)
+                                  {
+
+                                      <span>@selectedCategory.Title</span>}
+                                  else
+                                  {
+                                      <ValidationMessage For=@(() => serv.Category_ID) />
+                                  }
+
+                              </div><br />
+                        @*Imput for price of the product*@
+                    <div class="form-group w-30">
                         <label for="Price" class="control-label">Precio por hora(CRC)</label>
-                        <input form="Price" type="number" class="form-control" @bind="@serv.Price_per_hour" />
+                        <InputNumber form="Price" class="form-control" @bind-Value="@serv.Price_per_hour" />
+                        <ValidationMessage For=@(() => serv.Price_per_hour) />
+
+                    </div><br />
+
+                        @*Switch for avalability of the product*@
+                        <div>
+                            <label class="form-check-label" for="flexSwitchCheckDefault">Disponibilidad</label>
+                            <SfSwitch id="flexSwitchCheckDefault" @bind-Checked="isAvailabilityChecked" ValueChange="onChangeAvailability" TChecked="bool"></SfSwitch>
+                        </div>
+
+                    </EditForm>
                     </div>
                     <div class="w-70">
                         <label for="Keyword" class="control-label m-lg-2">Palabras clave</label>
@@ -107,50 +143,6 @@
                             </SfComboBox>
                         </div>
                     </div>
-                </div>
-                    <div class="m-lg-4">
-                        <br />
-                        @*Input for name of the product*@
-                        <EditForm id="@MyID" EditContext="editContext" OnValidSubmit="@onCreateService">
-                            <DataAnnotationsValidator />
-                            <div class="form-group w-70">
-                                <label for="Name" class="control-label">Nombre</label>
-                                <input form="Name" class="form-control" @bind="@serv.Service_Name" />
-                                <ValidationMessage class="text-left" For=@(() => serv.Service_Name) />
-                            </div><br />
-
-
-                            @*Imput for description of the product*@
-                            <div class="form-group w-70">
-                                <label for="Product_Description" class="control-label">Descripción</label>
-                                <textarea rows="3" form="Product_Description" class="form-control" @bind="@serv.Service_Description" />
-                            </div><br />
-                            <div class="form-group w-30">
-                                <label class="control-label">Categoria Selecionada:</label>
-                                @if (selectedCategory != null)
-                                {
-                                    <p>@selectedCategory.Title</p>
-                                }
-                                <ValidationMessage For=@(() => serv.Category_ID) />
-
-                            </div><br />
-                            @*Imput for price of the product*@
-                            <div class="form-group w-30">
-                                <label for="Price" class="control-label">Precio por hora(CRC)</label>
-                                <input form="Price" class="form-control" @bind="@serv.Price_per_hour" />
-                                <ValidationMessage For=@(() => serv.Price_per_hour) />
-
-                            </div><br />
-
-                            @*Switch for avalability of the product*@
-                            <div>
-                                <label class="form-check-label" for="flexSwitchCheckDefault">Disponibilidad</label>
-                                <SfSwitch id="flexSwitchCheckDefault" @bind-Checked="isAvailabilityChecked" ValueChange="onChangeAvailability" TChecked="bool"></SfSwitch>
-                            </div>
-
-                        </EditForm>
-                    </div>
-                    <br />
                 </div>
                 <br />
 
@@ -251,17 +243,21 @@
 
                             @*Button "Limpiar"*@
                             <input type="button" class="btn btn-primary m-lg-2" @onclick="@Clean" value="Limpiar" />
-                            
-                            <input type="submit" form="@MyID" class="btn btn-primary m-lg-2" value="Guardar"/>
+
+                            <input type="submit" form="@MyID" class="btn btn-primary m-lg-2" value="Guardar" />
                         </div>
                     </div>
                 </div>
+            </div>
         </section>
-        </div>
+
+    </div>
+
+
 </body>
 
-@code {
-    //The service to add
+
+@code { //The service to add
     EmprendeUCR_WebApplication.Data.Entities.Service serv = new EmprendeUCR_WebApplication.Data.Entities.Service();
     EmprendeUCR_WebApplication.Data.Entities.Product_Service prodServ = new EmprendeUCR_WebApplication.Data.Entities.Product_Service();
 
@@ -345,7 +341,6 @@
     protected override async Task OnInitializedAsync()
     {
         editContext = new(serv);
-        editContext.OnValidationRequested += HandleValidationRequested;
         messageStore = new(editContext);
 
         prodServ.Entrepreneur_Email = await sessionStorage.GetItemAsync<string>("Email");
@@ -448,7 +443,7 @@
         preparePhoto(photosFive, idToInsert);
         preparePhoto(photosSix, idToInsert);
         /// End of save photos on database
-        /// 
+        ///
         await keywordService.InsertKeywordService(key1);
         await keywordService.InsertKeywordService(key2);
         await keywordService.InsertKeywordService(key3);
@@ -502,6 +497,7 @@
             serv.Category_ID = selectedCategory.Id;
         }
         categorieSelected = true;
+        messageStore.Clear();
     }
 
     //SelectionHandler2 row deselected
@@ -511,29 +507,12 @@
         selectedCategory = null;
         serv.Category_ID = -1;
         categorieSelected = false;
-    }
-
-    //Check if it's possible to save
-    private void HandleValidationRequested(object sender,
-    ValidationRequestedEventArgs args)
-    {
-        messageStore.Clear();
-
-        // Custom validation logic
         if (serv.Category_ID < 1)
         {
-            messageStore.Add(() => serv.Category_ID, "El servicio debe asociarse a una categoria");
-        }
-        // If the initial date input is greater than the expire date
-        if (String.IsNullOrEmpty(serv.Service_Name))
-        {
-            messageStore.Add(() => serv.Service_Name, "El servicio debe tener un nombre asociado.");
-        }
-        if (serv.Price_per_hour < 0)
-        {
-            messageStore.Add(() => serv.Price_per_hour, "El precio del servicio debe ser mayor o igual a 0.");
+            messageStore.Add(() => serv.Category_ID, "Debe seleccionar una categoria");
         }
     }
+
 
     private void onChangeAvailability(Syncfusion.Blazor.Buttons.ChangeEventArgs<bool> args)
     {
@@ -548,5 +527,4 @@
     void SuppliesUpdateHandler(List<HasSupplies> newList)
     {
         supplies = newList;
-    }
-}
+    } }

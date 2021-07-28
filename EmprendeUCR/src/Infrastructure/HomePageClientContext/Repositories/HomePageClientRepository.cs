@@ -75,10 +75,11 @@ namespace EmprendeUCR.Infrastructure.HomePageClientContext.Repositories
             return true;
         }
 
-        public async Task<List<Offer>> GetOffers()
+        public async Task<IList<Offer>> GetOffers()
         {
 
-            return await _dbContext.Offer.ToListAsync();        // Listado 2
+            //return await _dbContext.Offer.ToListAsync();        // Listado 2
+            return _dbContext.Offer.FromSqlRaw("SELECT * FROM Offer ORDER BY Initial_Date DESC").ToArray();
         }
 
         public async Task<List<ProductService>> GetAllProducts()
@@ -93,12 +94,28 @@ namespace EmprendeUCR.Infrastructure.HomePageClientContext.Repositories
 
         public IList<Is_Offer> GetAllIs_Offer()
         {
-            return _dbContext.Is_Offer.FromSqlRaw("exec get_unique_offers").ToArray();
+            return _dbContext.Is_Offer.FromSqlRaw("exec GetOffers").ToArray();
         }
 
         public IList<Service_Photos> GetAllServicePhotos()
         {
             return _dbContext.Service_Photos.ToList();
+        }
+
+        public User GetUserByEmail(string email)
+        {
+            return _dbContext.User.FirstOrDefault(user => user.Email.Equals(email));
+
+        }
+        public async Task<Is_Offer> GetIs_OfferAsync(int Is_Offer_Id)
+        {
+            Is_Offer offer = await _dbContext.Is_Offer.FirstOrDefaultAsync(c => c.Offer_ID.Equals(Is_Offer_Id));
+
+            return offer;
+        }
+        public List<Is_Offer> GetAllIs_OfferRelatedToOfferNOTAsync(Offer offer)
+        {
+            return _dbContext.Is_Offer.Where(is_Offer => String.Equals(offer.Offer_ID, is_Offer.Offer_ID)).ToList();
         }
     }
 }

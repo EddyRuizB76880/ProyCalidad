@@ -6,61 +6,60 @@
 @inject IRegisterService RegisterService
 @inject NavigationManager NavManager
 @inject IJSRuntime JsRuntime
-
 <!--HTML-->
 <div class="flexDiv">
     <div class="mainClass">
         <h1>Registro de Usuarios</h1>
         <EditForm Model="@newRegister" OnValidSubmit="@insertUser">
-            <FluentValidationValidator/>
+            <FluentValidationValidator />
 
-                <!--Email input-->
-                <div class="marginElements">
-                    <label for="exampleInputEmail1" class="form-label secondary_title">Correo electrónico:</label>
-                    <InputText type="email" class="form-control inputClass" aria-describedby="emailHelp" id="exampleInputEmail1" @bind-Value="newRegister.Email" required />
-                    <ValidationMessage For="@(()=> newRegister.Email)"> </ValidationMessage>
-                    <div id="emailHelp" class="form-text">Nunca compartiremos su información personal</div>
-                </div>
+            <!--Email input-->
+            <div class="marginElements">
+                <label for="exampleInputEmail1" class="form-label secondary_title">Correo electrónico:</label>
+                <InputText type="email" class="form-control inputClass" aria-describedby="emailHelp" id="exampleInputEmail1" @bind-Value="newRegister.Email" required />
+                <ValidationMessage For="@(()=> newRegister.Email)"> </ValidationMessage>
+                <div id="emailHelp" class="form-text">Nunca compartiremos su información personal</div>
+            </div>
 
-                <!--Password input-->
-                <div class="marginElements">
-                    <label for="inputPassword5" class="form-label secondary_title">Contraseña:</label>
-                    <InputText type="@pwdType" class="form-control inputClass" aria-describedby="passwordHelpBlock" id="inputPassword5" @bind-Value="newRegister.Password" required />
-                    <ValidationMessage For="@(()=> newRegister.Password)"> </ValidationMessage>
-                    <input type="checkbox" @onclick="@showPassword"> Mostrar Contraseña
-                </div>
+            <!--Password input-->
+            <div class="marginElements">
+                <label for="inputPassword5" class="form-label secondary_title">Contraseña:</label>
+                <InputText type="@pwdType" class="form-control inputClass" aria-describedby="passwordHelpBlock" id="inputPassword5" @bind-Value="newRegister.Password" required />
+                <ValidationMessage For="@(()=> newRegister.Password)"> </ValidationMessage>
+                <input type="checkbox" @onclick="@showPassword"> Mostrar Contraseña
+            </div>
 
-                <!--Confirm password input-->
-                <div class="marginElements">
-                    <label for="inputPassword5" class="form-label secondary_title">Confirmar Contraseña:</label>
-                    <InputText type="@pwdType" class="form-control inputClass" aria-describedby="passwordHelpBlock" id="inputPassword2" @bind-Value="newRegister.ConfirmPassword" required />
-                    <ValidationMessage For="@(()=> newRegister.ConfirmPassword)"> </ValidationMessage>
+            <!--Confirm password input-->
+            <div class="marginElements">
+                <label for="inputPassword5" class="form-label secondary_title">Confirmar Contraseña:</label>
+                <InputText type="@pwdType" class="form-control inputClass" aria-describedby="passwordHelpBlock" id="inputPassword2" @bind-Value="newRegister.ConfirmPassword" required />
+                <ValidationMessage For="@(()=> newRegister.ConfirmPassword)"> </ValidationMessage>
 
-                </div>
+            </div>
 
-                <!--User type input-->
-                <p class="secondary_title marginElements">Seleccione su perfil:</p>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" @onclick="@selectClient" checked>
-                    <label class="form-check-label" for="flexRadioDefault1">Cliente</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" @onchange="@selectEntrepreneur">
-                    <label class="form-check-label" for="flexRadioDefault2">Emprendedor</label>
-                </div>
+            <!--User type input-->
+            <p class="secondary_title marginElements">Seleccione su perfil:</p>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" @onclick="@selectClient" checked>
+                <label class="form-check-label" for="flexRadioDefault1">Cliente</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" @onchange="@selectEntrepreneur">
+                <label class="form-check-label" for="flexRadioDefault2">Emprendedor</label>
+            </div>
 
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" @onchange="@selectAdmin">
-                    <label class="form-check-label" for="flexRadioDefault3">Administrador</label>
-                </div>
-                <!--Submit button-->
-                <center>
-                    <button type="submit" class="btn btn-primary marginElements">@buttonMessage</button>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" @onchange="@selectAdmin">
+                <label class="form-check-label" for="flexRadioDefault3">Administrador</label>
+            </div>
+            <!--Submit button-->
+            <center>
+                <button type="submit" class="btn btn-primary marginElements">@buttonMessage</button>
 
-                    <p style="color:#FF0000">
-                        @Error_Message
-                    </p>
-                </center>
+                <p style="color:#FF0000">
+                    @Error_Message
+                </p>
+            </center>
         </EditForm>
     </div>
 </div>
@@ -75,6 +74,9 @@
     private int type_user = 1;
     private string Error_Message = "";
     private string buttonMessage = "Registrarse";
+    private string hashEmail = "";
+    private string userPassword = "";
+    private string encrypUserPassword = "";
 
     /*
     Brief: Save the user client type.
@@ -120,25 +122,9 @@
         {
             if (newRegister.ConfirmPassword == newRegister.Password)
             {
-                /*verifies that the user has not previously registered as administrator*/
-                if (type_user == 3)
-                {
-                    bool isPastAdmin = await RegisterService.verifyPastAdminRegister(newRegister.Email);
-                    if (isPastAdmin)
-                    {
-                        Error_Message = "El usuario fue rechazado anteriormente como administrador, por favor cambie el tipo de cuenta.";
-                    }
-                    else
-                    {
-                        registerUser();
-                        NavManager.NavigateTo("/messagePage?type=4");
-                    }
-                }
-                else
-                {
-                    registerUser();
-                    NavManager.NavigateTo("/messagePage?type=4");
-                }
+
+                registerUser();
+                NavManager.NavigateTo("/messagePage?type=4");
             }
             else
             {
@@ -147,7 +133,27 @@
         }
         else
         {
-            Error_Message = "El correo ya se ha registrado anteriormente.";
+            if (verifyTypeUser(newRegister.Email, type_user))
+            {
+                Error_Message = "El correo ya se ha registrado anteriormente con este tipo de cuenta.";
+            }
+            else
+            {
+                await getPassword(newRegister.Email);
+                if (userPassword != "")
+                {
+                    encrypPassword();
+                    if (verifyCredentials())
+                    {
+                        EmailConfirmation newEmail = getEmailConfirmation(newRegister.Email);
+                        NavManager.NavigateTo("/registroEncontrado?email=" + newEmail.Hash_Code + "&type=" + type_user);
+                    }
+                    else
+                    {
+                        Error_Message = "Las credenciales son incorrectas.";
+                    }
+                }
+            }
         }
         StateHasChanged();
     }
@@ -165,7 +171,7 @@
         mail.Subject = "Confirmación de Email";
         mail.Body = RegisterService.getMailBody(email.Hash_Code, userType);
         mail.ToMailIds = new List<string>()
-        {
+    {
            email.Email,
         };
         return mail;
@@ -228,5 +234,34 @@
 
         Mail mail = this.GetMail(e, type_user);
         await RegisterService.sendEmail(mail);
+    }
+
+    public bool verifyTypeUser(string email, int type)
+    {
+        return RegisterService.verifyUserTypes(email, type);
+    }
+
+    public EmailConfirmation getEmailConfirmation(string email)
+    {
+        return RegisterService.getEmailConfirmationByEmail(email);
+    }
+
+    public async Task getPassword(string email)
+    {
+        userPassword = await RegisterService.getUserPassword(email);
+    }
+
+    public void encrypPassword()
+    {
+        encrypUserPassword = RegisterService.encryptPassword(newRegister.Password);
+    }
+
+    public bool verifyCredentials()
+    {
+        if (encrypUserPassword == userPassword)
+        {
+            return true;
+        }
+        return false;
     }
 }

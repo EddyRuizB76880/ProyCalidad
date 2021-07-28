@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -22,13 +22,12 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.DataAnnotations.Validation" Version="3.2.0-preview2.20160.5" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
-    <PackageReference Include="Syncfusion.Blazor.Cards" Version="19.1.0.69" />
-    <PackageReference Include="Syncfusion.Blazor.TreeGrid" Version="19.1.0.69" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Domain\EmprendeUCR.Domain.csproj" />
     <ProjectReference Include="..\Application\EmprendeUCR.Application.csproj" />
+    <ProjectReference Include="..\Infrastructure\EmprendeUCR.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

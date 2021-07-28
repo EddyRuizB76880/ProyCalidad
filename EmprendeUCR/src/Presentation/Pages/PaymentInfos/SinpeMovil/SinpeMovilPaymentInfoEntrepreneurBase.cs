@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Components;
 using Syncfusion.Blazor.Grids;
-using Syncfusion.Blazor.Navigations;
 using EmprendeUCR.Domain.PaymentInfos.Entities;
 using System.Collections.Generic;
 using System;
@@ -9,13 +8,48 @@ namespace EmprendeUCR.Presentation.Pages.PaymentInfos
 {
     public class SinpeMovilPaymentInfoEntrepreneurBase : ComponentBase
     {
-        protected string AddButtonTitle = "Agregar";
-        protected const string SINPE_MOVIL = "SINPE Movil";
-        protected SfGrid<SinpeMovilPaymentInfo> SinpeMovilPaymentInfoGrid;
+        private string Number = "";
         protected IEnumerable<SinpeMovilPaymentInfo> _sinpeMovilPaymentInfoList;
-        protected List<ItemModel> SinpeMovilToolbarItems = new List<ItemModel>();
+        protected SfGrid<SinpeMovilPaymentInfo> SinpeMovilPaymentInfoGrid;
+        protected bool AddDisabled = true;
         protected bool AddSinpePhoneNumberDialogVisible = false;
-        protected string AddedNumber = "";
+        protected bool ConfirmationDialogVisible { get; set; } = false;
+        protected const string SINPE_MOVIL = "SINPE Movil";
+        protected int PaymentInfoIdToRemove = -1;
+        protected bool PaymentMethodDisabled = false;
+        protected string AddedNumber
+        {
+            get
+            {
+                return Number;
+            }
+            set
+            {
+                Number = value;
+                if (value == null)
+                {
+                    AddDisabled = true;
+                }
+                else
+                {
+                    if (value.Length == 8 && ValidatePhoneNumber())
+                    {
+                        AddDisabled = false;
+                    }
+                    else
+                    {
+                        AddDisabled = true;
+                    }
+                }
+            }
+        }
+        protected bool ValidatePhoneNumber()
+        {
+            if (Number == "") {
+                return false;
+            }
+            return _sinpeMovilPaymentInfoList.Find(spi => spi.Phone_Number == int.Parse(Number)).Count() == 0;
+        }
         public void SinpeMovilCommandClicked(CommandClickEventArgs<SinpeMovilPaymentInfo> args)
         {
             if (args.CommandColumn.Title == "Editar")
@@ -23,13 +57,8 @@ namespace EmprendeUCR.Presentation.Pages.PaymentInfos
             }
             else if (args.CommandColumn.Title == "Eliminar")
             {
-            }
-        }
-        protected void SinpeMovilToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
-        {
-            if (args.Item.Text == AddButtonTitle)
-            {
-                ShowAddSinpePhoneNumberDialog();
+                PaymentInfoIdToRemove = args.RowData.Payment_Info_ID;
+                ShowConfirmationDialog();
             }
         }
         protected void ShowAddSinpePhoneNumberDialog()
@@ -40,6 +69,15 @@ namespace EmprendeUCR.Presentation.Pages.PaymentInfos
         {
             AddedNumber = "";
             AddSinpePhoneNumberDialogVisible = false;
+        }
+        protected void ShowConfirmationDialog()
+        {
+            ConfirmationDialogVisible = true;
+        }
+        protected void CloseConfirmationDialog()
+        {
+            PaymentInfoIdToRemove = -1;
+            ConfirmationDialogVisible = false;
         }
     }
 }

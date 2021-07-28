@@ -21,9 +21,10 @@ namespace EmprendeUCR.Domain.ProductsSearchClientContext.Repositories
         Task<bool> addProduct(ShoppingCartHas product);
         IList<Service> getListService(string product);
         IList<Service> GetListServiceRestricted(string product, int categoryID);
-
         IList<ProductService> GetProductService();
-
         IList<Service_Photos> getAllServicePhotos();
+        IList<Product> GetProductPrice(int searchType);
+        IList<Service> GetServiceByPrice(int searchType);
+
     }
 }

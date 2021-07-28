@@ -78,5 +78,22 @@ namespace EmprendeUCR.IntegrationTests.OrderContext.Infraestructure.Repositories
         }
 
         */
+
+
+        [Fact]
+        public void GetNotificationyEntrepreneur()
+        {
+            // arrange
+            string entrepreneurEmail = "saguilar1999@hotmail.com";
+            var user = new UserNotification(entrepreneurEmail, 2);
+            var repository = _factory.Server.Services.GetRequiredService<INotificationRepository>();
+
+            // act
+            repository.GetNotifications(user);
+
+            // assert
+            user.Notifications[0].ToString().Should().Be("Tiene un nuevo pedido de Juan");
+            user.Notifications[1].ToString().Should().Be("Tiene un nuevo pedido de Juan");
+        }
     }
 }
