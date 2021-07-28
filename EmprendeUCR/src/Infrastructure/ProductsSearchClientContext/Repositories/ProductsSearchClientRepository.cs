@@ -102,5 +102,15 @@ namespace EmprendeUCR.Infrastructure.ProductsSearchClientContext.Repositories
         {
             return _dbContext.Service_Photos.ToList();
         }
+
+        public IList<Product> GetProductPrice(int searchType)
+        {
+            return _dbContext.Product.FromSqlRaw("exec getProductsByPrice \"" + searchType + "\"").ToArray();
+        }
+
+        public IList<Service> GetServiceByPrice(int searchType)
+        {
+            return _dbContext.Service.FromSqlRaw("exec getServicesByPrice \"" + searchType + "\"").ToArray();
+        }
     }
 }

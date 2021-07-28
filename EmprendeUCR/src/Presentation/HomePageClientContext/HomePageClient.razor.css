@@ -55,7 +55,7 @@ html {
     margin-top: 8px;
 }
 
-pre {
+.pre {
     font-family: Arial;
     font-size: x-large;
     font-weight: bold;
@@ -82,6 +82,16 @@ pre {
 }
 
 .imageProduct {
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: 130px;
+    height: 130px;
+    border-radius: 10px;
+}
+
+.button-img {
     margin-top: 10px;
     left: 0;
     right: 0;
@@ -100,6 +110,13 @@ pre {
     margin-left: auto;
     margin-right: auto;
     width: 175px; 
+
+}
+
+.buttonViewDetails {
+    margin-left:30%;
+    width: 115px;
+    height: 30px;
 }
 
 .secondary_title {

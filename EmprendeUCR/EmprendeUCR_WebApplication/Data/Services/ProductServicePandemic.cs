@@ -88,5 +88,10 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return _context.Product.Count();
 
         }
+
+        public IList<Is_Able_To> getUserPermissions(string email)
+        {
+            return _context.Is_Able_To.Filter(o => o.Email.Equals(email)).ToArray();
+        }
     }
 }

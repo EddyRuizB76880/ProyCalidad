@@ -43,7 +43,7 @@
         <p class="m-auto text-center">
             <span> ₡ </span>
             @* Gets the total price of the quantity of each product in the cart *@
-            @(shopLine.product.Price * shopLine.Quantity)
+            @(shopLine.product.currentPrice * shopLine.Quantity)
         </p>
     </div>
     <div class="btn-corner mb-2 mx-4 w-10 float-right">

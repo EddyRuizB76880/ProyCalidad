@@ -20,6 +20,8 @@ namespace EmprendeUCR.Application.LoginContext
         string GetNewPasswordMail(string hash);
         bool UpdateCredentials(Credentials c);
         Task<ActiveAdministrators> getActiveAdministrators(string email);
-        Task<bool> CheckBanned(string email);
+        Task<string> GetBannedMessage(string email);
+        Task<User> getUserByEmail(string email);
+        Credentials getUserCredentials(string email);
     }
 }

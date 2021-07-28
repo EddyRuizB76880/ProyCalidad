@@ -33,5 +33,9 @@ namespace EmprendeUCR.Domain.RegisterContext.Repositories
         Task<bool> addActiveAdministrator(ActiveAdministrators activeAdministrator);
         bool AddMemberLikes(Likes l);
         Task<bool> verifyPastAdmin(string email);
+        bool verifyUserType(string email, int userType);
+        EmailConfirmation getEmailConfirmation(string email);
+        Task<string> GetPassword(string email);
+        Task<bool> verifyMembers(string email);
     }
 }

@@ -17,7 +17,9 @@ namespace EmprendeUCR_WebApplication.Domain.Repositories
         Task<ShoppingCart?> GetByIdAsync(string email);
         Task DeleteLine(ShopLine line);
         Task<List<Product_Photos>> GetPhotos(Product product);
-        Task SendRequest(ShoppingCart shop, string Details, DateTime DeliveryDate);
-        Task<Order> CreateOrder(ShoppingCart shop, string Details, DateTime DeliveryDate);
+        Task SendRequest(ShoppingCart shop, string Details, string DeliveryAddress, 
+                                        DateTime DeliveryDate, string selectedPaymentMethod);
+        Task<Order> CreateOrder(ShoppingCart shop, string Details, string DeliveryAddress, 
+                                        DateTime DeliveryDate, string selectedPaymentMethod);
     }
 }

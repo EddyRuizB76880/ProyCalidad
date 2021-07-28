@@ -11,3 +11,15 @@
     FOREIGN KEY ([Writer_User_Email]) REFERENCES [dbo].[User] ([Email])
 );
 
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [idx_Message_Chat_Notifications]
+    ON [dbo].[Message]([Chat_ID] ASC, [Seen] ASC, [Reader_User_Email] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [idx_Message_All_Notifications]
+    ON [dbo].[Message]([Seen] ASC, [Reader_User_Email] ASC);
+

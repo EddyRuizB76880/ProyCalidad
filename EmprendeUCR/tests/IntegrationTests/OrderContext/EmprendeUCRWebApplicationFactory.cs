@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using EmprendeUCR_WebApplication.Infrastructure;
 using EmprendeUCR_WebApplication.Infrastructure.OrderContext;
+using EmprendeUCR_WebApplication.Infrastructure.ShoppingCartContext;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.SqlClient;
@@ -74,7 +75,8 @@ namespace EmprendeUCR.IntegrationTests.EmprendeUCR
             {
                 var scopedServices = scope.ServiceProvider;
                 var db = scopedServices.GetRequiredService<OrderDbContext>();
-                var logger = scopedServices.GetRequiredService<ILogger<EmprendeUCRWebApplicationFactory<TStartup>>>();
+                var scdb = scopedServices.GetRequiredService<ShoppingCartDbContext2>();
+                var logger = scopedServices.GetRequiredService<ILogger<ShoppingFactory<TStartup>>>();
 
                 _configuration = configuration;
 

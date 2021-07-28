@@ -19,6 +19,8 @@ namespace EmprendeUCR_WebApplication.Application.ShoppingCartContext
         //Task orderRequest(ShoppingCart shop);
 
         Task<PagedList<ShopLine>> GetProducts(ShopParameters productParameters, string email);
-        Task sendRequest(ShoppingCart shop, string Details, DateTime DeliveryDate);
+        Task sendRequest(ShoppingCart shop, string Details, 
+                            string DeliveryAddress, DateTime DeliveryDate, 
+                                string selectedPaymentMethod);
     }
 }
