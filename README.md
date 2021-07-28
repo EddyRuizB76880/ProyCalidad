@@ -4,49 +4,49 @@
 
 # EMPRENDE@UCR
 
-# Version 1.0
+# Version 2.0
 
 [Referencia al control de versiones actual para el documento y el sistema](https://bitbucket.org/cristian_quesadalopez/ecci_ci0128_i2021_g01_pi/src/master/)
 
 **Tabla de contenidos**
 
-1. [Definiciones, acrónimos y abreviaciones](#Def)
-2. [Introducción](#Intro)
-3. [Listado de equipos y miembros](#Teams)
-    - [Roles de iteración](#Roles)
-4. [Descripción general del sistema a desarrollar](#id4)
-    - [Contexto y situación actual](#Contexto)
-    -  [Problema que resuelve](#Trouble)
-    -  [Interesados del proyecto y tipos de usuarios](#Interesados)
-    -  [Solución propuesta](#Solution)
-    - [Análisis del entorno](#Anal)
-    - [Visión del producto](#Vision)
-    - [Relación con otros sistemas externos](#Relation)
-    - [Descripción de los módulos y epics](#Epic)
-    - [Requerimientos Funcionales](#Requirements)
-    - [Product Road Map](#ProductRoadMap)
-    - [Requerimientos no funcionales](#NonFuncRequirements)
-5. [Artefactos de bases de datos](#ArtefactosBases)
-    - [Requerimiento de datos](#REQDATOS)
-    - [Esquema conceptual](#ERR)
-    - [Esquema lógico](#Mapeo)
-6. [Decisiones técnicas](#Decitions)
-    - [Metodologías utilizadas](#Metodology)
-    - [Artefactos utilizadas en el desarrollo](#Artefactos)
-    - [Tecnologías utilizadas](#Tecnology)
-    - [Repositorio de código & estrategia git](#Git)
-    - [Definición de listo](#DOD)
-7. [Bitácoras](#Logs)
-8. [Referencias bibliográficas](#Ref)
+1. Definiciones, acrónimos y abreviaciones
+2. Introducción
+3. Listado de equipos y miembros
+    - Roles de iteración
+4. Descripción general del sistema a desarrollar
+    - Contexto y situación actual
+    -  Problema que resuelve
+    -  Interesados del proyecto y tipos de usuarios
+    -  Solución propuesta
+    - Análisis del entorno
+    - Visión del producto
+    - Relación con otros sistemas externos
+    - Descripción de los módulos y epics
+    - Requerimientos Funcionales
+    - Product Road Map
+    - Requerimientos no funcionales
+5. Artefactos de bases de datos
+    - Requerimiento de datos
+    - Esquema conceptual
+    - Esquema lógico
+6. Decisiones técnicas
+    - Metodologías utilizadas
+    - Artefactos utilizadas en el desarrollo
+    - Tecnologías utilizadas
+    - Repositorio de código & estrategia git
+    - Definición de listo
+7. Bitácoras
+8. Referencias bibliográficas
 
 
-## Definiciones, acrónimos y abreviaciones <a name="Def"></a>
+## Definiciones, acrónimos y abreviaciones
 
-## Introducción <a name="Intro"></a>
+## Introducción
 
-## Listado de equipos y miembros <a name="Teams"></a>
+## Listado de equipos y miembros
 
-### Roles de iteración <a name="Roles"></a>
+### Roles de iteración
 
 #### 3DKR:
     Rafael Porras       ->  Documentación
@@ -80,17 +80,17 @@
     Silvia Aguilar      ->   Scrum Ambassador
     Eddy Ruiz           ->   Documentación
 
-## Descripción general del sistema a desarrollar <a name="id4"></a>
+## Descripción general del sistema a desarrollar
 
-### Contexto y situación actual <a name="Contexto"></a>
+### Contexto y situación actual
 
 Debido a la pandemia por el coronavirus, existen muchas personas que se han quedado sin trabajo o no han podido hacer ventas de sus negocios. Por este motivo se decidió realizar una página web que permita a cualquier emprendedor promocionar y vender su producto o servicio.
 
-### Problema que resuelve <a name="Trouble"></a>
+### Problema que resuelve
 
 Le permite a los emprendedores de cualquier tamaño dar a conocer sus productos y servicios permitiendo un canal comunicación entre el cliente y el emprendedor.
 
-### Interesados del proyecto y tipos de usuarios <a name="Interesados"></a>
+### Interesados del proyecto y tipos de usuarios
 
 Los interesados del proyecto son los emprendedores que deseen vender su producto/servicio por medio de la página, así como los clientes que estén interesados en algún producto o servicio.
 
@@ -103,24 +103,24 @@ Los interesados del proyecto son los emprendedores que deseen vender su producto
 *Administrador:* El encargado de administrar la página web.
 
 
-### Solución propuesta <a name="Solution"></a>
+### Solución propuesta
 
 La solución propuesta es realizar una página web que permita tanto promocionar productos o servicios como realizar las compras dentro de la página. Además la página contará con un canal de comunicación directo(chat) entre cliente y emprendedor que permitirá que ambas partes se pongan de acuerdo en la orden y entrega del pedido/servicio. La app también permitirá crear alianzas entre emprendedores.
 
 
-### Análisis del entorno <a name="Anal"></a>
+### Análisis del entorno
 
-### Visión del producto <a name="Vision"></a>
+### Visión del producto
 
 Para los emprendedores nacionales, quienes necesitan un medio para promocionar y vender sus productos y/o servicios, EMPRENDE@UCR es una plataforma web que permite la venta y compra en línea de productos y servicios. A diferencia de otras plataformas no enfocadas en los pequeños emprendedores, nuestro producto, además de ser gratuito, busca el crecimiento de los pequeños emprendedores y fomenta la cooperación entre estos.
 
-### Relación con otros sistemas externos <a name="Relation"></a>
+### Relación con otros sistemas externos
 
 Los módulos del sistema web tiene relación con otros sistemas que ya existan.
 ejemplo: la parte de los pagos, preguntar a la po si visualiza otros sistemas que quiera integrarle (facturas)
 
 
-### Descripción de los módulos y epics <a name="Epic"></a>
+### Descripción de los módulos y epics
 
 Los módulos que fueron asignados a cada equipo son los siguientes: 
 
@@ -185,7 +185,7 @@ Poder categorizar y etiquetar productos o servicios.
 - **Relación módulo emprendedores con módulo administración**
     - Similar al punto anterior existe una relación directa entre estos módulos ya que se debe de tener conocimiento de cuáles son los métodos de pago que si son aceptados para un emprendedor en particular.
 
-### Requerimientos Funcionales <a name="Requirements"></a>
+### Requerimientos Funcionales
 
 El proyecto es organizado usando una herramienta en línea llamada JIRA Software. En JIRA, seguimos la siguiente estructura:
 
@@ -208,86 +208,134 @@ El proyecto es organizado usando una herramienta en línea llamada JIRA Software
 
 Para poder acceder al [proyecto](http://10.1.4.22:8080/secure/RapidBoard.jspa?projectKey=PIIB12021&useStoredSettings=true&rapidView=43) el usuario necesita de acceso a un VPN para conectarse, así como acceso a un usuario y una contraseña.
 
-### Product Road Map <a name="ProductRoadMap"></a>
+### Product Road Map
 #### 3DKR:
-    **Sprint #0:**    ->   Product Management:                  -Rellenar/Agregar informacion al producto
-                                                                -Agregar una categoría al producto
-    **Sprint #1:**    ->   Product Management 
-                      ->   Service Management
-    **Sprint #2:**    ->   Profile Management
-                      ->   Gallery Management
-                      ->   Entreoreneurs Alliances
+    **Sprint #0:**    ->   Product Management                   -Fill/Add information to product
+                                                                -Add a new category to the product
+
+    **Sprint #1:**    ->   Product Management                   -Add products workflow
+                      ->   Service Management                   -Product Services
+
+    **Sprint #2:**    ->   Offer Management                     -CRUD for Offers
+                      ->   Ranking Management                   -Entrepreneur Rating for clients
+                      ->   Entrepreneurs Alliances              -Alliances between Entrepreneurs
+
     **Sprint #3:**    ->   Profile Management
-                      ->   Entreoreneurs Alliances
+                      ->   Entrepreneurs Alliances
 
 #### Phoenix:
-    **Sprint #0:**    ->   Categorization System:               -Crear/Eliminar/Editar Categorías
-    **Sprint #1:**    ->   Recommendation System
-                      ->   Order Status
-                      ->   Payment Types
-    **Sprint #2:**    ->   Reports, Chat Reports
-    **Sprint #3:**    ->   Reports, Chat Reports
+    **Sprint #0:**    ->   Categorization System                -Create/Delete/Edit Category
+
+    **Sprint #1:**    ->   Recommendation System                
+                      ->   Payment Methods                      -Enable/Desable Payment Methods
+
+                      ->   Categorization System                -Edit/View Categories
+                      
+                      ->   Reportation System                   -View Reports
+                                                                -Make Reports
+
+    **Sprint #2:**    ->   Payment Method                       -Update Payment Method interface
+
+                      ->   Payment Info                         -Add/Delete/View Entrepreneur payment info
+
+                      ->   Chat System                          -View chat messages
+
+                      ->   Categorization System                -Category user stories correction
+
+    **Sprint #3:**    ->   Chat System                          -View/Send chat messages
 
 #### Pandemic:
-    **Sprint #0:**    ->   User Register:                       - Pagina de cliente
-                                                                - Pagina de emprendedor
-                                                                - Pagina de administrador
-                                                                - Seguridad de los datos
-                                                                - Manejo de datos principales
-    **Sprint #1:**    ->   User Register
-    **Sprint #2:**    ->   Client-Category Management
-                      ->   Score System
+    **Sprint #0:**    ->   User Register                        -Client page
+                                                                -Entrepreneur page
+                                                                -Administrator page
+                                                                -Data security
+                                                                -Main products management
+
+    **Sprint #1:**    ->   User Register                        -User Register
+                                                                -User login
+
+                      ->   User Pages                           -Product search
+                                                                -Homepage
+                                                                -Profile editing
+
+    **Sprint #2:**    ->   Client-Category Management           -Favorite categories of client and entrepreneur
+
+                      ->   Score System                         -Offer and product view
+                                                                -Feedback messages in real time
+
+                      ->   User usability                       -Administrator application
+                                                                -Password restoration
+
     **Sprint #3:**    ->   Score System
 
 #### F & ½L:
-    **Sprint #0:**    ->   Clients Products Requests            -Ver el shoping cart
-                                                                -Requerimientos y opciones en ordenes
-    **Sprint #1:**    ->   Com. between Customer-Entrepreneur
-    **Sprint #2:**    ->   Products Request Management
-                      ->   Update of Order Status
+    **Sprint #0:**    ->   Clients Products Requests            -Shopping cart
+                                                                -Order options and requirements
+
+    **Sprint #1:**    ->   Com. between Customer-Entrepreneur   -Basic functionality for buying products/services
+                                                                -Functionality for selling products/services
+    
+    **Sprint #2:**    ->   Products Request Management          -Communication with the client
+                      ->   Update of Order Status               -Status assignation
+
     **Sprint #3:**    ->   Notif. of req. and their statuses
 
-### Requerimientos no funcionales <a name="NonFuncRequirements"></a>
+### Requerimientos no funcionales
 
 #### Eficiencia
 - Toda funcionalidad del sistema debe responder al usuario en menos de 5 segundos
 - Los datos modificados en la base de datos se deben ver reflejados en tiempo real para todos los usuarios.
 - El sistema debe soportar una concurrencia de al menos X usuarios. (Validar con P.O)
+
 #### Seguridad
 - Los permisos del sistema solo pueden ser cambiados por un administrador.
 - Se debe asegurar la privacidad de los datos sensibles del usuario.
+
 #### Usabilidad
 - El tiempo de aprendizaje del sistema por un usuario deberá ser menor a X tiempo. (Validar con el asesor)
 - El sistema debe contar con un manual de usuario.
 - El sistema debe proporcionar mensajes de error útiles para el usuario.
 - La aplicación web debe garantizar la adecuada visualización en múltiples dispositivos (computadoras, teléfonos, tabletas, ...).
 - El sistema debe poseer interfaces gráficas limpias e intuitivas.
+
 #### Disponibilidad
 - El sistema debe estar disponible el 99.981% del tiempo.
 
 
-## Artefactos de bases de datos <a name="ArtefactosBases"></a>
+## Artefactos de bases de datos
 
-### Requerimiento de Datos <a name="REQDATOS"></a>
-<p>Un Producto_Servicio tiene una descripción, ID que lo identifica como único, también debe tener una disponibilidad. Un Producto_Servicio puede ser un Producto ó un Servicio.
+### Requerimiento de Datos
+Un Producto_Servicio tiene una descripción, ID que lo identifica como único, también debe tener una disponibilidad. Un Producto_Servicio puede ser un Producto ó un Servicio.
 En donde se tiene que un Producto tiene una o más fotos, posee un precio y un nombre.
-Existe un Carrito que es poseído por cada cliente, en donde un carrito es único para cada cliente, este carrito puede tener productos y servicios. Un carrito tiene como atributos derivados un precio total y una cantidad de productos.</p>
 
-### Esquema conceptual <a name="ERR"></a>
+Existe un Carrito que es poseído por cada cliente, en donde un carrito es único para cada cliente, este carrito puede tener productos y servicios. Un carrito tiene como atributos derivados un precio total y una cantidad de productos.
+
+Se agregan 3 nuevos atributos a la tabla Order: 
+"Date and hour of State Changed": Esto para llevar un control sobre las notificaciones, para así saber cuando una notificación nueva debe de aparecer.
+"View": Para saber cuando la notificación de una orden respectiva ha sido vista o no.
+"State": Esta es una llave foránea de la tabla "Generic_Status", para controlar cual es el estado actual de la orden, y poder cambiarlo cuando sea necesario. Esto es parte de la nueva relación "Has" entre la tabla "Order" y "Generic_Status".
+
+También se agrego una nueva relación N:M, llamada "Has_Status", entre la tabla "Product_Service" y la tabla "Personalized_status", esto para relacionar a los productos y servicios con sus respectivos estados personalizados, creados por el emprendedor. Esta nueva relación crea una nueva tabla que contiene las llaves de las tablas con las cuales se relaciona como llaves foráneas, y un atributo extra llamado "Order" para indicar el orden en el cual los estados personalizados, de los productos y servicios respectivos, deben de aparecer.
+
+Por ultimo se crearon dos nuevas vistas llamadas "OrderNotificationEntrepeneurs" y "OrderNotificationClient", estas fueron creadas para manejar las notificaciones de los emprendedores y clientes respectivos. 
+En el caso de la vista "OrderNotificationEntrepeneurs" esta contiene los atributos "Client_Email", "Date_and_hour_of_creation", "State", "Entrepreneur_Email", "Name" y "Date_and_hour_of_State_Changed", la vista solo contiene los atributos de las ordenes que tienen como estado actual "Pendiente de revision", esto para notificarle al emprendedor, de tales ordenes, que nuevas ordenes han sido creadas y que deben de revisarse. 
+Ahora, la otra vista llamada "OrderNotificationClient" contiene los atributos "Client_Email", "Date_and_hour_of_creation", "State", "Name", "Date_and_hour_of_State_Changed" y "view",  la vista solo contiene los atributos de las ordenes que tienen como estado actual "Rechazado" o "Aceptado" y que además "view" sea igual a 0, esto para notificarle al cliente, de dichas ordenes, que sus ordenes, anteriormente creadas, han sido revisadas y que están en un nuevo estado, "Rechazado" o "Aceptado".
+
+### Esquema conceptual
 
 ![Esquema conceptual de la base de datos](imgs/Conceptual_scheme.png)
 
 Referencia al archivo fuente: [Esquema conceptual de la base de datos](https://lucid.app/lucidchart/521c91fc-fdbb-42cb-8564-09c0ab52c460/edit?page=0_0#)
 
-### Esquema lógico <a name="Mapeo"></a>
+### Esquema lógico
 
 ![Esquema lógico de la base de datos](imgs/Logical_scheme.png)
 
 Referencia al archivo fuente: [Esquema lógico de la base de datos](https://lucid.app/lucidchart/521c91fc-fdbb-42cb-8564-09c0ab52c460/edit?page=eAhCgoWCmbE2#)
 
-## Decisiones técnicas <a name="Decitions"></a>
+## Decisiones técnicas
 
-### Metodologías utilizadas <a name="Metodology"></a>
+### Metodologías utilizadas
 
 #### Scrum:
 - **Sprints de tres semanas:** 4 (excepto el primer sprint que es de seis semanas).
@@ -316,34 +364,38 @@ Referencia al archivo fuente: [Esquema lógico de la base de datos](https://luci
 - **D-Dependency Inversion Principle**
     - Inversión de dependencia: Las clases deben depender en abstracciones y no de otras clases concretas.
 #### Otras:
-- **pair programming**
+- **Pair programming**
     - Se define una pareja de programadores, cada una con un driver y un navigator, así como un tiempo de rotación.
     - El driver escribe el código y el navigator observa la pantalla en todo momento para apoyar al driver en lógica y sintáxis.
     - Cuando se cumple el tiempo definido inicialmente, los programadores intercambian roles.
-- **clean architecture**
+    - Este proceso puede ser llevado por cualesquiera 2 personas de un equipo.
+- **Clean architecture**
 - **Refactoring**
-    - Consiste en rehacer una parte de código.
+    - Consiste en rehacer una parte de código. En este caso el refactoring consiste en reestructurar el codigo fuente para migrarlo a la arquitectura DDD(Domain, Driven Design), en una separación de cuatro capas (Domain, Infrastructure, Application, Presentation).
+    - El proceso de refactoring lo lleva a cabo cada equipo de trabajo para migrar su codigo a la arquitectura DDD.
 - **Integración continua**
     - Una práctica de XP, extreme programming.
     - En integración continua, las integraciones de avances al producto se realizan constantmente y con commits pequeños.
     - Lo anterior para reducir la cantidad potencial de conflictos.
-- **definition of done**
+    - La integración continua se realiza para el branch de un mismo equipo, en el que los programadores luego de desarrollar cierta funcionalidad integran con el branch del equipo. También se debe realizar para los branches entre equipos, en este caso conocido como develop.
+- **Definition of done**
     - Son criterios que  indican cuándo una historia puede ser considerada hecha.
     - Son definidos por los equipos de desarrollo y aplican a cada historia.
-    
+    - Permiten una estandarizacion de que es lo mínimo que debe tener cada historia para considerarse terminada.
 
-### Artefactos utilizadas en el desarrollo <a name="Artefactos"></a>
+
+### Artefactos utilizadas en el desarrollo
 
 **Product Backlog:**
 
-Durante el sprint 0, se asignaron módulos a cada equipo de desarrolladores y a partir de los requerimientos de la P.O, se asignaron EPICS<a name="Epic"></a> e historias de usuario para cada equipo.
+Durante el sprint 0, se asignaron módulos a cada equipo de desarrolladores y a partir de los requerimientos de la P.O, se asignaron EPICS y historias de usuario para cada equipo.
 
 **Sprint Backlog:**
 
-Según las tareas prioritarias del backlog, se realizó un product roadmap<a name="ProductRoadMap"></a> en el cuál seleccionaron historias de usuario.
+Según las tareas prioritarias del backlog, se realizó un product roadmap en el cuál seleccionaron historias de usuario.
 
 
-### Tecnologías utilizadas <a name="Tecnology"></a>
+### Tecnologías utilizadas
 
 #### Tecnologías de desarrollo
 
@@ -366,7 +418,7 @@ Según las tareas prioritarias del backlog, se realizó un product roadmap<a nam
 - **Visual Studio:** Entorno de desarrollo integrado (IDE) (v16.9).
 
 
-### Repositorio de código & estrategia git <a name="Git"></a>
+### Repositorio de código & estrategia git
 
 #### Branches
 
@@ -410,7 +462,7 @@ De Develop a Main. PR, review por los scrum ambassadors.
 
 ![Estrategia Git](imgs/Estrategia_git.jpeg)
 
-### Definición de listo <a name="DOD"></a>
+### Definición de listo
 
 La definición de listo (DOD) abarca los siguientes aspectos:
 
@@ -430,13 +482,19 @@ La definición de listo (DOD) abarca los siguientes aspectos:
         - Usar espacios en blanco en lugar de tabuladores.
         - Al añadir comentarios al código, dejar un espacio en blanco entre inicio del mismo y el comentario en sí. (Ejemplo: // Este es un comentario)
         - Resumen de archivo en forma de comentario al comienzo de cada archivo
-            Plantilla en cada método: 
+            Plantilla en cada método:
+
             /*
+
             Resumen:
+
             Recibe:
+
             Retorna:
+
             Posibles excepciones:
-        */
+
+            */
         - Modularizar estilos: Siempre que sea posible, no implementar estilos en archivos razor. Separarlo en .css aparte.
 
 - **Repositorio:**
@@ -450,34 +508,34 @@ La definición de listo (DOD) abarca los siguientes aspectos:
     - Cualquier funcionalidad que se agregue no debe afectar a los demás equipos.
     - Comprobar las funcionalidades complementarias entre los grupos.
 
-## Bitácoras <a name="Logs"></a>
+## Bitácoras
 - [Daily Meeting Report.](https://docs.google.com/spreadsheets/d/1vboRJwl7TfQBPofRB58tHBFxUC7Q7FTaEbG2q-Etz1M/edit#gid=1481241924)
 - [Retrospective Report.](https://docs.google.com/spreadsheets/d/1vboRJwl7TfQBPofRB58tHBFxUC7Q7FTaEbG2q-Etz1M/edit#gid=203688471)
 - [Sprint Review Report.](https://docs.google.com/spreadsheets/d/1vboRJwl7TfQBPofRB58tHBFxUC7Q7FTaEbG2q-Etz1M/edit#gid=849688878)
-## Referencias bibliográficas <a name="Ref"></a> 
+## Referencias bibliográficas
 
-Atlassian. (n.d.-a). *Agile roadmaps: build, share, use, evolve*. <https://www.atlassian.com/agile/product-management/roadmaps>
+1. Atlassian. (n.d.-a). *Agile roadmaps: build, share, use, evolve*. <https://www.atlassian.com/agile/product-management/roadmaps>
 
-Atlassian. (n.d.-b). *Epics*. <https://www.atlassian.com/agile/project-management/epics>
+2. Atlassian. (n.d.-b). *Epics*. <https://www.atlassian.com/agile/project-management/epics>
 
-Atlassian. (n.d.-c). *Git Feature Branch Workflow | Atlassian Git Tutorial*. <https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow>
+3. Atlassian. (n.d.-c). *Git Feature Branch Workflow | Atlassian Git Tutorial*. <https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow>
 
-Atlassian. (n.d.-d). *Gitflow Workflow | Atlassian Git Tutorial*. <https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow>
+4. Atlassian. (n.d.-d). *Gitflow Workflow | Atlassian Git Tutorial*. <https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow>
 
-Atlassian. (n.d.-e). *Product Backlog Grooming*. <https://www.atlassian.com/agile/scrum/backlogs>
+5. Atlassian. (n.d.-e). *Product Backlog Grooming*. <https://www.atlassian.com/agile/scrum/backlogs>
 
-Atlassian. (n.d.-f). *Pull Requests | Atlassian Git Tutorial*. <https://www.atlassian.com/git/tutorials/making-a-pull-request>
+6. Atlassian. (n.d.-f). *Pull Requests | Atlassian Git Tutorial*. <https://www.atlassian.com/git/tutorials/making-a-pull-request>
 
-Atlassian. (n.d.-g). *User Stories | Examples and Template*. <https://www.atlassian.com/agile/project-management/user-stories>
+7. Atlassian. (n.d.-g). *User Stories | Examples and Template*. <https://www.atlassian.com/agile/project-management/user-stories>
 
-Atlassian. (n.d.-h). *What is Scrum?* <https://www.atlassian.com/agile/scrum>
+8. Atlassian. (n.d.-h). *What is Scrum?* <https://www.atlassian.com/agile/scrum>
 
-Atlassian. (n.d.-i). *What is version control | Atlassian Git Tutorial*. <https://www.atlassian.com/git/tutorials/what-is-version-control>
+9. Atlassian. (n.d.-i). *What is version control | Atlassian Git Tutorial*. <https://www.atlassian.com/git/tutorials/what-is-version-control>
 
-Cohn, M. (2005). *Agile Estimating and Planning* (1st ed.). Pearson.
+10. Cohn, M. (2005). *Agile Estimating and Planning* (1st ed.). Pearson.
 
-Microsoft. (n.d.-a). *Microsoft SQL documentation* - SQL Server. Microsoft Docs. <https://docs.microsoft.com/en-us/sql/?view=sql-server-ver15>
+11. Microsoft. (n.d.-a). *Microsoft SQL documentation* - SQL Server. Microsoft Docs. <https://docs.microsoft.com/en-us/sql/?view=sql-server-ver15>
 
-Microsoft. (n.d.-b). *Visual Studio documentation*. Microsoft Docs. <https://docs.microsoft.com/en-us/visualstudio/windows/?view=vs-2019&preserve-view=true>
+12. Microsoft. (n.d.-b). *Visual Studio documentation*. Microsoft Docs. <https://docs.microsoft.com/en-us/visualstudio/windows/?view=vs-2019&preserve-view=true>
 
-*Scrum Training Series: Free Scrum Master Training from Seattle*. (n.d.). Scrum Training Series. <https://scrumtrainingseries.com/>
+13. *Scrum Training Series: Free Scrum Master Training from Seattle*. (n.d.). Scrum Training Series. <https://scrumtrainingseries.com/>
