@@ -116,10 +116,6 @@
                             {
                                 <li class=" "> <a href="/Alliances" class="color-grey mx-5"> ALIANZAS </a></li>
                             }
-                            if (permisos[i].Permission_Id == 2)
-                            {
-                                <li class=" "> <a href="/MyCustomers" class="color-grey mx-5"> MIS CLIENTES </a></li>
-                            }
                         }
                     }
                 }
@@ -130,8 +126,10 @@
             }
             <li class=" "> <a href="/My_Alliance" class="color-grey mx-5"> ALIANZAS </a></li>
             <li class=" "> <a href="/Offers" class="color-grey mx-5"> OFERTAS </a></li>
-            <li class=" "> <a href="/about" class="color-grey mx-5"> SOBRE NOSOTROS </a></li>
-            @if (myType == 2){<li class=" "> <a href="/entrepreneur_payment_methods" class="color-grey mx-5"> METODOS DE PAGO </a></li>}
+            @if (myType == 2){
+                <li class=" "> <a href="/entrepreneur_payment_methods" class="color-grey mx-5"> METODOS DE PAGO </a></li>
+                <li class=" "> <a href="/MyCustomers" class="color-grey mx-5"> MIS CLIENTES </a></li>
+                }
         </ul>
 
     </nav>
