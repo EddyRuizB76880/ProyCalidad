@@ -6,6 +6,8 @@ using EmprendeUCR.Domain.Core.CoreEntities;
 using EmprendeUCR.Domain.Core.Repositories;
 using EmprendeUCR.Domain.ProfileContext.Repositories;
 using Microsoft.EntityFrameworkCore;
+using EmprendeUCR.Domain.Reports.Entities;
+using EmprendeUCR.Application.Reports.Implementations;
 
 namespace EmprendeUCR.Infrastructure.ProfileContext.Repositories
 {
@@ -22,6 +24,10 @@ namespace EmprendeUCR.Infrastructure.ProfileContext.Repositories
         public async Task<User> GetUserAsync(string email)
         {
             return await _dbContext.User.FindAsync(email);
+        }
+        public  async Task<IList<Entrepreneur>> GetUsersAsync()
+        {
+            return await _dbContext.Entrepreneur.ToListAsync();
         }
 
         public async Task<Members> GetMemberAsync(string email)
@@ -57,7 +63,6 @@ namespace EmprendeUCR.Infrastructure.ProfileContext.Repositories
         public string GetCategoryTitleAsync(int categoryId)
         {
             return _dbContext.Category.Find(categoryId).Title;
-            /////////////////////////////
         }
 
         public IList<Category> GetFatherCategories()
@@ -151,6 +156,17 @@ namespace EmprendeUCR.Infrastructure.ProfileContext.Repositories
         public async Task<bool> RemoveMemberLikes(Likes l)
         {
             _dbContext.Likes.Remove(l);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+        public async Task<bool> AddReport(Report r) {
+            _dbContext.Report.Add(r);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+        public async Task<bool> RemoveReport(Report r)
+        {
+            _dbContext.Report.Remove(r);
             await _dbContext.SaveChangesAsync();
             return true;
         }

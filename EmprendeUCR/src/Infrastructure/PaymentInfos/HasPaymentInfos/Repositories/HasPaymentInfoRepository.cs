@@ -21,12 +21,10 @@ namespace EmprendeUCR.Infrastructure.PaymentInfos.HasPaymentInfos.Repositories
             _dbContext.Update(hasPaymentInfo);
             await _dbContext.SaveEntitiesAsync();
         }
-        public async Task AddHasPaymentInfo(int paymentInfoID, string email)
+        public async Task AddHasPaymentInfo(HasPaymentInfo hasPaymentInfo)
         {
-            HasPaymentInfo new_Has_Payment_Info = new();
-            new_Has_Payment_Info.Entrepreneur_Email = email;
-            new_Has_Payment_Info.Payment_Info_ID = paymentInfoID;
-            await SaveAsync(new_Has_Payment_Info);
+            await _dbContext.AddAsync(hasPaymentInfo);
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<HasPaymentInfo>> GetAllAsync()

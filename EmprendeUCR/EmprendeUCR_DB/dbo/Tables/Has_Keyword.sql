@@ -9,8 +9,6 @@
 );
 
 
-
-
 GO
 CREATE TRIGGER Keyword_Product_Restriction
 ON Has_Keyword INSTEAD OF INSERT

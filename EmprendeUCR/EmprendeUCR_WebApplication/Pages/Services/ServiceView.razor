@@ -3,6 +3,8 @@
 @using EmprendeUCR_WebApplication.Data.Services
 @using EmprendeUCR_WebApplication.Data.Entities
 @using EmprendeUCR_WebApplication.Data.Services.Categories
+@using EmprendeUCR_WebApplication.Data.Services.Keyword
+@using EmprendeUCR_WebApplication.Data.Entities.Keyword
 @using System.IO
 @using BlazorInputFile
 @using Syncfusion.Blazor.TreeGrid;
@@ -10,9 +12,11 @@
 @inject Product_ServiceService Product_ServiceService
 @inject ServiceService ServiceService
 @inject CategoryService CategoryService
+@inject ProductService ProductService
 @inject Service_PhotosService Service_PhotosService
 @inject HasSuppliesService HasSuppliesService
 @inject Has_StatusService Has_StatusService
+@inject HasKeywordServiceService hasKeywordSer
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 <body>
@@ -43,15 +47,23 @@
 
             </div>
 
+            <div class="border-1 shadow  bg-silver mt-3 w-90">
+                <label for="Keyword" class="control-label m-lg-2">Palabras claves Asociadas:</label>
+                <label for="Keyword" class="control-label ">
+                    @foreach (string has in hasKeywordSer.GetKeywordsByService(ProductService.GetService(_service.Code_ID)))
+                    {
+        @has.ToString()}
+                </label>
+            </div>
+
             <div class=" border-1 shadow  bg-silver mt-3 w-90">
                 <h2 class="bg-blue text-center">Estados asociados</h2>
                 @foreach (var prodStatus in serviceStatuses.OrderBy(p => p.Order))
                 {
-                    <span class="m-lg-2">
-                        @prodStatus.Name
-                        <br />
-                    </span>
-                }
+    <span class="m-lg-2">
+        @prodStatus.Name
+        <br />
+    </span>}
             </div>
 
 
@@ -61,26 +73,23 @@
                 @foreach (var category in supplyCategory)
                 {
 
-                    <span class="m-lg-2">
-                        @category.Title
-                        <br />
-                    </span>
-                }
+    <span class="m-lg-2">
+        @category.Title
+        <br />
+    </span>}
             </div>
 
             <div>
                 <div class="wrapper mt-3">
                     @foreach (var prodPhoto in photosDisplay)
                     {
-                        <div class="one">
-                            <label class="" for="addPhoto1">
-                                @if (prodPhoto != null)
-                                {
-                                    <img src="@Service_PhotosService.convertServiceImageDisplay(prodPhoto.Photos)" width="200" class=" img-card mt-2" />
-                                }
-                            </label>
-                        </div>
-                    }
+        <div class="one">
+            <label class="" for="addPhoto1">
+                @if (prodPhoto != null)
+                {
+<img src="@Service_PhotosService.convertServiceImageDisplay(prodPhoto.Photos)" width="200" class=" img-card mt-2" />}
+            </label>
+        </div>}
                 </div>
             </div>
 
@@ -101,14 +110,10 @@
     </div>
 </body>
 
-@functions {
-    [Parameter]
-    public string CodeId { get; set; }
-}
+@functions { [Parameter]
+    public string CodeId { get; set; } }
 
-@code {
-
-    Service _service = new Service();
+@code { Service _service = new Service();
     Service_Photos _servPhoto = new Service_Photos();
     IList<Service_Photos> photosDisplay;
     IList<HasSupplies> serviceSupplies;
@@ -157,5 +162,4 @@
     void back()
     {
         NavigationManager.NavigateTo("ListService");
-    }
-}
+    } }

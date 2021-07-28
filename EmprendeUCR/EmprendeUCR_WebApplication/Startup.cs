@@ -16,7 +16,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EmprendeUCR_WebApplication.Data.Services.Categories;
-using EmprendeUCR_WebApplication.Data.Services.Reports;
 using EmprendeUCR_WebApplication.Data.Services.Keyword;
 using Syncfusion.Blazor;
 using EmprendeUCR.Application;
@@ -35,7 +34,7 @@ using EmprendeUCR_WebApplication.Application.OrderContext.Implementations;
 using EmprendeUCR_WebApplication.Application.OrderContext;
 using EmprendeUCR_WebApplication.Infrastructure.OrderContext;
 using EmprendeUCR_WebApplication.Infrastructure.OrderContext.Repositories;
-
+using EmprendeUCR.Application.Reports.Implementations;
 using EmprendeUCR.Application.LoginContext;
 using EmprendeUCR.Infrastructure.LoginContext;
 using EmprendeUCR.Domain.LoginContext;
@@ -73,6 +72,7 @@ using EmprendeUCR.Domain.PermissionContext.Repositories;
 using EmprendeUCR.Infrastructure.PermissionContext.Repositories;
 using EmprendeUCR.Infrastructure.PermissionContext;
 
+using EmprendeUCR.Application.Reports;
 namespace EmprendeUCR_WebApplication
 {
     public class Startup
@@ -121,6 +121,8 @@ namespace EmprendeUCR_WebApplication
 
             services.AddTransient<EmprendeUCR.Application.RegisterContext.IRegisterService, EmprendeUCR.Application.RegisterContext.Implementations.RegisterService>();
             services.AddTransient<IRegisterRepository, RegisterRepository>();
+            //services.AddTransient<EmprendeUCR.Application.Reports.IReportService, EmprendeUCR.Application.Reports.Implementations.CreateReportService>();
+            //services.AddTransient<IReportService,CreateReportService>();
 
             services.AddTransient<EmprendeUCR.Application.ProductsSearchClientContext.IProductsSearchClientService, EmprendeUCR.Application.ProductsSearchClientContext.Implementations.ProductsSearchClientService>();
             services.AddTransient<IProductsSearchClientRepository, ProductsSearchClientRepository>();
@@ -234,6 +236,8 @@ namespace EmprendeUCR_WebApplication
             services.AddScoped<AddKeywordService>();
             services.AddScoped<ShowKeywordService>();
             services.AddScoped<KeywordServiceService>();
+            services.AddScoped<HasKeywordService>();
+            services.AddScoped<HasKeywordServiceService>();
 
             services.AddBlazoredSessionStorage();
 
@@ -255,7 +259,7 @@ namespace EmprendeUCR_WebApplication
             services.AddScoped<EncrypService>();
             //services.AddScoped<LoginServiceA>();
             services.AddBlazoredSessionStorage();
-
+            services.AddScoped<BannedAccountService>();
             Global.ConnectionString = Configuration.GetConnectionString("SqlConnection");
             Global.DomainName = Configuration["DomainName"];
             services.AddScoped <CredentialsService>();
@@ -270,6 +274,9 @@ namespace EmprendeUCR_WebApplication
             services.AddScoped<StatusService>();
             services.AddScoped<Personalized_StatusService>();
             //services.AddScoped<ServiceService>();
+            services.AddScoped<SuggestedCategoryService>();
+            services.AddScoped<ReportService>();
+
 
 
             services.AddScoped<IOfferRepository, OfferRepository>();
@@ -277,7 +284,6 @@ namespace EmprendeUCR_WebApplication
 
             services.AddTransient<IShoppingCartService, ShoppingCartService>();
 
-            services.AddScoped<ReportService>();
 
             services.AddApplicationLayer();
             services.AddInfrastructureLayer(

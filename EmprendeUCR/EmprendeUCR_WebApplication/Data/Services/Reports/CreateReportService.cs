@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using EmprendeUCR_WebApplication.Data.Entities;
 using Syncfusion.Blazor.TreeGrid;
+using EmprendeUCR.Domain.Reports.Entities;
+
 
 namespace EmprendeUCR_WebApplication.Data.Services.Reports
 {
@@ -28,10 +30,13 @@ namespace EmprendeUCR_WebApplication.Data.Services.Reports
          * 
          */
         private bool TitleNotValid;
+        private bool DescriptionNotValid;
         public bool AddDialogVisible;
         public string Title;
         public string Content;
+        public bool ContentNotValid;
         public bool CreateReportDisabled;
+        public string user;
 
         /**
          * @brief Open a Popup with the form to add a category name
@@ -42,6 +47,7 @@ namespace EmprendeUCR_WebApplication.Data.Services.Reports
         public void OpenCreateReportDialog()
         {
             this.AddDialogVisible = true;
+            this.CreateReportDisabled = true;
         }
 
 
@@ -69,6 +75,7 @@ namespace EmprendeUCR_WebApplication.Data.Services.Reports
             Report report = new Report();
             report.Title = Title;
             report.Content = Content;
+            report.User = user;
             await InsertReportAsync(report);
             ResetCreateReportData();
         }
@@ -107,7 +114,17 @@ namespace EmprendeUCR_WebApplication.Data.Services.Reports
             {
                 TitleNotValid = false;
             }
-            CreateReportDisabled = TitleNotValid;
+            CreateReportDisabled = TitleNotValid || DescriptionNotValid;
+        }
+        public void ValidateDescription(Microsoft.AspNetCore.Components.ChangeEventArgs args)
+        {
+            ContentNotValid = true;
+            Content = (String)args.Value;
+            if (Content.Length > 0)
+            {
+                ContentNotValid = false;
+            }
+            CreateReportDisabled = TitleNotValid || DescriptionNotValid;
         }
 
         //Refresh Interface

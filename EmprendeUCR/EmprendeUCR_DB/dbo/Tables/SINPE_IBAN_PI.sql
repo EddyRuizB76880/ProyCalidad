@@ -6,3 +6,4 @@
     FOREIGN KEY ([Name_Payment_Method]) REFERENCES [dbo].[SINPE_IBAN_PM] ([Name]) ON DELETE CASCADE,
     FOREIGN KEY ([Payment_Info_ID]) REFERENCES [dbo].[Payment_Info] ([ID]) ON DELETE CASCADE
 );
+

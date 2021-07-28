@@ -9,7 +9,6 @@
 );
 
 
-
 GO
 CREATE NONCLUSTERED INDEX [IDX_Members]
     ON [dbo].[Members]([User_Email] ASC, [Score] ASC, [Lat] ASC, [Long] ASC, [Direction] ASC);

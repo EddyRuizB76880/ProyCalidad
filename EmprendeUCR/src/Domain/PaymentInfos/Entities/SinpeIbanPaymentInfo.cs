@@ -2,11 +2,17 @@
 using EmprendeUCR.Domain.Core.ValueObjects;
 using EmprendeUCR.Domain.PaymentMethods.Entities;
 using System.ComponentModel.DataAnnotations;
+using LanguageExt;
 
 namespace EmprendeUCR.Domain.PaymentInfos.Entities
 {
     public partial class SinpeIbanPaymentInfo
     {
+        public const int MinLength_Payment_Name = 1;
+        public const int MaxLength_Payment_Name = 30;
+        public const int Account_Number_Length = 22;
+
+
         public SinpeIbanPaymentMethod SinpeIbanPaymentMethod;
         [Key]
         public string Account_Number { get; private set; }
@@ -28,6 +34,36 @@ namespace EmprendeUCR.Domain.PaymentInfos.Entities
         {
             SinpeIbanPaymentMethod = sinpeIbanPaymentMethod;
         }
+        public static Validation<ValidationError, string> TryCreate(string? name)
+        {
+            if (name is null)
+                return new NameIsNull();
+
+            if (name.Length == 0)
+                return new NameTooSmall(MinLength_Payment_Name);
+
+            if (name.Length > MaxLength_Payment_Name)
+                return new NameTooBig(MaxLength_Payment_Name);
+
+            return name;
+        }
+        public static Validation<ValidationError, string> TryCreateAccount(string? account)
+        {
+            if (account is null)
+                return new AccountNull();
+
+            if (account.Length != Account_Number_Length)
+                return new AccountInvalid(Account_Number_Length);
+
+            return account;
+        }
+        public abstract record ValidationError;
+        public record NameIsNull : ValidationError;
+        public record NameTooSmall(int MinLenght) : ValidationError;
+        public record NameTooBig(int MaxLength) : ValidationError;
+        public record AccountNull : ValidationError;
+        public record AccountInvalid(int MinLenght) : ValidationError;
+
+
     }
 }
-

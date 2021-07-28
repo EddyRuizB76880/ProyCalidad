@@ -13,7 +13,6 @@ namespace EmprendeUCR.Application.PaymentInfos.Implementations
         {
             _sinpeMovilPaymentInfoRepository = sinpeMovilPaymentInfoRepository;
         }
-
         public async Task AddPaymentInfoAsync(SinpeMovilPaymentInfo sinpeMovilPaymentInfo)
         {
             await _sinpeMovilPaymentInfoRepository.AddPaymentInfo(sinpeMovilPaymentInfo);

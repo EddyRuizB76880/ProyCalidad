@@ -13,6 +13,16 @@ using EmprendeUCR.Infrastructure.PaymentInfos.Card;
 using EmprendeUCR.Infrastructure.PaymentInfos.Card.Repositories;
 using EmprendeUCR.Infrastructure.PaymentInfos.HasPaymentInfos;
 using EmprendeUCR.Infrastructure.PaymentInfos.HasPaymentInfos.Repositories;
+//using EmprendeUCR.Infrastructure.Reports.Repositories;
+//For chats
+using EmprendeUCR.Domain.Chats.Repositories;
+using EmprendeUCR.Infrastructure.Chats.TheChat;
+using EmprendeUCR.Infrastructure.Chats.TheChat.Repositories;
+using EmprendeUCR.Infrastructure.Chats.TheMessage;
+using EmprendeUCR.Infrastructure.Chats.TheMessage.Repositories;
+using EmprendeUCR.Infrastructure.Chats.TheUtilizesChat;
+using EmprendeUCR.Infrastructure.Chats.TheUtilizesChat.Repositories;
+
 using Microsoft.Extensions.DependencyInjection;
 using EmprendeUCR.Domain.EntrepreneurContext.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -44,6 +54,15 @@ namespace EmprendeUCR.Infrastructure
             services.AddScoped<ICardPaymentInfoRepository, CardPaymentInfoRepository>();
             services.AddDbContext<HasPaymentInfoDbContext>(options => options.UseSqlServer(connectionString));
             services.AddScoped<IHasPaymentInfoRepository, HasPaymentInfoRepository>();
+
+            //For chats
+            services.AddDbContext<ChatDbContext>(options => options.UseSqlServer(connectionString));
+            services.AddScoped<IChatRepository, ChatRepository>();
+            services.AddDbContext<MessageDbContext>(options => options.UseSqlServer(connectionString));
+            services.AddScoped<IMessageRepository, MessageRepository>();
+            services.AddDbContext<UtilizesChatDbContext>(options => options.UseSqlServer(connectionString));
+            services.AddScoped<IUtilizesChatRepository, UtilizesChatRepository>();
+
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddDbContext<CategoriesDbContext>(options => options.UseSqlServer(connectionString));
             services.AddScoped<ICategoryRepository, CategoriesRepository>();

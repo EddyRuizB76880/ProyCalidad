@@ -8,5 +8,6 @@ namespace EmprendeUCR.Application.PaymentInfos
         public Task<PaymentInfo?> GetPaymentInfoByIdAsync(int id);
         public Task<IEnumerable<PaymentInfo>> GetPaymentInfosAsync();
         public Task<PaymentInfo?> AddPaymentInfoAsync();
+        public Task RemovePaymentInfoAsync(int id);
     }
 }

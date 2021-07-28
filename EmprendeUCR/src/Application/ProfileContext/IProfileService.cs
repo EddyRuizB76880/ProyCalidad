@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EmprendeUCR.Domain.Core.CoreEntities;
+using EmprendeUCR.Domain.Reports.Entities;
 
 namespace EmprendeUCR.Application.ProfileContext
 {
     public interface IProfileService
     {
         Task<User> GetUser(string email);
+        Task<IList<Entrepreneur>> GetUsers();
         Task<Members> GetMember(string email);
         Task<Client> GetClient(string email);
         Task<Entrepreneur> GetEntrepreneur(string email);
@@ -31,5 +33,6 @@ namespace EmprendeUCR.Application.ProfileContext
         Task<bool> UpdateEntrepreneur(Entrepreneur e);
         Task<bool> AddLikes(Likes l);
         Task<bool> RemoveLikes(Likes l);
+        Task<bool> AddReport(Report r);
     }
 }

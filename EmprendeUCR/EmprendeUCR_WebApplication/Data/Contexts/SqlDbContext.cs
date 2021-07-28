@@ -7,6 +7,7 @@ using EmprendeUCR_WebApplication.Data.Entities.Keyword;
 using EmprendeUCR_WebApplication.Data.Entities;
 using Microsoft.Extensions.Logging;
 using Lab2.Infrastructure.Core;
+using EmprendeUCR.Domain.Reports.Entities;
 
 namespace EmprendeUCR_WebApplication.Data.Contexts
 {
@@ -34,9 +35,12 @@ namespace EmprendeUCR_WebApplication.Data.Contexts
         public DbSet<IBANCardPaymentInfo> IBANCardPaymentInfo { get; set; }
         public DbSet<IBANSINPEPaymentInfo> IBANSINPEPaymentInfo { get; set; }*/
 
+        public DbSet<Service> Service { get; set; }
+        public DbSet<BannedAccount> Banned_Account { get; set; }
+        public DbSet<Suggested_Category> Suggested_Category { get; set; }
+
         public DbSet<Offer> Offer { get; set; }
         public DbSet<Is_Offer> Is_Offer { get; set; }
-        public DbSet<Service> Service { get; set; }
         public DbSet<ServicePandemic> ServicePandemic { get; set; }
         public DbSet<Likes> Likes { get; set; }
         public DbSet<Client> Client { get; set; }

@@ -5,7 +5,7 @@ using EmprendeUCR.Domain.PaymentInfos.Entities;
 using EmprendeUCR.Domain.PaymentInfos.Repositories;
 namespace EmprendeUCR.Application.PaymentInfos.Implementations
 {
-    internal class CardPaymentInfoService : ICardPaymentInfoService
+    public class CardPaymentInfoService : ICardPaymentInfoService
     {
         private readonly ICardPaymentInfoRepository _cardPaymentInfoRepository;
         public CardPaymentInfoService(ICardPaymentInfoRepository cardPaymentInfoRepository)

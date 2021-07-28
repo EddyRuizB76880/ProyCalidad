@@ -9,12 +9,6 @@
 );
 
 
-
-
-
-
-
-
 GO
 CREATE NONCLUSTERED INDEX [ix_product_services_by_availability]
     ON [dbo].[Product_Service]([Availability] ASC) WHERE ([Availability]>(0));

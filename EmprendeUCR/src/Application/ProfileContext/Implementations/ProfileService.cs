@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using EmprendeUCR.Domain.ProfileContext.Repositories;
 using EmprendeUCR.Domain.Core.CoreEntities;
 using System;
+using EmprendeUCR.Domain.Reports.Entities;
 
 namespace EmprendeUCR.Application.ProfileContext.Implementations
 {
@@ -18,6 +19,10 @@ namespace EmprendeUCR.Application.ProfileContext.Implementations
         public async Task<User> GetUser(string email)
         {
             return await _profileRepository.GetUserAsync(email);
+        }
+        public async Task<IList<Entrepreneur>>GetUsers()
+        {
+            return  await _profileRepository.GetUsersAsync();
         }
 
         public async Task<Members> GetMember(string email)
@@ -119,10 +124,16 @@ namespace EmprendeUCR.Application.ProfileContext.Implementations
         {
             return await _profileRepository.AddMemberLikes(l);
         }
+        public async Task<bool> AddReport(Report r)
+        {
+            return await _profileRepository.AddReport(r);
+        }
+
 
         public async Task<bool> RemoveLikes(Likes l)
         {
             return await _profileRepository.RemoveMemberLikes(l);
         }
+
     }
 }

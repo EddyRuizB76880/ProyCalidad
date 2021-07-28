@@ -175,5 +175,10 @@ namespace EmprendeUCR_WebApplication.Data.Services
             Product product =  _context.Product.FirstOrDefault(c => c.Code_ID.Equals(Id));
             return product;
         }
+        public Service GetService(int Id)
+        {
+            Service service = _context.Service.FirstOrDefault(c => c.Code_ID.Equals(Id));
+            return service;
+        }
     }
 }

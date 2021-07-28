@@ -2,7 +2,8 @@
 @inject NavigationManager _navManager
 
 @if ((_navManager.Uri.Contains("/Categories")) || (_navManager.Uri.Contains("/admin")) || (_navManager.Uri.Contains("/viewreports")) ||
-  (_navManager.Uri.Contains("/admin_payment_methods")) || (_navManager.Uri.Contains("/ProfileAdministrator")) || (_navManager.Uri.Contains("/EditProfileAdministrator"))) {
+(_navManager.Uri.Contains("/admin_payment_methods")) || (_navManager.Uri.Contains("/ProfileAdministrator")) || (_navManager.Uri.Contains("/EditProfileAdministrator"))||
+(_navManager.Uri.Contains("/viewSuggested")) || (_navManager.Uri.Contains("/activeAdministrator")) || (_navManager.Uri.Contains("/setPermissions")) || (_navManager.Uri.Contains("/listPermissions"))) {
 <div class="sidebar1">
     <Header />
 </div>

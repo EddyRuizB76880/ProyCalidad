@@ -8,6 +8,10 @@
 
 
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> Develop
 GO
 CREATE NONCLUSTERED INDEX [ix_client_category]
     ON [dbo].[Likes]([Members_Email] ASC, [Category_Id] ASC);

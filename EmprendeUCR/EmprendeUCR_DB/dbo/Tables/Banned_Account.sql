@@ -5,5 +5,3 @@
     [Type]       INT           NULL
 );
 
-
-

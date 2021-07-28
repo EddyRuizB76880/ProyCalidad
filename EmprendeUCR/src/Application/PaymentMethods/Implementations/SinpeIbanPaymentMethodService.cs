@@ -5,7 +5,7 @@ using EmprendeUCR.Domain.PaymentMethods.Entities;
 using EmprendeUCR.Domain.PaymentMethods.Repositories;
 namespace EmprendeUCR.Application.PaymentMethods.Implementations
 {
-    internal class SinpeIbanPaymentMethodService : ISinpeIbanPaymentMethodService
+    public class SinpeIbanPaymentMethodService : ISinpeIbanPaymentMethodService
     {
         private readonly ISinpeIbanPaymentMethodRepository _sinpeIbanPaymentMethodRepository;
         public SinpeIbanPaymentMethodService(ISinpeIbanPaymentMethodRepository sinpeIbanPaymentMethodRepository)

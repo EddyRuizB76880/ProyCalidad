@@ -35,11 +35,10 @@ namespace EmprendeUCR.Infrastructure.PaymentMethods.Repositories
             _dbContext.Update(paymentMethod);
             await _dbContext.SaveEntitiesAsync();
         }
-        public Task DeletePaymentInformation(SinpeIbanPaymentInfo sinpeIbanPaymentInfo)
+        public async Task DeletePaymentInformation(SinpeIbanPaymentInfo sinpeIbanPaymentInfo)
         {
             _dbContext.Remove(sinpeIbanPaymentInfo);
-
-            return Task.CompletedTask;
+            await _dbContext.SaveEntitiesAsync();
         }
     }
 }

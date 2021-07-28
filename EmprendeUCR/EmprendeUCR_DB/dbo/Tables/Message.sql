@@ -12,8 +12,6 @@
 );
 
 
-
-
 GO
 CREATE NONCLUSTERED INDEX [idx_Message_Chat_Notifications]
     ON [dbo].[Message]([Chat_ID] ASC, [Seen] ASC, [Reader_User_Email] ASC);

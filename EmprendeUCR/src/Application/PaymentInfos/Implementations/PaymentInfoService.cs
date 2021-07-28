@@ -25,5 +25,9 @@ namespace EmprendeUCR.Application.PaymentInfos.Implementations
         {
             return await _paymentInfoRepository.AddPaymentInfo();
         }
+        public async Task RemovePaymentInfoAsync(int id)
+        {
+            await _paymentInfoRepository.RemovePaymentInfo(id);
+        }
     }
 }

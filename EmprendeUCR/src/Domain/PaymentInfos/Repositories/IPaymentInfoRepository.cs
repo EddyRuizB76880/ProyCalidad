@@ -10,5 +10,6 @@ namespace EmprendeUCR.Domain.PaymentInfos.Repositories
         Task<IEnumerable<PaymentInfo>> GetAllAsync();
         Task<PaymentInfo?> GetByIdAsync(int id);
         Task<PaymentInfo?> AddPaymentInfo();
+        Task RemovePaymentInfo(int id);
     }
 }

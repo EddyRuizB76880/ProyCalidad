@@ -1,40 +1,64 @@
-﻿
-@using Syncfusion.Blazor.Grids
-@using EmprendeUCR.Application.PaymentInfos;
+﻿@using EmprendeUCR.Application.PaymentInfos;
 @using EmprendeUCR.Application.PaymentMethods;
 @using EmprendeUCR.Domain.PaymentInfos.Entities;
 @using EmprendeUCR.Domain.PaymentMethods.Entities;
-@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Inputs
 @using Syncfusion.Blazor.Popups
 
-@inject NavigationManager NavigationManager
+@inherits CardPaymentInfoEntrepreneurBase
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
-@inject IPaymentInfoService PaymentInfoService
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 @inject ICardPaymentInfoService CardPaymentInfoService
 @inject ICardPaymentMethodService CardPaymentMethodService
 @inject IHasPaymentInfoService HasPaymentInfoService
-@inherits CardPaymentInfoEntrepreneurBase
-@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject IPaymentInfoService PaymentInfoService
+@inject NavigationManager NavigationManager
 
-<SfGrid ID="CardGrid" @ref="CardPaymentInfoGrid" AllowSorting="true" DataSource="@_cardPaymentInfoList" Toolbar="CardToolbarItems">
-    <GridEditSettings AllowEditing="true" AllowEditOnDblClick="false" AllowDeleting="true"></GridEditSettings>
-    <GridEvents OnToolbarClick="CardToolbarClickHandler" CommandClicked="CardCommandClicked" TValue="CardPaymentInfo"></GridEvents>
-    <GridColumns>
-        <GridColumn Field=@nameof(CardPaymentInfo.Name_Payment_Method) HeaderText="Marca"> </GridColumn>
-        <GridColumn Field=@nameof(CardPaymentInfo.Account_Number) HeaderText="Cuenta IBAN" IsPrimaryKey="true"></GridColumn>
-        <GridColumn HeaderText="Acciones">
-            <GridCommandColumns>
-                <GridCommandColumn Title="Editar" ButtonOption="@(new CommandButtonOptions() { IconCss = " e-icons e-edit", CssClass = "e-flat" })"></GridCommandColumn>
-                <GridCommandColumn Title="Eliminar" ButtonOption="@(new CommandButtonOptions() { IconCss = " e-icons e-delete", CssClass = "e-flat" })"></GridCommandColumn>
-            </GridCommandColumns>
-        </GridColumn>
-    </GridColumns>
-    <GridTemplates>
-        <EmptyRecordTemplate>
-            <span>No existen datos registrados</span>
-        </EmptyRecordTemplate>
-    </GridTemplates>
-</SfGrid>
+<div style="margin: 20px">
+    <div style="display: flex; justify-content: space-between">
+        <b>Tarjetas</b>
+        @if (@Status != null)
+        {
+            <label>@Status</label>
+        }
+        <SfButton OnClick="ShowAddCardIbanDialog" Disabled="@PaymentMethodDisabled">Agregar</SfButton>
+    </div>
+    <div style="display: flex; justify-content: left; margin-top: 10px">
+        @if (ActiveCards != null)
+        {
+            <label>@ActiveCards</label>
+        }
+    </div>
+    <div style="display: flex; justify-content: left; margin-top: 10px">
+        @if (DisabledCards != null)
+        {
+            <label>@DisabledCards</label>
+        }
+    </div>
+    <div style="margin-top: 10px">
+        <SfGrid ID="CardGrid" @ref="CardPaymentInfoGrid" AllowSelection="false" AllowSorting="true" DataSource="@_cardPaymentInfoList">
+            <GridEditSettings AllowEditing="true" AllowEditOnDblClick="false" AllowDeleting="true"></GridEditSettings>
+            <GridEvents CommandClicked="CardCommandClicked" TValue="CardPaymentInfo"></GridEvents>
+            <GridColumns>
+                <GridColumn Field=@nameof(CardPaymentInfo.Name_Payment_Method) HeaderText="Marca" Width="150"> </GridColumn>
+                <GridColumn Field=@nameof(CardPaymentInfo.Account_Number) HeaderText="Cuenta IBAN" IsPrimaryKey="true"></GridColumn>
+                <GridColumn TextAlign="TextAlign.Center" Width="125">
+                    <GridCommandColumns>
+                        <GridCommandColumn Title="Eliminar" ButtonOption="@(new CommandButtonOptions() { IconCss = " e-icons e-delete", CssClass = "e-flat", Content = "Eliminar" })"></GridCommandColumn>
+                    </GridCommandColumns>
+                </GridColumn>
+            </GridColumns>
+            <GridTemplates>
+                <EmptyRecordTemplate>
+                    <span>No existen datos registrados</span>
+                </EmptyRecordTemplate>
+            </GridTemplates>
+        </SfGrid>
+    </div>
+</div>
 
 <SfDialog ID="addCardInfoDialog" IsModal="true" Width="300px" @bind-Visible="@AddCardDialogVisible">
     <DialogTemplates>
@@ -42,19 +66,40 @@
             Agregar cuenta IBAN
         </Header>
         <Content>
-            <div id='input-container'>
-                <div class="e-float-input e-input-group">
-                    <input id="number" type="number" @bind="@AddedCardIban" required />
-                    <span class="e-float-line"></span>
-                    <label class="e-float-text">Cuenta IBAN</label>
-                </div>
+            <div class="control-label">
+                Número de cuenta
             </div>
-            <p></p>
+            <SfMaskedTextBox Mask="[C][R][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]" @bind-Value="@AddedCardIban"></SfMaskedTextBox>
+            <div style="margin-top:20px;">
+                <SfDropDownList TValue="string" TItem="string" Placeholder="Seleccione el grado máximo" @bind-Value="@CardBrand" DataSource="@CardBrands">
+                    <DropDownListFieldSettings Value="string"></DropDownListFieldSettings>
+                </SfDropDownList>
+            </div>
         </Content>
     </DialogTemplates>
     <DialogButtons>
-        <DialogButton Content="Agregar" IsPrimary="true" OnClick="@AddCardIban" />
+        <DialogButton Content="Agregar" IsPrimary="true" OnClick="@AddCardIban" Disabled=@AddDisabled />
         <DialogButton Content="Cancelar" IsPrimary="true" OnClick="@CloseAddCardIbanDialog" />
+    </DialogButtons>
+</SfDialog>
+<style>
+    .control-label {
+        padding: 10px 0px 10px 0px;
+    }
+</style>
+
+<SfDialog ID="confirmationDialog" IsModal="true" Width="300px" @bind-Visible="@ConfirmationDialogVisible">
+    <DialogTemplates>
+        <Header>
+            Eliminar información de pago
+        </Header>
+        <Content>
+            Está seguro(a) que desea eliminar la información de pago?
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="Aceptar" IsPrimary="true" OnClick="@RemovePaymentInformation" />
+        <DialogButton Content="Cancelar" IsPrimary="true" OnClick="@CloseConfirmationDialog" />
     </DialogButtons>
 </SfDialog>
 
@@ -62,59 +107,138 @@
     [Parameter]
     public string emailToRegister { get; set; } = string.Empty;
     [Parameter]
-    public List<HasPaymentInfo> list { get; set; } = new ();
+    public List<HasPaymentInfo> list { get; set; } = new();
+    [Parameter]
+    public List<CardPaymentMethod> paymentMethods { get; set; } = new();
+    string Email = "";
 
     protected override async Task OnInitializedAsync()
     {
         if (!string.IsNullOrEmpty(emailToRegister))
         {
-            List<HasPaymentInfo> list = await HasPaymentInfoService.getHasPaymentInfoByEmail(emailToRegister);
             _cardPaymentInfoList = await CardPaymentInfoService.GetCardPaymentInfosByPaymentInfoIDAsync(list);
-            CardToolbarItems.Add(new ItemModel()
-            {
-                Text = AddButtonTitle,
-                TooltipText = "Agrega una cuenta IBAN y la asocia a una tarjeta",
-            });
+            Email = emailToRegister;
         }
         else
         {
-            string Email = await sessionStorage.GetItemAsync<string>("Email");
+            Email = await sessionStorage.GetItemAsync<string>("Email");
             if (Email != null)
             {
-                List<HasPaymentInfo> list = await HasPaymentInfoService.getHasPaymentInfoByEmail(Email);
                 _cardPaymentInfoList = await CardPaymentInfoService.GetCardPaymentInfosByPaymentInfoIDAsync(list);
             }
-            CardToolbarItems.Add(new ItemModel()
-            {
-                Text = AddButtonTitle,
-                TooltipText = "Agrega una cuenta IBAN y la asocia a una tarjeta",
-            });
         }
-
+        SetPaymentMethodAvailability();
     }
 
     protected async void AddCardIban()
     {
         AddCardDialogVisible = false;
         await AddCardInfoAndClose();
-        AddedCardIban = "";
+        AddedCardIban = "CR";
         StateHasChanged();
     }
 
     protected async Task AddCardInfoAndClose()
     {
-        PaymentInfo? PaymentInfo = await PaymentInfoService.AddPaymentInfoAsync();
-        if (PaymentInfo != null)
+        CardPaymentInfo cardPI = await CardPaymentInfoService.GetCardPaymentInfoByIdAsync(AddedCardIban);
+        int PaymentInfoID;
+        if (cardPI != null)
         {
-            CardPaymentMethod? cardPM = await CardPaymentMethodService.GetPaymentMethodByIdAsync(CARD);
-            await CardPaymentInfoGrid.AddRecord();
-            if (cardPM != null)
+            PaymentInfoID = cardPI.Payment_Info_ID;
+            await AddCardInfo(PaymentInfoID);
+        }
+
+        else
+        {
+            PaymentInfo? PaymentInfo = await PaymentInfoService.AddPaymentInfoAsync();
+            if (PaymentInfo != null)
             {
-                string AccountNumber = AddedCardIban; // TODO: Hacer la validacion correcta
-                CardPaymentInfo cardPI = new CardPaymentInfo(AccountNumber, PaymentInfo.ID, cardPM.Name);
-                await CardPaymentInfoService.AddPaymentInfoAsync(cardPI);
-                _cardPaymentInfoList = await CardPaymentInfoService.GetCardPaymentInfosAsync();
-                await CardPaymentMethodService.AddPaymentInfoToPaymentMethodAsync(cardPM, cardPI);
+                PaymentInfoID = PaymentInfo.ID;
+                CardPaymentMethod? cardPM = await CardPaymentMethodService.GetPaymentMethodByIdAsync(CardBrand);
+                if (cardPM != null)
+                {
+                    cardPI = new CardPaymentInfo(AddedCardIban, PaymentInfoID, cardPM.Name);
+                    await CardPaymentInfoService.AddPaymentInfoAsync(cardPI);
+                    await AddCardInfo(PaymentInfoID);
+                    await CardPaymentMethodService.AddPaymentInfoToPaymentMethodAsync(cardPM, cardPI);
+                }
+            }
+        }
+    }
+
+    private async Task AddCardInfo(int PaymentInfoID)
+    {
+        HasPaymentInfo HasPaymentInfo = new HasPaymentInfo(Email, PaymentInfoID);
+        await HasPaymentInfoService.AddHasPaymentInfoAsync(HasPaymentInfo);
+        list.Add(HasPaymentInfo);
+        _cardPaymentInfoList = await CardPaymentInfoService.GetCardPaymentInfosByPaymentInfoIDAsync(list);
+    }
+
+    protected async Task RemovePaymentInformation()
+    {
+        await PaymentInfoService.RemovePaymentInfoAsync(PaymentInfoIdToRemove);
+        var itemToRemove = list.SingleOrDefault(r => r.Payment_Info_ID == PaymentInfoIdToRemove);
+        if (itemToRemove != null)
+            list.Remove(itemToRemove);
+        _cardPaymentInfoList = await CardPaymentInfoService.GetCardPaymentInfosByPaymentInfoIDAsync(list);
+        CloseConfirmationDialog();
+        StateHasChanged();
+    }
+
+    protected void SetPaymentMethodAvailability()
+    {
+        var activePaymentMethods = paymentMethods.Where(pm => pm.Status);
+        var inactivePaymentMethods = paymentMethods.Where(pm => !pm.Status);
+        Status = "";
+        if (activePaymentMethods.Count() == 0)
+        {
+            PaymentMethodDisabled = true;
+            Status = "Estado: Desactivado";
+        }
+        else if (inactivePaymentMethods.Count() == 0)
+        {
+            Status = "Estado: Activado";
+            foreach (CardPaymentMethod cardPM in activePaymentMethods)
+            {
+                CardBrands.Add(cardPM.Name);
+            }
+            CardBrand = CardBrands[0];
+        }
+        else
+        {
+            SetActiveCards(activePaymentMethods);
+            if (inactivePaymentMethods.Count() > 0)
+            {
+                SetInactiveCards(inactivePaymentMethods);
+            }
+        }
+    }
+
+    protected void SetActiveCards(IEnumerable<CardPaymentMethod> activePaymentMethods)
+    {
+        ActiveCards = "Activadas: ";
+        foreach (CardPaymentMethod cardPM in activePaymentMethods)
+        {
+            var cardName = cardPM.Name;
+            CardBrands.Add(cardName);
+            ActiveCards += cardName;
+            if (cardPM != activePaymentMethods.Last())
+            {
+                ActiveCards += ", ";
+            }
+        }
+        CardBrand = CardBrands[0];
+    }
+
+    protected void SetInactiveCards(IEnumerable<CardPaymentMethod> inactivePaymentMethods)
+    {
+        DisabledCards = "Desactivadas: ";
+        foreach (CardPaymentMethod cardPM in inactivePaymentMethods)
+        {
+            DisabledCards += cardPM.Name;
+            if (cardPM != inactivePaymentMethods.Last())
+            {
+                DisabledCards += ", ";
             }
         }
     }

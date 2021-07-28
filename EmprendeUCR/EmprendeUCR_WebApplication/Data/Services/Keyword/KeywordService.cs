@@ -35,6 +35,15 @@ namespace EmprendeUCR_WebApplication.Data.Services.Keyword
         {
             return _context.Keyword.Find(title);
         }
+
+        public string? GetKeywordTitleById(int Id)
+        {
+            string title = null;
+            Keywords keywords = _context.Keyword.Find(Id);
+            if (keywords != null)
+                title = keywords.Title;
+            return title;
+        }
         public async Task<int> addKeyWordToProduct(int productID, string entrepreneurEmail, int categoryID)
         {
             for (int i=0; i<keywordNames.Length()  ; i++)

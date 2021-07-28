@@ -10,5 +10,6 @@ namespace EmprendeUCR.Application.PaymentInfos
     public interface IHasPaymentInfoService
     {
         public Task<List<HasPaymentInfo>?> getHasPaymentInfoByEmail(string entrepreneurEmail);
+        public Task AddHasPaymentInfoAsync(HasPaymentInfo hasPaymentInfo);
     }
 }

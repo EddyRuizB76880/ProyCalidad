@@ -31,10 +31,13 @@ CREATE TABLE [dbo].[Order] (
 
 
 
+<<<<<<< HEAD
+=======
 
 
 
 
+>>>>>>> Develop
 GO
 CREATE NONCLUSTERED INDEX [indiceHJ]
     ON [dbo].[Order]([State] ASC, [Entrepreneur_Email] ASC, [Delivery_date] ASC, [Details] ASC);
@@ -82,7 +85,11 @@ BEGIN
 
 END;
 GO
+<<<<<<< HEAD
+CREATE TRIGGER [tr_dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070_Sender] ON [dbo].[Order] 
+=======
 CREATE TRIGGER [tr_dbo_Order_93be83e7-94c6-4d25-9fdf-3961662fca97_Sender] ON [dbo].[Order] 
+>>>>>>> Develop
 WITH EXECUTE AS SELF
 AFTER insert, update, delete AS 
 BEGIN
@@ -93,6 +100,17 @@ BEGIN
     DECLARE @records XML
     DECLARE @theMessageContainer NVARCHAR(MAX)
     DECLARE @dmlType NVARCHAR(10)
+<<<<<<< HEAD
+    DECLARE @modifiedRecordsTable TABLE ([RowNumber] INT IDENTITY(1, 1), [State] varchar(30), [Entrepreneur_Email] varchar(100))
+    DECLARE @exceptTable TABLE ([RowNumber] INT, [State] varchar(30), [Entrepreneur_Email] varchar(100))
+	DECLARE @deletedTable TABLE ([RowNumber] INT IDENTITY(1, 1), [State] varchar(30), [Entrepreneur_Email] varchar(100))
+    DECLARE @insertedTable TABLE ([RowNumber] INT IDENTITY(1, 1), [State] varchar(30), [Entrepreneur_Email] varchar(100))
+    DECLARE @var1 varchar(30)
+    DECLARE @var2 varchar(100)
+
+    DECLARE @conversationHandlerExists INT
+    SELECT @conversationHandlerExists = COUNT(*) FROM sys.conversation_endpoints WHERE conversation_handle = '2195a93b-74ea-eb11-b46b-d7085749938a';
+=======
     DECLARE @modifiedRecordsTable TABLE ([RowNumber] INT IDENTITY(1, 1), [Client_Email] varchar(100), [State] varchar(30), [View] bit)
     DECLARE @exceptTable TABLE ([RowNumber] INT, [Client_Email] varchar(100), [State] varchar(30), [View] bit)
 	DECLARE @deletedTable TABLE ([RowNumber] INT IDENTITY(1, 1), [Client_Email] varchar(100), [State] varchar(30), [View] bit)
@@ -103,6 +121,7 @@ BEGIN
 
     DECLARE @conversationHandlerExists INT
     SELECT @conversationHandlerExists = COUNT(*) FROM sys.conversation_endpoints WHERE conversation_handle = 'eba679eb-4ceb-eb11-b46b-d7085749938a';
+>>>>>>> Develop
     IF @conversationHandlerExists = 0
     BEGIN
         DECLARE @conversation_handle UNIQUEIDENTIFIER;
@@ -110,6 +129,15 @@ BEGIN
         SELECT @schema_id = schema_id FROM sys.schemas WITH (NOLOCK) WHERE name = N'dbo';
 
         
+<<<<<<< HEAD
+        IF EXISTS (SELECT * FROM sys.triggers WITH (NOLOCK) WHERE object_id = OBJECT_ID(N'[dbo].[tr_dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070_Sender]')) DROP TRIGGER [dbo].[tr_dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070_Sender];
+
+        
+        IF EXISTS (SELECT * FROM sys.service_queues WITH (NOLOCK) WHERE schema_id = @schema_id AND name = N'dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070_Sender') EXEC (N'ALTER QUEUE [dbo].[dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070_Sender] WITH ACTIVATION (STATUS = OFF)');
+
+        
+        SELECT conversation_handle INTO #Conversations FROM sys.conversation_endpoints WITH (NOLOCK) WHERE far_service LIKE N'dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070_%' ORDER BY is_initiator ASC;
+=======
         IF EXISTS (SELECT * FROM sys.triggers WITH (NOLOCK) WHERE object_id = OBJECT_ID(N'[dbo].[tr_dbo_Order_93be83e7-94c6-4d25-9fdf-3961662fca97_Sender]')) DROP TRIGGER [dbo].[tr_dbo_Order_93be83e7-94c6-4d25-9fdf-3961662fca97_Sender];
 
         
@@ -117,6 +145,7 @@ BEGIN
 
         
         SELECT conversation_handle INTO #Conversations FROM sys.conversation_endpoints WITH (NOLOCK) WHERE far_service LIKE N'dbo_Order_93be83e7-94c6-4d25-9fdf-3961662fca97_%' ORDER BY is_initiator ASC;
+>>>>>>> Develop
         DECLARE conversation_cursor CURSOR FAST_FORWARD FOR SELECT conversation_handle FROM #Conversations;
         OPEN conversation_cursor;
         FETCH NEXT FROM conversation_cursor INTO @conversation_handle;
@@ -130,6 +159,29 @@ BEGIN
         DROP TABLE #Conversations;
 
         
+<<<<<<< HEAD
+        IF EXISTS (SELECT * FROM sys.services WITH (NOLOCK) WHERE name = N'dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070_Receiver') DROP SERVICE [dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070_Receiver];
+        
+        IF EXISTS (SELECT * FROM sys.services WITH (NOLOCK) WHERE name = N'dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070_Sender') DROP SERVICE [dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070_Sender];
+
+        
+        IF EXISTS (SELECT * FROM sys.service_queues WITH (NOLOCK) WHERE schema_id = @schema_id AND name = N'dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070_Receiver') DROP QUEUE [dbo].[dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070_Receiver];
+        
+        IF EXISTS (SELECT * FROM sys.service_queues WITH (NOLOCK) WHERE schema_id = @schema_id AND name = N'dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070_Sender') DROP QUEUE [dbo].[dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070_Sender];
+
+        
+        IF EXISTS (SELECT * FROM sys.service_contracts WITH (NOLOCK) WHERE name = N'dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070') DROP CONTRACT [dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070];
+        
+        IF EXISTS (SELECT * FROM sys.service_message_types WITH (NOLOCK) WHERE name = N'dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/StartMessage/Insert') DROP MESSAGE TYPE [dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/StartMessage/Insert];
+        IF EXISTS (SELECT * FROM sys.service_message_types WITH (NOLOCK) WHERE name = N'dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/StartMessage/Update') DROP MESSAGE TYPE [dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/StartMessage/Update];
+        IF EXISTS (SELECT * FROM sys.service_message_types WITH (NOLOCK) WHERE name = N'dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/StartMessage/Delete') DROP MESSAGE TYPE [dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/StartMessage/Delete];
+        IF EXISTS (SELECT * FROM sys.service_message_types WITH (NOLOCK) WHERE name = N'dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/State') DROP MESSAGE TYPE [dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/State];
+        IF EXISTS (SELECT * FROM sys.service_message_types WITH (NOLOCK) WHERE name = N'dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/Entrepreneur_Email') DROP MESSAGE TYPE [dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/Entrepreneur_Email];
+        IF EXISTS (SELECT * FROM sys.service_message_types WITH (NOLOCK) WHERE name = N'dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/EndMessage') DROP MESSAGE TYPE [dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/EndMessage];
+
+        
+        IF EXISTS (SELECT * FROM sys.objects WITH (NOLOCK) WHERE schema_id = @schema_id AND name = N'dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070_QueueActivationSender') DROP PROCEDURE [dbo].[dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070_QueueActivationSender];
+=======
         IF EXISTS (SELECT * FROM sys.services WITH (NOLOCK) WHERE name = N'dbo_Order_93be83e7-94c6-4d25-9fdf-3961662fca97_Receiver') DROP SERVICE [dbo_Order_93be83e7-94c6-4d25-9fdf-3961662fca97_Receiver];
         
         IF EXISTS (SELECT * FROM sys.services WITH (NOLOCK) WHERE name = N'dbo_Order_93be83e7-94c6-4d25-9fdf-3961662fca97_Sender') DROP SERVICE [dbo_Order_93be83e7-94c6-4d25-9fdf-3961662fca97_Sender];
@@ -152,29 +204,46 @@ BEGIN
 
         
         IF EXISTS (SELECT * FROM sys.objects WITH (NOLOCK) WHERE schema_id = @schema_id AND name = N'dbo_Order_93be83e7-94c6-4d25-9fdf-3961662fca97_QueueActivationSender') DROP PROCEDURE [dbo].[dbo_Order_93be83e7-94c6-4d25-9fdf-3961662fca97_QueueActivationSender];
+>>>>>>> Develop
         RETURN
     END
     
     IF NOT EXISTS(SELECT 1 FROM INSERTED)
     BEGIN
         SET @dmlType = 'Delete'
+<<<<<<< HEAD
+        INSERT INTO @modifiedRecordsTable SELECT [State], [Entrepreneur_Email] FROM DELETED WHERE (((([State] = 'Pendiente de revision') OR ([State] = 'Aceptado')) OR ([State] = 'Rechazado')) AND ([Entrepreneur_Email] = 'saguilar1999@hotmail.com'))
+=======
         INSERT INTO @modifiedRecordsTable SELECT [Client_Email], [State], [View] FROM DELETED WHERE ((([State] = 'Aceptado') OR ([State] = 'Rechazado')) AND ([Client_Email] = 'soru1097@gmail.com'))
+>>>>>>> Develop
     END
     ELSE
     BEGIN
         IF NOT EXISTS(SELECT * FROM DELETED)
         BEGIN
             SET @dmlType = 'Insert'
+<<<<<<< HEAD
+            INSERT INTO @modifiedRecordsTable SELECT [State], [Entrepreneur_Email] FROM INSERTED WHERE (((([State] = 'Pendiente de revision') OR ([State] = 'Aceptado')) OR ([State] = 'Rechazado')) AND ([Entrepreneur_Email] = 'saguilar1999@hotmail.com'))
+=======
             INSERT INTO @modifiedRecordsTable SELECT [Client_Email], [State], [View] FROM INSERTED WHERE ((([State] = 'Aceptado') OR ([State] = 'Rechazado')) AND ([Client_Email] = 'soru1097@gmail.com'))
+>>>>>>> Develop
         END
         ELSE
         BEGIN
             SET @dmlType = 'Update';
+<<<<<<< HEAD
+            INSERT INTO @deletedTable SELECT [State],[Entrepreneur_Email] FROM DELETED
+            INSERT INTO @insertedTable SELECT [State],[Entrepreneur_Email] FROM INSERTED
+            INSERT INTO @exceptTable SELECT [RowNumber],[State],[Entrepreneur_Email] FROM @insertedTable EXCEPT SELECT [RowNumber],[State],[Entrepreneur_Email] FROM @deletedTable
+
+            INSERT INTO @modifiedRecordsTable SELECT [State],[Entrepreneur_Email] FROM @exceptTable e WHERE (((([State] = 'Pendiente de revision') OR ([State] = 'Aceptado')) OR ([State] = 'Rechazado')) AND ([Entrepreneur_Email] = 'saguilar1999@hotmail.com'))
+=======
             INSERT INTO @deletedTable SELECT [Client_Email],[State],[View] FROM DELETED
             INSERT INTO @insertedTable SELECT [Client_Email],[State],[View] FROM INSERTED
             INSERT INTO @exceptTable SELECT [RowNumber],[Client_Email],[State],[View] FROM @insertedTable EXCEPT SELECT [RowNumber],[Client_Email],[State],[View] FROM @deletedTable
 
             INSERT INTO @modifiedRecordsTable SELECT [Client_Email],[State],[View] FROM @exceptTable e WHERE ((([State] = 'Aceptado') OR ([State] = 'Rechazado')) AND ([Client_Email] = 'soru1097@gmail.com'))
+>>>>>>> Develop
         END
     END
 
@@ -183,12 +252,34 @@ BEGIN
     BEGIN TRY
         WHILE @rowsToProcess > 0
         BEGIN
+<<<<<<< HEAD
+            SELECT	@var1 = [State], @var2 = [Entrepreneur_Email]
+=======
             SELECT	@var1 = [Client_Email], @var2 = [State], @var3 = [View]
+>>>>>>> Develop
             FROM	@modifiedRecordsTable
             WHERE	[RowNumber] = @rowsToProcess
                 
             IF @dmlType = 'Insert' 
             BEGIN
+<<<<<<< HEAD
+                ;SEND ON CONVERSATION '2195a93b-74ea-eb11-b46b-d7085749938a' MESSAGE TYPE [dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/StartMessage/Insert] (CONVERT(NVARCHAR, @dmlType))
+
+                IF @var1 IS NOT NULL BEGIN
+                    ;SEND ON CONVERSATION '2195a93b-74ea-eb11-b46b-d7085749938a' MESSAGE TYPE [dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/State] (CONVERT(NVARCHAR(MAX), @var1))
+                END
+                ELSE BEGIN
+                    ;SEND ON CONVERSATION '2195a93b-74ea-eb11-b46b-d7085749938a' MESSAGE TYPE [dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/State] (0x)
+                END
+                IF @var2 IS NOT NULL BEGIN
+                    ;SEND ON CONVERSATION '2195a93b-74ea-eb11-b46b-d7085749938a' MESSAGE TYPE [dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/Entrepreneur_Email] (CONVERT(NVARCHAR(MAX), @var2))
+                END
+                ELSE BEGIN
+                    ;SEND ON CONVERSATION '2195a93b-74ea-eb11-b46b-d7085749938a' MESSAGE TYPE [dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/Entrepreneur_Email] (0x)
+                END
+
+                ;SEND ON CONVERSATION '2195a93b-74ea-eb11-b46b-d7085749938a' MESSAGE TYPE [dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/EndMessage] (0x)
+=======
                 ;SEND ON CONVERSATION 'eba679eb-4ceb-eb11-b46b-d7085749938a' MESSAGE TYPE [dbo_Order_93be83e7-94c6-4d25-9fdf-3961662fca97/StartMessage/Insert] (CONVERT(NVARCHAR, @dmlType))
 
                 IF @var1 IS NOT NULL BEGIN
@@ -211,10 +302,29 @@ BEGIN
                 END
 
                 ;SEND ON CONVERSATION 'eba679eb-4ceb-eb11-b46b-d7085749938a' MESSAGE TYPE [dbo_Order_93be83e7-94c6-4d25-9fdf-3961662fca97/EndMessage] (0x)
+>>>>>>> Develop
             END
         
             IF @dmlType = 'Update'
             BEGIN
+<<<<<<< HEAD
+                ;SEND ON CONVERSATION '2195a93b-74ea-eb11-b46b-d7085749938a' MESSAGE TYPE [dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/StartMessage/Update] (CONVERT(NVARCHAR, @dmlType))
+
+                IF @var1 IS NOT NULL BEGIN
+                    ;SEND ON CONVERSATION '2195a93b-74ea-eb11-b46b-d7085749938a' MESSAGE TYPE [dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/State] (CONVERT(NVARCHAR(MAX), @var1))
+                END
+                ELSE BEGIN
+                    ;SEND ON CONVERSATION '2195a93b-74ea-eb11-b46b-d7085749938a' MESSAGE TYPE [dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/State] (0x)
+                END
+                IF @var2 IS NOT NULL BEGIN
+                    ;SEND ON CONVERSATION '2195a93b-74ea-eb11-b46b-d7085749938a' MESSAGE TYPE [dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/Entrepreneur_Email] (CONVERT(NVARCHAR(MAX), @var2))
+                END
+                ELSE BEGIN
+                    ;SEND ON CONVERSATION '2195a93b-74ea-eb11-b46b-d7085749938a' MESSAGE TYPE [dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/Entrepreneur_Email] (0x)
+                END
+
+                ;SEND ON CONVERSATION '2195a93b-74ea-eb11-b46b-d7085749938a' MESSAGE TYPE [dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/EndMessage] (0x)
+=======
                 ;SEND ON CONVERSATION 'eba679eb-4ceb-eb11-b46b-d7085749938a' MESSAGE TYPE [dbo_Order_93be83e7-94c6-4d25-9fdf-3961662fca97/StartMessage/Update] (CONVERT(NVARCHAR, @dmlType))
 
                 IF @var1 IS NOT NULL BEGIN
@@ -237,10 +347,29 @@ BEGIN
                 END
 
                 ;SEND ON CONVERSATION 'eba679eb-4ceb-eb11-b46b-d7085749938a' MESSAGE TYPE [dbo_Order_93be83e7-94c6-4d25-9fdf-3961662fca97/EndMessage] (0x)
+>>>>>>> Develop
             END
 
             IF @dmlType = 'Delete'
             BEGIN
+<<<<<<< HEAD
+                ;SEND ON CONVERSATION '2195a93b-74ea-eb11-b46b-d7085749938a' MESSAGE TYPE [dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/StartMessage/Delete] (CONVERT(NVARCHAR, @dmlType))
+
+                IF @var1 IS NOT NULL BEGIN
+                    ;SEND ON CONVERSATION '2195a93b-74ea-eb11-b46b-d7085749938a' MESSAGE TYPE [dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/State] (CONVERT(NVARCHAR(MAX), @var1))
+                END
+                ELSE BEGIN
+                    ;SEND ON CONVERSATION '2195a93b-74ea-eb11-b46b-d7085749938a' MESSAGE TYPE [dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/State] (0x)
+                END
+                IF @var2 IS NOT NULL BEGIN
+                    ;SEND ON CONVERSATION '2195a93b-74ea-eb11-b46b-d7085749938a' MESSAGE TYPE [dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/Entrepreneur_Email] (CONVERT(NVARCHAR(MAX), @var2))
+                END
+                ELSE BEGIN
+                    ;SEND ON CONVERSATION '2195a93b-74ea-eb11-b46b-d7085749938a' MESSAGE TYPE [dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/Entrepreneur_Email] (0x)
+                END
+
+                ;SEND ON CONVERSATION '2195a93b-74ea-eb11-b46b-d7085749938a' MESSAGE TYPE [dbo_Order_a58d2bf2-1ddb-47b7-9505-242228136070/EndMessage] (0x)
+=======
                 ;SEND ON CONVERSATION 'eba679eb-4ceb-eb11-b46b-d7085749938a' MESSAGE TYPE [dbo_Order_93be83e7-94c6-4d25-9fdf-3961662fca97/StartMessage/Delete] (CONVERT(NVARCHAR, @dmlType))
 
                 IF @var1 IS NOT NULL BEGIN
@@ -263,6 +392,7 @@ BEGIN
                 END
 
                 ;SEND ON CONVERSATION 'eba679eb-4ceb-eb11-b46b-d7085749938a' MESSAGE TYPE [dbo_Order_93be83e7-94c6-4d25-9fdf-3961662fca97/EndMessage] (0x)
+>>>>>>> Develop
             END
 
             SET @rowsToProcess = @rowsToProcess - 1
