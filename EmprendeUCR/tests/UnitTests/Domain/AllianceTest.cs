@@ -15,7 +15,7 @@ namespace EmprendeUCR.UnitTests.Domain
             Assert.True(newAlliance.User_Email == null);
             Assert.True(newAlliance.Alliance_Status == 0);
             Assert.True(newAlliance.Ally_User_Email == null);
-            Assert.True(newAlliance.Alliance_Id != 0);
+            Assert.False(newAlliance.Alliance_Id != 0);
         }
         [Fact]
         public void trySetUserEmail()

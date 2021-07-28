@@ -13,8 +13,8 @@ namespace EmprendeUCR.UnitTests.Domain
             var newOffer = new Offer();
             Assert.True(newOffer != null);
             Assert.True(newOffer.Discount == 0);
-            Assert.True(newOffer.Expire_Date == null);
-            Assert.True(newOffer.Initial_Date == null);
+            Assert.False(newOffer.Expire_Date == null);
+            Assert.False(newOffer.Initial_Date == null);
             Assert.True(newOffer.Offer_Description == null);
         }
         [Fact]
