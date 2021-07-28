@@ -63,6 +63,7 @@
     <Folder Include="dbo\Views\" />
     <Folder Include="dbo\Functions\" />
     <Folder Include="Service Broker\" />
+    <Folder Include="dbo\Scripts" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\Service.sql" />
@@ -184,6 +185,9 @@
     <Build Include="dbo\Tables\Suggested_Category.sql" />
     <Build Include="dbo\Tables\Personalized_Status.sql" />
     <Build Include="dbo\Functions\GetUserName.sql" />
+    <Build Include="dbo\Views\ultimas_compras_1.sql" />
+    <Build Include="dbo\Views\compras_unicas_1.sql" />
+    <Build Include="dbo\Stored Procedures\products_based_last_purchases_1.sql" />
     <Build Include="dbo\Tables\Has_Status.sql" />
     <Build Include="dbo\Tables\Utilizes_Chat.sql" />
     <Build Include="dbo\Tables\Suggested_Category.sql" />
@@ -258,5 +262,11 @@
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="EmprendeUCR_DB.refactorlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dbo\Scripts\Script.PermissionsData.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dbo\Scripts\Script.AddressData.sql" />
   </ItemGroup>
 </Project>

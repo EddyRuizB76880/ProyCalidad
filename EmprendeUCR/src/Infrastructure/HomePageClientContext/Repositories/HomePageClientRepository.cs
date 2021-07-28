@@ -75,10 +75,11 @@ namespace EmprendeUCR.Infrastructure.HomePageClientContext.Repositories
             return true;
         }
 
-        public async Task<List<Offer>> GetOffers()
+        public async Task<IList<Offer>> GetOffers()
         {
 
-            return await _dbContext.Offer.ToListAsync();        // Listado 2
+            //return await _dbContext.Offer.ToListAsync();        // Listado 2
+            return _dbContext.Offer.FromSqlRaw("SELECT * FROM Offer ORDER BY Initial_Date DESC").ToArray();
         }
 
         public async Task<List<ProductService>> GetAllProducts()
@@ -93,12 +94,18 @@ namespace EmprendeUCR.Infrastructure.HomePageClientContext.Repositories
 
         public IList<Is_Offer> GetAllIs_Offer()
         {
-            return _dbContext.Is_Offer.FromSqlRaw("exec get_unique_offers").ToArray();
+            return _dbContext.Is_Offer.FromSqlRaw("exec GetOffers").ToArray();
         }
 
         public IList<Service_Photos> GetAllServicePhotos()
         {
             return _dbContext.Service_Photos.ToList();
+        }
+
+        public User GetUserByEmail(string email)
+        {
+            return _dbContext.User.FirstOrDefault(user => user.Email.Equals(email));
+
         }
         public async Task<Is_Offer> GetIs_OfferAsync(int Is_Offer_Id)
         {

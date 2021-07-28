@@ -18,13 +18,14 @@ namespace EmprendeUCR.Domain.HomePageClientContext.Repositories
         bool isChildNode(int Id);
         Task<bool> searchProduct(string email, int idProduct);
         Task<bool> addProduct(ShoppingCartHas product);
-        Task<List<Offer>> GetOffers();
+        Task<IList<Offer>> GetOffers();
         Task<List<ProductService>> GetAllProducts();
         IList<Product> GetPurchasedProducts(string email);
 
         IList<Is_Offer> GetAllIs_Offer();
 
         IList<Service_Photos>  GetAllServicePhotos();
+        User GetUserByEmail(string email);
         Task<Is_Offer> GetIs_OfferAsync(int Is_Offer_Id);
         List<Is_Offer> GetAllIs_OfferRelatedToOfferNOTAsync(Offer offer);
 

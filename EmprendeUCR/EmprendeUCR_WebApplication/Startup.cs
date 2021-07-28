@@ -69,6 +69,9 @@ using EmprendeUCR_WebApplication.Infrastructure.BillContext.Implementations;
 using EmprendeUCR_WebApplication.Infrastructure.BillContext;
 using EmprendeUCR_WebApplication.Infrastructure.Core.OfferContext.Repositories;
 using EmprendeUCR_WebApplication.Infrastructure.Core.OfferContext;
+using EmprendeUCR.Domain.PermissionContext.Repositories;
+using EmprendeUCR.Infrastructure.PermissionContext.Repositories;
+using EmprendeUCR.Infrastructure.PermissionContext;
 
 namespace EmprendeUCR_WebApplication
 {
@@ -114,6 +117,7 @@ namespace EmprendeUCR_WebApplication
 
             services.AddTransient<EmprendeUCR.Application.HomePageClientContext.IHomePageClientService, EmprendeUCR.Application.HomePageClientContext.Implementations.HomePageClientService>();
             services.AddTransient<IHomePageClientRepository, HomePageClientRepository>();
+            services.AddTransient<IDisplayProductRepository, DisplayProductRepository>();
 
             services.AddTransient<EmprendeUCR.Application.RegisterContext.IRegisterService, EmprendeUCR.Application.RegisterContext.Implementations.RegisterService>();
             services.AddTransient<IRegisterRepository, RegisterRepository>();
@@ -127,9 +131,17 @@ namespace EmprendeUCR_WebApplication
             services.AddTransient<EmprendeUCR.Application.ConfirmAdminContext.IConfirmAdminService, EmprendeUCR.Application.ConfirmAdminContext.Implementations.ConfirmAdminService>();
             services.AddTransient<IConfirmAdminRepository, ConfirmAdminRepository>();
 
+            services.AddTransient<EmprendeUCR.Application.PermissionContext.IPermissionService, EmprendeUCR.Application.PermissionContext.Implementations.PermissionService>();
+            services.AddTransient<IPermissionRepository, PermissionRepository>();
+
             ///////////////DBCONTEXT PANDEMIC PLAN
 
             services.AddDbContext<LoginDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            services.AddDbContext<DisplayProductDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
@@ -155,6 +167,11 @@ namespace EmprendeUCR_WebApplication
             });
 
             services.AddDbContext<ProfileDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            services.AddDbContext<PermissionDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });

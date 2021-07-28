@@ -10,6 +10,7 @@
 @inject NavigationManager NavigationManager
 @inject UserServicePandemic UserServicePandemic
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+
 @using Newtonsoft.Json;
 @implements IDisposable
 <div class="w-100 navBar">
@@ -38,7 +39,7 @@
                                 notifications
                             </span>
                             <span class="position-absolute translate-middle badge rounded-pill bg-danger" style="top: 16px">
-                               @UserNotification.notificationQuantity
+                                @UserNotification.notificationQuantity
                                 <span class="visually-hidden">unread messages</span>
                             </span>
                         </button>
@@ -74,8 +75,7 @@
                     </div>
 
                     @* Display account circle when the user logs in. *@
-                    <img title="Mi perfil" width="40" height="40" src=@photo class="rounded-circle">
-                    <button class="btn btn-secondary" @onclick="goProfile"> Ver perfil</button>
+                    <a href="/Profile"> <img title="Mi perfil" width="40" height="40" src=@photo class="rounded-circle"></a>
                 }
                 else
                 {
@@ -95,22 +95,39 @@
     <nav id="SecondaryNav" class="SecondaryNav bg-white  w-100 d-flex flex-row justify-content-between align-items-center px-5">
         <ul class="d-flex flex-row align-bottom">
             <li class=" "> <a href=@homeRef class="color-grey mx-5 p-2"> HOME </a></li>
-            <li class=" "> <a href="/listProducts" class="color-grey mx-5 p-2"> PRODUCTOS </a></li>
-            <li class=" "> <a href="/ListServices" class="color-grey mx-5 p-2"> SERVICIOS </a></li>
-            <li class=" "> <a href="/Categories" class="color-grey mx-5"> CATEGORIAS </a></li>
-            <li class=" "> <a href="/MyCustomers" class="color-grey mx-5">MIS CLIENTES</a></li>
+            <li class=" "> <a href="/about" class="color-grey mx-5"> SOBRE NOSOTROS </a></li>
+
             @if (myType == 2)
             {
                 <li class=" "> <a href="/OrderManagement" class="color-grey mx-5 p-2"> GESTION DE ORDENES </a></li>
+                <li class=" "> <a href="/listProducts" class="color-grey mx-5 p-2"> PRODUCTOS </a></li>
+                <li class=" "> <a href="/ListServices" class="color-grey mx-5 p-2"> SERVICIOS </a></li>
+                <li class=" "> <a href="/Offers" class="color-grey mx-5"> OFERTAS </a></li>
+                <li class=" "> <a href="/entrepreneur_payment_methods" class="color-grey mx-5"> METODOS DE PAGO </a></li>
+
+                /*Se asignan los permisos del emprendedor*/
+                if (permisos.Count > 0)
+                {
+                    for (int i = 0; i < permisos.Length(); i++)
+                    {
+                        if (permisos[i].Role_Id == 3)
+                        {
+                            if (permisos[i].Permission_Id == 1)
+                            {
+                                <li class=" "> <a href="/Alliances" class="color-grey mx-5"> ALIANZAS </a></li>
+                            }
+                            if (permisos[i].Permission_Id == 2)
+                            {
+                                <li class=" "> <a href="/MyCustomers" class="color-grey mx-5"> MIS CLIENTES </a></li>
+                            }
+                        }
+                    }
+                }
             }
-            else if(myType == 1)
+            @if (myType == 1)
             {
                 <li class=""> <a href="/ClientRequest" class="color-grey mx-5 p-2"> MIS PEDIDOS </a></li>
             }
-            <li class=" "> <a href="/Alliances" class="color-grey mx-5"> ALIANZAS </a></li>
-            <li class=" "> <a href="/Offers" class="color-grey mx-5"> OFERTAS </a></li>
-            <li class=" "> <a href="/about" class="color-grey mx-5"> SOBRE NOSOTROS </a></li>
-            @if (myType == 2){<li class=" "> <a href="/entrepreneur_payment_methods" class="color-grey mx-5"> METODOS DE PAGO </a></li>}
         </ul>
 
     </nav>
@@ -125,8 +142,8 @@
     private bool _isLoading = true;
     private string photo = "";
     private string inputValue;
-    private IList<Product> _product;
     private bool control = false;
+    private IList<Is_Able_To> permisos= new List<Is_Able_To>();
 
     // Boolean value to determine if the user is logged in.
     // To be used in HTML section of this file.
@@ -169,7 +186,7 @@
         {
             await GetUserNotification();
 
-            if(UserNotification == null)
+            if (UserNotification == null)
             {
                 UserNotification = new UserNotification(myEmail, myType);
                 string json = JsonConvert.SerializeObject(UserNotification);
@@ -177,6 +194,13 @@
 
             }
 
+            permisos = ProductServicePandemic.getUserPermissions(myEmail);
+            foreach (var x in permisos)
+            {
+                Console.WriteLine(x.Email);
+                Console.WriteLine(x.Permission_Id);
+                Console.WriteLine(x.Role_Id);
+            }
         }
 
         if (UserNotification != null)
@@ -194,7 +218,8 @@
 
         if (myEmail != null)
         {
-            try {
+            try
+            {
                 photo = "data:image;base64," + System.Convert.ToBase64String(UserServicePandemic.GetUserByEmail(myEmail).Photo);
             }
             catch
@@ -259,22 +284,20 @@
         NavigationManager.NavigateTo("/registro");
     }
 
-    private void goProfile()
+    private async Task GetUserNotification()
     {
-        NavigationManager.NavigateTo("/Profile");
-    }
-
-    private async Task GetUserNotification() {
         string json = await sessionStorage.GetItemAsync<string>("UserNotification");
-        if(json != "null")
+        if (json != "null")
         {
             UserNotification = JsonConvert.DeserializeObject<UserNotification>(json);
         }
 
     }
 
-    public void Dispose() {
-        if (UserNotification is not null) {
+    public void Dispose()
+    {
+        if (UserNotification is not null)
+        {
             NotificationService.Unsubscription(UserNotification);
             UserNotification.OnNotificationChangeds -= quantityEvent;
         }

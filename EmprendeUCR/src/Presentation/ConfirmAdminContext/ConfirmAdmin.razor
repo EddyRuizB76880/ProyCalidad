@@ -87,7 +87,7 @@ else
                                     </div>
                                     <hr />
                                     <center>
-                                        <button type="button" class="btn btn-secondary botonClose" @onclick="_ =>changeState()" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-secondary botonClose" @onclick="_ =>changeState()" data-bs-dismiss="modal">Cerrar</button>
                                     </center>
                                 </div>
                             </div>
@@ -129,7 +129,6 @@ else
         {
             Mail mail = this.GetMail(administrador.Email, 2);
             await ConfirmAdminService.sendEmail(mail);
-            await ConfirmAdminService.deteleUserAdmin(administrador.Email);
             statehasChanged();
         }
         return response;
@@ -170,7 +169,7 @@ else
         mail.Subject = "Registro de Administrador";
         mail.Body = ConfirmAdminService.getMailBody(type);
         mail.ToMailIds = new List<string>()
-{
+        {
            email,
         };
         return mail;
