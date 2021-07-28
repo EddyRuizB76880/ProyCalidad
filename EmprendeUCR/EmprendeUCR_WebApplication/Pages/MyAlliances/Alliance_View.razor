@@ -80,12 +80,19 @@ else
                     <td scope="row" width="200" valign="middle" align="left">@(pendingAlliance.User_Email == userLogged ? "Esperando respuesta" : "Pendiente")</td>
                     <!--Acciones de solicitud-->
                     <th scope="row">
-                        <!--Rechazar alianza-->
-                        <button type="button" class="btn btn-danger material-icons-outlined m-lg-2 " @onclick="() => deleteAlliance(pendingAlliance, myPendingAlliances)">delete</button>
                         <!--Si es una solicitud de otro emprendedor, despliega la opcion de aceptar la alianza-->
                         @if (pendingAlliance.User_Email != userLogged)
                         {
+                            // Accept alliance
                             <button type="button" class="btn btn-success material-icons-outlined" @onclick="() => acceptAlliance(pendingAlliance)"> done</button>
+                            // Decline Alliance
+                            <button type="button" class="btn btn-danger material-icons-outlined m-lg-2" @onclick="() => declineAlliance(pendingAlliance)"> close</button>
+                        }
+                        else
+                        {
+
+                            <!--Rechazar alianza-->
+                            <button type="button" class="btn btn-danger material-icons-outlined m-lg-2 " @onclick="() => deleteAlliance(pendingAlliance, myPendingAlliances)">delete</button>
                         }
                     </th>
                 </tr>
@@ -264,7 +271,15 @@ else
         myAcceptedAlliances.Add(alliance);
         // Erase it from the pending list
         myPendingAlliances.Remove(alliance);
-
+    }
+    public void declineAlliance(Alliance alliance)
+    {
+        // Change status to accepted
+        allianceService.updateAlliance(alliance, 2);
+        // Add it to the accepted alliances list
+        myRejectedAlliances.Add(alliance);
+        // Erase it from the pending list
+        myPendingAlliances.Remove(alliance);
     }
 
     public void viewEntrepreneurProfile(string entrepreneurEmail)
