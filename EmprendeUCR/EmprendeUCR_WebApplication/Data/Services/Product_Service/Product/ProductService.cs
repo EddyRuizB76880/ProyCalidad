@@ -32,6 +32,36 @@ namespace EmprendeUCR_WebApplication.Data.Services
         }
 
 
+        public async Task<bool> InsertProductTransactionAsync(Product product) // Agrega productos con transaccion
+        {
+            bool answer = false;
+
+            using var transaction = _context.Database.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
+            try
+            {
+
+                if ((product.Price < 0) || (product.Category_ID < 0) || (product.Product_Name.Length() < 80 && product.Product_Name.Length() > 0))
+                {
+                    await transaction.RollbackAsync();
+                }
+                else
+                {
+                    await _context.Product.AddAsync(product);
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                    answer = true;
+                }
+            }
+            catch (Exception e)
+            {
+                await transaction.RollbackAsync();
+            }
+            return answer;
+
+
+        }
+
+
 
         public async Task<bool> UpdateProductAsync(Product product) // Update productos
         {
