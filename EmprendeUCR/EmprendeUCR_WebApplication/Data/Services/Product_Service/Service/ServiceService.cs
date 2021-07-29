@@ -22,12 +22,44 @@ namespace EmprendeUCR_WebApplication.Data.Services
             return await _context.Service.ToListAsync();
         }
 
-        public async Task<bool> InsertServiceAsync(Service service) // Agrega productos
+        public async Task<bool> InsertServiceAsync(Service service) // Agrega servicio
         {
             await _context.Service.AddAsync(service);
             await _context.SaveChangesAsync();
             return true;
         }
+
+
+
+        public async Task<bool> InsertServiceTransactioAsync(Service service) // Agrega servicio con transaccion
+        {
+            bool answer = false;
+
+            using var transaction = _context.Database.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
+            try
+            {
+
+                if ((service.Price_per_hour >=0) || (service.Category_ID < 0) || (service.Service_Name.Length() < 80 && service.Service_Name.Length() > 0))
+                {
+                    await transaction.RollbackAsync();
+                }
+                else
+                {
+                    await _context.Service.AddAsync(service);
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                    answer = true;
+                }
+            }
+            catch (Exception e)
+            {
+                await transaction.RollbackAsync();
+            }
+            return answer;
+
+
+        }
+
 
 
 
